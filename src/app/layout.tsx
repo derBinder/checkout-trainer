@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeSync } from "@/components/theme/theme-sync";
 import { THEME_COLORS, themeInitScript } from "@/lib/theme";
 import "./globals.css";
@@ -40,6 +42,9 @@ export default function RootLayout({
       <body className="min-h-dvh antialiased">
         <ThemeSync />
         {children}
+        {/* Vercel Web Analytics und Speed Insights: senden nur in der Bereitstellung bei Vercel Daten, lokal nicht. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

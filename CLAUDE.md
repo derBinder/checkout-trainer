@@ -13,7 +13,7 @@ Die Datei [AGENTS.md](AGENTS.md) wird von `next dev` bei jedem Start aktualisier
 
 ## Technik
 
-Next.js 16 (App Router, TypeScript, `src/`), shadcn/ui, lucide-react, Better Auth (E-Mail/Passwort, Admin-Plugin), Drizzle ORM, Postgres (lokal und in Tests PGlite, produktiv Neon über `pg`), ts-fsrs, Vitest.
+Next.js 16 (App Router, TypeScript, `src/`), shadcn/ui, lucide-react, Better Auth (E-Mail/Passwort, Admin-Plugin), Drizzle ORM, Postgres (lokal und in Tests PGlite, produktiv Neon über `pg`), ts-fsrs, Vitest, Vercel Web Analytics und Speed Insights (im Root-Layout).
 
 ## Befehle
 

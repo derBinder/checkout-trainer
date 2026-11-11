@@ -9,7 +9,7 @@ Ziel: Die App läuft unter einer Adresse `*.vercel.app`, mit Datenbank bei Neon,
 1. **Betreiberadresse.** `ADMIN_EMAIL` ist lokal der Platzhalter `betreiber@checkout-trainer.test`. Für die Produktion brauchen wir deine echte Adresse. Sie wird für die Registrierung gesperrt, es werden keine E-Mails dorthin verschickt.
 2. **Startpasswort.** `ADMIN_INITIAL_PASSWORD`, mindestens 10 Zeichen. Du nennst es nicht im Chat, sondern gibst es selbst im Terminal ein (siehe Schritt 6). Nach der ersten Anmeldung ändern.
 3. **Projektname.** Er bestimmt die Adresse (`<name>.vercel.app`). Vorschlag: `checkout-trainer`. Ist er vergeben, nehmen wir einen anderen.
-4. **Impressum und Datenschutz.** `/impressum` und `/datenschutz` sind Platzhalter. Sie müssen mit deinen echten Angaben gefüllt sein, bevor die Adresse öffentlich weitergegeben wird. Das ist deine Aufgabe, vor oder nach der ersten Bereitstellung, aber vor dem Weitergeben. Für den Datenschutztext wichtig: Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent (Browserkennung) des Nutzers, und für das Rate-Limit Einträge je IP-Adresse. Beides liegt in der Datenbank bei Neon (Frankfurt, siehe Schritt 3).
+4. **Impressum und Datenschutz.** `/impressum` und `/datenschutz` sind Platzhalter. Sie müssen mit deinen echten Angaben gefüllt sein, bevor die Adresse öffentlich weitergegeben wird. Das ist deine Aufgabe, vor oder nach der ersten Bereitstellung, aber vor dem Weitergeben. Für den Datenschutztext wichtig: Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent (Browserkennung) des Nutzers, und für das Rate-Limit Einträge je IP-Adresse. Beides liegt in der Datenbank bei Neon (Frankfurt, siehe Schritt 3). Außerdem sind Vercel Web Analytics und Speed Insights eingebunden (siehe Schritt 7a), die ebenfalls in den Datenschutztext gehören.
 5. **Nicht kommerziell.** Vercel Hobby ist nur für nicht kommerzielle Nutzung gedacht. Bleibt die App ein privates Lernwerkzeug ohne Einnahmen, passt das. Sobald sie Geld einbringt, wäre ein bezahlter Tarif nötig.
 
 ## Reihenfolge der Schritte
@@ -117,6 +117,17 @@ Zum Bau bei Vercel:
 - `next build` läuft auf Vercel ohne `DATABASE_URL`-Zugriff auf die Datenbank. Die Seiten rufen beim Bau keine Datenbank ab. Öffentliche Seiten sind statisch, die übrigen dynamisch.
 
 Kosten: keine. Hobby enthält die Bereitstellungen, die Funktionen und die Bandbreite in den Grenzen des Tarifs.
+
+### Schritt 7a: Web Analytics und Speed Insights einschalten
+
+Die App bindet `@vercel/analytics` und `@vercel/speed-insights` im Root-Layout ein. Daten fließen erst, wenn beide Funktionen im Vercel-Projekt eingeschaltet sind:
+
+1. Im Vercel-Projekt unter **Analytics** auf „Enable" und unter **Speed Insights** auf „Enable".
+2. Danach einmal neu bereitstellen, damit die Messpfade aktiv sind.
+
+Was dabei angelegt wird: nichts außerhalb des Projekts. Beide Funktionen sind im Hobby-Tarif mit einem monatlichen Freikontingent enthalten. Ist es aufgebraucht, wird im Hobby-Tarif nicht weiter erfasst, es entstehen keine Kosten. Das aktuelle Kontingent bitte vor dem Einschalten im Dashboard ablesen (aus dem Gedächtnis, nicht geprüft).
+
+Für den Datenschutztext: Web Analytics arbeitet ohne Cookies und zählt Seitenaufrufe anonymisiert (Seite, Herkunft, Land, Gerät, Browser). Speed Insights misst Ladezeiten im Browser der Besucher. Beides wird von Vercel verarbeitet und gehört in die Datenschutzerklärung.
 
 ### Schritt 8: Prüfung unter `*.vercel.app`
 
