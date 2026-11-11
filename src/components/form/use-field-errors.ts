@@ -9,11 +9,16 @@ import {
 } from "react";
 import {
   fieldErrorsReducer,
-  firstInvalid,
   initialFieldErrors,
 } from "@/lib/validation/field-errors";
 import { validateField } from "@/lib/validation/schemas";
-import { type FieldSpec, leavesField, validateValues } from "./form-values";
+import {
+  describedBy,
+  type FieldSpec,
+  firstInvalidField,
+  leavesField,
+  validateFormData,
+} from "./form-values";
 
 type FieldProps = {
   onBlur: FocusEventHandler<HTMLInputElement>;
@@ -47,9 +52,6 @@ export function useFieldErrors(fields: FieldSpec[]) {
   /** `descriptionId`: eine vorhandene Beschreibung, die zusätzlich verknüpft wird. */
   function fieldProps(name: string, descriptionId?: string): FieldProps {
     const error = state.errors[name] ?? null;
-    const describedBy = [descriptionId, error ? errorId(name) : undefined]
-      .filter(Boolean)
-      .join(" ");
     return {
       onBlur: (event) => {
         const related =
@@ -68,19 +70,19 @@ export function useFieldErrors(fields: FieldSpec[]) {
           error: validate(name, event.currentTarget.value),
         }),
       "aria-invalid": error !== null,
-      "aria-describedby": describedBy || undefined,
+      "aria-describedby": describedBy(
+        descriptionId,
+        errorId(name),
+        error !== null,
+      ),
     };
   }
 
   /** Liest die Werte aus dem Formular selbst, damit auch Autofill zählt. */
   function validateForm(form: HTMLFormElement): boolean {
-    const values = Object.fromEntries(new FormData(form));
-    const errors = validateValues(fields, values);
+    const errors = validateFormData(fields, new FormData(form));
     dispatch({ type: "submit", errors });
-    const first = firstInvalid(
-      fields.map((field) => field.name),
-      errors,
-    );
+    const first = firstInvalidField(fields, errors);
     if (first === null) return true;
     const element = form.elements.namedItem(first);
     if (element instanceof HTMLElement) element.focus();

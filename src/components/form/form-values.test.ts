@@ -6,8 +6,11 @@ import {
   newPerDaySchema,
 } from "@/lib/validation/schemas";
 import {
+  describedBy,
+  firstInvalidField,
   leavesField,
   PASSWORD_TOGGLE_ATTRIBUTE,
+  validateFormData,
   validateValues,
 } from "./form-values";
 
@@ -80,5 +83,71 @@ describe("leavesField", () => {
 
   it("zählt ohne Feld-ID immer als Verlassen", () => {
     expect(leavesField("", toggleFor(""))).toBe(true);
+  });
+});
+
+describe("validateFormData", () => {
+  it("prüft Werte aus dem Formular, auch ohne Eingabe über React", () => {
+    // Autofill oder ein Passwortmanager füllt das Feld, ohne dass onChange läuft.
+    const form = new FormData();
+    form.append("name", "  Felix  ");
+    form.append("email", "a@b.de");
+    form.append("password", "a".repeat(10));
+    expect(validateFormData(fields, form)).toEqual({
+      name: null,
+      email: null,
+      password: null,
+    });
+  });
+
+  it("meldet ungültige Werte aus dem Formular", () => {
+    const form = new FormData();
+    form.append("name", "Felix");
+    form.append("email", "abc");
+    form.append("password", "kurz");
+    expect(validateFormData(fields, form)).toEqual({
+      name: null,
+      email:
+        "Das ist keine gültige E-Mail-Adresse, zum Beispiel name@beispiel.de.",
+      password: "Das Passwort braucht mindestens 10 Zeichen.",
+    });
+  });
+
+  it("zählt einen fehlenden Schlüssel als leer", () => {
+    const form = new FormData();
+    form.append("email", "a@b.de");
+    expect(validateFormData(fields, form)).toEqual({
+      name: "Bitte gib einen Namen ein.",
+      email: null,
+      password: "Bitte gib ein Passwort ein.",
+    });
+  });
+});
+
+describe("firstInvalidField", () => {
+  it("liefert das erste fehlerhafte Feld in Deklarationsreihenfolge", () => {
+    expect(
+      firstInvalidField(fields, { password: "p", email: "e", name: null }),
+    ).toBe("email");
+    expect(firstInvalidField(fields, { password: "p" })).toBe("password");
+  });
+
+  it("liefert null, wenn alles gültig ist", () => {
+    expect(
+      firstInvalidField(fields, { name: null, email: null, password: null }),
+    ).toBeNull();
+    expect(firstInvalidField(fields, {})).toBeNull();
+  });
+});
+
+describe("describedBy", () => {
+  it("verbindet Beschreibung und Fehler", () => {
+    expect(describedBy("hint", "err", true)).toBe("hint err");
+  });
+
+  it("verweist nur bei einem Fehler auf die Fehler-ID", () => {
+    expect(describedBy(undefined, "err", true)).toBe("err");
+    expect(describedBy(undefined, "err", false)).toBeUndefined();
+    expect(describedBy("hint", "err", false)).toBe("hint");
   });
 });
