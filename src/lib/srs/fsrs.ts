@@ -21,11 +21,12 @@ const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
+// Short-term steps off: a new card rated Hard/Good/Easy is due days later, not minutes.
 // Fuzz off: scheduling must be deterministic. ts-fsrs v6 defaults to FSRS-7, which keeps
 // an extra memory value (stabilityFast) that card_state has no column for, and its
 // scheduler is async. The (deprecated) classic API runs FSRS-6, is synchronous and its
 // card fits SrsState, so it is used here on purpose.
-const scheduler = fsrs(generatorParameters({ enable_fuzz: false }));
+const scheduler = fsrs(generatorParameters({ enable_fuzz: false, enable_short_term: false }));
 
 function toCard(prev: SrsState | null, now: Date): Card {
   if (!prev) return createEmptyCard(now);
@@ -64,7 +65,10 @@ function toState(card: Card, elapsedDays: number): SrsState {
 
 export function rate(prev: SrsState | null, rating: Rating, now: Date): SrsState {
   const { card } = scheduler.next(toCard(prev, now), now, rating as Grade);
-  return toState(card, elapsedDaysSince(prev, now));
+  const next = toState(card, elapsedDaysSince(prev, now));
+  // "Nochmal" stays due until it is passed; the other state fields are FSRS's.
+  if (rating === 1) next.due = now;
+  return next;
 }
 
 export function formatInterval(ms: number): string {
@@ -85,6 +89,10 @@ export function previewIntervals(prev: SrsState | null, now: Date): Record<Ratin
   const preview = scheduler.repeat(toCard(prev, now), now);
   const out = {} as Record<Rating, string>;
   for (const r of RATINGS) {
+    if (r === 1) {
+      out[r] = "gleich";
+      continue;
+    }
     out[r] = formatInterval(preview[r as Grade].card.due.getTime() - now.getTime());
   }
   return out;

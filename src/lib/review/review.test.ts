@@ -1,10 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { eq } from "drizzle-orm";
 import { createTestDb } from "@/lib/db/test-db";
 import type { Db } from "@/lib/db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
 import { CARD_ORDER } from "@/lib/cards";
-import { dayEnd } from "@/lib/time";
 import type { SessionUser } from "@/lib/auth/guard";
 
 const getSessionUser = vi.fn<() => Promise<SessionUser | null>>();
@@ -37,12 +35,9 @@ describe("loadQueue", () => {
     expect(q.reps).toEqual({});
   });
 
-  it("drops a card scheduled beyond today after Good and keeps it after Again", async () => {
+  it("drops a card after one Good and keeps it after Again", async () => {
     const u = await addUser("u1");
     expect(await applyReview(db, u, { cardId: "r-2", rating: 3, reps: 0 }, now)).toEqual({ ok: true });
-    expect(await applyReview(db, u, { cardId: "r-2", rating: 3, reps: 1 }, new Date(now.getTime() + 11 * 60_000))).toEqual({ ok: true });
-    const [row] = await db.select().from(cardState).where(eq(cardState.userId, "u1"));
-    expect(row.due.getTime()).toBeGreaterThan(dayEnd(now).getTime());
     const q = await loadQueue(db, u, now);
     expect(q.cardIds).not.toContain("r-2");
 
@@ -52,6 +47,13 @@ describe("loadQueue", () => {
     expect(q2.cardIds).toContain("r-2");
     expect(q2.dueCount).toBe(1);
     expect(q2.reps["r-2"]).toBe(1);
+  });
+
+  it("keeps an Again card in the queue on the next Berlin day", async () => {
+    const u = await addUser("u1");
+    await applyReview(db, u, { cardId: "r-2", rating: 1, reps: 0 }, now);
+    const tomorrow = new Date(now.getTime() + 24 * 3600_000);
+    expect((await loadQueue(db, u, tomorrow)).cardIds).toContain("r-2");
   });
 
   it("lists due cards before new ones", async () => {

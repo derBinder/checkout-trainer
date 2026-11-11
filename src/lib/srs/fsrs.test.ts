@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { dayEnd } from "../time";
 import { formatInterval, previewIntervals, rate } from "./fsrs";
 
 const now = new Date("2026-11-11T10:00:00Z");
@@ -8,9 +9,22 @@ describe("rate", () => {
   const again = rate(null, 1, now);
   const easy = rate(null, 4, now);
 
+  const hard = rate(null, 2, now);
+
   it("orders due dates by rating", () => {
     expect(again.due.getTime()).toBeLessThan(good.due.getTime());
     expect(good.due.getTime()).toBeLessThan(easy.due.getTime());
+  });
+
+  it("keeps an Again card due right now", () => {
+    expect(again.due).toEqual(now);
+    expect(again.reps).toBe(1);
+    expect(again.lastReview).toEqual(now);
+  });
+
+  it("schedules new cards rated Hard or Good beyond today", () => {
+    expect(hard.due.getTime()).toBeGreaterThan(dayEnd(now).getTime());
+    expect(good.due.getTime()).toBeGreaterThan(dayEnd(now).getTime());
   });
 
   it("counts the review", () => {
@@ -45,9 +59,8 @@ describe("previewIntervals", () => {
 
   it("uses short German labels", () => {
     const p = previewIntervals(null, now);
-    expect(p[1]).toBe("1 Min");
-    expect(p[3]).toBe("10 Min");
-    expect(p[4]).toMatch(/^\d+ Tage?$/);
+    expect(p[1]).toBe("gleich");
+    for (const r of [2, 3, 4] as const) expect(p[r]).toMatch(/^\d+ Tage?$/);
   });
 
   it("formats durations", () => {
