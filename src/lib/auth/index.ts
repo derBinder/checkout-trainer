@@ -6,7 +6,12 @@ import { admin } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import { db, type Db } from "../db";
 import { user as userTable } from "../db/schema";
-import { AUTH_MESSAGES, MIN_PASSWORD_LENGTH } from "./constants";
+import { parseName } from "../validation/schemas";
+import {
+  AUTH_MESSAGES,
+  MAX_EMAIL_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from "./constants";
 
 export { MIN_PASSWORD_LENGTH } from "./constants";
 
@@ -21,6 +26,36 @@ function isOperatorEmail(email: unknown): boolean {
     typeof email === "string" &&
     email.trim().toLowerCase() === operator
   );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Name, E-Mail und Bild für Registrierung und Profiländerung, unabhängig von
+ * der Prüfung im Formular. Liefert den Körper mit getrimmtem Namen zurück.
+ */
+function checkProfileInput(path: "/sign-up/email" | "/update-user", body: unknown) {
+  // Kein Objekt: Better Auth lehnt den Körper selbst mit 400 ab.
+  if (!isRecord(body)) return;
+  if (body.image !== undefined) {
+    throw new APIError("BAD_REQUEST", {
+      message: AUTH_MESSAGES.imageNotAllowed,
+    });
+  }
+  if (
+    path === "/sign-up/email" &&
+    typeof body.email === "string" &&
+    body.email.length > MAX_EMAIL_LENGTH
+  ) {
+    throw new APIError("BAD_REQUEST", { message: AUTH_MESSAGES.emailTooLong });
+  }
+  // Bei der Profiländerung ist der Name optional, bei der Registrierung Pflicht.
+  if (path === "/update-user" && body.name === undefined) return;
+  const name = parseName(body.name);
+  if (!name.ok) throw new APIError("BAD_REQUEST", { message: name.message });
+  return { context: { body: { ...body, name: name.name } } };
 }
 
 /**
@@ -70,6 +105,19 @@ export function createAuth(database: Db) {
           throw new APIError("BAD_REQUEST", {
             message: AUTH_MESSAGES.operatorEmail,
           });
+        }
+        if (ctx.path === "/sign-up/email" || ctx.path === "/update-user") {
+          return checkProfileInput(ctx.path, ctx.body);
+        }
+        // Better Auth verlangt das Passwort nur bei alter Sitzung und
+        // überspringt die Prüfung bei einem leeren String.
+        if (ctx.path === "/delete-user") {
+          const password = isRecord(ctx.body) ? ctx.body.password : undefined;
+          if (typeof password !== "string" || password === "") {
+            throw new APIError("BAD_REQUEST", {
+              message: AUTH_MESSAGES.passwordRequired,
+            });
+          }
         }
         if (
           ctx.path === "/sign-in/email" &&

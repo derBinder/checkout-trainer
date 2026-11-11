@@ -6,6 +6,7 @@ import {
   newPasswordSchema,
   newPerDaySchema,
   normalizeEmail,
+  parseName,
   passwordRequiredSchema,
   validateField,
 } from "./schemas";
@@ -18,6 +19,44 @@ describe("validateField", () => {
     expect(validateField(nameSchema, "")).toBe("Bitte gib einen Namen ein.");
     expect(validateField(nameSchema, "   ")).toBe("Bitte gib einen Namen ein.");
     expect(validateField(nameSchema, "Felix")).toBeNull();
+  });
+
+  it("begrenzt den Namen nach dem Trimmen auf 100 Zeichen", () => {
+    expect(validateField(nameSchema, "a".repeat(100))).toBeNull();
+    expect(validateField(nameSchema, `  ${"a".repeat(100)}  `)).toBeNull();
+    expect(validateField(nameSchema, "a".repeat(101))).toBe(
+      "Der Name darf höchstens 100 Zeichen haben.",
+    );
+  });
+
+  it("lehnt Steuer- und Formatzeichen im Namen ab", () => {
+    for (const bad of [
+      "a\u0000b",
+      "a\u0007b",
+      "a\nb",
+      "a\u202Eb",
+      "a\u200Bb",
+      "a\u2066b",
+      "a\u00ADb",
+    ]) {
+      expect(validateField(nameSchema, bad)).toBe(
+        "Der Name enthält unzulässige Zeichen.",
+      );
+    }
+  });
+
+  it("nimmt Umlaute, Emojis und Leerzeichen im Namen an", () => {
+    expect(validateField(nameSchema, "Jörg 🎯 Müller-Weiß")).toBeNull();
+  });
+
+  it("begrenzt die E-Mail-Adresse auf 254 Zeichen", () => {
+    const local = "a".repeat(64);
+    const at254 = `${local}@${"b".repeat(186)}.de`;
+    expect(at254).toHaveLength(254);
+    expect(validateField(emailSchema, at254)).toBeNull();
+    expect(validateField(emailSchema, `x${at254}`)).toBe(
+      "Die E-Mail-Adresse ist zu lang.",
+    );
   });
 
   it("prüft die E-Mail-Adresse", () => {
@@ -103,6 +142,33 @@ describe("validateField", () => {
       expect(() => validateField(newPasswordSchema, odd)).not.toThrow();
       expect(() => validateField(newPerDaySchema, odd)).not.toThrow();
     }
+  });
+});
+
+describe("parseName", () => {
+  it("liefert den getrimmten Namen", () => {
+    expect(parseName("  Jörg Müller  ")).toEqual({
+      ok: true,
+      name: "Jörg Müller",
+    });
+  });
+
+  it("liefert die Meldung für ungültige Werte jeden Typs", () => {
+    expect(parseName(undefined)).toEqual({
+      ok: false,
+      message: "Bitte gib einen Namen ein.",
+    });
+    for (const odd of [null, 5, { a: 1 }, [], true]) {
+      expect(parseName(odd).ok).toBe(false);
+    }
+    expect(parseName("a".repeat(101))).toEqual({
+      ok: false,
+      message: "Der Name darf höchstens 100 Zeichen haben.",
+    });
+    expect(parseName("a\u0000")).toEqual({
+      ok: false,
+      message: "Der Name enthält unzulässige Zeichen.",
+    });
   });
 });
 
