@@ -50,7 +50,8 @@ export type Card = RestCard | MissCard | BogeyCard
 const MIN_REST = 2
 const MAX_REST = 170
 const MAX_ALTERNATIVES = 2
-const TIMES = ['Kürzester Weg.', 'einmal', 'zweimal', 'dreimal', 'viermal']
+const TIMES = ['', 'einmal', 'zweimal', 'dreimal', 'viermal']
+const FALLBACK_REASON = 'Der übliche Weg nach Tabelle.'
 
 const fmt = (route: Route): string[] => route.map(formatDart)
 
@@ -81,8 +82,14 @@ function singleCases(rest: number, best: Route): SingleCase[] {
   return cases
 }
 
+/** Anzahl verschiedener Wege; Vertauschungen derselben Darts zählen als einer. */
+function distinctRoutes(rest: number): number {
+  const keys = allCheckouts(rest, 3).map((route) => route.map(formatDart).sort().join(' '))
+  return new Set(keys).size
+}
+
 function reasonFor(rest: number, best: Route, cases: SingleCase[]): string {
-  if (allCheckouts(rest, 3).length === 1) return 'Der einzige Weg.'
+  if (distinctRoutes(rest) === 1) return 'Der einzige Weg.'
   const first = cases[0]
   if (first) {
     const field = first.hit.slice(1)
@@ -96,7 +103,7 @@ function reasonFor(rest: number, best: Route, cases: SingleCase[]): string {
   if (best.length === 1) return 'Direkt auf das Doppel.'
   const last = best[best.length - 1]
   const count = halvings(last)
-  if (count === 0) return TIMES[0]
+  if (count === 0) return FALLBACK_REASON
   return `Endet auf ${formatDart(last)}, das sich ${TIMES[count]} halbieren lässt.`
 }
 

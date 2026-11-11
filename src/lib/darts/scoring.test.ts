@@ -57,7 +57,7 @@ describe('followUp', () => {
     expect(followUp(50, 1)).toEqual({ kind: 'finish', route: parseRoute('Bull') })
     expect(followUp(61, 1)).toEqual({
       kind: 'setup',
-      setup: { throws: parseRoute('S20'), leaves: 41 },
+      setup: { throws: parseRoute('T7'), leaves: 40 },
     })
   })
   it('nimmt den bevorzugten Weg, wenn er in die Dartzahl passt', () => {
@@ -71,6 +71,36 @@ describe('bestSetup', () => {
   it('trifft bevorzugte Reste', () => {
     expect(bestSetup(169, 3).leaves).toBe(32)
     expect(bestSetup(159, 3)).toEqual({ throws: parseRoute('T20 T20 S7'), leaves: 32 })
+  })
+  it('stellt mit einem Dart auf ein bevorzugtes Doppel', () => {
+    expect(bestSetup(88, 1)).toEqual({ throws: parseRoute('T16'), leaves: 40 })
+    expect(bestSetup(62, 1)).toEqual({ throws: parseRoute('T10'), leaves: 32 })
+    // 64 und 68: Die Rangfolge der Reste (32, 40, 16, …) wählt T8 -> 40 und T12 -> 32,
+    // nicht die Tabellenwege T16 -> 16 und T20 -> 8. Geprüft wird nur das bevorzugte Doppel.
+    expect([32, 40, 16, 8]).toContain(bestSetup(64, 1).leaves)
+    expect([32, 40, 16, 8]).toContain(bestSetup(68, 1).leaves)
+    expect(bestSetup(72, 1)).toEqual({ throws: parseRoute('T16'), leaves: 24 })
+  })
+  it('lässt bei 61 mit einem Dart ein Ein-Dart-Finish', () => {
+    const s = bestSetup(61, 1)
+    expect(s.leaves === 50 || (s.leaves % 2 === 0 && s.leaves <= 40)).toBe(true)
+  })
+  it('lässt bei 123 mit zwei Darts keinen Rest über 40', () => {
+    expect(bestSetup(123, 2).leaves).toBeLessThanOrEqual(40)
+  })
+  it('nimmt keine Doppel und kein Bull als Stellwurf', () => {
+    for (let rest = 3; rest <= 170; rest++) {
+      for (const darts of [1, 2, 3] as const) {
+        let s
+        try {
+          s = bestSetup(rest, darts)
+        } catch {
+          continue
+        }
+        for (const d of s.throws) expect((d.ring === 'S' || d.ring === 'T') && d.n <= 20).toBe(true)
+        expect(rest - routeTotal(s.throws)).toBe(s.leaves)
+      }
+    }
   })
   it('lässt bei Bogey-Zahlen einen gültigen Rest', () => {
     for (const b of BOGEYS) {

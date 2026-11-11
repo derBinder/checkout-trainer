@@ -108,12 +108,14 @@ export function rankCheckouts(rest: number, maxDarts: 1 | 2 | 3): Route[] {
 export type Setup = { throws: Route; leaves: number }
 export type Follow = { kind: 'finish'; route: Route } | { kind: 'setup'; setup: Setup }
 
+/** Erlaubte Stellwürfe: S1–S20 und T1–T20, keine Doppel, kein Bull. */
 const SETUP_DARTS: Dart[] = [
   ...Array.from({ length: 20 }, (_, i): Dart => ({ ring: 'S', n: i + 1 })),
-  ...[20, 19, 18, 17].map((n): Dart => ({ ring: 'T', n })),
+  ...Array.from({ length: 20 }, (_, i): Dart => ({ ring: 'T', n: i + 1 })),
 ]
 
-const PREFERRED_LEAVES = [32, 40, 36, 24, 16, 20]
+/** Bevorzugte Ein-Dart-Reste, früher ist besser. */
+const PREFERRED_LEAVES = [32, 40, 16, 24, 36, 8, 20, 12, 4]
 
 function countOnTwenty(route: Route): number {
   return route.filter((d) => d.n === 20).length
@@ -138,25 +140,48 @@ function setupCandidates(rest: number, darts: number): Setup[] {
   return result
 }
 
-/** Bester Stellwurf mit bis zu `darts` Würfen. Wirft, wenn kein gültiger Rest erreichbar ist. */
+const isOneDartFinish = (leave: number) => leave === 50 || (leave % 2 === 0 && leave <= 40)
+
+/**
+ * Rangfolge eines Rests (kleiner ist besser), als Tupel:
+ * 1. bevorzugtes Doppel nach PREFERRED_LEAVES,
+ * 2. sonst irgendein Ein-Dart-Finish: mehr Halbierungen zuerst, Doppel vor Bull, höheres Doppel zuerst,
+ * 3. sonst mit zwei Darts zu beenden: niedrigerer Rest zuerst,
+ * 4. sonst niedrigster Rest.
+ */
+function leaveRank(leave: number): [number, number, number, number] {
+  const preferred = PREFERRED_LEAVES.indexOf(leave)
+  if (preferred !== -1) return [0, preferred, 0, 0]
+  if (isOneDartFinish(leave)) {
+    const finisher: Dart = leave === 50 ? { ring: 'D', n: 25 } : { ring: 'D', n: leave / 2 }
+    return [1, -halvings(finisher), leave === 50 ? 1 : 0, -leave]
+  }
+  if (canFinish(leave, 2)) return [2, leave, 0, 0]
+  return [3, leave, 0, 0]
+}
+
+function compareLeaves(a: number, b: number): number {
+  const ra = leaveRank(a)
+  const rb = leaveRank(b)
+  for (let i = 0; i < ra.length; i++) if (ra[i] !== rb[i]) return ra[i] - rb[i]
+  return 0
+}
+
+/**
+ * Bester Stellwurf mit bis zu `darts` Würfen. Erst der Rest (siehe leaveRank),
+ * bei gleichem Rest weniger Würfe, weniger Triples, mehr Würfe auf die 20, höhere Felder.
+ * Wirft, wenn kein gültiger Rest erreichbar ist.
+ */
 export function bestSetup(rest: number, darts: 1 | 2 | 3): Setup {
   const candidates = setupCandidates(rest, darts)
-  const rank = (s: Setup) => {
-    const preferred = PREFERRED_LEAVES.indexOf(s.leaves)
-    return preferred === -1 ? PREFERRED_LEAVES.length : preferred
-  }
-  candidates.sort((a, b) => {
-    const byPreferred = rank(a) - rank(b)
-    if (byPreferred !== 0) return byPreferred
-    const byTriples = triples(a.throws) - triples(b.throws)
-    if (byTriples !== 0) return byTriples
-    if (rank(a) === PREFERRED_LEAVES.length) {
-      return a.leaves - b.leaves || compareHigherFirst(a.throws, b.throws)
-    }
-    return (
-      countOnTwenty(b.throws) - countOnTwenty(a.throws) || compareHigherFirst(a.throws, b.throws)
-    )
-  })
+  candidates.sort(
+    (a, b) =>
+      compareLeaves(a.leaves, b.leaves) ||
+      a.throws.length - b.throws.length ||
+      triples(a.throws) - triples(b.throws) ||
+      countOnTwenty(b.throws) - countOnTwenty(a.throws) ||
+      compareHigherFirst(a.throws, b.throws),
+  )
   const best = candidates[0]
   if (!best) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
   return best

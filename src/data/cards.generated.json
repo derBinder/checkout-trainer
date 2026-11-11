@@ -4712,9 +4712,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S16"
+            "T8"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       }
     ]
@@ -4753,9 +4753,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S16"
+        "T8"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -4968,9 +4968,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S16"
+            "T8"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       }
     ]
@@ -5010,9 +5010,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S16"
+        "T8"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -5037,9 +5037,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "S13"
+            "T7"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       },
       {
@@ -5073,9 +5073,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "S13"
+        "T7"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -5107,7 +5107,7 @@
       "T16",
       "D13"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der übliche Weg nach Tabelle.",
     "alternatives": [],
     "singleCases": [
       {
@@ -5292,9 +5292,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "S16"
+            "T8"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       },
       {
@@ -5306,9 +5306,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S16"
+            "T8"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       }
     ]
@@ -5328,9 +5328,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "S16"
+        "T8"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -5348,9 +5348,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S16"
+        "T8"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -5553,9 +5553,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "S19"
+            "T9"
           ],
-          "leaves": 40
+          "leaves": 32
         }
       },
       {
@@ -5567,9 +5567,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T14"
           ],
-          "leaves": 46
+          "leaves": 24
         }
       }
     ]
@@ -5589,9 +5589,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "S19"
+        "T9"
       ],
-      "leaves": 40
+      "leaves": 32
     }
   },
   {
@@ -5609,9 +5609,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T14"
       ],
-      "leaves": 46
+      "leaves": 24
     }
   },
   {
@@ -5718,10 +5718,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18",
-            "T17"
+            "T20",
+            "T7"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -5733,9 +5733,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T10"
           ],
-          "leaves": 42
+          "leaves": 32
         }
       }
     ]
@@ -5754,10 +5754,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18",
-        "T17"
+        "T20",
+        "T7"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -5775,9 +5775,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T10"
       ],
-      "leaves": 42
+      "leaves": 32
     }
   },
   {
@@ -5807,10 +5807,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T17",
-            "T17"
+            "T20",
+            "T10"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       },
       {
@@ -5822,9 +5822,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T12"
           ],
-          "leaves": 48
+          "leaves": 32
         }
       }
     ]
@@ -5843,10 +5843,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T17",
-        "T17"
+        "T20",
+        "T10"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -5864,9 +5864,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T12"
       ],
-      "leaves": 48
+      "leaves": 32
     }
   },
   {
@@ -5896,10 +5896,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20",
-            "S20"
+            "T20",
+            "T13"
           ],
-          "leaves": 83
+          "leaves": 24
         }
       },
       {
@@ -5911,9 +5911,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T14"
           ],
-          "leaves": 46
+          "leaves": 24
         }
       }
     ]
@@ -5932,10 +5932,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20",
-        "S20"
+        "T20",
+        "T13"
       ],
-      "leaves": 83
+      "leaves": 24
     }
   },
   {
@@ -5953,9 +5953,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T14"
       ],
-      "leaves": 46
+      "leaves": 24
     }
   },
   {
@@ -5979,10 +5979,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T19",
-            "T17"
+            "T20",
+            "T8"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -5994,9 +5994,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T8"
           ],
-          "leaves": 44
+          "leaves": 40
         }
       }
     ]
@@ -6015,10 +6015,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T19",
-        "T17"
+        "T20",
+        "T8"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6036,9 +6036,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T8"
       ],
-      "leaves": 44
+      "leaves": 40
     }
   },
   {
@@ -6062,10 +6062,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18",
-            "T17"
+            "T20",
+            "T11"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       },
       {
@@ -6077,9 +6077,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T14"
           ],
-          "leaves": 46
+          "leaves": 24
         }
       }
     ]
@@ -6098,10 +6098,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18",
-        "T17"
+        "T20",
+        "T11"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -6119,9 +6119,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T14"
       ],
-      "leaves": 46
+      "leaves": 24
     }
   },
   {
@@ -6151,8 +6151,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T17",
-            "T17"
+            "T20",
+            "T14"
           ],
           "leaves": 24
         }
@@ -6166,9 +6166,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T12"
           ],
-          "leaves": 48
+          "leaves": 32
         }
       }
     ]
@@ -6187,8 +6187,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T17",
-        "T17"
+        "T20",
+        "T14"
       ],
       "leaves": 24
     }
@@ -6208,9 +6208,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T12"
       ],
-      "leaves": 48
+      "leaves": 32
     }
   },
   {
@@ -6241,9 +6241,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "T17"
+            "T9"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -6255,9 +6255,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18"
+            "T10"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       }
     ]
@@ -6277,9 +6277,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "T17"
+        "T9"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6297,9 +6297,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18"
+        "T10"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6329,10 +6329,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T19",
-            "T17"
+            "T20",
+            "T12"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       },
       {
@@ -6344,9 +6344,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T12"
           ],
-          "leaves": 48
+          "leaves": 32
         }
       }
     ]
@@ -6365,10 +6365,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T19",
-        "T17"
+        "T20",
+        "T12"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -6386,9 +6386,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T12"
       ],
-      "leaves": 48
+      "leaves": 32
     }
   },
   {
@@ -6412,8 +6412,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18",
-            "T17"
+            "T20",
+            "T15"
           ],
           "leaves": 24
         }
@@ -6427,9 +6427,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18"
+            "T10"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       }
     ]
@@ -6448,8 +6448,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18",
-        "T17"
+        "T20",
+        "T15"
       ],
       "leaves": 24
     }
@@ -6469,9 +6469,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18"
+        "T10"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6502,9 +6502,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "T18"
+            "T10"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -6516,9 +6516,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T16"
           ],
-          "leaves": 52
+          "leaves": 24
         }
       }
     ]
@@ -6538,9 +6538,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "T18"
+        "T10"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6558,9 +6558,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T16"
       ],
-      "leaves": 52
+      "leaves": 24
     }
   },
   {
@@ -6591,9 +6591,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "T17"
+            "T13"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       },
       {
@@ -6605,9 +6605,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18"
+            "T14"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       }
     ]
@@ -6627,9 +6627,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "T17"
+        "T13"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -6647,9 +6647,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18"
+        "T14"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -6673,8 +6673,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T19",
-            "T17"
+            "T20",
+            "T16"
           ],
           "leaves": 24
         }
@@ -6688,9 +6688,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T16"
           ],
-          "leaves": 52
+          "leaves": 24
         }
       }
     ]
@@ -6709,8 +6709,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T19",
-        "T17"
+        "T20",
+        "T16"
       ],
       "leaves": 24
     }
@@ -6730,9 +6730,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T16"
       ],
-      "leaves": 52
+      "leaves": 24
     }
   },
   {
@@ -6744,7 +6744,7 @@
       "T19",
       "D18"
     ],
-    "reason": "Endet auf D18, das sich einmal halbieren lässt.",
+    "reason": "Der einzige Weg.",
     "alternatives": [],
     "singleCases": [
       {
@@ -6757,9 +6757,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "T19"
+            "T11"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -6771,9 +6771,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18"
+            "T14"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       }
     ]
@@ -6793,9 +6793,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "T19"
+        "T11"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6813,9 +6813,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18"
+        "T14"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -6839,8 +6839,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T17",
-            "T17"
+            "T20",
+            "T14"
           ],
           "leaves": 32
         }
@@ -6854,9 +6854,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T20"
+            "T12"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       }
     ]
@@ -6875,8 +6875,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T17",
-        "T17"
+        "T20",
+        "T14"
       ],
       "leaves": 32
     }
@@ -6896,9 +6896,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T20"
+        "T12"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -6910,7 +6910,7 @@
       "T19",
       "D19"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der übliche Weg nach Tabelle.",
     "alternatives": [],
     "singleCases": [
       {
@@ -6937,9 +6937,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T20"
+            "T12"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       }
     ]
@@ -6979,9 +6979,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T20"
+        "T12"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -7006,9 +7006,9 @@
           "kind": "setup",
           "throws": [
             "T20",
-            "T20"
+            "T12"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       },
       {
@@ -7020,9 +7020,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T20"
+            "T12"
           ],
-          "leaves": 16
+          "leaves": 40
         }
       }
     ]
@@ -7042,9 +7042,9 @@
       "kind": "setup",
       "throws": [
         "T20",
-        "T20"
+        "T12"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -7062,9 +7062,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T20"
+        "T12"
       ],
-      "leaves": 16
+      "leaves": 40
     }
   },
   {
@@ -7088,8 +7088,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18",
-            "T17"
+            "T20",
+            "T15"
           ],
           "leaves": 32
         }
@@ -7124,8 +7124,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18",
-        "T17"
+        "T20",
+        "T15"
       ],
       "leaves": 32
     }
@@ -7159,7 +7159,7 @@
       "T20",
       "D19"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der übliche Weg nach Tabelle.",
     "alternatives": [],
     "singleCases": [
       {
@@ -7171,10 +7171,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T17",
-            "T17"
+            "T20",
+            "T18"
           ],
-          "leaves": 36
+          "leaves": 24
         }
       },
       {
@@ -7207,10 +7207,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T17",
-        "T17"
+        "T20",
+        "T18"
       ],
-      "leaves": 36
+      "leaves": 24
     }
   },
   {
@@ -7267,8 +7267,8 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T19",
-            "T17"
+            "T20",
+            "T16"
           ],
           "leaves": 32
         }
@@ -7282,9 +7282,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T20"
+            "T16"
           ],
-          "leaves": 20
+          "leaves": 32
         }
       }
     ]
@@ -7303,8 +7303,8 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T19",
-        "T17"
+        "T20",
+        "T16"
       ],
       "leaves": 32
     }
@@ -7324,9 +7324,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T20"
+        "T16"
       ],
-      "leaves": 20
+      "leaves": 32
     }
   },
   {
@@ -7338,7 +7338,7 @@
       "T17",
       "Bull"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der übliche Weg nach Tabelle.",
     "alternatives": [],
     "singleCases": [
       {
@@ -7350,10 +7350,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T18",
-            "T17"
+            "T20",
+            "T19"
           ],
-          "leaves": 36
+          "leaves": 24
         }
       },
       {
@@ -7386,10 +7386,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T18",
-        "T17"
+        "T20",
+        "T19"
       ],
-      "leaves": 36
+      "leaves": 24
     }
   },
   {
@@ -7447,7 +7447,7 @@
       "T18",
       "Bull"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der übliche Weg nach Tabelle.",
     "alternatives": [
       [
         "T19",
@@ -7465,10 +7465,10 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "T19",
-            "T17"
+            "T20",
+            "T20"
           ],
-          "leaves": 36
+          "leaves": 24
         }
       },
       {
@@ -7501,10 +7501,10 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "T19",
-        "T17"
+        "T20",
+        "T20"
       ],
-      "leaves": 36
+      "leaves": 24
     }
   },
   {
@@ -7562,7 +7562,7 @@
       "T19",
       "Bull"
     ],
-    "reason": "Kürzester Weg.",
+    "reason": "Der einzige Weg.",
     "alternatives": [],
     "singleCases": [
       {
@@ -7589,9 +7589,9 @@
         "follow": {
           "kind": "setup",
           "throws": [
-            "S20"
+            "T16"
           ],
-          "leaves": 68
+          "leaves": 40
         }
       }
     ]
@@ -7631,9 +7631,9 @@
     "follow": {
       "kind": "setup",
       "throws": [
-        "S20"
+        "T16"
       ],
-      "leaves": 68
+      "leaves": 40
     }
   },
   {

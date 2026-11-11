@@ -68,7 +68,7 @@ describe('buildCards', () => {
     const reason = (id: string) => (byId.get(id) as { reason: string }).reason
     expect(reason('r-121')).toBe('Bleibt bei Single 20 auf Bull-Finish.')
     expect(reason('r-32')).toBe('Direkt auf das Doppel.')
-    expect(reason('r-100')).toMatch(/^(Bleibt|Endet|Kürzester)/)
+    expect(reason('r-100')).toMatch(/^(Bleibt|Endet|Der übliche)/)
   })
 
   it('hält Alternativen kurz und verschieden vom besten Weg', () => {
@@ -104,6 +104,16 @@ describe('buildCards', () => {
 
   it('nennt bei genau einem möglichen Weg den einzigen Weg', () => {
     expect((byId.get('r-170') as RestCard).reason).toBe('Der einzige Weg.')
+  })
+
+  it('zählt Vertauschungen derselben Darts als einen Weg', () => {
+    // T20 T19 Bull und T19 T20 Bull sind derselbe Weg.
+    expect((byId.get('r-167') as RestCard).reason).toBe('Der einzige Weg.')
+  })
+
+  it('nennt ohne andere Begründung den Tabellenweg', () => {
+    expect((byId.get('r-134') as RestCard).reason).toBe('Der übliche Weg nach Tabelle.')
+    expect(cards.some((c) => c.kind === 'rest' && c.reason === 'Kürzester Weg.')).toBe(false)
   })
 
   it('stimmt mit der generierten Datei überein', () => {
