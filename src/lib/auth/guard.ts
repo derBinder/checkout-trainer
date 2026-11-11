@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
 import { auth } from "./index";
 
 export type SessionUser = {
@@ -11,8 +12,11 @@ export type SessionUser = {
   newPerDay: number;
 };
 
-/** Der Status kommt bei jedem Aufruf frisch aus der Datenbank (kein Cookie-Cache). */
-export async function getSessionUser(): Promise<SessionUser | null> {
+/**
+ * Der Status kommt pro Anfrage frisch aus der Datenbank (kein Cookie-Cache).
+ * cache(): Layout und Seite derselben Anfrage teilen sich eine Abfrage.
+ */
+export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return null;
   const u = session.user as typeof session.user & {
@@ -28,7 +32,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     role: u.role ?? "user",
     newPerDay: u.newPerDay,
   };
-}
+});
 
 export async function requireActiveUser(): Promise<SessionUser> {
   const u = await getSessionUser();

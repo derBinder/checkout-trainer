@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
-
-export const MAX_NEW_PER_DAY = 50;
+import { MAX_NEW_PER_DAY } from "@/lib/settings";
 
 /**
  * Kern ohne Sitzung und ohne "use server": Die Server Action liefert die

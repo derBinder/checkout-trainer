@@ -10,8 +10,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { MAX_NEW_PER_DAY } from "@/lib/settings";
 
-const RANGE_MESSAGE = "Gib eine ganze Zahl von 0 bis 50 ein.";
+const RANGE_MESSAGE = `Gib eine ganze Zahl von 0 bis ${MAX_NEW_PER_DAY} ein.`;
 
 export function NewPerDayForm({ initial }: { initial: number }) {
   const [pending, startTransition] = useTransition();
@@ -21,7 +22,7 @@ export function NewPerDayForm({ initial }: { initial: number }) {
     event.preventDefault();
     const raw = String(new FormData(event.currentTarget).get("newPerDay")).trim();
     const value = raw === "" ? Number.NaN : Number(raw);
-    if (!Number.isInteger(value) || value < 0 || value > 50) {
+    if (!Number.isInteger(value) || value < 0 || value > MAX_NEW_PER_DAY) {
       setMessage({ text: RANGE_MESSAGE, ok: false });
       return;
     }
@@ -51,14 +52,14 @@ export function NewPerDayForm({ initial }: { initial: number }) {
             type="number"
             inputMode="numeric"
             min={0}
-            max={50}
+            max={MAX_NEW_PER_DAY}
             step={1}
             defaultValue={initial}
             aria-describedby="newPerDay-hint"
             required
           />
           <FieldDescription id="newPerDay-hint">
-            Von 0 bis 50. Fällige Wiederholungen kommen immer dazu.
+            Von 0 bis {MAX_NEW_PER_DAY}. Fällige Wiederholungen kommen immer dazu.
           </FieldDescription>
         </Field>
       </FieldGroup>

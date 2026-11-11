@@ -33,7 +33,7 @@ export function RestGrid({ levels, weak }: { levels: Record<number, Level>; weak
               type="button"
               data-rest={rest}
               aria-label={label}
-              className={cn(CELL_BASE, "h-9 w-full text-sm md:h-10 md:text-base", LEVEL_CELL[level], hard && WEAK_RING)}
+              className={cn(CELL_BASE, "h-11 w-full text-sm md:text-base", LEVEL_CELL[level], hard && WEAK_RING)}
             >
               {rest}
             </button>

@@ -30,4 +30,20 @@ describe("resolveDbTarget", () => {
       url,
     });
   });
+
+  it("bricht auf Vercel zur Laufzeit ohne DATABASE_URL mit klarer Meldung ab", () => {
+    expect(() => resolveDbTarget({ VERCEL: "1" })).toThrow(/DATABASE_URL/);
+  });
+
+  it("lässt auf Vercel den Build ohne DATABASE_URL im Arbeitsspeicher laufen", () => {
+    expect(resolveDbTarget({ VERCEL: "1", NEXT_PHASE: build })).toEqual({
+      driver: "pglite",
+      location: undefined,
+    });
+  });
+
+  it("nutzt auf Vercel mit DATABASE_URL pg", () => {
+    const url = "postgres://example.test/db";
+    expect(resolveDbTarget({ VERCEL: "1", DATABASE_URL: url })).toEqual({ driver: "pg", url });
+  });
 });
