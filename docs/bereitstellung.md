@@ -71,6 +71,18 @@ Zu `BETTER_AUTH_URL` und erlaubten Herkünften (Better Auth, installierte Versio
 
 Kosten: keine.
 
+### Stand der Umsetzung (2026-11-11): Schritte 5 und 6 laufen beim Bau
+
+Die von Neon angelegten Variablen sind bei Vercel als geheim markiert und lassen sich nicht auf diesen Rechner zurücklesen. Deshalb werden Schema und Betreiberkonto nicht mehr von Hand eingespielt, sondern beim Bau der Produktionsbereitstellung: `vercel.json` setzt als Build-Befehl `sh scripts/vercel-build.sh`. Das Skript spielt in der Produktionsumgebung zuerst die Migrationen über `DATABASE_URL_UNPOOLED` ein und legt, wenn `ADMIN_INITIAL_PASSWORD` gesetzt ist, das Betreiberkonto an. Beides ist wiederholbar. Vorschau-Bereitstellungen fassen die Datenbank nicht an.
+
+Das Startpasswort gibst du selbst ein, es läuft nicht durch den Chat:
+
+```bash
+npx vercel@65.12.1 env add ADMIN_INITIAL_PASSWORD production --sensitive
+```
+
+Nach der ersten Anmeldung das Passwort in der App ändern und die Variable wieder entfernen (`npx vercel@65.12.1 env rm ADMIN_INITIAL_PASSWORD production`). Die folgenden Schritte 5 und 6 beschreiben den ursprünglichen Handweg und bleiben als Ausweichlösung stehen.
+
 ### Schritt 5: Datenbankschema einspielen
 
 Was angelegt wird: die Tabellen in der Neon-Datenbank (Migration `drizzle/0000_petite_stepford_cuckoos.sql`: Nutzer, Sitzungen, Konten, Rate-Limit, Lernstand, Bewertungsprotokoll, Einstellungen).
