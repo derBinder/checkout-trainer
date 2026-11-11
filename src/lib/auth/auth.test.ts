@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
-import { user } from "../db/schema";
+import { session, user } from "../db/schema";
 import { AUTH_MESSAGES } from "./constants";
 import { createAuth, seedAdmin } from "./index";
 
@@ -189,21 +189,69 @@ describe("seedAdmin", () => {
     expect(await userRow(OPERATOR)).toBeUndefined();
   });
 
-  it("der Admin darf Rollen und Passwörter anderer setzen", async () => {
+  it("auch der Admin kann Rollen und Passwörter nicht über das Admin-Plugin setzen", async () => {
+    // Die Verwaltung nutzt eigene Kerne (admin-users.ts), nicht die Plugin-Endpunkte.
     await seedAdmin(auth, OPERATOR, "startpasswort-123");
     const { user: other } = await signUp("k@example.test");
     const headers = await sessionHeaders(OPERATOR, "startpasswort-123");
-    await auth.api.setUserPassword({
-      body: { userId: other.id, newPassword: "neues-passwort-123" },
-      headers,
-    });
     await expect(
-      auth.api.signInEmail({ body: { email: "k@example.test", password: "neues-passwort-123" } }),
+      auth.api.setUserPassword({
+        body: { userId: other.id, newPassword: "neues-passwort-123" },
+        headers,
+      }),
+    ).rejects.toThrow();
+    await expect(
+      auth.api.setRole({ body: { userId: other.id, role: "admin" }, headers }),
+    ).rejects.toThrow();
+    await expect(
+      auth.api.signInEmail({ body: { email: "k@example.test", password: PASSWORD } }),
     ).resolves.toBeDefined();
+    expect((await userRow("k@example.test")).role).not.toBe("admin");
   });
 });
 
+function post(path: string, body: unknown, cookie?: string) {
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+    "x-forwarded-for": "203.0.113.7",
+  };
+  if (cookie) headers.cookie = cookie;
+  return auth.handler(
+    new Request(`http://localhost:3000/api/auth${path}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    }),
+  );
+}
+
 describe("gesperrte Nutzer", () => {
+  it("bekommen bei falschem Passwort die allgemeine Antwort, ohne Hinweis auf die Sperre", async () => {
+    await signUp("o@example.test");
+    await db.update(user).set({ status: "blocked" }).where(eq(user.email, "o@example.test"));
+    const res = await post("/sign-in/email", { email: "o@example.test", password: "falsches-passwort" });
+    expect(res.status).toBe(401);
+    const body = (await res.json()) as { code?: string; message?: string };
+    expect(body.code).toBe("INVALID_EMAIL_OR_PASSWORD");
+    expect(body.message).not.toBe(AUTH_MESSAGES.blocked);
+    expect(res.headers.getSetCookie()).toEqual([]);
+  });
+
+  it("bekommen bei richtigem Passwort die Sperrmeldung und keine Sitzung", async () => {
+    await signUp("p@example.test");
+    const id = (await userRow("p@example.test")).id;
+    await db.update(user).set({ status: "blocked" }).where(eq(user.email, "p@example.test"));
+    await db.delete(session).where(eq(session.userId, id));
+    const res = await post("/sign-in/email", { email: "p@example.test", password: PASSWORD });
+    expect(res.status).toBe(403);
+    const body = (await res.json()) as { message?: string };
+    expect(body.message).toBe(AUTH_MESSAGES.blocked);
+    expect(
+      res.headers.getSetCookie().filter((c) => c.includes("session_token=") && !/max-age=0/i.test(c)),
+    ).toEqual([]);
+    expect(await db.select().from(session).where(eq(session.userId, id))).toEqual([]);
+  });
+
   it("können sich nicht anmelden", async () => {
     await signUp("l@example.test");
     await db.update(user).set({ status: "blocked" }).where(eq(user.email, "l@example.test"));
@@ -226,17 +274,67 @@ describe("gesperrte Nutzer", () => {
   });
 });
 
-describe("Rate-Limit", () => {
-  function post(path: string, body: unknown) {
-    return auth.handler(
-      new Request(`http://localhost:3000/api/auth${path}`, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.7" },
-        body: JSON.stringify(body),
-      }),
-    );
-  }
+describe("Admin-Plugin-Endpunkte", () => {
+  const ADMIN_PATHS: [string, Record<string, unknown>][] = [
+    ["/admin/update-user", { userId: "", data: { status: "active", newPerDay: 9999 } }],
+    ["/admin/create-user", { email: "neu@example.test", password: "kurz1", name: "Neu", role: "admin" }],
+    ["/admin/impersonate-user", { userId: "" }],
+    ["/admin/set-role", { userId: "", role: "admin" }],
+    ["/admin/remove-user", { userId: "" }],
+    ["/admin/set-user-password", { userId: "", newPassword: "neues-passwort-123" }],
+    ["/admin/ban-user", { userId: "" }],
+    ["/admin/list-users", {}],
+  ];
 
+  it("sind für den Betreiber über HTTP gesperrt und ändern nichts", async () => {
+    await seedAdmin(auth, OPERATOR, "startpasswort-123");
+    const { user: other } = await signUp("q@example.test");
+    const cookie = (await sessionHeaders(OPERATOR, "startpasswort-123")).get("cookie") ?? "";
+    for (const [path, body] of ADMIN_PATHS) {
+      const withUser = "userId" in body ? { ...body, userId: other.id } : body;
+      const res = await post(path, withUser, cookie);
+      expect([403, 404], path).toContain(res.status);
+    }
+    const row = await userRow("q@example.test");
+    expect(row).toBeDefined();
+    expect(row.status).toBe("pending");
+    expect(row.newPerDay).toBe(10);
+    expect(row.role).not.toBe("admin");
+    expect(await userRow("neu@example.test")).toBeUndefined();
+    await expect(
+      auth.api.signInEmail({ body: { email: "q@example.test", password: PASSWORD } }),
+    ).resolves.toBeDefined();
+  });
+
+  it("sind auch als GET und für Unangemeldete gesperrt", async () => {
+    const res = await auth.handler(
+      new Request("http://localhost:3000/api/auth/admin/list-users", { method: "GET" }),
+    );
+    expect([403, 404]).toContain(res.status);
+    const anon = await post("/admin/create-user", {
+      email: "anon@example.test",
+      password: PASSWORD,
+      name: "Anon",
+    });
+    expect([401, 403, 404]).toContain(anon.status);
+    expect(await userRow("anon@example.test")).toBeUndefined();
+  });
+
+  it("sind auch über auth.api für den Betreiber gesperrt", async () => {
+    await seedAdmin(auth, OPERATOR, "startpasswort-123");
+    const headers = await sessionHeaders(OPERATOR, "startpasswort-123");
+    await expect(
+      auth.api.createUser({
+        body: { email: "api@example.test", password: "kurz1", name: "Api" },
+        headers,
+      }),
+    ).rejects.toThrow();
+    await expect(auth.api.listUsers({ query: {}, headers })).rejects.toThrow();
+    expect(await userRow("api@example.test")).toBeUndefined();
+  });
+});
+
+describe("Rate-Limit", () => {
   it("begrenzt die Registrierung auf 5 pro Stunde und IP", async () => {
     const statuses: number[] = [];
     for (let i = 0; i < 6; i++) {

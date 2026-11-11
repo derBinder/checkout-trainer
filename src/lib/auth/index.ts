@@ -90,6 +90,12 @@ export function createAuth(database: Db) {
     },
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
+        // Die App nutzt keinen Endpunkt des Admin-Plugins: Die Verwaltung
+        // arbeitet über eigene Kerne mit dem internen Adapter. Die Hooks
+        // laufen für HTTP und für auth.api, damit ist kein Weg offen.
+        if (ctx.path?.startsWith("/admin/")) {
+          throw new APIError("NOT_FOUND");
+        }
         // Ohne ADMIN_EMAIL ließe sich die Betreiberadresse nicht schützen:
         // in Produktion dann keine öffentliche Registrierung (fail closed).
         if (
@@ -119,20 +125,6 @@ export function createAuth(database: Db) {
             });
           }
         }
-        if (
-          ctx.path === "/sign-in/email" &&
-          typeof ctx.body?.email === "string"
-        ) {
-          const [row] = await database
-            .select({ status: userTable.status })
-            .from(userTable)
-            .where(eq(userTable.email, ctx.body.email.trim().toLowerCase()));
-          if (row?.status === "blocked") {
-            throw new APIError("FORBIDDEN", {
-              message: AUTH_MESSAGES.blocked,
-            });
-          }
-        }
       }),
     },
     databaseHooks: {
@@ -140,10 +132,9 @@ export function createAuth(database: Db) {
         create: {
           before: async (data, context) => {
             // Ohne Endpunktkontext läuft vertrauenswürdiger Servercode
-            // (seedAdmin). Der Admin-Endpunkt ist durch das Admin-Plugin
-            // geschützt. Alles andere (öffentliche Registrierung) startet
+            // (seedAdmin). Alles andere (öffentliche Registrierung) startet
             // immer als pending und nie als Admin.
-            if (!context || context.path === "/admin/create-user") return;
+            if (!context) return;
             return {
               data: { ...data, status: "pending", role: "user", newPerDay: 10 },
             };
@@ -152,14 +143,19 @@ export function createAuth(database: Db) {
       },
       session: {
         create: {
-          // Zweite Absicherung: kein Pfad kann eine Sitzung für einen
-          // gesperrten Nutzer anlegen.
+          // Kein Pfad legt eine Sitzung für einen gesperrten Nutzer an. Bei
+          // der Anmeldung läuft das erst nach der Passwortprüfung, damit die
+          // Sperre bei falschem Passwort nicht verraten wird.
           before: async (session) => {
             const [row] = await database
               .select({ status: userTable.status })
               .from(userTable)
               .where(eq(userTable.id, session.userId));
-            if (row?.status === "blocked") return false;
+            if (row?.status === "blocked") {
+              throw new APIError("FORBIDDEN", {
+                message: AUTH_MESSAGES.blocked,
+              });
+            }
           },
         },
       },
