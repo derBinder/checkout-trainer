@@ -1,6 +1,6 @@
-import { isBogey } from '@/lib/darts/checkouts'
-import { dartValue, formatDart, type Route } from '@/lib/darts/model'
-import { referenceRoute } from '@/lib/darts/reference'
+import { allCheckouts, isBogey } from '@/lib/darts/checkouts'
+import { dartValue, formatDart, type Dart, type Route } from '@/lib/darts/model'
+import { referenceAlternatives, referenceRoute } from '@/lib/darts/reference'
 import { bestSetup, followUp, halvings, rankCheckouts, type Follow } from '@/lib/darts/scoring'
 
 export type FollowText =
@@ -81,7 +81,8 @@ function singleCases(rest: number, best: Route): SingleCase[] {
   return cases
 }
 
-function reasonFor(best: Route, cases: SingleCase[]): string {
+function reasonFor(rest: number, best: Route, cases: SingleCase[]): string {
+  if (allCheckouts(rest, 3).length === 1) return 'Der einzige Weg.'
   const first = cases[0]
   if (first) {
     const field = first.hit.slice(1)
@@ -99,20 +100,33 @@ function reasonFor(best: Route, cases: SingleCase[]): string {
   return `Endet auf ${formatDart(last)}, das sich ${TIMES[count]} halbieren lässt.`
 }
 
+const isPlainSingle = (d: Dart) => d.ring === 'S' && d.n <= 20
+
+/** Tabellenwege; ohne Tabelleneintrag bis zu zwei gleich kurze Wege aus lauter einfachen Singles vor dem Doppel. */
+function alternativesFor(rest: number, best: Route): Route[] {
+  const chart = referenceAlternatives(rest)
+  if (chart.length > 0) return chart
+  const key = best.map(formatDart).join(' ')
+  return rankCheckouts(rest, 3)
+    .filter(
+      (r) =>
+        r.length === best.length &&
+        r.slice(0, -1).every(isPlainSingle) &&
+        r.map(formatDart).join(' ') !== key,
+    )
+    .slice(0, MAX_ALTERNATIVES)
+}
+
 function restCard(rest: number, best: Route): RestCard {
   const bestText = fmt(best)
-  const alternatives = rankCheckouts(rest, 3)
-    .filter((r) => r.length <= best.length + 1)
-    .map(fmt)
-    .filter((r) => r.join(' ') !== bestText.join(' '))
-    .slice(0, MAX_ALTERNATIVES)
+  const alternatives = alternativesFor(rest, best).map(fmt)
   const cases = singleCases(rest, best)
   return {
     id: `r-${rest}`,
     kind: 'rest',
     rest,
     best: bestText,
-    reason: reasonFor(best, cases),
+    reason: reasonFor(rest, best, cases),
     alternatives,
     singleCases: cases,
   }

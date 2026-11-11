@@ -187,3 +187,68 @@ export function referenceRoute(rest: number): Route | undefined {
   const route = REFERENCE[rest]
   return route === undefined ? undefined : parseRoute(route)
 }
+
+/**
+ * Weitere übliche Wege aus derselben Tabelle (Spalten "Variante 2" und "mit 2 Darts"),
+ * in der Reihenfolge der Tabelle. Höchstens zwei je Rest; Wege, die dem Referenzweg
+ * gleichen oder mehr als einen Dart länger sind, fehlen. "SB" steht hier als 25.
+ */
+export const REFERENCE_ALTERNATIVES: Record<number, string[]> = {
+  43: ['S11 D16'],
+  44: ['S4 D20'],
+  45: ['S19 D13'],
+  47: ['S15 D16'],
+  49: ['S17 D16'],
+  50: ['S18 D16'],
+  51: ['S19 D16'],
+  52: ['S20 D16'],
+  61: ['T7 D20', 'T11 D14'],
+  62: ['T12 D13'],
+  63: ['T17 D6'],
+  64: ['T14 D11'],
+  65: ['T19 D4', 'T15 D10'],
+  66: ['T18 D6', 'T16 D9'],
+  67: ['T17 D8'],
+  68: ['T16 D10', 'T18 D7'],
+  70: ['T20 D5'],
+  72: ['T20 D6'],
+  76: ['T16 D14'],
+  79: ['T13 D20'],
+  80: ['D20 D20'],
+  81: ['T15 D18'],
+  82: ['T14 D20'],
+  85: ['T19 D14'],
+  90: ['T18 D18'],
+  91: ['25 T16 D9'],
+  92: ['25 T17 D8'],
+  93: ['25 T18 D7'],
+  94: ['25 T19 D6'],
+  95: ['25 T20 D5'],
+  111: ['T20 S11 D20'],
+  114: ['T20 S14 D20'],
+  115: ['T19 S18 D20'],
+  116: ['T20 S16 D20'],
+  117: ['T20 S17 D20'],
+  121: ['T17 T20 D5'],
+  125: ['T20 T15 D10'],
+  128: ['T20 T18 D7'],
+  129: ['T20 T19 D6'],
+  131: ['T20 T13 D16'],
+  132: ['25 T19 Bull'],
+  135: ['25 T20 Bull'],
+  138: ['T19 T19 D12'],
+  139: ['T20 T19 D11'],
+  142: ['T19 T19 D14'],
+  143: ['T19 T18 D16'],
+  146: ['T19 T19 D16'],
+  147: ['T19 T18 D18'],
+  148: ['T19 T17 D20'],
+  150: ['T19 T19 D18'],
+  151: ['T19 T18 D20'],
+  164: ['T19 T19 Bull'],
+}
+
+/** Die weiteren Tabellenwege für einen Rest (leer, wenn die Tabelle keine nennt). */
+export function referenceAlternatives(rest: number): Route[] {
+  return (REFERENCE_ALTERNATIVES[rest] ?? []).map(parseRoute)
+}

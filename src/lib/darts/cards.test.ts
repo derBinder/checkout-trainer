@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { buildCards } from '@/lib/darts/cards'
+import { buildCards, type RestCard } from '@/lib/darts/cards'
 import { isBogey } from '@/lib/darts/checkouts'
 import { dartValue, parseDart } from '@/lib/darts/model'
+import { REFERENCE_ALTERNATIVES } from '@/lib/darts/reference'
 import { CARDS } from '@/lib/cards'
 
 describe('buildCards', () => {
@@ -79,6 +80,30 @@ describe('buildCards', () => {
         expect(alt.length).toBeLessThanOrEqual(c.best.length + 1)
       }
     }
+  })
+
+  it('nimmt Alternativen aus der Tabelle, sonst nur gleich kurze Single-Wege', () => {
+    const rest = (id: string) => byId.get(id) as RestCard
+    expect(rest('r-121').alternatives).toEqual([['T17', 'T20', 'D5']])
+    expect(rest('r-121').alternatives[0]).toEqual(['T17', 'T20', 'D5'])
+    expect(rest('r-40').alternatives).toEqual([])
+    expect(rest('r-32').alternatives).toEqual([])
+    expect(rest('r-7').best).toEqual(['S3', 'D2'])
+    for (const alt of rest('r-7').alternatives) {
+      expect(alt).toHaveLength(2)
+      expect(alt[0]).toMatch(/^S\d+$/)
+    }
+    for (const c of cards) {
+      if (c.kind !== 'rest' || REFERENCE_ALTERNATIVES[c.rest]) continue
+      for (const alt of c.alternatives) {
+        expect(alt).toHaveLength(c.best.length)
+        for (const d of alt.slice(0, -1)) expect(d).toMatch(/^S(\d|1\d|20)$/)
+      }
+    }
+  })
+
+  it('nennt bei genau einem möglichen Weg den einzigen Weg', () => {
+    expect((byId.get('r-170') as RestCard).reason).toBe('Der einzige Weg.')
   })
 
   it('stimmt mit der generierten Datei überein', () => {
