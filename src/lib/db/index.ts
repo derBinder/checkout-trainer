@@ -8,17 +8,44 @@ import * as schema from "./schema";
 /** Gemeinsamer Typ für beide Treiber (node-postgres und PGlite). */
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
+// Auf globalThis statt im Modul: Next.js bündelt Route Handler und Seiten
+// getrennt, ein Modul-Singleton gäbe es sonst mehrfach im selben Prozess.
+// Zwei PGlite-Instanzen auf demselben Verzeichnis brechen mit "Aborted()" ab.
+const store = globalThis as typeof globalThis & {
+  __checkoutTrainerDb?: Db;
+  __checkoutTrainerPgliteShutdown?: true;
+};
+
 function connect(): Db {
   const url = process.env.DATABASE_URL;
   if (url) return drizzlePg(url, { schema });
   mkdirSync(".data", { recursive: true });
-  return drizzlePglite({ client: new PGlite(".data/pglite"), schema });
+  const client = new PGlite(".data/pglite");
+  closeOnShutdown(client);
+  return drizzlePglite({ client, schema });
 }
 
-// Auf globalThis statt im Modul: Next.js bündelt Route Handler und Seiten
-// getrennt, ein Modul-Singleton gäbe es sonst mehrfach im selben Prozess.
-// Zwei PGlite-Instanzen auf demselben Verzeichnis brechen mit "Aborted()" ab.
-const store = globalThis as typeof globalThis & { __checkoutTrainerDb?: Db };
+/**
+ * Schließt die lokale PGlite-Datenbank bei SIGINT/SIGTERM, bevor der Prozess
+ * endet. Ohne das gehen beim Stoppen von `next dev` Daten verloren oder die
+ * Datenbank lässt sich danach nicht mehr öffnen. Höchstens einmal pro Prozess.
+ */
+function closeOnShutdown(client: PGlite) {
+  if (store.__checkoutTrainerPgliteShutdown) return;
+  store.__checkoutTrainerPgliteShutdown = true;
+  let closing = false;
+  const shutdown = (signal: NodeJS.Signals) => {
+    // Doppelte Signale (Shell und `next dev` schicken beide SIGINT) ignorieren.
+    if (closing) return;
+    closing = true;
+    client
+      .close()
+      .catch((error: unknown) => console.error(error))
+      .finally(() => process.exit(signal === "SIGINT" ? 130 : 143));
+  };
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+}
 
 /**
  * Die Verbindung entsteht erst beim ersten Zugriff, damit weder der Build noch
