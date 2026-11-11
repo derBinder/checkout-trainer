@@ -24,7 +24,7 @@ export default async function AdminPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="type-display text-[2rem]">Verwaltung</h1>
+      <h1 className="type-display text-3xl">Verwaltung</h1>
       <ul className="flex flex-col gap-3">
         {users.map((u) => (
           <li key={u.id} className="flex flex-col gap-4 rounded-card bg-muted p-4">

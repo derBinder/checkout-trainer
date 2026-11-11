@@ -14,10 +14,10 @@ function Big({ value, compact = false }: { value: string; compact?: boolean }) {
       className={cn(
         "type-display text-center tabular-nums",
         word
-          ? "py-2 text-[clamp(2.5rem,12vw,3.5rem)]"
+          ? "py-2 text-5xl leading-none"
           : compact
-            ? "text-[clamp(5rem,28vw,7.5rem)]"
-            : "text-[clamp(6rem,36vw,10rem)]",
+            ? "text-numeral-compact"
+            : "text-numeral",
       )}
     >
       {value}
@@ -31,8 +31,8 @@ export function NoteList({ notes }: { notes: Note[] }) {
     <dl className="flex flex-col gap-2">
       {notes.map((note, i) => (
         <div key={i} className="rounded-card bg-muted px-4 py-3">
-          <dt className="type-label tracking-[0.1em]">{note.title}</dt>
-          <dd className="pt-1 text-[0.9375rem] leading-snug font-medium">{note.text}</dd>
+          <dt className="type-label tracking-widest">{note.title}</dt>
+          <dd className="pt-1 text-base leading-snug font-medium">{note.text}</dd>
         </div>
       ))}
     </dl>

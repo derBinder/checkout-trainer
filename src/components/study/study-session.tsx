@@ -128,7 +128,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   if (state.signedOut) {
     return (
-      <Surface className="px-5 pt-[max(4rem,14dvh)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <Surface className="px-5 pt-screen-top pb-inset-bottom">
         <div className="flex-1" />
         {unsyncedCount > 0 && (
           <div className="flex flex-col gap-4">
@@ -150,9 +150,9 @@ export function StudySession({ items }: { items: StudyItem[] }) {
   if (!current) {
     const saved = isFinished(state);
     return (
-      <Surface className="px-5 pt-[max(4rem,14dvh)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <Surface className="px-5 pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
-          <h1 className="type-display text-[clamp(3rem,15vw,4.5rem)]">Geschafft</h1>
+          <h1 className="type-display text-hero">Geschafft</h1>
           <p className="text-lg font-medium text-muted-foreground">
             {session.done === 1 ? "1 Karte" : `${session.done} Karten`} gelernt.
           </p>
@@ -194,7 +194,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   return (
     <Surface>
-      <header className="flex flex-col gap-1 px-5 pt-[max(0.5rem,env(safe-area-inset-top))]">
+      <header className="flex flex-col gap-1 px-5 pt-inset-top">
         <div className="flex items-center justify-between">
           <Link
             href="/heute"
@@ -227,7 +227,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         </div>
       </div>
 
-      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-3 pb-inset-bottom">
         {skippedHint}
         {failedHint}
         {session.revealed ? (
@@ -238,10 +238,10 @@ export function StudySession({ items }: { items: StudyItem[] }) {
                 key={rating}
                 type="button"
                 className={cn(
-                  "group flex h-15 flex-col items-center justify-center gap-0.5 rounded-field px-1 outline-ring transition-[background-color,scale] select-none focus-visible:outline-2 active:scale-[0.97]",
+                  "group flex h-15 flex-col items-center justify-center gap-0.5 rounded-field px-1 outline-ring transition select-none focus-visible:outline-2 active:scale-97",
                   rating === GOOD
                     ? "bg-accent text-accent-foreground"
-                    : "hover:bg-[color-mix(in_oklab,var(--muted),var(--foreground)_6%)]",
+                    : "hover:bg-secondary-hover",
                 )}
                 onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
               >

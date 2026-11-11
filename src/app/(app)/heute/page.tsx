@@ -12,7 +12,7 @@ function Count({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col gap-2">
       <dt className="type-label order-2">{label}</dt>
-      <dd className="type-display text-[4rem] tabular-nums">{value}</dd>
+      <dd className="type-display text-6xl tabular-nums">{value}</dd>
     </div>
   );
 }
@@ -32,7 +32,7 @@ export default async function TodayPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="type-display text-[2rem]">Heute</h1>
+        <h1 className="type-display text-3xl">Heute</h1>
         {streak >= 1 && (
           <p className="rounded-pill bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground tabular-nums">
             {streak === 1 ? "1 Tag" : `${streak} Tage`} Serie

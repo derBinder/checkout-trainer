@@ -8,14 +8,14 @@ import { requireActiveUser } from "@/lib/auth/guard";
 
 export const metadata: Metadata = { title: "Einstellungen · Checkout-Trainer" };
 
-const SECTION_TITLE = "text-xl font-extrabold font-stretch-[112%]";
+const SECTION_TITLE = "text-xl font-extrabold font-stretch-semi-expanded";
 
 export default async function SettingsPage() {
   const user = await requireActiveUser();
 
   return (
     <div className="flex flex-col gap-12">
-      <h1 className="type-display text-[2rem]">Einstellungen</h1>
+      <h1 className="type-display text-3xl">Einstellungen</h1>
 
       <section className="flex flex-col gap-5">
         <h2 id="darstellung" className={SECTION_TITLE}>

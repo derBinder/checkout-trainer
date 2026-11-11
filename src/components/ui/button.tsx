@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 // Alle Knöpfe sind Pillen. default ist die eine Hauptaktion einer Seite,
 // secondary die ruhige Fläche für alles andere, destructive für Löschen und Sperren.
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-pill border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-[background-color,color,scale] outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-pill border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition outline-none select-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring active:not-aria-[haspopup]:scale-98 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -13,7 +13,7 @@ const buttonVariants = cva(
         outline:
           "border-input bg-transparent hover:bg-muted aria-expanded:bg-muted",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklab,var(--secondary),var(--foreground)_6%)] aria-expanded:bg-secondary",
+          "bg-secondary text-secondary-foreground hover:bg-secondary-hover aria-expanded:bg-secondary",
         ghost:
           "hover:bg-muted aria-expanded:bg-muted",
         destructive:
@@ -24,10 +24,10 @@ const buttonVariants = cva(
         default:
           "h-9 gap-1.5 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
         xs: "h-6 gap-1 px-2.5 text-xs [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1 px-3 text-[0.8rem] [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-8 gap-1 px-3 text-sm [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-11 gap-1.5 px-5 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
         // Daumengroß (52 px) für Aktionen am Smartphone.
-        xl: "h-13 gap-2 px-6 text-[0.9375rem] has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5",
+        xl: "h-13 gap-2 px-6 text-base has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5",
         icon: "size-9",
         "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-8",

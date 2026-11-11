@@ -35,7 +35,7 @@ export function AppNav({ isAdmin }: { isAdmin: boolean }) {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-10 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:pb-0"
+      className="fixed inset-x-0 bottom-0 z-10 border-t bg-background/95 pb-home-indicator backdrop-blur md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:pb-0"
     >
       <div className="mx-auto flex max-w-2xl items-stretch md:h-16 md:items-center md:gap-2 md:px-5">
         <span className="type-display hidden flex-1 text-lg md:block">Checkout-Trainer</span>
@@ -47,7 +47,7 @@ export function AppNav({ isAdmin }: { isAdmin: boolean }) {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground outline-offset-[-4px] transition-colors hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",
+                "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground -outline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",
                 active && "text-foreground md:bg-primary md:text-primary-foreground md:hover:text-primary-foreground",
               )}
             >

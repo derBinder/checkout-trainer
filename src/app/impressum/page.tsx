@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Impressum · Checkout-Trainer" };
 export default function Page() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col gap-6 px-5 py-16">
-      <h1 className="type-display text-[2rem]">Impressum</h1>
+      <h1 className="type-display text-3xl">Impressum</h1>
       <p className="text-lg font-medium text-muted-foreground">
         Dieser Text wird vom Betreiber ergänzt.
       </p>

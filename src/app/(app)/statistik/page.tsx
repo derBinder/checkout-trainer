@@ -39,19 +39,19 @@ export default async function StatsPage() {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-3">
-        <h1 className="type-display text-[2rem]">Statistik</h1>
+        <h1 className="type-display text-3xl">Statistik</h1>
         <p className="text-base font-medium text-muted-foreground">Lernserie: {daysText(streak)}</p>
       </div>
 
       {/* Die drei Zahlen sind zugleich die Legende des Rasters. */}
-      <dl className="grid grid-cols-3 gap-4">
+      <dl className="grid grid-cols-3 gap-2">
         {COUNT_ORDER.map((level) => (
           <div key={level} className="flex flex-col gap-2">
             <dt className="type-label order-2 flex items-center gap-1.5">
               <span aria-hidden className={cn(LEVEL_SWATCH, LEVEL_CELL[level])} />
               {LEVEL_LABEL[level]}
             </dt>
-            <dd className="type-display text-[clamp(2.5rem,11vw,4rem)] tabular-nums">
+            <dd className="type-display text-5xl tabular-nums">
               {counts[level]}
             </dd>
           </div>
@@ -62,7 +62,7 @@ export default async function StatsPage() {
         <RestGrid levels={levels} weak={new Set(hardest.map((h) => h.rest))} />
         {hardest.length > 0 && (
           <section className="flex flex-col gap-3">
-            <h2 className="text-xl font-extrabold font-stretch-[112%]">Am schwierigsten</h2>
+            <h2 className="text-xl font-extrabold font-stretch-semi-expanded">Am schwierigsten</h2>
             <ol className="flex flex-col gap-1">
               {hardest.map(({ rest, again }) => (
                 <li key={rest}>

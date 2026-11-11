@@ -40,7 +40,7 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
         <SheetContent
           side="bottom"
           finalFocus={opener}
-          className="mx-auto max-h-[85dvh] w-full max-w-2xl gap-0 overflow-y-auto rounded-t-panel border-t-0 pb-[env(safe-area-inset-bottom)]"
+          className="mx-auto max-h-5/6 w-full max-w-2xl gap-0 overflow-y-auto rounded-t-panel border-t-0 pb-home-indicator"
         >
           {detail && <RestDetailBody detail={detail} level={levels[detail.rest]} />}
         </SheetContent>
@@ -54,7 +54,7 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
   return (
     <>
       <SheetHeader className="gap-2 px-5 pt-6 pb-5">
-        <SheetTitle className="type-display text-[2rem]">
+        <SheetTitle className="type-display text-3xl font-black">
           Rest {detail.rest}
         </SheetTitle>
         <SheetDescription className="flex items-center gap-2 text-sm font-medium">

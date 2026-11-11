@@ -37,6 +37,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-muted: var(--accent-muted);
+  --color-secondary-hover: var(--secondary-hover);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -63,6 +64,24 @@
   --radius-card: 16px;
   --radius-panel: 18px;
   --radius-pill: 9999px;
+
+  /* Schriftgrößen, die die Standardskala nicht hat: die große Zahl beim Lernen und der Titel der Startseite. */
+  --text-numeral: clamp(6rem, 36vw, 10rem);
+  --text-numeral--line-height: 0.95;
+  --text-numeral-compact: clamp(5rem, 28vw, 7.5rem);
+  --text-numeral-compact--line-height: 0.95;
+  --text-hero: clamp(3rem, 14.5vw, 5rem);
+  --text-hero--line-height: 0.95;
+
+  /* Schatten nur für Sheets, die von unten über die Seite fahren. */
+  --shadow-sheet: 0 -8px 32px -12px rgb(0 0 0 / 0.35);
+
+  /* Abstände an den Bildschirmrändern (Notch, Home-Leiste) und unter der festen Navigation. */
+  --spacing-inset-top: max(0.5rem, env(safe-area-inset-top));
+  --spacing-inset-bottom: max(1rem, env(safe-area-inset-bottom));
+  --spacing-home-indicator: env(safe-area-inset-bottom);
+  --spacing-nav-clearance: calc(5rem + env(safe-area-inset-bottom));
+  --spacing-screen-top: max(4rem, 14dvh);
 }
 
 /*
@@ -94,6 +113,7 @@
   --primary-foreground: var(--accent);
   --secondary: var(--muted);
   --secondary-foreground: var(--foreground);
+  --secondary-hover: color-mix(in oklab, var(--secondary), var(--foreground) 6%);
   --ring: var(--foreground);
 
   --destructive: #c62f22;
@@ -148,9 +168,8 @@
 @utility type-display {
   font-family: var(--font-heading);
   font-weight: 900;
-  font-stretch: 112%;
+  font-stretch: 112.5%;
   letter-spacing: -0.03em;
-  line-height: 0.95;
 }
 
 /* Kleine Beschriftung in Versalien über oder unter einer Zahl. */
