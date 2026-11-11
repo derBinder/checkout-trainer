@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "generate:cards": "tsx scripts/generate-cards.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed-admin": "tsx --env-file-if-exists=.env scripts/seed-admin.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
