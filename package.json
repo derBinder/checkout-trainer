@@ -48,7 +48,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": "24.x"
   },
   "overrides": {
     "@types/react": "19.3.0",

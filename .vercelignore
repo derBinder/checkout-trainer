@@ -1,0 +1,11 @@
+# Nicht hochladen bei `vercel deploy` (direkte Bereitstellung ohne Git):
+# lokale Datenbank mit Testkonten, Umgebungsdateien, Arbeitsdateien.
+.data
+.env*
+!.env.example
+.superpowers
+.next-docs
+.idea
+docs/superpowers
+.next
+node_modules

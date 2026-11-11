@@ -9,7 +9,7 @@ Ziel: Die App läuft unter einer Adresse `*.vercel.app`, mit Datenbank bei Neon,
 1. **Betreiberadresse.** `ADMIN_EMAIL` ist lokal der Platzhalter `betreiber@checkout-trainer.test`. Für die Produktion brauchen wir deine echte Adresse. Sie wird für die Registrierung gesperrt, es werden keine E-Mails dorthin verschickt.
 2. **Startpasswort.** `ADMIN_INITIAL_PASSWORD`, mindestens 10 Zeichen. Du nennst es nicht im Chat, sondern gibst es selbst im Terminal ein (siehe Schritt 6). Nach der ersten Anmeldung ändern.
 3. **Projektname.** Er bestimmt die Adresse (`<name>.vercel.app`). Vorschlag: `checkout-trainer`. Ist er vergeben, nehmen wir einen anderen.
-4. **Impressum und Datenschutz.** `/impressum` und `/datenschutz` sind Platzhalter. Sie müssen mit deinen echten Angaben gefüllt sein, bevor die Adresse öffentlich weitergegeben wird. Das ist deine Aufgabe, vor oder nach der ersten Bereitstellung, aber vor dem Weitergeben.
+4. **Impressum und Datenschutz.** `/impressum` und `/datenschutz` sind Platzhalter. Sie müssen mit deinen echten Angaben gefüllt sein, bevor die Adresse öffentlich weitergegeben wird. Das ist deine Aufgabe, vor oder nach der ersten Bereitstellung, aber vor dem Weitergeben. Für den Datenschutztext wichtig: Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent (Browserkennung) des Nutzers, und für das Rate-Limit Einträge je IP-Adresse. Beides liegt in der Datenbank bei Neon (Frankfurt, siehe Schritt 3).
 5. **Nicht kommerziell.** Vercel Hobby ist nur für nicht kommerzielle Nutzung gedacht. Bleibt die App ein privates Lernwerkzeug ohne Einnahmen, passt das. Sobald sie Geld einbringt, wäre ein bezahlter Tarif nötig.
 
 ## Reihenfolge der Schritte
@@ -18,15 +18,17 @@ Jeder Schritt sagt, was angelegt wird und was er kostet. Keiner braucht eine Zah
 
 ### Schritt 1: Node-Version festlegen
 
-Was angelegt wird: nichts bei Vercel. `package.json` verlangt `"engines": { "node": ">=24" }`, weil `ts-fsrs` 6 mindestens Node 24 braucht.
+Was angelegt wird: nichts bei Vercel. `package.json` legt `"engines": { "node": "24.x" }` fest, weil `ts-fsrs` 6 mindestens Node 24 braucht.
 
-Bei Vercel wird im Projekt unter Settings, General, Node.js Version der Wert **24.x** gewählt (Vercel liest zusätzlich `engines`, die ausdrückliche Einstellung ist die sichere Variante). Auf diesem Rechner läuft Node 26; die lokale Version reicht, sie wird nicht hochgeladen.
+Bei Vercel hat das Feld `engines` Vorrang vor der Einstellung im Dashboard (Settings, General, Node.js Version); die Funktionen laufen also mit Node 24. Bewusst `24.x` statt `>=24`: Eine offene Angabe würde Vercel beim Erscheinen einer neuen Hauptversion automatisch hochstufen und warnt deshalb beim Bau. Auf diesem Rechner läuft Node 26; die lokale Version reicht, sie wird nicht hochgeladen (npm meldet lokal höchstens eine Warnung zur Engine-Angabe).
 
 Kosten: keine.
 
 ### Schritt 2: Vercel-Projekt anlegen
 
 Was angelegt wird: ein leeres Vercel-Projekt im Team `team_L16ekIiXaBpa4vlg7m0xQUbg`, Tarif Hobby, ohne Git-Anbindung. Dabei entsteht die Produktionsadresse `<projektname>.vercel.app`.
+
+Direkt nach dem Anlegen: unter Settings, Functions, Function Region **Frankfurt (`fra1`)** wählen. Grund: Die Nutzer sitzen in Deutschland, und jede Seite stellt mehrere Datenbankabfragen nacheinander. Funktion und Datenbank müssen deshalb in derselben Region liegen (Neon in Frankfurt, siehe Schritt 3); sonst addiert sich die Laufzeit zwischen den Kontinenten bei jeder Abfrage. Kostet im Hobby-Tarif nichts.
 
 Ausführung (Vorschlag): Vercel-CLI, Version ausdrücklich angeben, zum Beispiel `npx vercel@<Version> link`. Auf diesem Rechner läuft Safe-chain und blendet Paketversionen aus, die jünger als ein Mindestalter sind. `@latest` liefert deshalb nicht die neueste Version. Wir nehmen eine ausdrücklich genannte, ältere Version und überspringen die Prüfung nicht. Die Anmeldung bei Vercel (`vercel login`) machst du selbst im Browser.
 
@@ -36,12 +38,17 @@ Kosten: keine.
 
 Was angelegt wird: ein Neon-Projekt mit einer Postgres-Datenbank im kostenlosen Tarif (Free), über Vercel, Storage, Marketplace, Neon. Es wird mit dem Vercel-Projekt verbunden und legt dort Umgebungsvariablen an.
 
+Im Dialog der Integration:
+
+- Region **AWS Europe Central 1 (Frankfurt), `aws-eu-central-1`** wählen, passend zur Funktionsregion `fra1` aus Schritt 2. Die Region lässt sich später nicht ändern, nur durch ein neues Projekt.
+- Die Umgebungen für die Datenbankvariablen auf **nur Production** beschränken (Preview und Development abwählen). Bietet der Dialog die Auswahl nicht an, prüfen wir die Geltungsbereiche direkt danach unter Settings, Environment Variables und stellen jede von der Integration angelegte Variable auf nur Production um. Sonst kämen Preview-Bereitstellungen an die Produktionsdatenbank.
+
 Zwei Verbindungsadressen sind wichtig. Beide stehen im Neon-Dashboard unter "Connect":
 
 - **Gepoolt** (Host enthält `-pooler`): für die Vercel-Funktionen. Jede Funktion öffnet kurzlebige Verbindungen, der Pooler bei Neon hält sie zusammen. Diese Adresse wird `DATABASE_URL` in Vercel.
 - **Direkt** (ohne `-pooler`): nur für Migration und Betreiberkonto von diesem Rechner. Der Pooler (PgBouncer im Transaktionsmodus) ist für Schemaänderungen nicht geeignet.
 
-Die Integration legt in der Regel beide an (`DATABASE_URL` gepoolt, `DATABASE_URL_UNPOOLED` direkt). Das prüfen wir im Dashboard, bevor wir uns darauf verlassen. Die App liest nur `DATABASE_URL`. Ist sie gesetzt, nutzt `src/lib/db/driver.ts` node-postgres (`pg`), sonst PGlite.
+Die Integration legt in der Regel beide an (`DATABASE_URL` gepoolt, `DATABASE_URL_UNPOOLED` direkt). Das prüfen wir im Dashboard, bevor wir uns darauf verlassen. Die App liest nur `DATABASE_URL`. Ist sie gesetzt, nutzt `src/lib/db/driver.ts` node-postgres (`pg`, kleiner Pool mit höchstens 5 Verbindungen je Funktionsinstanz), sonst PGlite. Fehlt sie auf Vercel zur Laufzeit, bricht die App mit einer klaren Meldung ab, statt eine lokale Datenbank anlegen zu wollen.
 
 Kosten: keine. Der Free-Tarif von Neon braucht keine Zahlungsart. Er hat Grenzen (Speicher, Rechenzeit, Datenbank schläft bei Nichtnutzung ein und braucht beim ersten Aufruf einen Moment). Für diese App reicht er weit.
 
@@ -101,6 +108,8 @@ Kosten: keine.
 
 Was angelegt wird: die erste Produktionsbereitstellung. Der Quellcode wird per CLI hochgeladen und bei Vercel gebaut (`npx vercel@<Version> deploy --prod`). Es entsteht keine Verbindung zu GitHub. Ein Push durch den Erbauer findet nicht statt.
 
+Was hochgeladen wird, regelt `.vercelignore` im Projektverzeichnis. Sie schließt aus: `.data` (lokale Datenbank mit Testkonten), `.env*` außer `.env.example`, `.superpowers`, `.next-docs`, `.idea`, `docs/superpowers`, dazu `.next` und `node_modules`. Vor dem Deploy prüfen wir, dass die Datei vorhanden ist; in der Upload-Anzeige der CLI darf keiner dieser Ordner auftauchen.
+
 Zum Bau bei Vercel:
 
 - `@electric-sql/pglite` steht in `serverExternalPackages` und ist eine normale Abhängigkeit, damit lokal PGlite läuft. In Produktion wird es nie geöffnet (`DATABASE_URL` ist gesetzt), liegt aber im Funktionspaket: Der lokale Build hat gezeigt, dass die Dateien von PGlite (rund 20 MB von rund 23 MB je Funktion) mit eingepackt werden. Das ist weit unter dem Vercel-Limit von 250 MB je Funktion und beeinflusst den Bau nicht, kostet aber etwas Paketgröße und minimal den Kaltstart. Wir ändern daran vor dem ersten Deploy nichts.
@@ -118,47 +127,30 @@ Wir prüfen gemeinsam, ohne Daten von echten Nutzern anzulegen:
 3. Ein Testkonto registrieren: landet unter `/warten`, erscheint in `/verwaltung`, wird freigeschaltet, `/heute` und `/lernen` laufen, eine Karte lässt sich bewerten.
 4. **Gleichzeitigkeit prüfen** (siehe nächster Abschnitt).
 5. **Rate-Limit prüfen** (siehe unten).
-6. Testkonto wieder entfernen (siehe Abschnitt Gleichzeitigkeit).
+6. Testkonto wieder entfernen (siehe Abschnitt Gleichzeitigkeit, Punkt 4).
 7. Vercel, Logs: keine Fehler.
+8. **Regionen prüfen:** In den Bereitstellungsdetails (Functions) steht als Region `fra1`; im Neon-Dashboard steht beim Projekt die Region `aws-eu-central-1` (Frankfurt). `/heute` lädt nach dem ersten (Kaltstart-)Aufruf ohne spürbare Verzögerung.
+9. **Geltungsbereiche prüfen:** Unter Settings, Environment Variables gelten `DATABASE_URL` und die übrigen Datenbankvariablen nur für Production.
 
 ## Zu den einzelnen technischen Punkten
 
 ### Gleichzeitigkeit (Doppelabsendung)
 
-Der Schutz gegen doppelt abgeschickte Bewertungen sperrt in `applyReview` die Nutzerzeile mit `SELECT … FOR UPDATE`. Getestet wurde das bisher nur auf PGlite mit einer einzigen Verbindung. Auf Neon mit mehreren Verbindungen ist es erstmals echt gleichzeitig. Konkrete Prüfung nach dem Deploy, mit dem Testkonto aus Schritt 8.3, bevor es Karten bewertet hat (oder einem zweiten, frischen Testkonto):
+Der Schutz gegen doppelt abgeschickte Bewertungen sperrt in `applyReview` die Nutzerzeile mit `SELECT … FOR UPDATE`. Getestet wurde das bisher nur auf PGlite mit einer einzigen Verbindung. Auf Neon mit mehreren Verbindungen ist es erstmals echt gleichzeitig. Konkrete Prüfung nach dem Deploy:
 
-1. Die Nutzer-ID des Testkontos aus der Datenbank holen (Neon-Dashboard, Tabelle `user`).
-2. Von diesem Rechner mit der **direkten** Adresse zwei identische Bewertungen gleichzeitig ausführen. Die Bewertung wird in der App über eine Server Action gesendet und lässt sich nicht einfach per `curl` doppeln. Deshalb ruft die Prüfung dieselbe Funktion `applyReview` zweimal parallel auf, über denselben Pg-Treiber wie in Produktion (der Pool öffnet dafür zwei echte Verbindungen):
+1. Schritt 5 (Schema) ist gelaufen; mehr braucht die Prüfung nicht.
+2. Von diesem Rechner mit der **direkten** Adresse zwei identische Bewertungen gleichzeitig ausführen. Die Bewertung wird in der App über eine Server Action gesendet und lässt sich nicht einfach per `curl` doppeln. Deshalb ruft das Skript `scripts/check-concurrency.ts` dieselbe Funktion `applyReview` zweimal parallel auf, über denselben Pg-Treiber wie in Produktion (der Pool öffnet dafür zwei echte Verbindungen). Es legt dafür selbst einen Wegwerf-Nutzer an und löscht ihn am Ende wieder, ein Testkonto aus Schritt 8.3 wird dafür nicht gebraucht:
 
    ```bash
    read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
-   DATABASE_URL="$DIRECT_URL" TEST_USER_ID="<Nutzer-ID>" npx tsx -e '
-   import { db } from "./src/lib/db";
-   import { applyReview } from "./src/lib/review/queries";
-   import { CARD_ORDER } from "./src/lib/cards";
-   import { reviewLog } from "./src/lib/db/schema";
-   import { eq } from "drizzle-orm";
-   (async () => {
-     const id = process.env.TEST_USER_ID!;
-     const input = { cardId: CARD_ORDER[0], rating: 3 as const, reps: 0 };
-     const user = { id, newPerDay: 10 };
-     const results = await Promise.all([
-       applyReview(db, user, input, new Date()),
-       applyReview(db, user, input, new Date()),
-     ]);
-     console.log(JSON.stringify(results));
-     const rows = await db.select().from(reviewLog).where(eq(reviewLog.userId, id));
-     console.log("review_log-Zeilen:", rows.length);
-     process.exit(0);
-   })();
-   '
+   DATABASE_URL="$DIRECT_URL" npx tsx scripts/check-concurrency.ts
    unset DIRECT_URL
    ```
 
-3. Erwartet: ein Ergebnis `{"ok":true}`, ein Ergebnis `{"ok":false,"reason":"stale"}`, und **genau eine** Zeile in `review_log` (und eine in `card_state`). Zwei Zeilen oder zwei `ok:true` bedeuten, dass der Schutz auf Neon nicht greift. Dann wird nichts weiter freigegeben, wir klären zuerst die Ursache.
-4. Testkonto löschen: Das Löschen der Zeile in `user` entfernt per `ON DELETE CASCADE` alle zugehörigen Daten.
+   Lokal (ohne `DATABASE_URL`, gegen `.data/pglite`, Entwicklungsserver gestoppt) ist es einmal gelaufen und meldete `[{"ok":true},{"ok":false,"reason":"stale"}]`, eine Zeile in `review_log` und `card_state`, danach war der Wegwerf-Nutzer entfernt.
 
-Dieses Skript wird nicht ins Repository aufgenommen, es ist eine einmalige Prüfung.
+3. Erwartet: ein Ergebnis `{"ok":true}`, ein Ergebnis `{"ok":false,"reason":"stale"}`, **genau eine** Zeile in `review_log` und eine in `card_state`, am Ende `OK: genau eine Bewertung gilt.` (Exit-Code 0). Zwei Zeilen oder zwei `ok:true` bedeuten, dass der Schutz auf Neon nicht greift; das Skript meldet dann `FEHLER` (Exit-Code 1). Dann wird nichts weiter freigegeben, wir klären zuerst die Ursache.
+4. Testkonto aus Schritt 8.3 löschen: Das Löschen der Zeile in `user` entfernt per `ON DELETE CASCADE` alle zugehörigen Daten.
 
 ### Rate-Limit und Client-IP
 
