@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SAMPLE, WEAK_RING } from "@/components/level-style";
 import { CELL_BASE, RestGrid } from "@/components/rest-grid";
+import { StreakChip } from "@/components/streak-chip";
 import { RestSheet } from "@/components/rest-sheet";
 import type { RestDetail } from "@/components/study/card-view";
 import { requireActiveUser } from "@/lib/auth/guard";
@@ -29,8 +30,6 @@ export const metadata: Metadata = { title: "Statistik · Checkout-Trainer" };
 
 const COUNT_ORDER: Level[] = ["known", "learning", "new"];
 
-const daysText = (n: number) => (n === 1 ? "1 Tag" : `${n} Tage`);
-
 export default async function StatsPage() {
   const user = await requireActiveUser();
   const { states, logs } = await loadStatsData(db, user.id);
@@ -38,9 +37,9 @@ export default async function StatsPage() {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="type-display text-3xl">Statistik</h1>
-        <p className="text-base font-medium text-muted-foreground">Lernserie: {daysText(streak)}</p>
+        <StreakChip streak={streak} />
       </div>
 
       {/* Die drei Zahlen sind zugleich die Legende des Rasters. */}

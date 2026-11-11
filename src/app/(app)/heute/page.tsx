@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StreakChip } from "@/components/streak-chip";
 import { buttonVariants } from "@/components/ui/button";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
@@ -31,11 +32,7 @@ export default async function TodayPage() {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between gap-4">
         <h1 className="type-display text-3xl">Heute</h1>
-        {streak >= 1 && (
-          <p className="rounded-pill bg-accent px-3 py-1.5 text-xs font-bold text-accent-foreground tabular-nums">
-            {streak === 1 ? "1 Tag" : `${streak} Tage`} Serie
-          </p>
-        )}
+        <StreakChip streak={streak} />
       </div>
 
       {nothingToDo ? (
