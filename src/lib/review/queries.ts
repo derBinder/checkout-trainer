@@ -3,7 +3,7 @@ import type { Db } from "@/lib/db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
 import { CARD_ORDER, cardById } from "@/lib/cards";
 import { rate, type Rating, type SrsState } from "@/lib/srs/fsrs";
-import { buildQueue } from "@/lib/srs/queue";
+import { buildQueue, effectiveNewLimit, type NewCardAllowance } from "@/lib/srs/queue";
 import { dayEnd, dayStart } from "@/lib/time";
 
 type QueueUser = { id: string; newPerDay: number };
@@ -12,8 +12,10 @@ export type ReviewResult =
   | { ok: true }
   | { ok: false; reason: "unknown-card" | "stale" | "limit" | "invalid" };
 
-export async function loadQueue(db: Db, u: QueueUser, now: Date) {
-  const rows = await db.select().from(cardState).where(eq(cardState.userId, u.id));
+type StateRow = typeof cardState.$inferSelect;
+
+/** Heutige Warteschlange aus den Lernständen eines Nutzers und seinem Tageslimit. */
+export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now: Date) {
   const introducedToday = rows.filter(
     (r) => r.introducedAt >= dayStart(now) && r.introducedAt <= dayEnd(now),
   ).length;
@@ -21,13 +23,37 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
     order: CARD_ORDER,
     states: rows.map((r) => ({ cardId: r.cardId, due: r.due })),
     now,
-    newPerDay: u.newPerDay,
+    newPerDay: effectiveNewLimit(allowance, now),
     introducedToday,
   });
+  const seen = new Set(rows.map((r) => r.cardId));
+  return {
+    due,
+    fresh,
+    introducedToday,
+    unseenCount: CARD_ORDER.filter((id) => !seen.has(id)).length,
+  };
+}
+
+export async function loadQueue(db: Db, u: QueueUser, now: Date) {
+  const [rows, [extra]] = await Promise.all([
+    db.select().from(cardState).where(eq(cardState.userId, u.id)),
+    // Die Extrakarten stehen nicht in der Sitzung, sondern nur in der Datenbank.
+    db
+      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount })
+      .from(user)
+      .where(eq(user.id, u.id)),
+  ]);
+  const { due, fresh, unseenCount } = queueFromRows(
+    rows,
+    { newPerDay: u.newPerDay, extraNewDay: extra?.extraNewDay ?? null, extraNewCount: extra?.extraNewCount ?? 0 },
+    now,
+  );
   return {
     cardIds: [...due, ...fresh],
     dueCount: due.length,
     freshCount: fresh.length,
+    unseenCount,
     reps: Object.fromEntries(rows.map((r) => [r.cardId, r.reps])),
     states: Object.fromEntries(rows.map((r) => [r.cardId, r])),
   };
@@ -54,7 +80,12 @@ export async function applyReview(
   return db.transaction(async (tx): Promise<ReviewResult> => {
     // Serialises all reviews of one user, so the stale check, the daily limit
     // and both writes cannot interleave with a parallel request.
-    await tx.select({ id: user.id }).from(user).where(eq(user.id, u.id)).for("update");
+    // The extra allowance is read here, under the lock, never from the session.
+    const [locked] = await tx
+      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount })
+      .from(user)
+      .where(eq(user.id, u.id))
+      .for("update");
 
     const [current] = await tx
       .select()
@@ -91,7 +122,15 @@ export async function applyReview(
             lte(cardState.introducedAt, dayEnd(now)),
           ),
         );
-      if (n >= u.newPerDay) return { ok: false, reason: "limit" };
+      const limit = effectiveNewLimit(
+        {
+          newPerDay: u.newPerDay,
+          extraNewDay: locked?.extraNewDay ?? null,
+          extraNewCount: locked?.extraNewCount ?? 0,
+        },
+        now,
+      );
+      if (n >= limit) return { ok: false, reason: "limit" };
       const inserted = await tx
         .insert(cardState)
         .values({ userId: u.id, cardId, introducedAt: now, ...stored })

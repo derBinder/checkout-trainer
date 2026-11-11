@@ -1,4 +1,18 @@
-import { dayEnd } from "../time";
+import { dayEnd, dayKey } from "../time";
+
+export type NewCardAllowance = {
+  newPerDay: number;
+  extraNewDay: string | null;
+  extraNewCount: number;
+};
+
+/**
+ * Heutiges Limit für neue Karten: die Einstellung plus die Extrakarten,
+ * wenn sie für den heutigen Berliner Tag gewährt wurden.
+ */
+export function effectiveNewLimit(a: NewCardAllowance, now: Date): number {
+  return a.newPerDay + (a.extraNewDay === dayKey(now) ? a.extraNewCount : 0);
+}
 
 export function buildQueue(input: {
   order: string[];

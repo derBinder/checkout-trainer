@@ -117,6 +117,21 @@ describe("Selbstbedienung durch angemeldete Nutzer", () => {
     expect(row.newPerDay).toBe(10);
   });
 
+  it("kann die Extrakarten des Tages weder bei der Registrierung noch über updateUser setzen", async () => {
+    const extra = { extraNewDay: "2026-11-11", extraNewCount: 50, extra_new_day: "2026-11-11", extra_new_count: 50 };
+    await signUp("m@example.test", extra).catch(() => undefined);
+    const created = await userRow("m@example.test");
+    expect(created).toBeDefined();
+    expect(created.extraNewDay).toBeNull();
+    expect(created.extraNewCount).toBe(0);
+
+    const headers = await sessionHeaders("m@example.test");
+    await auth.api.updateUser({ body: extra as never, headers }).catch(() => undefined);
+    const row = await userRow("m@example.test");
+    expect(row.extraNewDay).toBeNull();
+    expect(row.extraNewCount).toBe(0);
+  });
+
   it("kann keine Rollen oder Fremdpasswörter setzen", async () => {
     const { user: victim } = await signUp("h@example.test");
     await signUp("i@example.test");

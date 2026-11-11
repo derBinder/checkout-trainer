@@ -34,6 +34,10 @@ export const user = pgTable("user", {
   banExpires: timestamp("ban_expires"),
   status: text("status").$type<UserStatus>().default("pending").notNull(),
   newPerDay: integer("new_per_day").default(10).notNull(),
+  // Zusätzliche neue Karten für einen Tag (dayKey, Europe/Berlin), von Hand
+  // gepflegt und kein Better-Auth-Feld: über dessen Endpunkte nicht setzbar.
+  extraNewDay: text("extra_new_day"),
+  extraNewCount: integer("extra_new_count").default(0).notNull(),
 });
 
 export const session = pgTable(

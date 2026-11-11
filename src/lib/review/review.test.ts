@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { eq } from "drizzle-orm";
 import { createTestDb } from "@/lib/db/test-db";
 import type { Db } from "@/lib/db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
@@ -19,6 +20,12 @@ let db: Db;
 async function addUser(id: string, newPerDay = 10) {
   await db.insert(user).values({ id, name: id, email: `${id}@x.test`, status: "active", newPerDay });
   return { id, newPerDay };
+}
+
+async function introduce(u: { id: string; newPerDay: number }, ids: string[], at: Date) {
+  for (const cardId of ids) {
+    expect(await applyReview(db, u, { cardId, rating: 3, reps: 0 }, at)).toEqual({ ok: true });
+  }
 }
 
 beforeEach(async () => {
@@ -138,6 +145,52 @@ describe("applyReview", () => {
     // next Berlin day: budget is fresh again
     const tomorrow = new Date(now.getTime() + 24 * 3600_000);
     expect(await applyReview(db, u, { cardId: "r-3", rating: 3, reps: 0 }, tomorrow)).toEqual({ ok: true });
+  });
+
+  it("accepts the extra allowance of today and rejects the card after it", async () => {
+    const u = await addUser("u1", 10);
+    await db.update(user).set({ extraNewDay: "2026-11-11", extraNewCount: 5 }).where(eq(user.id, "u1"));
+    const results = [];
+    for (const cardId of CARD_ORDER.slice(0, 15)) {
+      results.push(await applyReview(db, u, { cardId, rating: 3, reps: 0 }, now));
+    }
+    expect(results.every((r) => r.ok)).toBe(true);
+    expect(await applyReview(db, u, { cardId: CARD_ORDER[15], rating: 3, reps: 0 }, now)).toEqual({ ok: false, reason: "limit" });
+  });
+
+  it("reads the allowance from the database, not from the passed user", async () => {
+    const u = await addUser("u1", 1);
+    await introduce(u, [CARD_ORDER[0]], now);
+    // The session object knows nothing about the allowance; the stored row decides.
+    await db.update(user).set({ extraNewDay: "2026-11-11", extraNewCount: 5 }).where(eq(user.id, "u1"));
+    expect(await applyReview(db, u, { cardId: CARD_ORDER[1], rating: 3, reps: 0 }, now)).toEqual({ ok: true });
+  });
+
+  it("does not carry the allowance over to the next Berlin day", async () => {
+    const u = await addUser("u1", 10);
+    await db.update(user).set({ extraNewDay: "2026-11-11", extraNewCount: 5 }).where(eq(user.id, "u1"));
+    const tomorrow = new Date(now.getTime() + 24 * 3600_000);
+    for (const cardId of CARD_ORDER.slice(0, 10)) {
+      expect(await applyReview(db, u, { cardId, rating: 3, reps: 0 }, tomorrow)).toEqual({ ok: true });
+    }
+    expect(await applyReview(db, u, { cardId: CARD_ORDER[10], rating: 3, reps: 0 }, tomorrow)).toEqual({ ok: false, reason: "limit" });
+  });
+});
+
+describe("loadQueue with an extra allowance", () => {
+  it("offers the allowance of today only", async () => {
+    const u = await addUser("u1", 2);
+    await db.update(user).set({ extraNewDay: "2026-11-11", extraNewCount: 5 }).where(eq(user.id, "u1"));
+    expect((await loadQueue(db, u, now)).freshCount).toBe(7);
+    const tomorrow = new Date(now.getTime() + 24 * 3600_000);
+    expect((await loadQueue(db, u, tomorrow)).freshCount).toBe(2);
+  });
+
+  it("reports how many cards were never introduced", async () => {
+    const u = await addUser("u1", 2);
+    expect((await loadQueue(db, u, now)).unseenCount).toBe(CARD_ORDER.length);
+    await introduce(u, CARD_ORDER.slice(0, 2), now);
+    expect((await loadQueue(db, u, now)).unseenCount).toBe(CARD_ORDER.length - 2);
   });
 });
 
