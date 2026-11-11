@@ -47,6 +47,9 @@
     "vitest": "^5.1.0"
   },
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "overrides": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0"
