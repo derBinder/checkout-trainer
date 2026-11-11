@@ -1,18 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Hanken_Grotesk } from "next/font/google";
+import { Archivo } from "next/font/google";
+import { ThemeSync } from "@/components/theme/theme-sync";
+import { THEME_COLORS, themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
-// Beide Schriften werden beim Build geladen und selbst ausgeliefert.
-const display = Archivo({
-  variable: "--font-display",
+// Eine Schrift für alles: Archivo als variable Schrift mit Breitenachse, beim Build geladen und selbst ausgeliefert.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
   axes: ["wdth"],
-  display: "swap",
-});
-
-const body = Hanken_Grotesk({
-  variable: "--font-body",
-  subsets: ["latin"],
   display: "swap",
 });
 
@@ -23,9 +19,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   viewportFit: "cover",
+  // Folgt ohne JavaScript dem System; eine feste Wahl stellt themeInitScript um.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f8f9" },
-    { media: "(prefers-color-scheme: dark)", color: "#111518" },
+    { media: "(prefers-color-scheme: light)", color: THEME_COLORS.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLORS.dark },
   ],
 };
 
@@ -35,8 +32,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`${display.variable} ${body.variable}`}>
-      <body className="min-h-dvh antialiased">{children}</body>
+    // data-theme setzt das Skript vor dem ersten Zeichnen, daher suppressHydrationWarning.
+    <html lang="de" className={archivo.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-dvh antialiased">
+        <ThemeSync />
+        {children}
+      </body>
     </html>
   );
 }

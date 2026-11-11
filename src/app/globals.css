@@ -2,12 +2,25 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Hell und dunkel folgen allein der Systemeinstellung. */
-@custom-variant dark (@media (prefers-color-scheme: dark));
+/*
+ * Dunkel gilt bei data-theme="dark" (feste Wahl in den Einstellungen) oder,
+ * solange keine feste Wahl gesetzt ist, wenn das System dunkel ist. Ohne
+ * JavaScript fehlt das Attribut, dann entscheidet allein das System.
+ */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+}
 
 @theme inline {
-  --font-sans: var(--font-body);
-  --font-heading: var(--font-display);
+  --font-sans: var(--font-archivo);
+  --font-heading: var(--font-archivo);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -23,104 +36,95 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-muted: var(--accent-muted);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Bedeutungsfarben: nur einsetzen, wo die Farbe etwas aussagt. */
-  --color-route-best: var(--route-best);
-  --color-route-miss: var(--route-miss);
+  /* Lernstand in der Statistik. */
   --color-level-new: var(--level-new);
   --color-level-learning: var(--level-learning);
   --color-level-known: var(--level-known);
   --color-level-weak: var(--level-weak);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /*
+   * Formen, sonst keine:
+   *   pill   Aktionen, Dart-Felder, Chips, Navigation, Fortschrittsbalken
+   *   panel  18 px: Bewertungsleiste, Sheets, Dialoge, Darstellungs-Schalter
+   *   card   16 px: Karten, Hinweise, Listenzeilen
+   *   field  14 px: Eingabefelder, Segmente in einer Leiste
+   *   cell   10 px: Zellen im Raster der Statistik
+   */
+  --radius-*: initial;
+  --radius-cell: 10px;
+  --radius-field: 14px;
+  --radius-card: 16px;
+  --radius-panel: 18px;
+  --radius-pill: 9999px;
 }
 
 /*
- * Grundton: kühles Grau mit einem Hauch Blau (Farbton 240), fast unbunt.
- * Alles Bunte hat eine Bedeutung:
- *   --route-best  Grün des Dartboards: der beste Weg
- *   --route-miss  Rot des Dartboards: der Fehlwurf, Fehler
- *   --level-*     Lernstand in der Statistik (neu, im Lernen, sitzt, wackelt)
+ * Flutlicht: Weiß und Schwarz, Gelb als einziger Akzent. Gelb steht nur als
+ * Fläche hinter schwarzer Schrift oder als Schrift und Fläche auf Schwarz, nie
+ * als Schrift oder Symbol auf Weiß. Rot nur für Fehler und Löschen.
  */
 :root {
   color-scheme: light;
 
-  --background: oklch(0.982 0.002 240);
-  --foreground: oklch(0.21 0.008 240);
-  --card: oklch(0.995 0.001 240);
+  --background: #ffffff;
+  --foreground: #0b0b0c;
+  --muted: #f3f3f5;
+  /* #777b80 aus dem Entwurf erreicht auf Weiß nur 4,3 : 1; so 5,5 : 1 auf Weiß, 5,0 : 1 auf --muted. */
+  --muted-foreground: #65696e;
+  --border: #ececee;
+  --input: #d4d5d8;
+  --accent: #ffd400;
+  --accent-foreground: #0b0b0c;
+  /* Zweitschrift auf Gelb (5,9 : 1). */
+  --accent-muted: #5a4d00;
+
+  --card: var(--background);
   --card-foreground: var(--foreground);
-  --popover: var(--card);
+  --popover: var(--background);
   --popover-foreground: var(--foreground);
+  /* Hauptaktion: hell schwarz mit gelber Schrift, dunkel gelb mit schwarzer Schrift. */
   --primary: var(--foreground);
-  --primary-foreground: var(--background);
-  --secondary: oklch(0.945 0.004 240);
+  --primary-foreground: var(--accent);
+  --secondary: var(--muted);
   --secondary-foreground: var(--foreground);
-  --muted: oklch(0.945 0.004 240);
-  --muted-foreground: oklch(0.5 0.012 240);
-  --accent: oklch(0.945 0.004 240);
-  --accent-foreground: var(--foreground);
-  --border: oklch(0.9 0.005 240);
-  --input: oklch(0.86 0.006 240);
-  --ring: oklch(0.6 0.01 240);
+  --ring: var(--foreground);
 
-  --route-best: oklch(0.5 0.12 158);
-  --route-miss: oklch(0.55 0.19 28);
-  --destructive: var(--route-miss);
+  --destructive: #c62f22;
+  --destructive-foreground: #ffffff;
 
-  --level-new: oklch(0.87 0.005 240);
-  --level-learning: oklch(0.78 0.13 80);
-  --level-known: oklch(0.58 0.12 158);
-  --level-weak: oklch(0.6 0.17 28);
+  --level-new: var(--muted);
+  --level-learning: var(--accent);
+  --level-known: var(--foreground);
+  --level-weak: var(--destructive);
 
-  --radius: 0.625rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
+  @variant dark {
     color-scheme: dark;
 
-    --background: oklch(0.175 0.008 240);
-    --foreground: oklch(0.95 0.004 240);
-    --card: oklch(0.21 0.009 240);
-    --card-foreground: var(--foreground);
-    --popover: var(--card);
-    --popover-foreground: var(--foreground);
-    --primary: var(--foreground);
-    --primary-foreground: var(--background);
-    --secondary: oklch(0.24 0.009 240);
-    --secondary-foreground: var(--foreground);
-    --muted: oklch(0.24 0.009 240);
-    --muted-foreground: oklch(0.7 0.01 240);
-    --accent: oklch(0.24 0.009 240);
-    --accent-foreground: var(--foreground);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 16%);
-    --ring: oklch(0.6 0.01 240);
+    --background: #0b0b0c;
+    --foreground: #ffffff;
+    --muted: #1a1a1d;
+    --muted-foreground: #9a9ea4;
+    --border: #2a2a2e;
+    --input: #3a3a3f;
 
-    --route-best: oklch(0.75 0.13 158);
-    --route-miss: oklch(0.72 0.15 28);
-    --destructive: var(--route-miss);
+    --primary: var(--accent);
+    --primary-foreground: #0b0b0c;
 
-    --level-new: oklch(0.32 0.008 240);
-    --level-learning: oklch(0.78 0.12 80);
-    --level-known: oklch(0.68 0.12 158);
-    --level-weak: oklch(0.66 0.15 28);
+    --destructive: #ff6b5e;
+    --destructive-foreground: #0b0b0c;
   }
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring;
   }
   html {
     @apply font-sans;
@@ -129,11 +133,32 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Überschriften und Zahlen: Archivo, schmal und kräftig wie eine Anzeigetafel. */
   h1,
   h2,
   h3 {
-    @apply font-heading font-bold tracking-tight font-stretch-semi-condensed;
+    @apply font-heading;
     text-wrap: balance;
   }
+  ::selection {
+    @apply bg-accent text-accent-foreground;
+  }
+}
+
+/* Anzeige-Schrift: Archivo in voller Stärke und breit, für Seitentitel und große Zahlen. */
+@utility type-display {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-stretch: 112%;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+/* Kleine Beschriftung in Versalien über oder unter einer Zahl. */
+@utility type-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
