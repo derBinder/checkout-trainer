@@ -32,18 +32,18 @@ function canFinish(rest: number, darts: number): boolean {
   return result
 }
 
-/** Triples im Weg, nach deren Single desselben Felds mit den übrigen Darts noch ein Finish möglich ist. */
-function savedTriples(route: Route): number {
+/** Triples im Weg, nach deren Single desselben Felds mit den übrigen Darts kein Finish mehr möglich ist. */
+function unsavedTriples(route: Route): number {
   let rest = routeTotal(route)
-  let saved = 0
+  let unsaved = 0
   route.forEach((dart, i) => {
     if (dart.ring === 'T') {
       const afterSingle = rest - dart.n
-      if (afterSingle >= 2 && canFinish(afterSingle, route.length - i - 1)) saved++
+      if (afterSingle < 2 || !canFinish(afterSingle, route.length - i - 1)) unsaved++
     }
     rest -= dartValue(dart)
   })
-  return saved
+  return unsaved
 }
 
 function triples(route: Route): number {
@@ -66,7 +66,7 @@ type Scored = {
   route: Route
   halvings: number
   finisher: number
-  saved: number
+  unsaved: number
   triples: number
 }
 
@@ -76,7 +76,7 @@ function score(route: Route): Scored {
     route,
     halvings: halvings(last),
     finisher: dartValue(last),
-    saved: savedTriples(route),
+    unsaved: unsavedTriples(route),
     triples: triples(route),
   }
 }
@@ -86,7 +86,7 @@ function compareScored(a: Scored, b: Scored): number {
     a.route.length - b.route.length ||
     b.halvings - a.halvings ||
     b.finisher - a.finisher ||
-    b.saved - a.saved ||
+    a.unsaved - b.unsaved ||
     a.triples - b.triples ||
     compareHigherFirst(a.route, b.route)
   )

@@ -25,11 +25,15 @@ describe('compareRoutes und rankCheckouts', () => {
     expect(compareRoutes(parseRoute('S8 D16'), parseRoute('S20 D10'))).toBeLessThan(0)
     expect(formatRoute(rankCheckouts(32, 3)[0])).toBe('D16')
   })
-  it('bei gleichem Doppel gewinnt der Weg mit gerettetem Triple', () => {
+  it('bei gleichem Doppel gewinnt der Weg mit weniger ungeretteten Triples', () => {
     // Nach S20 bleiben 80 mit zwei Darts (T20 D10): T20 ist gerettet.
     // Nach S16 bleiben 64 mit einem Dart: T16 ist nicht gerettet.
     expect(compareRoutes(parseRoute('T20 S8 D16'), parseRoute('S20 T16 D16'))).toBeLessThan(0)
     expect(compareRoutes(parseRoute('S20 T16 D16'), parseRoute('T20 S8 D16'))).toBeGreaterThan(0)
+  })
+  it('bestraft ungerettete Triples, statt gerettete zu belohnen', () => {
+    expect(formatRoute(rankCheckouts(7, 3)[0])).toBe('S3 · D2')
+    expect(compareRoutes(parseRoute('S3 D2'), parseRoute('T1 D2'))).toBeLessThan(0)
   })
   it('bei sonstigem Gleichstand gewinnen höhere Felder zuerst', () => {
     expect(compareRoutes(parseRoute('S20 S12 D16'), parseRoute('S12 S20 D16'))).toBeLessThan(0)
