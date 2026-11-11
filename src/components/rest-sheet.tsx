@@ -7,7 +7,7 @@ import { NoteList } from "@/components/study/study-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-import { LEVEL_CELL, LEVEL_LABEL } from "./level-style";
+import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SWATCH } from "./level-style";
 
 type RestSheetProps = {
   details: Record<number, RestDetail>;
@@ -40,7 +40,7 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
         <SheetContent
           side="bottom"
           finalFocus={opener}
-          className="mx-auto max-h-[85dvh] w-full max-w-2xl gap-0 overflow-y-auto rounded-t-xl pb-[env(safe-area-inset-bottom)]"
+          className="mx-auto max-h-[85dvh] w-full max-w-2xl gap-0 overflow-y-auto rounded-t-panel border-t-0 pb-[env(safe-area-inset-bottom)]"
         >
           {detail && <RestDetailBody detail={detail} level={levels[detail.rest]} />}
         </SheetContent>
@@ -53,18 +53,18 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
   const view = restDetailView(detail);
   return (
     <>
-      <SheetHeader className="gap-1 px-5 pt-6 pb-4">
-        <SheetTitle className="text-3xl font-bold tracking-tight font-stretch-semi-condensed">
+      <SheetHeader className="gap-2 px-5 pt-6 pb-5">
+        <SheetTitle className="type-display text-[2rem]">
           Rest {detail.rest}
         </SheetTitle>
-        <SheetDescription className="flex items-center gap-2 text-base">
-          <span aria-hidden className={cn("size-3 shrink-0 rounded-[3px]", LEVEL_CELL[level])} />
+        <SheetDescription className="flex items-center gap-2 text-sm font-medium">
+          <span aria-hidden className={cn(LEVEL_SWATCH, LEVEL_CELL[level])} />
           Lernstand: {LEVEL_LABEL[level]}
         </SheetDescription>
       </SheetHeader>
       <div className="flex flex-col gap-4 px-5 pb-6">
         {detail.kind === "bogey" && (
-          <p className="font-heading text-2xl font-bold font-stretch-semi-condensed">Nicht checkbar</p>
+          <p className="type-display text-2xl">Nicht checkbar</p>
         )}
         <DartSlots slots={view.slots} tone={view.slotTone} />
         <NoteList notes={view.notes} />

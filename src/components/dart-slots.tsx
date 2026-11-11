@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 type DartSlotsProps = {
   slots: (string | null)[];
-  /** Gesetzt in der Auflösung: färbt die Würfe, leere Felder bleiben ohne Fragezeichen. */
+  /** Gesetzt in der Auflösung: färbt die Würfe und zeigt nur so viele Felder, wie der Weg Darts hat. */
   tone?: "best" | "none";
   /** Felder, die ein Fehlwurf sind. */
   missSlots?: number[];
@@ -10,34 +10,36 @@ type DartSlotsProps = {
 
 const SLOT_COUNT = 3;
 
-/** Immer drei Dart-Felder; null ist ein leeres Feld (in der Frage mit „?“). */
+/**
+ * Dart-Felder als Pillen. In der Frage immer drei, offene mit „?“; in der
+ * Auflösung nur die geworfenen Darts. Jedes Feld ist ein Drittel breit, auch
+ * wenn weniger als drei zu sehen sind.
+ */
 export function DartSlots({ slots, tone, missSlots = [] }: DartSlotsProps) {
   const answer = tone !== undefined;
+  const shown = Array.from({ length: SLOT_COUNT }, (_, i) => ({ i, dart: slots[i] ?? null })).filter(
+    ({ dart }) => !answer || dart !== null,
+  );
   return (
-    <ol aria-label="Darts" className="grid grid-cols-3 gap-2">
-      {Array.from({ length: SLOT_COUNT }, (_, i) => {
-        const dart = slots[i] ?? null;
+    <ol aria-label="Darts" className="flex justify-center gap-2">
+      {shown.map(({ i, dart }) => {
         const miss = dart !== null && missSlots.includes(i);
         return (
           <li
             key={i}
             className={cn(
-              "flex h-14 items-center justify-center rounded-lg font-heading text-xl font-bold tabular-nums font-stretch-semi-condensed",
-              dart === null && "border border-dashed border-input text-muted-foreground",
+              "flex h-13 basis-[calc((100%-1rem)/3)] items-center justify-center rounded-pill font-heading text-lg font-extrabold tabular-nums",
+              dart === null && "border-2 border-dashed border-input text-muted-foreground",
               dart !== null && "bg-muted text-foreground",
-              dart !== null && tone === "best" && "bg-route-best/15 text-route-best",
-              miss && "bg-route-miss/15 text-route-miss",
+              dart !== null && tone === "best" && "bg-primary text-primary-foreground",
+              miss && "bg-destructive text-destructive-foreground",
             )}
           >
             {dart === null ? (
-              answer ? (
-                <span className="sr-only">leer</span>
-              ) : (
-                <>
-                  <span aria-hidden>?</span>
-                  <span className="sr-only">offen</span>
-                </>
-              )
+              <>
+                <span aria-hidden>?</span>
+                <span className="sr-only">offen</span>
+              </>
             ) : (
               <>
                 {dart}

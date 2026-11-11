@@ -6,7 +6,7 @@ import { LEVEL_CELL, LEVEL_LABEL, WEAK_RING } from "./level-style";
 const RESTS = Array.from({ length: MAX_REST - MIN_REST + 1 }, (_, i) => MIN_REST + i);
 
 export const CELL_BASE =
-  "flex items-center justify-center rounded-md font-heading font-semibold tabular-nums font-stretch-condensed outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring";
+  "flex items-center justify-center rounded-cell font-heading font-bold tabular-nums outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring";
 
 /**
  * Alle Reste von 2 bis 170 in Zehnerreihen (2 bis 9, 10 bis 19, …), eingefärbt
@@ -33,7 +33,7 @@ export function RestGrid({ levels, weak }: { levels: Record<number, Level>; weak
               type="button"
               data-rest={rest}
               aria-label={label}
-              className={cn(CELL_BASE, "h-11 w-full text-sm md:text-base", LEVEL_CELL[level], hard && WEAK_RING)}
+              className={cn(CELL_BASE, "h-11 w-full text-[0.8125rem] md:text-base", LEVEL_CELL[level], hard && WEAK_RING)}
             >
               {rest}
             </button>

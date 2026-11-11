@@ -22,6 +22,8 @@ export type StudyItem = {
   labels: Record<Rating, string>[];
 };
 
+const GOOD: Rating = 3;
+
 const RATING_BUTTONS: { rating: Rating; label: string }[] = [
   { rating: 1, label: "Nochmal" },
   { rating: 2, label: "Schwer" },
@@ -112,7 +114,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   // Mitten in der Sitzung eine Zeile; die nächste Bewertung versucht es ohnehin erneut.
   const failedHint = state.failed && unsyncedCount > 0 && (
-    <p role="status" className="text-center text-sm text-destructive">
+    <p role="status" className="text-center text-sm font-medium text-destructive">
       Nicht gespeichert, wird erneut versucht
     </p>
   );
@@ -129,8 +131,8 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       <Surface className="px-5 pt-[max(4rem,14dvh)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <div className="flex-1" />
         {unsyncedCount > 0 && (
-          <div className="flex flex-col gap-3">
-            <p role="alert" className="text-center text-sm text-destructive">
+          <div className="flex flex-col gap-4">
+            <p role="alert" className="text-center text-sm font-medium text-destructive">
               Du wurdest abgemeldet.{" "}
               {unsyncedCount === 1
                 ? "1 Bewertung wurde nicht gespeichert."
@@ -149,11 +151,9 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     const saved = isFinished(state);
     return (
       <Surface className="px-5 pt-[max(4rem,14dvh)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <div className="flex flex-1 flex-col gap-4">
-          <h1 className="text-[clamp(3rem,16vw,4.5rem)] leading-none font-extrabold font-stretch-condensed">
-            Geschafft
-          </h1>
-          <p className="text-lg text-muted-foreground">
+        <div className="flex flex-1 flex-col gap-5">
+          <h1 className="type-display text-[clamp(3rem,15vw,4.5rem)]">Geschafft</h1>
+          <p className="text-lg font-medium text-muted-foreground">
             {session.done === 1 ? "1 Karte" : `${session.done} Karten`} gelernt.
           </p>
         </div>
@@ -167,7 +167,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
           ) : (
             <>
               {state.failed ? (
-                <Button variant="outline" size="xl" className="w-full" onClick={() => dispatch({ type: "retry" })}>
+                <Button variant="secondary" size="xl" className="w-full" onClick={() => dispatch({ type: "retry" })}>
                   Erneut versuchen
                 </Button>
               ) : (
@@ -194,17 +194,17 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   return (
     <Surface>
-      <header className="flex flex-col gap-2 px-5 pt-[max(0.5rem,env(safe-area-inset-top))]">
+      <header className="flex flex-col gap-1 px-5 pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="flex items-center justify-between">
           <Link
             href="/heute"
             aria-label="Lernen beenden"
             onClick={confirmClose}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "-ml-2 size-11")}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "-ml-3")}
           >
             <X aria-hidden className="size-5" />
           </Link>
-          <p className="font-heading text-sm font-semibold text-muted-foreground tabular-nums">
+          <p className="text-sm font-semibold text-muted-foreground tabular-nums">
             {position} / {session.total}
           </p>
         </div>
@@ -219,29 +219,42 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       <div
         ref={contentRef}
         tabIndex={-1}
-        className="flex-1 overflow-y-auto px-5 pt-8 pb-6 outline-none"
+        className="flex flex-1 flex-col overflow-y-auto px-5 py-6 outline-none"
       >
-        <StudyCard view={current.view} revealed={session.revealed} />
+        {/* my-auto statt justify-center: mittig in der freien Fläche, bei Überlänge oben beginnend. */}
+        <div className="my-auto">
+          <StudyCard view={current.view} revealed={session.revealed} />
+        </div>
       </div>
 
-      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {skippedHint}
         {failedHint}
         {session.revealed ? (
-          <div className="grid grid-cols-4 gap-2">
+          // Eine durchgehende Leiste; „Gut“ ist als Normalfall gelb hervorgehoben.
+          <div className="grid grid-cols-4 rounded-panel bg-muted p-1">
             {RATING_BUTTONS.map(({ rating, label }) => (
-              <Button
+              <button
                 key={rating}
-                variant="secondary"
-                size="xl"
-                className="h-16 flex-col gap-0.5 px-1"
+                type="button"
+                className={cn(
+                  "group flex h-15 flex-col items-center justify-center gap-0.5 rounded-field px-1 outline-ring transition-[background-color,scale] select-none focus-visible:outline-2 active:scale-[0.97]",
+                  rating === GOOD
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-[color-mix(in_oklab,var(--muted),var(--foreground)_6%)]",
+                )}
                 onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
               >
                 <span className="text-sm font-semibold">{label}</span>
-                <span className="text-xs font-normal text-muted-foreground tabular-nums">
+                <span
+                  className={cn(
+                    "text-xs tabular-nums",
+                    rating === GOOD ? "text-accent-muted" : "text-muted-foreground",
+                  )}
+                >
                   {labels[rating]}
                 </span>
-              </Button>
+              </button>
             ))}
           </div>
         ) : (

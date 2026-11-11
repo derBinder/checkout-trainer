@@ -71,7 +71,7 @@ export function UserActions({ userId, name, status }: Props) {
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
         {status !== "active" ? (
-          <Button size="lg" disabled={pending} onClick={() => changeStatus("active")}>
+          <Button variant="secondary" size="lg" disabled={pending} onClick={() => changeStatus("active")}>
             {status === "blocked" ? "Entsperren" : "Freischalten"}
           </Button>
         ) : null}

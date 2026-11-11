@@ -64,7 +64,7 @@ export function NewPerDayForm({ initial }: { initial: number }) {
         </Field>
       </FieldGroup>
       <div className="flex flex-col gap-3">
-        <Button type="submit" size="xl" disabled={pending}>
+        <Button type="submit" variant="secondary" size="xl" disabled={pending}>
           Speichern
         </Button>
         {message ? (

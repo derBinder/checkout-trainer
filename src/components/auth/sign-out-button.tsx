@@ -31,7 +31,7 @@ export function SignOutButton() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Button variant="outline" size="xl" onClick={handleClick} disabled={pending}>
+      <Button variant="secondary" size="xl" onClick={handleClick} disabled={pending}>
         Abmelden
       </Button>
       {error ? (

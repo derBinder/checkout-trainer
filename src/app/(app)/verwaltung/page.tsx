@@ -24,15 +24,15 @@ export default async function AdminPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-4xl">Verwaltung</h1>
-      <ul className="flex flex-col divide-y">
+      <h1 className="type-display text-[2rem]">Verwaltung</h1>
+      <ul className="flex flex-col gap-3">
         {users.map((u) => (
-          <li key={u.id} className="flex flex-col gap-3 py-5 first:pt-0">
+          <li key={u.id} className="flex flex-col gap-4 rounded-card bg-muted p-4">
             <div className="flex flex-col gap-1">
-              <p className="font-medium break-words">{u.name}</p>
+              <p className="font-bold break-words">{u.name}</p>
               <p className="text-sm break-all text-muted-foreground">{u.email}</p>
               <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">
+                <span className="font-semibold text-foreground">
                   {STATUS_LABEL[u.status] ?? u.status}
                 </span>
                 {" · registriert am "}
