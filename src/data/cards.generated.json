@@ -614,16 +614,7 @@
       "D16"
     ],
     "reason": "Endet auf D16, das sich viermal halbieren lässt.",
-    "alternatives": [
-      [
-        "S1",
-        "D20"
-      ],
-      [
-        "S17",
-        "D12"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -631,20 +622,11 @@
     "kind": "rest",
     "rest": 42,
     "best": [
-      "S10",
-      "D16"
+      "10/6",
+      "D16/D18"
     ],
-    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
-    "alternatives": [
-      [
-        "S2",
-        "D20"
-      ],
-      [
-        "S18",
-        "D12"
-      ]
-    ],
+    "reason": "Zwischen 10 und 6 gezielt lässt jedes der beiden Felder ein Doppel.",
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -703,20 +685,11 @@
     "kind": "rest",
     "rest": 46,
     "best": [
-      "S6",
-      "D20"
+      "6/10",
+      "D20/D18"
     ],
-    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S14",
-        "D16"
-      ],
-      [
-        "S10",
-        "D18"
-      ]
-    ],
+    "reason": "Zwischen 6 und 10 gezielt lässt jedes der beiden Felder ein Doppel.",
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -741,20 +714,11 @@
     "kind": "rest",
     "rest": 48,
     "best": [
-      "S16",
-      "D16"
+      "16/8",
+      "D16/D20"
     ],
-    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
-    "alternatives": [
-      [
-        "S8",
-        "D20"
-      ],
-      [
-        "S12",
-        "D18"
-      ]
-    ],
+    "reason": "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -779,9 +743,10 @@
     "kind": "rest",
     "rest": 50,
     "best": [
-      "Bull"
+      "S10",
+      "D20"
     ],
-    "reason": "Direkt auf das Doppel.",
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
     "alternatives": [
       [
         "S18",
@@ -833,16 +798,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S17",
-        "D18"
-      ],
-      [
-        "S3",
-        "Bull"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -854,16 +810,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S18",
-        "D18"
-      ],
-      [
-        "S4",
-        "Bull"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -875,16 +822,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S19",
-        "D18"
-      ],
-      [
-        "S5",
-        "Bull"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -896,16 +834,7 @@
       "D4"
     ],
     "reason": "Bleibt bei Single 16 auf einem Finish.",
-    "alternatives": [
-      [
-        "S16",
-        "D20"
-      ],
-      [
-        "S20",
-        "D18"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": [
       {
         "dartIndex": 0,
@@ -949,16 +878,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S7",
-        "Bull"
-      ],
-      [
-        "S19",
-        "D19"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -970,16 +890,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S8",
-        "Bull"
-      ],
-      [
-        "S20",
-        "D19"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -991,12 +902,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S9",
-        "Bull"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -1008,12 +914,7 @@
       "D20"
     ],
     "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
-    "alternatives": [
-      [
-        "S10",
-        "Bull"
-      ]
-    ],
+    "alternatives": [],
     "singleCases": []
   },
   {
@@ -1029,11 +930,11 @@
       [
         "T7",
         "D20"
-      ],
-      [
-        "T11",
-        "D14"
       ]
+    ],
+    "twoDarts": [
+      "T11",
+      "D14"
     ],
     "singleCases": [
       {
@@ -1045,8 +946,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "S6",
-            "D20"
+            "6/10",
+            "D20/D18"
           ]
         }
       }
@@ -1066,8 +967,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "S6",
-        "D20"
+        "6/10",
+        "D20/D18"
       ]
     }
   },
@@ -1080,11 +981,10 @@
       "D16"
     ],
     "reason": "Bleibt bei Single 10 auf einem Finish.",
-    "alternatives": [
-      [
-        "T12",
-        "D13"
-      ]
+    "alternatives": [],
+    "twoDarts": [
+      "T12",
+      "D13"
     ],
     "singleCases": [
       {
@@ -1130,12 +1030,16 @@
       "T13",
       "D12"
     ],
-    "reason": "Bleibt bei Single 13 auf Bull-Finish.",
+    "reason": "Bleibt bei Single 13 auf einem Finish.",
     "alternatives": [
       [
         "T17",
         "D6"
       ]
+    ],
+    "twoDarts": [
+      "T13",
+      "D12"
     ],
     "singleCases": [
       {
@@ -1147,7 +1051,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "Bull"
+            "S10",
+            "D20"
           ]
         }
       }
@@ -1167,7 +1072,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "Bull"
+        "S10",
+        "D20"
       ]
     }
   },
@@ -1180,11 +1086,10 @@
       "D8"
     ],
     "reason": "Bleibt bei Single 16 auf einem Finish.",
-    "alternatives": [
-      [
-        "T14",
-        "D11"
-      ]
+    "alternatives": [],
+    "twoDarts": [
+      "T14",
+      "D11"
     ],
     "singleCases": [
       {
@@ -1196,8 +1101,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "S16",
-            "D16"
+            "16/8",
+            "D16/D20"
           ]
         }
       }
@@ -1217,8 +1122,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "S16",
-        "D16"
+        "16/8",
+        "D16/D20"
       ]
     }
   },
@@ -1235,11 +1140,11 @@
       [
         "T19",
         "D4"
-      ],
-      [
-        "T15",
-        "D10"
       ]
+    ],
+    "twoDarts": [
+      "T15",
+      "D10"
     ],
     "singleCases": [
       {
@@ -1290,11 +1195,11 @@
       [
         "T18",
         "D6"
-      ],
-      [
-        "T16",
-        "D9"
       ]
+    ],
+    "twoDarts": [
+      "T16",
+      "D9"
     ],
     "singleCases": [
       {
@@ -1341,11 +1246,10 @@
       "D20"
     ],
     "reason": "Bleibt bei Single 9 auf einem Finish.",
-    "alternatives": [
-      [
-        "T17",
-        "D8"
-      ]
+    "alternatives": [],
+    "twoDarts": [
+      "T17",
+      "D8"
     ],
     "singleCases": [
       {
@@ -1396,11 +1300,11 @@
       [
         "T16",
         "D10"
-      ],
-      [
-        "T18",
-        "D7"
       ]
+    ],
+    "twoDarts": [
+      "T18",
+      "D7"
     ],
     "singleCases": [
       {
@@ -1412,8 +1316,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "S16",
-            "D16"
+            "16/8",
+            "D16/D20"
           ]
         }
       }
@@ -1433,8 +1337,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "S16",
-        "D16"
+        "16/8",
+        "D16/D20"
       ]
     }
   },
@@ -1446,12 +1350,11 @@
       "T19",
       "D6"
     ],
-    "reason": "Bleibt bei Single 19 auf Bull-Finish.",
-    "alternatives": [
-      [
-        "S19",
-        "Bull"
-      ]
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [],
+    "twoDarts": [
+      "T19",
+      "D6"
     ],
     "singleCases": [
       {
@@ -1463,7 +1366,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "Bull"
+            "S10",
+            "D20"
           ]
         }
       }
@@ -1483,7 +1387,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "Bull"
+        "S10",
+        "D20"
       ]
     }
   },
@@ -1496,11 +1401,10 @@
       "D8"
     ],
     "reason": "Bleibt bei Single 18 auf einem Finish.",
-    "alternatives": [
-      [
-        "T20",
-        "D5"
-      ]
+    "alternatives": [],
+    "twoDarts": [
+      "T20",
+      "D5"
     ],
     "singleCases": [
       {
@@ -2043,8 +1947,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T10",
-            "D16"
+            "T12",
+            "D13"
           ]
         }
       }
@@ -2064,8 +1968,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T10",
-        "D16"
+        "T12",
+        "D13"
       ]
     }
   },
@@ -2106,8 +2010,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T10",
-            "D18"
+            "T16",
+            "D9"
           ]
         }
       }
@@ -2127,8 +2031,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T10",
-        "D18"
+        "T16",
+        "D9"
       ]
     }
   },
@@ -2152,8 +2056,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T16",
-            "D8"
+            "T14",
+            "D11"
           ]
         }
       }
@@ -2173,8 +2077,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T16",
-        "D8"
+        "T14",
+        "D11"
       ]
     }
   },
@@ -2203,8 +2107,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T18",
-            "D8"
+            "T20",
+            "D5"
           ]
         }
       }
@@ -2224,8 +2128,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T18",
-        "D8"
+        "T20",
+        "D5"
       ]
     }
   },
@@ -2249,8 +2153,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T20",
-            "D4"
+            "T18",
+            "D7"
           ]
         }
       }
@@ -2270,8 +2174,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T20",
-        "D4"
+        "T18",
+        "D7"
       ]
     }
   },
@@ -2295,8 +2199,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T18",
-            "D8"
+            "T20",
+            "D5"
           ]
         }
       }
@@ -2316,8 +2220,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T18",
-        "D8"
+        "T20",
+        "D5"
       ]
     }
   },
@@ -2341,8 +2245,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T20",
-            "D4"
+            "T18",
+            "D7"
           ]
         }
       }
@@ -2362,8 +2266,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T20",
-        "D4"
+        "T18",
+        "D7"
       ]
     }
   },
@@ -2387,8 +2291,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T18",
-            "D8"
+            "T20",
+            "D5"
           ]
         }
       }
@@ -2408,8 +2312,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T18",
-        "D8"
+        "T20",
+        "D5"
       ]
     }
   },
@@ -2422,11 +2326,10 @@
       "D15"
     ],
     "reason": "Bleibt bei Single 20 auf einem Finish.",
-    "alternatives": [
-      [
-        "T18",
-        "D18"
-      ]
+    "alternatives": [],
+    "twoDarts": [
+      "T18",
+      "D18"
     ],
     "singleCases": [
       {
@@ -2438,8 +2341,8 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T18",
-            "D8"
+            "T20",
+            "D5"
           ]
         }
       }
@@ -2459,8 +2362,8 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T18",
-        "D8"
+        "T20",
+        "D5"
       ]
     }
   },
@@ -2868,10 +2771,10 @@
     "rest": 99,
     "best": [
       "T19",
-      "S10",
-      "D16"
+      "10/6",
+      "D16/D18"
     ],
-    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "reason": "Zwischen 10 und 6 gezielt lässt jedes der beiden Felder ein Doppel.",
     "alternatives": [],
     "singleCases": [
       {
@@ -2960,22 +2863,27 @@
     "kind": "rest",
     "rest": 101,
     "best": [
+      "T20",
+      "S9",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [],
+    "twoDarts": [
       "T17",
       "Bull"
     ],
-    "reason": "Bleibt bei Single 17 auf einem Finish.",
-    "alternatives": [],
     "singleCases": [
       {
         "dartIndex": 0,
-        "aimed": "T17",
-        "hit": "S17",
-        "newRest": 84,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 81,
         "dartsLeft": 2,
         "follow": {
           "kind": "finish",
           "route": [
-            "T20",
+            "T19",
             "D12"
           ]
         }
@@ -2987,16 +2895,16 @@
     "kind": "miss",
     "rest": 101,
     "thrown": [
-      "S17"
+      "S20"
     ],
-    "aimed": "T17",
-    "hit": "S17",
-    "newRest": 84,
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 81,
     "dartsLeft": 2,
     "follow": {
       "kind": "finish",
       "route": [
-        "T20",
+        "T19",
         "D12"
       ]
     }
@@ -3007,10 +2915,10 @@
     "rest": 102,
     "best": [
       "T20",
-      "S10",
-      "D16"
+      "10/6",
+      "D16/D18"
     ],
-    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "reason": "Zwischen 10 und 6 gezielt lässt jedes der beiden Felder ein Doppel.",
     "alternatives": [],
     "singleCases": [
       {
@@ -3054,10 +2962,10 @@
     "rest": 103,
     "best": [
       "T19",
-      "S6",
-      "D20"
+      "6/10",
+      "D20/D18"
     ],
-    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "reason": "Zwischen 6 und 10 gezielt lässt jedes der beiden Felder ein Doppel.",
     "alternatives": [],
     "singleCases": [
       {
@@ -3100,23 +3008,28 @@
     "kind": "rest",
     "rest": 104,
     "best": [
+      "T19",
+      "S15",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [],
+    "twoDarts": [
       "T18",
       "Bull"
     ],
-    "reason": "Bleibt bei Single 18 auf einem Finish.",
-    "alternatives": [],
     "singleCases": [
       {
         "dartIndex": 0,
-        "aimed": "T18",
-        "hit": "S18",
-        "newRest": 86,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 85,
         "dartsLeft": 2,
         "follow": {
           "kind": "finish",
           "route": [
-            "T18",
-            "D16"
+            "T15",
+            "D20"
           ]
         }
       }
@@ -3127,17 +3040,17 @@
     "kind": "miss",
     "rest": 104,
     "thrown": [
-      "S18"
+      "S19"
     ],
-    "aimed": "T18",
-    "hit": "S18",
-    "newRest": 86,
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 85,
     "dartsLeft": 2,
     "follow": {
       "kind": "finish",
       "route": [
-        "T18",
-        "D16"
+        "T15",
+        "D20"
       ]
     }
   },
@@ -3273,10 +3186,15 @@
     "rest": 107,
     "best": [
       "T19",
-      "Bull"
+      "T10",
+      "D10"
     ],
     "reason": "Bleibt bei Single 19 auf einem Finish.",
     "alternatives": [],
+    "twoDarts": [
+      "T19",
+      "Bull"
+    ],
     "singleCases": [
       {
         "dartIndex": 0,
@@ -3289,6 +3207,19 @@
           "route": [
             "T20",
             "D14"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T10",
+        "hit": "S10",
+        "newRest": 40,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "D20"
           ]
         }
       }
@@ -3314,15 +3245,34 @@
     }
   },
   {
+    "id": "m-107-1",
+    "kind": "miss",
+    "rest": 107,
+    "thrown": [
+      "T19",
+      "S10"
+    ],
+    "aimed": "T10",
+    "hit": "S10",
+    "newRest": 40,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D20"
+      ]
+    }
+  },
+  {
     "id": "r-108",
     "kind": "rest",
     "rest": 108,
     "best": [
       "T20",
-      "S16",
-      "D16"
+      "16/8",
+      "D16/D20"
     ],
-    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "reason": "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
     "alternatives": [],
     "singleCases": [
       {
@@ -3413,10 +3363,15 @@
     "rest": 110,
     "best": [
       "T20",
-      "Bull"
+      "T10",
+      "D10"
     ],
     "reason": "Bleibt bei Single 20 auf einem Finish.",
     "alternatives": [],
+    "twoDarts": [
+      "T20",
+      "Bull"
+    ],
     "singleCases": [
       {
         "dartIndex": 0,
@@ -3427,8 +3382,21 @@
         "follow": {
           "kind": "finish",
           "route": [
-            "T20",
-            "D15"
+            "T18",
+            "D18"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T10",
+        "hit": "S10",
+        "newRest": 40,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "D20"
           ]
         }
       }
@@ -3448,8 +3416,27 @@
     "follow": {
       "kind": "finish",
       "route": [
-        "T20",
-        "D15"
+        "T18",
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "m-110-1",
+    "kind": "miss",
+    "rest": 110,
+    "thrown": [
+      "T20",
+      "S10"
+    ],
+    "aimed": "T10",
+    "hit": "S10",
+    "newRest": 40,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D20"
       ]
     }
   },

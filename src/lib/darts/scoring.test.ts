@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { BOGEYS, isBogey } from '@/lib/darts/checkouts'
 import { formatRoute, parseDart, parseRoute, routeTotal } from '@/lib/darts/model'
-import { bestSetup, compareRoutes, followUp, halvings, rankCheckouts } from '@/lib/darts/scoring'
+import { bestSetup, compareRoutes, halvings, rankCheckouts } from '@/lib/darts/scoring'
 
 describe('halvings', () => {
   it('zählt die Halbierungen des Doppels', () => {
@@ -48,22 +48,6 @@ describe('compareRoutes und rankCheckouts', () => {
     for (let i = 1; i < ranked.length; i++) {
       expect(compareRoutes(ranked[i - 1], ranked[i])).toBeLessThanOrEqual(0)
     }
-  })
-})
-
-describe('followUp', () => {
-  it('liefert Finish oder Stellwurf', () => {
-    expect(followUp(101, 2)).toEqual({ kind: 'finish', route: parseRoute('T17 Bull') })
-    expect(followUp(50, 1)).toEqual({ kind: 'finish', route: parseRoute('Bull') })
-    expect(followUp(61, 1)).toEqual({
-      kind: 'setup',
-      setup: { throws: parseRoute('T7'), leaves: 40 },
-    })
-  })
-  it('nimmt den bevorzugten Weg, wenn er in die Dartzahl passt', () => {
-    const preferred = (rest: number) => (rest === 40 ? parseRoute('S8 D16') : undefined)
-    expect(followUp(40, 2, preferred)).toEqual({ kind: 'finish', route: parseRoute('S8 D16') })
-    expect(followUp(40, 1, preferred)).toEqual({ kind: 'finish', route: parseRoute('D20') })
   })
 })
 

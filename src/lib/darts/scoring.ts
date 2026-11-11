@@ -106,7 +106,6 @@ export function rankCheckouts(rest: number, maxDarts: 1 | 2 | 3): Route[] {
 }
 
 export type Setup = { throws: Route; leaves: number }
-export type Follow = { kind: 'finish'; route: Route } | { kind: 'setup'; setup: Setup }
 
 /** Erlaubte Stellwürfe: S1–S20 und T1–T20, keine Doppel, kein Bull. */
 const SETUP_DARTS: Dart[] = [
@@ -185,17 +184,4 @@ export function bestSetup(rest: number, darts: 1 | 2 | 3): Setup {
   const best = candidates[0]
   if (!best) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
   return best
-}
-
-/** Finish, wenn mit `darts` Darts möglich, sonst der beste Stellwurf. */
-export function followUp(
-  rest: number,
-  darts: 1 | 2,
-  preferred?: (rest: number) => Route | undefined,
-): Follow {
-  const ranked = rankCheckouts(rest, darts)
-  if (ranked.length === 0) return { kind: 'setup', setup: bestSetup(rest, darts) }
-  const own = preferred?.(rest)
-  if (own && own.length <= darts) return { kind: 'finish', route: own }
-  return { kind: 'finish', route: ranked[0] }
 }

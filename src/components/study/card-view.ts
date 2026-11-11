@@ -43,9 +43,9 @@ function singleCaseNote(c: SingleCase): Note {
 
 const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];
 
-/** Was über einen Rest ohne Fehlwurf-Fälle zu wissen ist: Weg, Begründung, Alternativen oder der Stellwurf. */
+/** Was über einen Rest ohne Fehlwurf-Fälle zu wissen ist: Weg, Begründung, Alternativen, Weg mit 2 Darts oder der Stellwurf. */
 export type RestDetail =
-  | Pick<RestCard, "kind" | "rest" | "best" | "reason" | "alternatives">
+  | Pick<RestCard, "kind" | "rest" | "best" | "reason" | "alternatives" | "twoDarts">
   | Pick<BogeyCard, "kind" | "rest" | "setup">;
 
 export type RestDetailView = { slots: Slots; slotTone: "best" | "none"; notes: Note[] };
@@ -70,6 +70,9 @@ export function restDetailView(detail: RestDetail): RestDetailView {
       title: detail.alternatives.length === 1 ? "Alternative" : "Alternativen",
       text: detail.alternatives.map(joinDarts).join(" oder "),
     });
+  }
+  if (detail.twoDarts) {
+    notes.push({ title: "Mit 2 Darts in der Hand", text: joinDarts(detail.twoDarts) });
   }
   return { slots: toSlots(detail.best), slotTone: "best", notes };
 }

@@ -14,8 +14,8 @@ import { cn } from "@/lib/utils";
 const DETAILS: Record<number, RestDetail> = Object.fromEntries(
   CARDS.flatMap((card): [number, RestDetail][] => {
     if (card.kind === "rest") {
-      const { kind, rest, best, reason, alternatives } = card;
-      return [[rest, { kind, rest, best, reason, alternatives }]];
+      const { kind, rest, best, reason, alternatives, twoDarts } = card;
+      return [[rest, { kind, rest, best, reason, alternatives, twoDarts }]];
     }
     if (card.kind === "bogey") {
       const { kind, rest, setup } = card;

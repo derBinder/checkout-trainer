@@ -1,9 +1,31 @@
 import { describe, expect, it } from 'vitest'
-import { buildCards, type RestCard } from '@/lib/darts/cards'
+import { buildCards, type FollowText, type MissCard, type RestCard } from '@/lib/darts/cards'
 import { isBogey } from '@/lib/darts/checkouts'
-import { dartValue, parseDart } from '@/lib/darts/model'
-import { REFERENCE_ALTERNATIVES } from '@/lib/darts/reference'
+import { expandSteps, parseStep, routeTotal } from '@/lib/darts/model'
+import { CHART } from '@/lib/darts/reference'
 import { CARDS } from '@/lib/cards'
+
+/** Anzeige-Texte zurück in konkrete Wege; ein geteilter Weg ergibt zwei. */
+const expand = (darts: string[]) => expandSteps(darts.map(parseStep))
+const chartText = (route: string | undefined) => route?.split(' ')
+
+/** Jede Zerlegung summiert sich auf den Rest und endet auf Doppel oder Bull. */
+function expectFinish(darts: string[], rest: number, label: string) {
+  for (const route of expand(darts)) {
+    expect(routeTotal(route), label).toBe(rest)
+    expect(route.at(-1)!.ring, label).toBe('D')
+  }
+}
+
+function expectFollowFits(follow: FollowText, rest: number, dartsLeft: number, label: string) {
+  if (follow.kind === 'finish') {
+    expect(follow.route.length, label).toBeLessThanOrEqual(dartsLeft)
+    expectFinish(follow.route, rest, label)
+  } else {
+    expect(follow.throws.length, label).toBeLessThanOrEqual(dartsLeft)
+    for (const route of expand(follow.throws)) expect(rest - routeTotal(route), label).toBe(follow.leaves)
+  }
+}
 
 describe('buildCards', () => {
   const cards = buildCards()
@@ -46,9 +68,9 @@ describe('buildCards', () => {
   it('rechnet jede Fehlwurf-Karte richtig', () => {
     for (const c of cards) {
       if (c.kind !== 'miss') continue
-      const thrown = c.thrown.map(parseDart).reduce((s, d) => s + dartValue(d), 0)
-      expect(c.rest - thrown).toBe(c.newRest)
+      for (const thrown of expand(c.thrown)) expect(c.rest - routeTotal(thrown)).toBe(c.newRest)
       expect(c.newRest).toBeGreaterThanOrEqual(2)
+      expectFollowFits(c.follow, c.newRest, c.dartsLeft, c.id)
     }
   })
 
@@ -82,10 +104,9 @@ describe('buildCards', () => {
     }
   })
 
-  it('nimmt Alternativen aus der Tabelle, sonst nur gleich kurze Single-Wege', () => {
+  it('nimmt für 41 bis 170 nur Variante 2 der Tabelle, darunter gleich kurze Single-Wege', () => {
     const rest = (id: string) => byId.get(id) as RestCard
     expect(rest('r-121').alternatives).toEqual([['T17', 'T20', 'D5']])
-    expect(rest('r-121').alternatives[0]).toEqual(['T17', 'T20', 'D5'])
     expect(rest('r-40').alternatives).toEqual([])
     expect(rest('r-32').alternatives).toEqual([])
     expect(rest('r-7').best).toEqual(['S3', 'D2'])
@@ -94,11 +115,94 @@ describe('buildCards', () => {
       expect(alt[0]).toMatch(/^S\d+$/)
     }
     for (const c of cards) {
-      if (c.kind !== 'rest' || REFERENCE_ALTERNATIVES[c.rest]) continue
+      if (c.kind !== 'rest') continue
+      const chart = CHART[c.rest]
+      if (chart) {
+        expect(c.alternatives, `r-${c.rest}`).toEqual(chart.alternative ? [chartText(chart.alternative)] : [])
+        continue
+      }
       for (const alt of c.alternatives) {
         expect(alt).toHaveLength(c.best.length)
         for (const d of alt.slice(0, -1)) expect(d).toMatch(/^S(\d|1\d|20)$/)
       }
+    }
+  })
+
+  it('folgt für 41 bis 170 der Tabelle: bester Weg, Alternative, mit 2 Darts', () => {
+    for (const c of cards) {
+      if (c.kind !== 'rest' || !CHART[c.rest]) continue
+      const chart = CHART[c.rest]
+      expect(c.best, c.id).toEqual(chartText(chart.best))
+      expect(c.twoDarts, c.id).toEqual(chartText(chart.twoDarts))
+      if (!chart.twoDarts) expect('twoDarts' in c, c.id).toBe(false)
+    }
+    for (const c of cards) {
+      if (c.kind === 'rest' && c.rest <= 40) expect('twoDarts' in c, c.id).toBe(false)
+    }
+  })
+
+  it('rechnet jeden Weg jeder Rest-Karte richtig, auch geteilte', () => {
+    for (const c of cards) {
+      if (c.kind !== 'rest') continue
+      expectFinish(c.best, c.rest, `${c.id} best`)
+      for (const alt of c.alternatives) expectFinish(alt, c.rest, `${c.id} alt`)
+      if (c.twoDarts) {
+        expect(c.twoDarts.length).toBeLessThanOrEqual(2)
+        expectFinish(c.twoDarts, c.rest, `${c.id} twoDarts`)
+      }
+      for (const sc of c.singleCases) expectFollowFits(sc.follow, sc.newRest, sc.dartsLeft, `${c.id} ${sc.dartIndex}`)
+    }
+  })
+
+  it('zeigt bei 110 den Tabellenweg, den Weg mit 2 Darts und beide Single-Fälle', () => {
+    const card = byId.get('r-110') as RestCard
+    expect(card.best).toEqual(['T20', 'T10', 'D10'])
+    expect(card.twoDarts).toEqual(['T20', 'Bull'])
+    expect(card.singleCases.map((c) => c.dartIndex)).toEqual([0, 1])
+  })
+
+  it('nimmt nach einem Single mit zwei Darts den Weg „mit 2 Darts" der Tabelle', () => {
+    expect(byId.get('m-110-0')).toMatchObject({
+      thrown: ['S20'],
+      newRest: 90,
+      dartsLeft: 2,
+      follow: { kind: 'finish', route: ['T18', 'D18'] },
+    })
+    expect((byId.get('m-121-0') as MissCard).follow).toEqual({ kind: 'finish', route: ['T17', 'Bull'] })
+    for (const c of cards) {
+      if (c.kind !== 'miss' || c.dartsLeft !== 2) continue
+      const two = CHART[c.newRest]?.twoDarts
+      if (two) expect(c.follow, c.id).toEqual({ kind: 'finish', route: chartText(two) })
+    }
+  })
+
+  it('zeigt geteilte Wege in der Schreibweise der Tabelle, ohne Single-Fälle', () => {
+    const card = byId.get('r-48') as RestCard
+    expect(card.best).toEqual(['16/8', 'D16/D20'])
+    expect(card.singleCases).toEqual([])
+    expect((byId.get('r-108') as RestCard).best).toEqual(['T20', '16/8', 'D16/D20'])
+  })
+
+  it('begründet geteilte Wege mit dem Ziel zwischen den Feldern', () => {
+    expect((byId.get('r-48') as RestCard).reason).toBe(
+      'Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.',
+    )
+    expect((byId.get('r-42') as RestCard).reason).toBe(
+      'Zwischen 10 und 6 gezielt lässt jedes der beiden Felder ein Doppel.',
+    )
+  })
+
+  it('nimmt nach einem Single mit zwei Darts sonst Variante 1, wenn sie in zwei Darts passt', () => {
+    // 99 = T19 10/6 D16/D18: Single 19 lässt 80, Tabelle ohne Spalte „mit 2 Darts", Variante 1 T20 D10.
+    expect(byId.get('m-99-0')).toMatchObject({ newRest: 80, follow: { kind: 'finish', route: ['T20', 'D10'] } })
+  })
+
+  it('nimmt mit einem Dart das Ein-Dart-Finish', () => {
+    expect((byId.get('m-121-1') as MissCard).follow).toEqual({ kind: 'finish', route: ['Bull'] })
+    for (const c of cards) {
+      if (c.kind !== 'miss' || c.dartsLeft !== 1) continue
+      const oneDart = c.newRest === 50 || (c.newRest % 2 === 0 && c.newRest <= 40)
+      expect(c.follow.kind, c.id).toBe(oneDart ? 'finish' : 'setup')
     }
   })
 

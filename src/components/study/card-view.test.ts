@@ -75,6 +75,30 @@ describe("cardView", () => {
     expect(miss.answer.notes).toEqual([{ title: "Stellwurf", text: "Kein Finish mehr: S20, Rest 32" }]);
   });
 
+  it("adds the chart's two-dart route as its own note", () => {
+    const rest = view("r-110");
+    expect(rest.answer.slots).toEqual(["T20", "T10", "D10"]);
+    expect(rest.answer.notes).toContainEqual({ title: "Mit 2 Darts in der Hand", text: "T20 · Bull" });
+    expect(rest.answer.notes.map((n) => n.title)).toEqual([
+      "Warum",
+      "Mit 2 Darts in der Hand",
+      "Nur Single 20 getroffen",
+      "Nur Single 10 getroffen",
+    ]);
+    expect(view("r-100").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
+  });
+
+  it("shows a split route as the chart writes it", () => {
+    const rest = view("r-48");
+    expect(rest.question.slots).toEqual([null, null, null]);
+    expect(rest.answer.slots).toEqual(["16/8", "D16/D20", null]);
+    expect(rest.answer.notes[0]).toEqual({
+      title: "Warum",
+      text: "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
+    });
+    expect(view("r-108").answer.slots).toEqual(["T20", "16/8", "D16/D20"]);
+  });
+
   it("keeps the outer bull as 25", () => {
     expect(view("r-91").answer.notes).toContainEqual({ title: "Alternative", text: "25 · T16 · D9" });
   });
@@ -86,6 +110,14 @@ describe("restDetailView", () => {
     expect(detail.slots).toEqual(["T20", "T11", "D14"]);
     expect(detail.slotTone).toBe("best");
     expect(detail.notes.map((n) => n.title)).toEqual(["Warum", "Alternative"]);
+  });
+
+  it("shows the two-dart route of a rest", () => {
+    const detail = restDetailView(cardById("r-110") as RestDetail);
+    expect(detail.notes).toEqual([
+      { title: "Warum", text: (cardById("r-110") as RestDetail & { reason: string }).reason },
+      { title: "Mit 2 Darts in der Hand", text: "T20 · Bull" },
+    ]);
   });
 
   it("shows the setup shot of a bogey number", () => {
