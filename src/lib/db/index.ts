@@ -15,7 +15,10 @@ function connect(): Db {
   return drizzlePglite({ client: new PGlite(".data/pglite"), schema });
 }
 
-let instance: Db | undefined;
+// Auf globalThis statt im Modul: Next.js bündelt Route Handler und Seiten
+// getrennt, ein Modul-Singleton gäbe es sonst mehrfach im selben Prozess.
+// Zwei PGlite-Instanzen auf demselben Verzeichnis brechen mit "Aborted()" ab.
+const store = globalThis as typeof globalThis & { __checkoutTrainerDb?: Db };
 
 /**
  * Die Verbindung entsteht erst beim ersten Zugriff, damit weder der Build noch
@@ -23,7 +26,7 @@ let instance: Db | undefined;
  */
 export const db: Db = new Proxy({} as Db, {
   get(_target, prop) {
-    instance ??= connect();
+    const instance = (store.__checkoutTrainerDb ??= connect());
     const value = Reflect.get(instance, prop, instance);
     return typeof value === "function" ? value.bind(instance) : value;
   },

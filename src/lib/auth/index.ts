@@ -6,8 +6,9 @@ import { admin } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import { db, type Db } from "../db";
 import { user as userTable } from "../db/schema";
+import { AUTH_MESSAGES, MIN_PASSWORD_LENGTH } from "./constants";
 
-export const MIN_PASSWORD_LENGTH = 10;
+export { MIN_PASSWORD_LENGTH } from "./constants";
 
 function isOperatorEmail(email: unknown): boolean {
   const operator = process.env.ADMIN_EMAIL?.trim().toLowerCase();
@@ -42,7 +43,7 @@ export function createAuth(database: Db) {
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path === "/sign-up/email" && isOperatorEmail(ctx.body?.email)) {
           throw new APIError("BAD_REQUEST", {
-            message: "Diese E-Mail-Adresse kann nicht registriert werden.",
+            message: AUTH_MESSAGES.operatorEmail,
           });
         }
         if (
@@ -55,7 +56,7 @@ export function createAuth(database: Db) {
             .where(eq(userTable.email, ctx.body.email.trim().toLowerCase()));
           if (row?.status === "blocked") {
             throw new APIError("FORBIDDEN", {
-              message: "Dieses Konto ist gesperrt.",
+              message: AUTH_MESSAGES.blocked,
             });
           }
         }
