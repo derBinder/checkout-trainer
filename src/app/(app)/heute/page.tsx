@@ -3,10 +3,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { loadQueue, loadStatsData } from "@/lib/review/queries";
-import { MAX_REST, MIN_REST, summarize } from "@/lib/stats";
+import { progressView } from "@/lib/progress";
+import { summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-
-const REST_COUNT = MAX_REST - MIN_REST + 1;
 
 function Count({ value, label }: { value: number; label: string }) {
   return (
@@ -26,8 +25,7 @@ export default async function TodayPage() {
   ]);
   const { counts, streak } = summarize({ states, logs, now });
   const nothingToDo = dueCount + freshCount === 0;
-  const known = counts.known;
-  const percent = Math.round((known / REST_COUNT) * 100);
+  const progress = progressView(counts);
 
   return (
     <div className="flex flex-col gap-8">
@@ -51,14 +49,13 @@ export default async function TodayPage() {
 
       <div className="flex flex-col gap-2.5">
         <p className="flex items-baseline justify-between gap-4 text-sm">
-          <span className="font-bold tabular-nums">
-            {known} von {REST_COUNT} sicher
-          </span>
-          <span className="font-medium text-muted-foreground tabular-nums">{percent}&nbsp;%</span>
+          <span className="font-bold tabular-nums">{progress.label}</span>
+          <span className="font-medium text-muted-foreground tabular-nums">{progress.percent}&nbsp;%</span>
         </p>
-        {/* Der Text daneben sagt dasselbe, der Balken ist nur Bild. */}
-        <div aria-hidden className="h-2.5 overflow-hidden rounded-pill bg-muted">
-          <div className="h-full rounded-pill bg-primary" style={{ width: `${percent}%` }} />
+        {/* Der Text daneben sagt dasselbe, der Balken ist nur Bild: links sicher, daneben im Lernen. */}
+        <div aria-hidden className="flex h-2.5 overflow-hidden rounded-pill bg-muted">
+          <div className="h-full bg-level-known" style={{ width: `${progress.knownWidth}%` }} />
+          <div className="h-full bg-level-learning" style={{ width: `${progress.learningWidth}%` }} />
         </div>
       </div>
 
