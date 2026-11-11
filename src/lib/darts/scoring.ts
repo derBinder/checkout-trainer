@@ -1,0 +1,176 @@
+import { allCheckouts, isBogey } from '@/lib/darts/checkouts'
+import { dartValue, routeTotal, type Dart, type Route } from '@/lib/darts/model'
+
+const HALVINGS: Record<number, number> = {
+  16: 4,
+  8: 3,
+  4: 2,
+  12: 2,
+  20: 2,
+  2: 1,
+  6: 1,
+  10: 1,
+  14: 1,
+  18: 1,
+}
+
+/** Wie oft sich ein Doppel-Feld halbieren lässt (D16 -> 4, Bull -> 0). Nur für Doppel gedacht. */
+export function halvings(d: Dart): number {
+  if (d.ring !== 'D') return 0
+  return HALVINGS[d.n] ?? 0
+}
+
+const finishCache = new Map<number, boolean>()
+
+function canFinish(rest: number, darts: number): boolean {
+  const key = rest * 4 + darts
+  let result = finishCache.get(key)
+  if (result === undefined) {
+    result = allCheckouts(rest, darts as 1 | 2 | 3).length > 0
+    finishCache.set(key, result)
+  }
+  return result
+}
+
+/** Triples im Weg, nach deren Single desselben Felds mit den übrigen Darts noch ein Finish möglich ist. */
+function savedTriples(route: Route): number {
+  let rest = routeTotal(route)
+  let saved = 0
+  route.forEach((dart, i) => {
+    if (dart.ring === 'T') {
+      const afterSingle = rest - dart.n
+      if (afterSingle >= 2 && canFinish(afterSingle, route.length - i - 1)) saved++
+    }
+    rest -= dartValue(dart)
+  })
+  return saved
+}
+
+function triples(route: Route): number {
+  return route.filter((d) => d.ring === 'T').length
+}
+
+/** Lexikografisch: höheres Feld zuerst (negativ = a vorn). */
+function compareHigherFirst(a: Route, b: Route): number {
+  const len = Math.min(a.length, b.length)
+  for (let i = 0; i < len; i++) {
+    const diff = dartValue(b[i]) - dartValue(a[i])
+    if (diff !== 0) return diff
+    const byField = b[i].n - a[i].n
+    if (byField !== 0) return byField
+  }
+  return a.length - b.length
+}
+
+type Scored = {
+  route: Route
+  halvings: number
+  finisher: number
+  saved: number
+  triples: number
+}
+
+function score(route: Route): Scored {
+  const last = route[route.length - 1]
+  return {
+    route,
+    halvings: halvings(last),
+    finisher: dartValue(last),
+    saved: savedTriples(route),
+    triples: triples(route),
+  }
+}
+
+function compareScored(a: Scored, b: Scored): number {
+  return (
+    a.route.length - b.route.length ||
+    b.halvings - a.halvings ||
+    b.finisher - a.finisher ||
+    b.saved - a.saved ||
+    a.triples - b.triples ||
+    compareHigherFirst(a.route, b.route)
+  )
+}
+
+/** Negativ = a ist besser. Regeln in der Reihenfolge der Spezifikation. */
+export function compareRoutes(a: Route, b: Route): number {
+  return compareScored(score(a), score(b))
+}
+
+/** Alle Checkouts mit höchstens maxDarts Darts, bester zuerst. */
+export function rankCheckouts(rest: number, maxDarts: 1 | 2 | 3): Route[] {
+  return allCheckouts(rest, maxDarts)
+    .map(score)
+    .sort(compareScored)
+    .map((s) => s.route)
+}
+
+export type Setup = { throws: Route; leaves: number }
+export type Follow = { kind: 'finish'; route: Route } | { kind: 'setup'; setup: Setup }
+
+const SETUP_DARTS: Dart[] = [
+  ...Array.from({ length: 20 }, (_, i): Dart => ({ ring: 'S', n: i + 1 })),
+  ...[20, 19, 18, 17].map((n): Dart => ({ ring: 'T', n })),
+]
+
+const PREFERRED_LEAVES = [32, 40, 36, 24, 16, 20]
+
+function countOnTwenty(route: Route): number {
+  return route.filter((d) => d.n === 20).length
+}
+
+/** Alle Wurffolgen aus erlaubten Feldern mit 1..darts Würfen (Reihenfolge: höhere Felder zuerst). */
+function setupCandidates(rest: number, darts: number): Setup[] {
+  const sorted = [...SETUP_DARTS].sort((a, b) => dartValue(b) - dartValue(a) || b.n - a.n)
+  const result: Setup[] = []
+  const walk = (prefix: Route, from: number, remaining: number) => {
+    if (prefix.length > 0) {
+      const leaves = remaining
+      if (leaves >= 2 && !isBogey(leaves)) result.push({ throws: prefix, leaves })
+    }
+    if (prefix.length === darts) return
+    for (let i = from; i < sorted.length; i++) {
+      const next = remaining - dartValue(sorted[i])
+      if (next >= 2) walk([...prefix, sorted[i]], i, next)
+    }
+  }
+  walk([], 0, rest)
+  return result
+}
+
+/** Bester Stellwurf mit bis zu `darts` Würfen. Wirft, wenn kein gültiger Rest erreichbar ist. */
+export function bestSetup(rest: number, darts: 1 | 2 | 3): Setup {
+  const candidates = setupCandidates(rest, darts)
+  const rank = (s: Setup) => {
+    const preferred = PREFERRED_LEAVES.indexOf(s.leaves)
+    return preferred === -1 ? PREFERRED_LEAVES.length : preferred
+  }
+  candidates.sort((a, b) => {
+    const byPreferred = rank(a) - rank(b)
+    if (byPreferred !== 0) return byPreferred
+    const byTriples = triples(a.throws) - triples(b.throws)
+    if (byTriples !== 0) return byTriples
+    if (rank(a) === PREFERRED_LEAVES.length) {
+      return a.leaves - b.leaves || compareHigherFirst(a.throws, b.throws)
+    }
+    return (
+      countOnTwenty(b.throws) - countOnTwenty(a.throws) || compareHigherFirst(a.throws, b.throws)
+    )
+  })
+  const best = candidates[0]
+  if (!best) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
+  return best
+}
+
+/** Finish, wenn mit `darts` Darts möglich, sonst der beste Stellwurf. */
+export function followUp(
+  rest: number,
+  darts: 1 | 2,
+  preferred?: (rest: number) => Route | undefined,
+): Follow {
+  const ranked = rankCheckouts(rest, darts)
+  if (ranked.length === 0) return { kind: 'setup', setup: bestSetup(rest, darts) }
+  const own = preferred?.(rest)
+  if (own && own.length <= darts) return { kind: 'finish', route: own }
+  return { kind: 'finish', route: ranked[0] }
+}
