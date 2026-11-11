@@ -3,6 +3,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
+import { resolveDbTarget } from "./driver";
 import * as schema from "./schema";
 
 /** Gemeinsamer Typ für beide Treiber (node-postgres und PGlite). */
@@ -17,10 +18,14 @@ const store = globalThis as typeof globalThis & {
 };
 
 function connect(): Db {
-  const url = process.env.DATABASE_URL;
-  if (url) return drizzlePg(url, { schema });
+  const target = resolveDbTarget(process.env);
+  if (target.driver === "pg") return drizzlePg(target.url, { schema });
+  if (target.location === undefined) {
+    // Build-Phase: flüchtige Datenbank, das lokale Verzeichnis bleibt unberührt.
+    return drizzlePglite({ client: new PGlite(), schema });
+  }
   mkdirSync(".data", { recursive: true });
-  const client = new PGlite(".data/pglite");
+  const client = new PGlite(target.location);
   closeOnShutdown(client);
   return drizzlePglite({ client, schema });
 }
