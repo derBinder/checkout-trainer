@@ -2,24 +2,41 @@
 
 import { useState } from "react";
 import { authErrorMessage } from "@/components/auth/auth-error";
+import { type FieldSpec } from "@/components/form/form-values";
+import { PasswordInput } from "@/components/form/password-input";
+import { PasswordStrength } from "@/components/form/password-strength";
+import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
+import {
+  currentPasswordSchema,
+  newPasswordSchema,
+} from "@/lib/validation/schemas";
+
+const FIELDS: FieldSpec[] = [
+  { name: "currentPassword", schema: currentPasswordSchema },
+  { name: "newPassword", schema: newPasswordSchema },
+];
 
 export function ChangePasswordForm() {
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [pending, setPending] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const { errors, fieldProps, errorId, validateForm, reset } =
+    useFieldErrors(FIELDS);
+  const newPasswordProps = fieldProps("newPassword", "newPassword-hint");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formElement = event.currentTarget;
+    if (!validateForm(formElement)) return;
     const form = new FormData(formElement);
     setPending(true);
     setMessage(null);
@@ -33,6 +50,8 @@ export function ChangePasswordForm() {
         setMessage({ text: authErrorMessage(error), ok: false });
       } else {
         formElement.reset();
+        reset();
+        setNewPassword("");
         setMessage({ text: "Passwort geändert. Andere Geräte sind abgemeldet.", ok: true });
       }
     } catch {
@@ -42,32 +61,44 @@ export function ChangePasswordForm() {
   }
 
   return (
-    <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-8">
+    <form
+      method="post"
+      noValidate
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-8"
+    >
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="currentPassword">Aktuelles Passwort</FieldLabel>
-          <Input
+          <PasswordInput
             id="currentPassword"
             name="currentPassword"
-            type="password"
             autoComplete="current-password"
             required
+            {...fieldProps("currentPassword")}
           />
+          <FieldError id={errorId("currentPassword")}>
+            {errors.currentPassword}
+          </FieldError>
         </Field>
         <Field>
           <FieldLabel htmlFor="newPassword">Neues Passwort</FieldLabel>
-          <Input
+          <PasswordInput
             id="newPassword"
             name="newPassword"
-            type="password"
             autoComplete="new-password"
             minLength={MIN_PASSWORD_LENGTH}
-            aria-describedby="newPassword-hint"
             required
+            {...newPasswordProps}
+            onChange={(event) => {
+              newPasswordProps.onChange(event);
+              setNewPassword(event.currentTarget.value);
+            }}
           />
-          <FieldDescription id="newPassword-hint">
-            Mindestens {MIN_PASSWORD_LENGTH} Zeichen.
-          </FieldDescription>
+          <PasswordStrength id="newPassword-hint" value={newPassword} />
+          <FieldError id={errorId("newPassword")}>
+            {errors.newPassword}
+          </FieldError>
         </Field>
       </FieldGroup>
       <div className="flex flex-col gap-3">

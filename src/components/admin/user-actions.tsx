@@ -11,16 +11,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { type FieldSpec } from "@/components/form/form-values";
+import { PasswordInput } from "@/components/form/password-input";
+import { PasswordStrength } from "@/components/form/password-strength";
+import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
+import { newPasswordSchema } from "@/lib/validation/schemas";
 import {
   changeUserPassword,
   changeUserStatus,
 } from "@/app/(app)/verwaltung/actions";
 
 type Props = { userId: string; name: string; status: string };
+
+const FIELDS: FieldSpec[] = [{ name: "password", schema: newPasswordSchema }];
 
 const FAILED = "Das hat nicht geklappt. Lade die Seite neu und versuche es erneut.";
 
@@ -29,6 +35,11 @@ export function UserActions({ userId, name, status }: Props) {
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [open, setOpen] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const { errors, fieldProps, errorId, validateForm, reset } =
+    useFieldErrors(FIELDS);
+  const passwordId = `pw-${userId}`;
+  const passwordProps = fieldProps("password", `${passwordId}-hint`);
 
   function changeStatus(next: "active" | "blocked") {
     setMessage(null);
@@ -45,21 +56,28 @@ export function UserActions({ userId, name, status }: Props) {
   function handleOpenChange(next: boolean) {
     if (pending) return;
     setOpen(next);
-    if (!next) setDialogError(null);
+    if (!next) {
+      setDialogError(null);
+      setPassword("");
+      reset();
+    }
   }
 
   function handlePassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const password = String(new FormData(event.currentTarget).get("password"));
+    if (!validateForm(event.currentTarget)) return;
+    const value = String(new FormData(event.currentTarget).get("password"));
     setDialogError(null);
     startTransition(async () => {
       try {
-        const { ok } = await changeUserPassword(userId, password);
+        const { ok } = await changeUserPassword(userId, value);
         if (!ok) {
           setDialogError("Das Passwort wurde nicht gesetzt.");
           return;
         }
         setOpen(false);
+        setPassword("");
+        reset();
         setMessage({ text: "Passwort gesetzt. Alle Sitzungen des Nutzers sind beendet.", ok: true });
       } catch {
         setDialogError("Keine Verbindung. Das Passwort wurde nicht gesetzt.");
@@ -86,7 +104,12 @@ export function UserActions({ userId, name, status }: Props) {
             Passwort setzen
           </AlertDialogTrigger>
           <AlertDialogContent>
-            <form method="post" onSubmit={handlePassword} className="grid gap-4">
+            <form
+              method="post"
+              noValidate
+              onSubmit={handlePassword}
+              className="grid gap-4"
+            >
               <AlertDialogHeader>
                 <AlertDialogTitle>Passwort für {name} setzen</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -95,17 +118,22 @@ export function UserActions({ userId, name, status }: Props) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <Field>
-                <FieldLabel htmlFor={`pw-${userId}`}>Neues Passwort</FieldLabel>
-                <Input
-                  id={`pw-${userId}`}
+                <FieldLabel htmlFor={passwordId}>Neues Passwort</FieldLabel>
+                <PasswordInput
+                  id={passwordId}
                   name="password"
-                  type="password"
                   autoComplete="new-password"
                   minLength={MIN_PASSWORD_LENGTH}
                   maxLength={MAX_PASSWORD_LENGTH}
                   required
+                  {...passwordProps}
+                  onChange={(event) => {
+                    passwordProps.onChange(event);
+                    setPassword(event.currentTarget.value);
+                  }}
                 />
-                <FieldDescription>Mindestens {MIN_PASSWORD_LENGTH} Zeichen.</FieldDescription>
+                <PasswordStrength id={`${passwordId}-hint`} value={password} />
+                <FieldError id={errorId("password")}>{errors.password}</FieldError>
               </Field>
               {dialogError ? (
                 <p role="alert" className="text-sm text-destructive">

@@ -13,25 +13,36 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { type FieldSpec } from "@/components/form/form-values";
+import { PasswordInput } from "@/components/form/password-input";
+import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { authClient } from "@/lib/auth/client";
+import { currentPasswordSchema } from "@/lib/validation/schemas";
+
+const FIELDS: FieldSpec[] = [{ name: "password", schema: currentPasswordSchema }];
 
 export function DeleteAccount() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const { errors, fieldProps, errorId, validateForm, reset } =
+    useFieldErrors(FIELDS);
 
   function handleOpenChange(next: boolean) {
     if (pending) return;
     setOpen(next);
-    if (!next) setError(null);
+    if (!next) {
+      setError(null);
+      reset();
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!validateForm(event.currentTarget)) return;
     const form = new FormData(event.currentTarget);
     setPending(true);
     setError(null);
@@ -58,7 +69,12 @@ export function DeleteAccount() {
         Konto löschen
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <form method="post" onSubmit={handleSubmit} className="grid gap-4">
+        <form
+          method="post"
+          noValidate
+          onSubmit={handleSubmit}
+          className="grid gap-4"
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Konto löschen?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -68,13 +84,14 @@ export function DeleteAccount() {
           </AlertDialogHeader>
           <Field>
             <FieldLabel htmlFor="deletePassword">Passwort zur Bestätigung</FieldLabel>
-            <Input
+            <PasswordInput
               id="deletePassword"
               name="password"
-              type="password"
               autoComplete="current-password"
               required
+              {...fieldProps("password")}
             />
+            <FieldError id={errorId("password")}>{errors.password}</FieldError>
           </Field>
           {error ? (
             <p role="alert" className="text-sm text-destructive">
