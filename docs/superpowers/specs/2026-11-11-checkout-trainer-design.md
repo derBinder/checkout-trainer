@@ -60,7 +60,9 @@ Die genaue Gewichtung der Bewertung ist Sache des Erbauers, solange die drei Kri
 
 ## Karten
 
-**Rest-Karte.** Eine pro checkbarem Rest von 2 bis 170. Nicht checkbar und daher ohne Karte: 169, 168, 166, 165, 163, 162, 159.
+**Rest-Karte.** Eine pro checkbarem Rest von 2 bis 170.
+
+**Bogey-Karte.** Eine pro nicht checkbarem Rest: 169, 168, 166, 165, 163, 162, 159. Vom Auftraggeber gewünscht, damit man auch lernt, welche Zahlen sich nicht checken lassen. Die Frageseite sieht genauso aus wie bei einer Rest-Karte und verrät nicht, dass es eine Bogey-Zahl ist. Die Auflösung zeigt „Nicht checkbar" und einen empfohlenen Stellwurf mit dem Rest, den man sich lässt (Entscheidung des Entwerfers: der Stellwurf). Bogey-Karten haben keine Fehlwurf-Karten. Sie werden wie alle anderen der Größe nach freigeschaltet und erscheinen im Statistik-Raster.
 
 **Fehlwurf-Karte.** Wird automatisch aus dem besten Weg erzeugt: für jedes Triple im besten Weg der Fall „nur das Single desselben Felds getroffen". Die Karte nennt den ursprünglichen Rest, das Ziel und den Treffer. Gefragt sind der neue Rest und der Weg mit den verbleibenden Darts. Ist mit den verbleibenden Darts kein Finish mehr möglich, ist die Antwort der beste Stellwurf (der Rest, den man sich für die nächste Aufnahme lässt). Ergibt ein Fall keine sinnvolle Karte, entfällt er.
 
@@ -146,7 +148,7 @@ Ruhig und typografisch. Die Zahl (der Rest) ist das größte Element auf der Ler
 
 ## Tests
 
-- Regelwerk: Jeder Weg summiert sich auf den Rest und endet auf Doppel oder Bull. Jeder checkbare Rest hat einen Weg. Bekannte Standardwege kommen heraus. Fehlwurf-Karten rechnen richtig.
+- Regelwerk: Jeder Weg summiert sich auf den Rest und endet auf Doppel oder Bull. Jeder checkbare Rest hat einen Weg, jede Bogey-Zahl eine Bogey-Karte mit Stellwurf. Bekannte Standardwege kommen heraus. Fehlwurf-Karten rechnen richtig.
 - Wiederholung: Reihenfolge der Freischaltung, Tagesgrenze, „Nochmal" in derselben Sitzung.
 - Konten: Wartende und gesperrte Nutzer kommen nicht an Lernseiten, Nicht-Betreiber nicht in die Verwaltung.
 
