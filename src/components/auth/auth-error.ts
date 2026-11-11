@@ -10,6 +10,9 @@ const BY_CODE: Record<string, string> = {
   INVALID_EMAIL: "Diese E-Mail-Adresse ist ungültig.",
   PASSWORD_TOO_SHORT: "Das Passwort ist zu kurz.",
   PASSWORD_TOO_LONG: "Das Passwort ist zu lang.",
+  INVALID_PASSWORD: "Das Passwort stimmt nicht.",
+  CREDENTIAL_ACCOUNT_NOT_FOUND: "Dieses Konto hat kein Passwort.",
+  SESSION_EXPIRED: "Die Sitzung ist zu alt. Melde dich neu an.",
 };
 
 const OWN_MESSAGES = new Set<string>(Object.values(AUTH_MESSAGES));

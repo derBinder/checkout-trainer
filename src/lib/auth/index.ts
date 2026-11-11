@@ -37,7 +37,17 @@ export function createAuth(database: Db) {
         status: { type: "string", defaultValue: "pending", input: false },
         newPerDay: { type: "number", defaultValue: 10, input: false },
       },
-      deleteUser: { enabled: true },
+      deleteUser: {
+        enabled: true,
+        // Das Betreiberkonto bleibt bestehen, auch über den offenen Endpunkt.
+        beforeDelete: async (u) => {
+          if ((u as { role?: string | null }).role === "admin") {
+            throw new APIError("FORBIDDEN", {
+              message: AUTH_MESSAGES.operatorDelete,
+            });
+          }
+        },
+      },
     },
     hooks: {
       before: createAuthMiddleware(async (ctx) => {

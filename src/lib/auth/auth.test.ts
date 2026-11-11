@@ -130,6 +130,15 @@ describe("Selbstbedienung durch angemeldete Nutzer", () => {
 });
 
 describe("seedAdmin", () => {
+  it("der Betreiber kann sein Konto nicht löschen", async () => {
+    await seedAdmin(auth, OPERATOR, "startpasswort-123");
+    const headers = await sessionHeaders(OPERATOR, "startpasswort-123");
+    await expect(
+      auth.api.deleteUser({ body: { password: "startpasswort-123" }, headers }),
+    ).rejects.toThrow();
+    expect(await userRow(OPERATOR)).toBeDefined();
+  });
+
   it("legt genau einen aktiven Admin an und ist idempotent", async () => {
     await seedAdmin(auth, OPERATOR, "startpasswort-123");
     await seedAdmin(auth, OPERATOR.toUpperCase(), "anderes-passwort-456");
