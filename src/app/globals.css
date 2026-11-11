@@ -50,6 +50,12 @@
   --color-level-known: var(--level-known);
   --color-level-weak: var(--level-weak);
 
+  /* Stärke-Balken unter einem neuen Passwort, sonst nirgends. */
+  --color-strength-weak: var(--strength-weak);
+  --color-strength-fair: var(--strength-fair);
+  --color-strength-good: var(--strength-good);
+  --color-strength-strong: var(--strength-strong);
+
   /*
    * Formen, sonst keine:
    *   pill   Aktionen, Dart-Felder, Chips, Navigation, Fortschrittsbalken
@@ -125,6 +131,12 @@
   --level-known: var(--foreground);
   --level-weak: var(--destructive);
 
+  /* Mindestens 3 : 1 auf der Spur (--border): 4,7 / 4,3 / 4,0 / 4,5. */
+  --strength-weak: #c62f22;
+  --strength-fair: #b35400;
+  --strength-good: #5e7d00;
+  --strength-strong: #1e7a45;
+
   @variant dark {
     color-scheme: dark;
 
@@ -140,6 +152,12 @@
 
     --destructive: #ff6b5e;
     --destructive-foreground: #0b0b0c;
+
+    /* Auf der Spur (--border): 5,1 / 6,0 / 7,5 / 6,1. */
+    --strength-weak: #ff6b5e;
+    --strength-fair: #f0912e;
+    --strength-good: #a8c83a;
+    --strength-strong: #3fbf73;
   }
 }
 
