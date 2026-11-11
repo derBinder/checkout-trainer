@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  TAP_GUARD_MS,
   initStudy,
   isFinished,
   nextToSend,
@@ -101,6 +102,62 @@ describe("studyReducer", () => {
     expect(s.failures).toBe(2);
     s = run(s, { type: "retry" }, sent, ok);
     expect(s.failures).toBe(0);
+  });
+});
+
+describe("double-tap guard", () => {
+  const revealAt = (at: number): StudyAction => ({ type: "reveal", at });
+  const rateAt = (rating: 1 | 2 | 3 | 4, at: number): StudyAction => ({ type: "rate", rating, at });
+
+  it("uses a window of about 350 ms", () => {
+    expect(TAP_GUARD_MS).toBe(350);
+  });
+
+  it("ignores a rating tapped right after the reveal", () => {
+    const s = run(initStudy(["a", "b"], {}), revealAt(1000), rateAt(2, 1000 + TAP_GUARD_MS - 1));
+    expect(s.session.revealed).toBe(true);
+    expect(s.session.unsynced).toEqual([]);
+    expect(s.session.queue).toEqual(["a", "b"]);
+  });
+
+  it("counts a rating tapped after the window", () => {
+    const s = run(initStudy(["a", "b"], {}), revealAt(1000), rateAt(3, 1000 + TAP_GUARD_MS));
+    expect(s.session.unsynced).toEqual([{ cardId: "a", rating: 3, reps: 0 }]);
+    expect(s.session.queue).toEqual(["b"]);
+  });
+
+  it("ignores a reveal tapped right after a rating", () => {
+    const s = run(initStudy(["a", "b"], {}), revealAt(1000), rateAt(3, 2000), revealAt(2000 + TAP_GUARD_MS - 1));
+    expect(s.session.queue).toEqual(["b"]);
+    expect(s.session.revealed).toBe(false);
+  });
+
+  it("counts a reveal tapped after the window", () => {
+    const s = run(initStudy(["a", "b"], {}), revealAt(1000), rateAt(3, 2000), revealAt(2000 + TAP_GUARD_MS));
+    expect(s.session.revealed).toBe(true);
+  });
+
+  it("does not hold back the first reveal of a session", () => {
+    const s = run(initStudy(["a"], {}), revealAt(0));
+    expect(s.session.revealed).toBe(true);
+  });
+});
+
+describe("signed out", () => {
+  it("stops sending and keeps the unsynced ratings for the notice", () => {
+    let s = run(initStudy(["a", "b", "c"], {}), reveal, rate(3), reveal, rate(2), sent);
+    s = run(s, { type: "signedOut" });
+    expect(s.signedOut).toBe(true);
+    expect(s.sending).toBe(false);
+    expect(s.session.unsynced).toHaveLength(2);
+    expect(nextToSend(s)).toBeNull();
+    expect(nextToSend(run(s, { type: "retry" }))).toBeNull();
+  });
+
+  it("ignores further taps once signed out", () => {
+    const s = run(initStudy(["a", "b"], {}), reveal, rate(3), sent, { type: "signedOut" }, reveal, rate(3));
+    expect(s.session.queue).toEqual(["b"]);
+    expect(s.session.unsynced).toHaveLength(1);
   });
 });
 

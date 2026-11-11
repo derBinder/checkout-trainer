@@ -53,7 +53,8 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       (result) => {
         inFlight.current = false;
         if (!result.ok && result.reason === "auth") {
-          router.replace("/anmelden");
+          // Offene Bewertungen nicht stillschweigend verwerfen: erst Hinweis, dann Anmeldung.
+          dispatch({ type: "signedOut" });
           return;
         }
         // "stale": schon gespeichert (doppelt gesendet), zählt als bestätigt.
@@ -66,7 +67,12 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         dispatch({ type: "failed" });
       },
     );
-  }, [toSend, router]);
+  }, [toSend]);
+
+  // Abgemeldet und nichts offen: sofort zur Anmeldung.
+  useEffect(() => {
+    if (state.signedOut && unsyncedCount === 0) router.replace("/anmelden");
+  }, [state.signedOut, unsyncedCount, router]);
 
   // Nach einem Fehler automatisch erneut versuchen, mit wachsendem Abstand.
   useEffect(() => {
@@ -117,6 +123,27 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         : `${state.skipped} Bewertungen wurden nicht gezählt.`}
     </p>
   );
+
+  if (state.signedOut) {
+    return (
+      <Surface className="px-5 pt-[max(4rem,14dvh)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="flex-1" />
+        {unsyncedCount > 0 && (
+          <div className="flex flex-col gap-3">
+            <p role="alert" className="text-center text-sm text-destructive">
+              Du wurdest abgemeldet.{" "}
+              {unsyncedCount === 1
+                ? "1 Bewertung wurde nicht gespeichert."
+                : `${unsyncedCount} Bewertungen wurden nicht gespeichert.`}
+            </p>
+            <Button size="xl" className="w-full" onClick={() => router.replace("/anmelden")}>
+              Zur Anmeldung
+            </Button>
+          </div>
+        )}
+      </Surface>
+    );
+  }
 
   if (!current) {
     const saved = isFinished(state);
@@ -197,7 +224,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         <StudyCard view={current.view} revealed={session.revealed} />
       </div>
 
-      <footer className="flex flex-col gap-3 px-5 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {skippedHint}
         {failedHint}
         {session.revealed ? (
@@ -208,7 +235,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
                 variant="secondary"
                 size="xl"
                 className="h-16 flex-col gap-0.5 px-1"
-                onClick={() => dispatch({ type: "rate", rating })}
+                onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
               >
                 <span className="text-sm font-semibold">{label}</span>
                 <span className="text-xs font-normal text-muted-foreground tabular-nums">
@@ -218,7 +245,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
             ))}
           </div>
         ) : (
-          <Button size="xl" className="w-full" onClick={() => dispatch({ type: "reveal" })}>
+          <Button size="xl" className="w-full" onClick={() => dispatch({ type: "reveal", at: performance.now() })}>
             Weg zeigen
           </Button>
         )}

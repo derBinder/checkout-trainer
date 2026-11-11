@@ -21,17 +21,30 @@ export type StudyState = {
   failures: number;
   /** Bewertungen, die der Server nicht gezählt hat (limit, invalid, unknown-card). */
   skipped: number;
+  /** Zeitpunkt des letzten angenommenen Aufdeckens oder Bewertens, für den Doppeltipp-Schutz. */
+  lastFlipAt: number | null;
+  /** Der Server meldete eine abgelaufene Anmeldung; nichts wird mehr gesendet oder bewertet. */
+  signedOut: boolean;
 };
+
+/**
+ * Aufdecken und Bewerten liegen an derselben Stelle. So lange nach einem
+ * Wechsel wird ein Tipp auf die jeweils andere Schaltfläche ignoriert, damit
+ * ein Doppeltipp nicht gleich bewertet oder die nächste Antwort aufdeckt.
+ */
+export const TAP_GUARD_MS = 350;
 
 export type SaveOutcome = "ok" | "stale" | "skipped";
 
 export type StudyAction =
-  | { type: "reveal" }
-  | { type: "rate"; rating: Rating }
+  /** `at`: Zeitpunkt des Tipps in ms (z. B. performance.now()); ohne Angabe kein Doppeltipp-Schutz. */
+  | { type: "reveal"; at?: number }
+  | { type: "rate"; rating: Rating; at?: number }
   | { type: "sending" }
   | { type: "result"; outcome: SaveOutcome }
   | { type: "failed" }
-  | { type: "retry" };
+  | { type: "retry" }
+  | { type: "signedOut" };
 
 export type Outgoing = { cardId: string; rating: Rating; reps: number };
 
@@ -43,18 +56,28 @@ export function initStudy(cardIds: string[], reps: Record<string, number>): Stud
     failed: false,
     failures: 0,
     skipped: 0,
+    lastFlipAt: null,
+    signedOut: false,
   };
+}
+
+/** Ein Tipp kurz nach dem letzten Wechsel zwischen Aufdecken und Bewerten zählt nicht. */
+function tooSoon(s: StudyState, at: number | undefined): boolean {
+  return at !== undefined && s.lastFlipAt !== null && at - s.lastFlipAt < TAP_GUARD_MS;
 }
 
 const confirmed = (s: StudyState, cardId: string) => s.confirmedReps[cardId] ?? 0;
 
 export function studyReducer(s: StudyState, a: StudyAction): StudyState {
   switch (a.type) {
-    case "reveal":
-      return { ...s, session: sessionReducer(s.session, a) };
+    case "reveal": {
+      if (s.signedOut || s.session.revealed || tooSoon(s, a.at)) return s;
+      const session = sessionReducer(s.session, a);
+      return session === s.session ? s : { ...s, session, lastFlipAt: a.at ?? null };
+    }
     case "rate": {
       const cardId = s.session.queue[0];
-      if (!cardId || !s.session.revealed) return s;
+      if (!cardId || !s.session.revealed || s.signedOut || tooSoon(s, a.at)) return s;
       // reps im Eintrag ist nur vorläufig; gesendet wird der Wert aus nextToSend.
       const session = sessionReducer(s.session, {
         type: "rate",
@@ -62,7 +85,7 @@ export function studyReducer(s: StudyState, a: StudyAction): StudyState {
         reps: confirmed(s, cardId),
       });
       // Jede Bewertung ist auch ein Anlass für einen neuen Versuch.
-      return { ...s, session, failed: false };
+      return { ...s, session, failed: false, lastFlipAt: a.at ?? null };
     }
     case "sending":
       return s.session.unsynced.length === 0 ? s : { ...s, sending: true };
@@ -86,13 +109,15 @@ export function studyReducer(s: StudyState, a: StudyAction): StudyState {
     }
     case "retry":
       return s.failed ? { ...s, failed: false } : s;
+    case "signedOut":
+      return { ...s, signedOut: true, sending: false };
   }
 }
 
 /** Was jetzt gesendet werden soll, oder null (nichts offen, schon unterwegs, oder Pause nach Fehler). */
 export function nextToSend(s: StudyState): Outgoing | null {
   const head = s.session.unsynced[0];
-  if (!head || s.sending || s.failed) return null;
+  if (!head || s.sending || s.failed || s.signedOut) return null;
   return { cardId: head.cardId, rating: head.rating, reps: confirmed(s, head.cardId) };
 }
 
