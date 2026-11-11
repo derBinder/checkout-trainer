@@ -1,0 +1,8730 @@
+[
+  {
+    "id": "r-2",
+    "kind": "rest",
+    "rest": 2,
+    "best": [
+      "D1"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [],
+    "singleCases": []
+  },
+  {
+    "id": "r-3",
+    "kind": "rest",
+    "rest": 3,
+    "best": [
+      "S1",
+      "D1"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [],
+    "singleCases": []
+  },
+  {
+    "id": "r-4",
+    "kind": "rest",
+    "rest": 4,
+    "best": [
+      "D2"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S2",
+        "D1"
+      ],
+      [
+        "D1",
+        "D1"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-5",
+    "kind": "rest",
+    "rest": 5,
+    "best": [
+      "S1",
+      "D2"
+    ],
+    "reason": "Endet auf D2, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "S3",
+        "D1"
+      ],
+      [
+        "T1",
+        "D1"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-6",
+    "kind": "rest",
+    "rest": 6,
+    "best": [
+      "D3"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S2",
+        "D2"
+      ],
+      [
+        "D1",
+        "D2"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-7",
+    "kind": "rest",
+    "rest": 7,
+    "best": [
+      "S3",
+      "D2"
+    ],
+    "reason": "Endet auf D2, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T1",
+        "D2"
+      ],
+      [
+        "S1",
+        "D3"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-8",
+    "kind": "rest",
+    "rest": 8,
+    "best": [
+      "D4"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S4",
+        "D2"
+      ],
+      [
+        "D2",
+        "D2"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-9",
+    "kind": "rest",
+    "rest": 9,
+    "best": [
+      "S1",
+      "D4"
+    ],
+    "reason": "Endet auf D4, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S5",
+        "D2"
+      ],
+      [
+        "S3",
+        "D3"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-10",
+    "kind": "rest",
+    "rest": 10,
+    "best": [
+      "D5"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S2",
+        "D4"
+      ],
+      [
+        "D1",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-11",
+    "kind": "rest",
+    "rest": 11,
+    "best": [
+      "S3",
+      "D4"
+    ],
+    "reason": "Endet auf D4, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T1",
+        "D4"
+      ],
+      [
+        "S7",
+        "D2"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-12",
+    "kind": "rest",
+    "rest": 12,
+    "best": [
+      "D6"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S4",
+        "D4"
+      ],
+      [
+        "D2",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-13",
+    "kind": "rest",
+    "rest": 13,
+    "best": [
+      "S5",
+      "D4"
+    ],
+    "reason": "Endet auf D4, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S1",
+        "D6"
+      ],
+      [
+        "S9",
+        "D2"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-14",
+    "kind": "rest",
+    "rest": 14,
+    "best": [
+      "D7"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S6",
+        "D4"
+      ],
+      [
+        "D3",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-15",
+    "kind": "rest",
+    "rest": 15,
+    "best": [
+      "S7",
+      "D4"
+    ],
+    "reason": "Endet auf D4, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S3",
+        "D6"
+      ],
+      [
+        "T1",
+        "D6"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-16",
+    "kind": "rest",
+    "rest": 16,
+    "best": [
+      "D8"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S8",
+        "D4"
+      ],
+      [
+        "D4",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-17",
+    "kind": "rest",
+    "rest": 17,
+    "best": [
+      "S1",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S9",
+        "D4"
+      ],
+      [
+        "T3",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-18",
+    "kind": "rest",
+    "rest": 18,
+    "best": [
+      "D9"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S2",
+        "D8"
+      ],
+      [
+        "D1",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-19",
+    "kind": "rest",
+    "rest": 19,
+    "best": [
+      "S3",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T1",
+        "D8"
+      ],
+      [
+        "S11",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-20",
+    "kind": "rest",
+    "rest": 20,
+    "best": [
+      "D10"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S4",
+        "D8"
+      ],
+      [
+        "D2",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-21",
+    "kind": "rest",
+    "rest": 21,
+    "best": [
+      "S5",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S13",
+        "D4"
+      ],
+      [
+        "S1",
+        "D10"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-22",
+    "kind": "rest",
+    "rest": 22,
+    "best": [
+      "D11"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S6",
+        "D8"
+      ],
+      [
+        "D3",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-23",
+    "kind": "rest",
+    "rest": 23,
+    "best": [
+      "S7",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S15",
+        "D4"
+      ],
+      [
+        "T5",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-24",
+    "kind": "rest",
+    "rest": 24,
+    "best": [
+      "D12"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S8",
+        "D8"
+      ],
+      [
+        "D4",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-25",
+    "kind": "rest",
+    "rest": 25,
+    "best": [
+      "S9",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T3",
+        "D8"
+      ],
+      [
+        "S1",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-26",
+    "kind": "rest",
+    "rest": 26,
+    "best": [
+      "D13"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S10",
+        "D8"
+      ],
+      [
+        "D5",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-27",
+    "kind": "rest",
+    "rest": 27,
+    "best": [
+      "S11",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S3",
+        "D12"
+      ],
+      [
+        "T1",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-28",
+    "kind": "rest",
+    "rest": 28,
+    "best": [
+      "D14"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S12",
+        "D8"
+      ],
+      [
+        "D6",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-29",
+    "kind": "rest",
+    "rest": 29,
+    "best": [
+      "S13",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S5",
+        "D12"
+      ],
+      [
+        "T7",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-30",
+    "kind": "rest",
+    "rest": 30,
+    "best": [
+      "D15"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S14",
+        "D8"
+      ],
+      [
+        "D7",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-31",
+    "kind": "rest",
+    "rest": 31,
+    "best": [
+      "S15",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T5",
+        "D8"
+      ],
+      [
+        "S7",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-32",
+    "kind": "rest",
+    "rest": 32,
+    "best": [
+      "D16"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S16",
+        "D8"
+      ],
+      [
+        "D8",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-33",
+    "kind": "rest",
+    "rest": 33,
+    "best": [
+      "S1",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "S17",
+        "D8"
+      ],
+      [
+        "S9",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-34",
+    "kind": "rest",
+    "rest": 34,
+    "best": [
+      "D17"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S2",
+        "D16"
+      ],
+      [
+        "D1",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-35",
+    "kind": "rest",
+    "rest": 35,
+    "best": [
+      "S3",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T1",
+        "D16"
+      ],
+      [
+        "S19",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-36",
+    "kind": "rest",
+    "rest": 36,
+    "best": [
+      "D18"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S4",
+        "D16"
+      ],
+      [
+        "D2",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-37",
+    "kind": "rest",
+    "rest": 37,
+    "best": [
+      "S5",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T7",
+        "D8"
+      ],
+      [
+        "S13",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-38",
+    "kind": "rest",
+    "rest": 38,
+    "best": [
+      "D19"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S6",
+        "D16"
+      ],
+      [
+        "D3",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-39",
+    "kind": "rest",
+    "rest": 39,
+    "best": [
+      "S7",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "S15",
+        "D12"
+      ],
+      [
+        "T5",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-40",
+    "kind": "rest",
+    "rest": 40,
+    "best": [
+      "D20"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S8",
+        "D16"
+      ],
+      [
+        "D4",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-41",
+    "kind": "rest",
+    "rest": 41,
+    "best": [
+      "S9",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T3",
+        "D16"
+      ],
+      [
+        "25",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-42",
+    "kind": "rest",
+    "rest": 42,
+    "best": [
+      "S10",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "D5",
+        "D16"
+      ],
+      [
+        "D13",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-43",
+    "kind": "rest",
+    "rest": 43,
+    "best": [
+      "S3",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S11",
+        "D16"
+      ],
+      [
+        "T9",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-44",
+    "kind": "rest",
+    "rest": 44,
+    "best": [
+      "S12",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "D6",
+        "D16"
+      ],
+      [
+        "T4",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-45",
+    "kind": "rest",
+    "rest": 45,
+    "best": [
+      "S13",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "S5",
+        "D20"
+      ],
+      [
+        "T7",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-46",
+    "kind": "rest",
+    "rest": 46,
+    "best": [
+      "S6",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S14",
+        "D16"
+      ],
+      [
+        "D7",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-47",
+    "kind": "rest",
+    "rest": 47,
+    "best": [
+      "S7",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S15",
+        "D16"
+      ],
+      [
+        "T5",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-48",
+    "kind": "rest",
+    "rest": 48,
+    "best": [
+      "S16",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "D8",
+        "D16"
+      ],
+      [
+        "D16",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-49",
+    "kind": "rest",
+    "rest": 49,
+    "best": [
+      "S9",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S17",
+        "D16"
+      ],
+      [
+        "T11",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-50",
+    "kind": "rest",
+    "rest": 50,
+    "best": [
+      "Bull"
+    ],
+    "reason": "Direkt auf das Doppel.",
+    "alternatives": [
+      [
+        "S18",
+        "D16"
+      ],
+      [
+        "D9",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-51",
+    "kind": "rest",
+    "rest": 51,
+    "best": [
+      "S11",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S19",
+        "D16"
+      ],
+      [
+        "T9",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-52",
+    "kind": "rest",
+    "rest": 52,
+    "best": [
+      "S12",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "S20",
+        "D16"
+      ],
+      [
+        "D10",
+        "D16"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-53",
+    "kind": "rest",
+    "rest": 53,
+    "best": [
+      "S13",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T7",
+        "D16"
+      ],
+      [
+        "T15",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-54",
+    "kind": "rest",
+    "rest": 54,
+    "best": [
+      "S14",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "D11",
+        "D16"
+      ],
+      [
+        "D19",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-55",
+    "kind": "rest",
+    "rest": 55,
+    "best": [
+      "S15",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T13",
+        "D8"
+      ],
+      [
+        "T5",
+        "D20"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-56",
+    "kind": "rest",
+    "rest": 56,
+    "best": [
+      "T16",
+      "D4"
+    ],
+    "reason": "Bleibt bei Single 16 auf einem Finish.",
+    "alternatives": [
+      [
+        "D12",
+        "D16"
+      ],
+      [
+        "T8",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 40,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-56-0",
+    "kind": "miss",
+    "rest": 56,
+    "thrown": [
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 40,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-57",
+    "kind": "rest",
+    "rest": 57,
+    "best": [
+      "S17",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "25",
+        "D16"
+      ],
+      [
+        "T11",
+        "D12"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-58",
+    "kind": "rest",
+    "rest": 58,
+    "best": [
+      "S18",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "D13",
+        "D16"
+      ],
+      [
+        "T14",
+        "D8"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-59",
+    "kind": "rest",
+    "rest": 59,
+    "best": [
+      "S19",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T9",
+        "D16"
+      ],
+      [
+        "T17",
+        "D4"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-60",
+    "kind": "rest",
+    "rest": 60,
+    "best": [
+      "S20",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "D14",
+        "D16"
+      ],
+      [
+        "D10",
+        "D20"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-61",
+    "kind": "rest",
+    "rest": 61,
+    "best": [
+      "T15",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 15 auf einem Finish.",
+    "alternatives": [
+      [
+        "T7",
+        "D20"
+      ],
+      [
+        "25",
+        "D18"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T15",
+        "hit": "S15",
+        "newRest": 46,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S6",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-61-0",
+    "kind": "miss",
+    "rest": 61,
+    "thrown": [
+      "S15"
+    ],
+    "aimed": "T15",
+    "hit": "S15",
+    "newRest": 46,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S6",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-62",
+    "kind": "rest",
+    "rest": 62,
+    "best": [
+      "T10",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 10 auf einem Finish.",
+    "alternatives": [
+      [
+        "D15",
+        "D16"
+      ],
+      [
+        "D11",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T10",
+        "hit": "S10",
+        "newRest": 52,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S12",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-62-0",
+    "kind": "miss",
+    "rest": 62,
+    "thrown": [
+      "S10"
+    ],
+    "aimed": "T10",
+    "hit": "S10",
+    "newRest": 52,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S12",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-63",
+    "kind": "rest",
+    "rest": 63,
+    "best": [
+      "T13",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 13 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T9",
+        "D18"
+      ],
+      [
+        "T17",
+        "D6"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T13",
+        "hit": "S13",
+        "newRest": 50,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-63-0",
+    "kind": "miss",
+    "rest": 63,
+    "thrown": [
+      "S13"
+    ],
+    "aimed": "T13",
+    "hit": "S13",
+    "newRest": 50,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-64",
+    "kind": "rest",
+    "rest": 64,
+    "best": [
+      "T16",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 16 auf einem Finish.",
+    "alternatives": [
+      [
+        "D16",
+        "D16"
+      ],
+      [
+        "D12",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 48,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S16",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-64-0",
+    "kind": "miss",
+    "rest": 64,
+    "thrown": [
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 48,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S16",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-65",
+    "kind": "rest",
+    "rest": 65,
+    "best": [
+      "T11",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 11 auf einem Finish.",
+    "alternatives": [
+      [
+        "25",
+        "D20"
+      ],
+      [
+        "T19",
+        "D4"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T11",
+        "hit": "S11",
+        "newRest": 54,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S14",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-65-0",
+    "kind": "miss",
+    "rest": 65,
+    "thrown": [
+      "S11"
+    ],
+    "aimed": "T11",
+    "hit": "S11",
+    "newRest": 54,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S14",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-66",
+    "kind": "rest",
+    "rest": 66,
+    "best": [
+      "T10",
+      "D18"
+    ],
+    "reason": "Bleibt bei Single 10 auf einem Finish.",
+    "alternatives": [
+      [
+        "D17",
+        "D16"
+      ],
+      [
+        "Bull",
+        "D8"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T10",
+        "hit": "S10",
+        "newRest": 56,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T16",
+            "D4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-66-0",
+    "kind": "miss",
+    "rest": 66,
+    "thrown": [
+      "S10"
+    ],
+    "aimed": "T10",
+    "hit": "S10",
+    "newRest": 56,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D4"
+      ]
+    }
+  },
+  {
+    "id": "r-67",
+    "kind": "rest",
+    "rest": 67,
+    "best": [
+      "T9",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 9 auf einem Finish.",
+    "alternatives": [
+      [
+        "T17",
+        "D8"
+      ],
+      [
+        "T13",
+        "D14"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T9",
+        "hit": "S9",
+        "newRest": 58,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S18",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-67-0",
+    "kind": "miss",
+    "rest": 67,
+    "thrown": [
+      "S9"
+    ],
+    "aimed": "T9",
+    "hit": "S9",
+    "newRest": 58,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S18",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-68",
+    "kind": "rest",
+    "rest": 68,
+    "best": [
+      "T20",
+      "D4"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "D18",
+        "D16"
+      ],
+      [
+        "T12",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 48,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S16",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-68-0",
+    "kind": "miss",
+    "rest": 68,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 48,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S16",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-69",
+    "kind": "rest",
+    "rest": 69,
+    "best": [
+      "T19",
+      "D6"
+    ],
+    "reason": "Bleibt bei Single 19 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T15",
+        "D12"
+      ],
+      [
+        "T11",
+        "D18"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 50,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-69-0",
+    "kind": "miss",
+    "rest": 69,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 50,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-70",
+    "kind": "rest",
+    "rest": 70,
+    "best": [
+      "T18",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 18 auf einem Finish.",
+    "alternatives": [
+      [
+        "D19",
+        "D16"
+      ],
+      [
+        "D15",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 52,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S12",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-70-0",
+    "kind": "miss",
+    "rest": 70,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 52,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S12",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-71",
+    "kind": "rest",
+    "rest": 71,
+    "best": [
+      "T13",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 13 auf einem Finish.",
+    "alternatives": [
+      [
+        "T17",
+        "D10"
+      ],
+      [
+        "T7",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T13",
+        "hit": "S13",
+        "newRest": 58,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S18",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-71-0",
+    "kind": "miss",
+    "rest": 71,
+    "thrown": [
+      "S13"
+    ],
+    "aimed": "T13",
+    "hit": "S13",
+    "newRest": 58,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S18",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-72",
+    "kind": "rest",
+    "rest": 72,
+    "best": [
+      "T16",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 16 auf einem Finish.",
+    "alternatives": [
+      [
+        "D20",
+        "D16"
+      ],
+      [
+        "D16",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 56,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T16",
+            "D4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-72-0",
+    "kind": "miss",
+    "rest": 72,
+    "thrown": [
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 56,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D4"
+      ]
+    }
+  },
+  {
+    "id": "r-73",
+    "kind": "rest",
+    "rest": 73,
+    "best": [
+      "T19",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T11",
+        "D20"
+      ],
+      [
+        "T15",
+        "D14"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 54,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S14",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-73-0",
+    "kind": "miss",
+    "rest": 73,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 54,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S14",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-74",
+    "kind": "rest",
+    "rest": 74,
+    "best": [
+      "T14",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 14 auf einem Finish.",
+    "alternatives": [
+      [
+        "D17",
+        "D20"
+      ],
+      [
+        "Bull",
+        "D12"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T14",
+        "hit": "S14",
+        "newRest": 60,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S20",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-74-0",
+    "kind": "miss",
+    "rest": 74,
+    "thrown": [
+      "S14"
+    ],
+    "aimed": "T14",
+    "hit": "S14",
+    "newRest": 60,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-75",
+    "kind": "rest",
+    "rest": 75,
+    "best": [
+      "T17",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 17 auf einem Finish.",
+    "alternatives": [
+      [
+        "T13",
+        "D18"
+      ],
+      [
+        "25",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 58,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S18",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-75-0",
+    "kind": "miss",
+    "rest": 75,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 58,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S18",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-76",
+    "kind": "rest",
+    "rest": 76,
+    "best": [
+      "T20",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "D18",
+        "D20"
+      ],
+      [
+        "T12",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 56,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T16",
+            "D4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-76-0",
+    "kind": "miss",
+    "rest": 76,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 56,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D4"
+      ]
+    }
+  },
+  {
+    "id": "r-77",
+    "kind": "rest",
+    "rest": 77,
+    "best": [
+      "T19",
+      "D10"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T15",
+        "D16"
+      ],
+      [
+        "T9",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 58,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S18",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-77-0",
+    "kind": "miss",
+    "rest": 77,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 58,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S18",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-78",
+    "kind": "rest",
+    "rest": 78,
+    "best": [
+      "T18",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 18 auf einem Finish.",
+    "alternatives": [
+      [
+        "D19",
+        "D20"
+      ],
+      [
+        "T14",
+        "D18"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 60,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S20",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-78-0",
+    "kind": "miss",
+    "rest": 78,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 60,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-79",
+    "kind": "rest",
+    "rest": 79,
+    "best": [
+      "T19",
+      "D11"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T13",
+        "D20"
+      ],
+      [
+        "T17",
+        "D14"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 60,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S20",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-79-0",
+    "kind": "miss",
+    "rest": 79,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 60,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-80",
+    "kind": "rest",
+    "rest": 80,
+    "best": [
+      "T20",
+      "D10"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T16",
+        "D16"
+      ],
+      [
+        "D20",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 60,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "S20",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-80-0",
+    "kind": "miss",
+    "rest": 80,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 60,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-81",
+    "kind": "rest",
+    "rest": 81,
+    "best": [
+      "T19",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T15",
+        "D18"
+      ],
+      [
+        "T17",
+        "D15"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 62,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T10",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-81-0",
+    "kind": "miss",
+    "rest": 81,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 62,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T10",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-82",
+    "kind": "rest",
+    "rest": 82,
+    "best": [
+      "Bull",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T14",
+        "D20"
+      ],
+      [
+        "T18",
+        "D14"
+      ]
+    ],
+    "singleCases": []
+  },
+  {
+    "id": "r-83",
+    "kind": "rest",
+    "rest": 83,
+    "best": [
+      "T17",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 17 auf einem Finish.",
+    "alternatives": [
+      [
+        "T11",
+        "Bull"
+      ],
+      [
+        "T15",
+        "D19"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 66,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T10",
+            "D18"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-83-0",
+    "kind": "miss",
+    "rest": 83,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 66,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T10",
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "r-84",
+    "kind": "rest",
+    "rest": 84,
+    "best": [
+      "T20",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T16",
+        "D18"
+      ],
+      [
+        "D17",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 64,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T16",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-84-0",
+    "kind": "miss",
+    "rest": 84,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 64,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-85",
+    "kind": "rest",
+    "rest": 85,
+    "best": [
+      "T15",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 15 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D14"
+      ],
+      [
+        "T17",
+        "D17"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T15",
+        "hit": "S15",
+        "newRest": 70,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-85-0",
+    "kind": "miss",
+    "rest": 85,
+    "thrown": [
+      "S15"
+    ],
+    "aimed": "T15",
+    "hit": "S15",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-86",
+    "kind": "rest",
+    "rest": 86,
+    "best": [
+      "T18",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 18 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D18"
+      ],
+      [
+        "D18",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 68,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-86-0",
+    "kind": "miss",
+    "rest": 86,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 68,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D4"
+      ]
+    }
+  },
+  {
+    "id": "r-87",
+    "kind": "rest",
+    "rest": 87,
+    "best": [
+      "T17",
+      "D18"
+    ],
+    "reason": "Bleibt bei Single 17 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D15"
+      ],
+      [
+        "Bull",
+        "S5",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 70,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-87-0",
+    "kind": "miss",
+    "rest": 87,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-88",
+    "kind": "rest",
+    "rest": 88,
+    "best": [
+      "T20",
+      "D14"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T16",
+        "D20"
+      ],
+      [
+        "D19",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 68,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-88-0",
+    "kind": "miss",
+    "rest": 88,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 68,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D4"
+      ]
+    }
+  },
+  {
+    "id": "r-89",
+    "kind": "rest",
+    "rest": 89,
+    "best": [
+      "T19",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T13",
+        "Bull"
+      ],
+      [
+        "T17",
+        "D19"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 70,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-89-0",
+    "kind": "miss",
+    "rest": 89,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-90",
+    "kind": "rest",
+    "rest": 90,
+    "best": [
+      "T20",
+      "D15"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D20"
+      ],
+      [
+        "T18",
+        "D18"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 70,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-90-0",
+    "kind": "miss",
+    "rest": 90,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-91",
+    "kind": "rest",
+    "rest": 91,
+    "best": [
+      "T17",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 17 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D17"
+      ],
+      [
+        "Bull",
+        "S9",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 74,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T14",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-91-0",
+    "kind": "miss",
+    "rest": 91,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 74,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T14",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-92",
+    "kind": "rest",
+    "rest": 92,
+    "best": [
+      "T20",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T14",
+        "Bull"
+      ],
+      [
+        "T18",
+        "D19"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 72,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T16",
+            "D12"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-92-0",
+    "kind": "miss",
+    "rest": 92,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 72,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "r-93",
+    "kind": "rest",
+    "rest": 93,
+    "best": [
+      "T19",
+      "D18"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S11",
+        "D16"
+      ],
+      [
+        "D18",
+        "25",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 74,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T14",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-93-0",
+    "kind": "miss",
+    "rest": 93,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 74,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T14",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-94",
+    "kind": "rest",
+    "rest": 94,
+    "best": [
+      "T18",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 18 auf einem Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "D17"
+      ],
+      [
+        "Bull",
+        "S12",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 76,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-94-0",
+    "kind": "miss",
+    "rest": 94,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 76,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-95",
+    "kind": "rest",
+    "rest": 95,
+    "best": [
+      "T19",
+      "D19"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T15",
+        "Bull"
+      ],
+      [
+        "Bull",
+        "S13",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 76,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-95-0",
+    "kind": "miss",
+    "rest": 95,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 76,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-96",
+    "kind": "rest",
+    "rest": 96,
+    "best": [
+      "T20",
+      "D18"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S14",
+        "D16"
+      ],
+      [
+        "Bull",
+        "D7",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 76,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-96-0",
+    "kind": "miss",
+    "rest": 96,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 76,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "r-97",
+    "kind": "rest",
+    "rest": 97,
+    "best": [
+      "T19",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S15",
+        "D16"
+      ],
+      [
+        "D20",
+        "25",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 78,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D12"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-97-0",
+    "kind": "miss",
+    "rest": 97,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 78,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "r-98",
+    "kind": "rest",
+    "rest": 98,
+    "best": [
+      "T20",
+      "D19"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T16",
+        "Bull"
+      ],
+      [
+        "Bull",
+        "S16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 78,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D12"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-98-0",
+    "kind": "miss",
+    "rest": 98,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 78,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "r-99",
+    "kind": "rest",
+    "rest": 99,
+    "best": [
+      "T19",
+      "S10",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S17",
+        "D16"
+      ],
+      [
+        "S17",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 80,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-99-0",
+    "kind": "miss",
+    "rest": 99,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 80,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D10"
+      ]
+    }
+  },
+  {
+    "id": "r-100",
+    "kind": "rest",
+    "rest": 100,
+    "best": [
+      "T20",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "Bull"
+      ],
+      [
+        "Bull",
+        "S18",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 80,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D10"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-100-0",
+    "kind": "miss",
+    "rest": 100,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 80,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D10"
+      ]
+    }
+  },
+  {
+    "id": "r-101",
+    "kind": "rest",
+    "rest": 101,
+    "best": [
+      "T17",
+      "Bull"
+    ],
+    "reason": "Bleibt bei Single 17 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S19",
+        "D16"
+      ],
+      [
+        "S19",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 84,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D12"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-101-0",
+    "kind": "miss",
+    "rest": 101,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 84,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "r-102",
+    "kind": "rest",
+    "rest": 102,
+    "best": [
+      "T20",
+      "S10",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "S20",
+        "D16"
+      ],
+      [
+        "Bull",
+        "D10",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 82,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-102-0",
+    "kind": "miss",
+    "rest": 102,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 82,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-103",
+    "kind": "rest",
+    "rest": 103,
+    "best": [
+      "T19",
+      "S6",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "S11",
+        "D16"
+      ],
+      [
+        "T19",
+        "S14",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 84,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D12"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-103-0",
+    "kind": "miss",
+    "rest": 103,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 84,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "r-104",
+    "kind": "rest",
+    "rest": 104,
+    "best": [
+      "T18",
+      "Bull"
+    ],
+    "reason": "Bleibt bei Single 18 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D11",
+        "D16"
+      ],
+      [
+        "D20",
+        "D16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 86,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-104-0",
+    "kind": "miss",
+    "rest": 104,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 86,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-105",
+    "kind": "rest",
+    "rest": 105,
+    "best": [
+      "T20",
+      "S13",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "S16",
+        "D16"
+      ],
+      [
+        "T19",
+        "D8",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 85,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T15",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-105-0",
+    "kind": "miss",
+    "rest": 105,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 85,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T15",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-106",
+    "kind": "rest",
+    "rest": 106,
+    "best": [
+      "T20",
+      "T10",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D12",
+        "D16"
+      ],
+      [
+        "D20",
+        "D17",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 86,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D16"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T10",
+        "hit": "S10",
+        "newRest": 36,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "D18"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-106-0",
+    "kind": "miss",
+    "rest": 106,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 86,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "m-106-1",
+    "kind": "miss",
+    "rest": 106,
+    "thrown": [
+      "T20",
+      "S10"
+    ],
+    "aimed": "T10",
+    "hit": "S10",
+    "newRest": 36,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "r-107",
+    "kind": "rest",
+    "rest": 107,
+    "best": [
+      "T19",
+      "Bull"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "25",
+        "D16"
+      ],
+      [
+        "25",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 88,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D14"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-107-0",
+    "kind": "miss",
+    "rest": 107,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 88,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D14"
+      ]
+    }
+  },
+  {
+    "id": "r-108",
+    "kind": "rest",
+    "rest": 108,
+    "best": [
+      "T20",
+      "S16",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D13",
+        "D16"
+      ],
+      [
+        "D20",
+        "D18",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 88,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D14"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-108-0",
+    "kind": "miss",
+    "rest": 108,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 88,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D14"
+      ]
+    }
+  },
+  {
+    "id": "r-109",
+    "kind": "rest",
+    "rest": 109,
+    "best": [
+      "T20",
+      "S9",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "S17",
+        "D16"
+      ],
+      [
+        "T19",
+        "S20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 89,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-109-0",
+    "kind": "miss",
+    "rest": 109,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 89,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-110",
+    "kind": "rest",
+    "rest": 110,
+    "best": [
+      "T20",
+      "Bull"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D14",
+        "D16"
+      ],
+      [
+        "D20",
+        "D19",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 90,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D15"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-110-0",
+    "kind": "miss",
+    "rest": 110,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 90,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D15"
+      ]
+    }
+  },
+  {
+    "id": "r-111",
+    "kind": "rest",
+    "rest": 111,
+    "best": [
+      "T19",
+      "S14",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "S19",
+        "D16"
+      ],
+      [
+        "T19",
+        "D11",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 92,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D16"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-111-0",
+    "kind": "miss",
+    "rest": 111,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 92,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "r-112",
+    "kind": "rest",
+    "rest": 112,
+    "best": [
+      "T20",
+      "T12",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D15",
+        "D16"
+      ],
+      [
+        "D20",
+        "D20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 92,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D16"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T12",
+        "hit": "S12",
+        "newRest": 40,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-112-0",
+    "kind": "miss",
+    "rest": 112,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 92,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "m-112-1",
+    "kind": "miss",
+    "rest": 112,
+    "thrown": [
+      "T20",
+      "S12"
+    ],
+    "aimed": "T12",
+    "hit": "S12",
+    "newRest": 40,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-113",
+    "kind": "rest",
+    "rest": 113,
+    "best": [
+      "T19",
+      "S16",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D12",
+        "D16"
+      ],
+      [
+        "T17",
+        "D15",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 94,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-113-0",
+    "kind": "miss",
+    "rest": 113,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 94,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-114",
+    "kind": "rest",
+    "rest": 114,
+    "best": [
+      "T19",
+      "S17",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D16",
+        "D16"
+      ],
+      [
+        "D16",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 95,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "D19"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-114-0",
+    "kind": "miss",
+    "rest": 114,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 95,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D19"
+      ]
+    }
+  },
+  {
+    "id": "r-115",
+    "kind": "rest",
+    "rest": 115,
+    "best": [
+      "T20",
+      "S15",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D13",
+        "D16"
+      ],
+      [
+        "T17",
+        "D16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 95,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "D19"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-115-0",
+    "kind": "miss",
+    "rest": 115,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 95,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D19"
+      ]
+    }
+  },
+  {
+    "id": "r-116",
+    "kind": "rest",
+    "rest": 116,
+    "best": [
+      "T19",
+      "S19",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D17",
+        "D16"
+      ],
+      [
+        "D17",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 97,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-116-0",
+    "kind": "miss",
+    "rest": 116,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 97,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-117",
+    "kind": "rest",
+    "rest": 117,
+    "best": [
+      "T19",
+      "S20",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "25",
+        "D16"
+      ],
+      [
+        "T19",
+        "D14",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 98,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D19"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-117-0",
+    "kind": "miss",
+    "rest": 117,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 98,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D19"
+      ]
+    }
+  },
+  {
+    "id": "r-118",
+    "kind": "rest",
+    "rest": 118,
+    "best": [
+      "T20",
+      "S18",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D18",
+        "D16"
+      ],
+      [
+        "D18",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 98,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D19"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-118-0",
+    "kind": "miss",
+    "rest": 118,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 98,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D19"
+      ]
+    }
+  },
+  {
+    "id": "r-119",
+    "kind": "rest",
+    "rest": 119,
+    "best": [
+      "T19",
+      "T12",
+      "D13"
+    ],
+    "reason": "Bleibt bei Single 19 auf einem Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D15",
+        "D16"
+      ],
+      [
+        "T17",
+        "D18",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 100,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D20"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T12",
+        "hit": "S12",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-119-0",
+    "kind": "miss",
+    "rest": 119,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "m-119-1",
+    "kind": "miss",
+    "rest": 119,
+    "thrown": [
+      "T19",
+      "S12"
+    ],
+    "aimed": "T12",
+    "hit": "S12",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-120",
+    "kind": "rest",
+    "rest": 120,
+    "best": [
+      "T20",
+      "S20",
+      "D20"
+    ],
+    "reason": "Bleibt bei Single 20 auf einem Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D19",
+        "D16"
+      ],
+      [
+        "D19",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 100,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "D20"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-120-0",
+    "kind": "miss",
+    "rest": 120,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "r-121",
+    "kind": "rest",
+    "rest": 121,
+    "best": [
+      "T20",
+      "T11",
+      "D14"
+    ],
+    "reason": "Bleibt bei Single 20 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T17",
+        "D19",
+        "D16"
+      ],
+      [
+        "T19",
+        "D16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 101,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T17",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T11",
+        "hit": "S11",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-121-0",
+    "kind": "miss",
+    "rest": 121,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 101,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-121-1",
+    "kind": "miss",
+    "rest": 121,
+    "thrown": [
+      "T20",
+      "S11"
+    ],
+    "aimed": "T11",
+    "hit": "S11",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-122",
+    "kind": "rest",
+    "rest": 122,
+    "best": [
+      "T18",
+      "T18",
+      "D7"
+    ],
+    "reason": "Bleibt bei Single 18 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "Bull",
+        "D20",
+        "D16"
+      ],
+      [
+        "D20",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 104,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-122-0",
+    "kind": "miss",
+    "rest": 122,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-122-1",
+    "kind": "miss",
+    "rest": 122,
+    "thrown": [
+      "T18",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-123",
+    "kind": "rest",
+    "rest": 123,
+    "best": [
+      "T19",
+      "T16",
+      "D9"
+    ],
+    "reason": "Bleibt bei Single 19 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D17",
+        "D16"
+      ],
+      [
+        "T17",
+        "D20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 104,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-123-0",
+    "kind": "miss",
+    "rest": 123,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-123-1",
+    "kind": "miss",
+    "rest": 123,
+    "thrown": [
+      "T19",
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-124",
+    "kind": "rest",
+    "rest": 124,
+    "best": [
+      "T20",
+      "T14",
+      "D11"
+    ],
+    "reason": "Bleibt bei Single 20 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "D16",
+        "D16"
+      ],
+      [
+        "T14",
+        "Bull",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 104,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T18",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T14",
+        "hit": "S14",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-124-0",
+    "kind": "miss",
+    "rest": 124,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-124-1",
+    "kind": "miss",
+    "rest": 124,
+    "thrown": [
+      "T20",
+      "S14"
+    ],
+    "aimed": "T14",
+    "hit": "S14",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-125",
+    "kind": "rest",
+    "rest": 125,
+    "best": [
+      "T18",
+      "T19",
+      "D7"
+    ],
+    "reason": "Bleibt bei Single 18 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D18",
+        "D16"
+      ],
+      [
+        "D18",
+        "T19",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 107,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 52,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 32
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-125-0",
+    "kind": "miss",
+    "rest": 125,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-125-1",
+    "kind": "miss",
+    "rest": 125,
+    "thrown": [
+      "T18",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 52,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "r-126",
+    "kind": "rest",
+    "rest": 126,
+    "best": [
+      "T19",
+      "T19",
+      "D6"
+    ],
+    "reason": "Bleibt bei Single 19 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "D17",
+        "D16"
+      ],
+      [
+        "T18",
+        "D20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 107,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-126-0",
+    "kind": "miss",
+    "rest": 126,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-126-1",
+    "kind": "miss",
+    "rest": 126,
+    "thrown": [
+      "T19",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-127",
+    "kind": "rest",
+    "rest": 127,
+    "best": [
+      "T20",
+      "T17",
+      "D8"
+    ],
+    "reason": "Bleibt bei Single 20 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D19",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T15",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 107,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T19",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-127-0",
+    "kind": "miss",
+    "rest": 127,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-127-1",
+    "kind": "miss",
+    "rest": 127,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-128",
+    "kind": "rest",
+    "rest": 128,
+    "best": [
+      "T18",
+      "T14",
+      "D16"
+    ],
+    "reason": "Bleibt bei Single 18 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "D18",
+        "D16"
+      ],
+      [
+        "D18",
+        "T20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 110,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T14",
+        "hit": "S14",
+        "newRest": 60,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-128-0",
+    "kind": "miss",
+    "rest": 128,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-128-1",
+    "kind": "miss",
+    "rest": 128,
+    "thrown": [
+      "T18",
+      "S14"
+    ],
+    "aimed": "T14",
+    "hit": "S14",
+    "newRest": 60,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-129",
+    "kind": "rest",
+    "rest": 129,
+    "best": [
+      "T19",
+      "T16",
+      "D12"
+    ],
+    "reason": "Bleibt bei Single 19 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T19",
+        "D20",
+        "D16"
+      ],
+      [
+        "D20",
+        "T19",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 110,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 56,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S16"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-129-0",
+    "kind": "miss",
+    "rest": 129,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-129-1",
+    "kind": "miss",
+    "rest": 129,
+    "thrown": [
+      "T19",
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 56,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-130",
+    "kind": "rest",
+    "rest": 130,
+    "best": [
+      "T20",
+      "T20",
+      "D5"
+    ],
+    "reason": "Bleibt bei Single 20 auf Bull-Finish.",
+    "alternatives": [
+      [
+        "T20",
+        "D19",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 110,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "T20",
+            "Bull"
+          ]
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 50,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "finish",
+          "route": [
+            "Bull"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-130-0",
+    "kind": "miss",
+    "rest": 130,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "m-130-1",
+    "kind": "miss",
+    "rest": 130,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 50,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "r-131",
+    "kind": "rest",
+    "rest": 131,
+    "best": [
+      "T19",
+      "T14",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T13",
+        "D16"
+      ],
+      [
+        "T18",
+        "T15",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 112,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S20"
+          ],
+          "leaves": 32
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T14",
+        "hit": "S14",
+        "newRest": 60,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-131-0",
+    "kind": "miss",
+    "rest": 131,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 112,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "m-131-1",
+    "kind": "miss",
+    "rest": 131,
+    "thrown": [
+      "T19",
+      "S14"
+    ],
+    "aimed": "T14",
+    "hit": "S14",
+    "newRest": 60,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-132",
+    "kind": "rest",
+    "rest": 132,
+    "best": [
+      "T20",
+      "T16",
+      "D12"
+    ],
+    "reason": "Endet auf D12, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "Bull",
+        "Bull",
+        "D16"
+      ],
+      [
+        "T20",
+        "D20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 112,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S20"
+          ],
+          "leaves": 32
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 56,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S16"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-132-0",
+    "kind": "miss",
+    "rest": 132,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 112,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "m-132-1",
+    "kind": "miss",
+    "rest": 132,
+    "thrown": [
+      "T20",
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 56,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-133",
+    "kind": "rest",
+    "rest": 133,
+    "best": [
+      "T20",
+      "T19",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T17",
+        "Bull",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T17",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 113,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S13"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 54,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S14"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-133-0",
+    "kind": "miss",
+    "rest": 133,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 113,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-133-1",
+    "kind": "miss",
+    "rest": 133,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 54,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-134",
+    "kind": "rest",
+    "rest": 134,
+    "best": [
+      "T20",
+      "T16",
+      "D13"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T20",
+        "T14",
+        "D16"
+      ],
+      [
+        "T19",
+        "T15",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 114,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S14"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T16",
+        "hit": "S16",
+        "newRest": 58,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S18"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-134-0",
+    "kind": "miss",
+    "rest": 134,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 114,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-134-1",
+    "kind": "miss",
+    "rest": 134,
+    "thrown": [
+      "T20",
+      "S16"
+    ],
+    "aimed": "T16",
+    "hit": "S16",
+    "newRest": 58,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-135",
+    "kind": "rest",
+    "rest": 135,
+    "best": [
+      "T20",
+      "T17",
+      "D12"
+    ],
+    "reason": "Endet auf D12, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "D19",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T15",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 115,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S15"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 58,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S18"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-135-0",
+    "kind": "miss",
+    "rest": 135,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 115,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-135-1",
+    "kind": "miss",
+    "rest": 135,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 58,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-136",
+    "kind": "rest",
+    "rest": 136,
+    "best": [
+      "T20",
+      "T20",
+      "D8"
+    ],
+    "reason": "Endet auf D8, das sich dreimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T18",
+        "Bull",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T18",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 116,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S16"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 56,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S16"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-136-0",
+    "kind": "miss",
+    "rest": 136,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 116,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-136-1",
+    "kind": "miss",
+    "rest": 136,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 56,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-137",
+    "kind": "rest",
+    "rest": 137,
+    "best": [
+      "T20",
+      "T19",
+      "D10"
+    ],
+    "reason": "Endet auf D10, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T15",
+        "D16"
+      ],
+      [
+        "T19",
+        "T16",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 117,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S17"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 58,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S18"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-137-0",
+    "kind": "miss",
+    "rest": 137,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 117,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-137-1",
+    "kind": "miss",
+    "rest": 137,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 58,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-138",
+    "kind": "rest",
+    "rest": 138,
+    "best": [
+      "T20",
+      "T18",
+      "D12"
+    ],
+    "reason": "Endet auf D12, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "D19",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T16",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 118,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S18"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 60,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-138-0",
+    "kind": "miss",
+    "rest": 138,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 118,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-138-1",
+    "kind": "miss",
+    "rest": 138,
+    "thrown": [
+      "T20",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 60,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-139",
+    "kind": "rest",
+    "rest": 139,
+    "best": [
+      "T20",
+      "T13",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "Bull",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T19",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 119,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S19"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T13",
+        "hit": "S13",
+        "newRest": 66,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 46
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-139-0",
+    "kind": "miss",
+    "rest": 139,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 119,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S19"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-139-1",
+    "kind": "miss",
+    "rest": 139,
+    "thrown": [
+      "T20",
+      "S13"
+    ],
+    "aimed": "T13",
+    "hit": "S13",
+    "newRest": 66,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
+    "id": "r-140",
+    "kind": "rest",
+    "rest": 140,
+    "best": [
+      "T20",
+      "T20",
+      "D10"
+    ],
+    "reason": "Endet auf D10, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T16",
+        "D16"
+      ],
+      [
+        "T19",
+        "T17",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 120,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "S20"
+          ],
+          "leaves": 40
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 60,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-140-0",
+    "kind": "miss",
+    "rest": 140,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 120,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "m-140-1",
+    "kind": "miss",
+    "rest": 140,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 60,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "r-141",
+    "kind": "rest",
+    "rest": 141,
+    "best": [
+      "T20",
+      "T19",
+      "D12"
+    ],
+    "reason": "Endet auf D12, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T17",
+        "Bull",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T17",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 121,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18",
+            "T17"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 62,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 42
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-141-0",
+    "kind": "miss",
+    "rest": 141,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 121,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18",
+        "T17"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-141-1",
+    "kind": "miss",
+    "rest": 141,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 62,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 42
+    }
+  },
+  {
+    "id": "r-142",
+    "kind": "rest",
+    "rest": 142,
+    "best": [
+      "T20",
+      "T14",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "Bull",
+        "D16"
+      ],
+      [
+        "Bull",
+        "T20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 122,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T17",
+            "T17"
+          ],
+          "leaves": 20
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T14",
+        "hit": "S14",
+        "newRest": 68,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 48
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-142-0",
+    "kind": "miss",
+    "rest": 142,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 122,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17",
+        "T17"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "m-142-1",
+    "kind": "miss",
+    "rest": 142,
+    "thrown": [
+      "T20",
+      "S14"
+    ],
+    "aimed": "T14",
+    "hit": "S14",
+    "newRest": 68,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 48
+    }
+  },
+  {
+    "id": "r-143",
+    "kind": "rest",
+    "rest": 143,
+    "best": [
+      "T20",
+      "T17",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T18",
+        "D16"
+      ],
+      [
+        "T18",
+        "T19",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 123,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20",
+            "S20"
+          ],
+          "leaves": 83
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 66,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 46
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-143-0",
+    "kind": "miss",
+    "rest": 143,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 123,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20",
+        "S20"
+      ],
+      "leaves": 83
+    }
+  },
+  {
+    "id": "m-143-1",
+    "kind": "miss",
+    "rest": 143,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 66,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
+    "id": "r-144",
+    "kind": "rest",
+    "rest": 144,
+    "best": [
+      "T20",
+      "T20",
+      "D12"
+    ],
+    "reason": "Endet auf D12, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T18",
+        "Bull",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T18",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 124,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T19",
+            "T17"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 64,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 44
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-144-0",
+    "kind": "miss",
+    "rest": 144,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 124,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19",
+        "T17"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-144-1",
+    "kind": "miss",
+    "rest": 144,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 64,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 44
+    }
+  },
+  {
+    "id": "r-145",
+    "kind": "rest",
+    "rest": 145,
+    "best": [
+      "T20",
+      "T19",
+      "D14"
+    ],
+    "reason": "Endet auf D14, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T15",
+        "D20"
+      ],
+      [
+        "T19",
+        "T16",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 125,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18",
+            "T17"
+          ],
+          "leaves": 20
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 66,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 46
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-145-0",
+    "kind": "miss",
+    "rest": 145,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 125,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18",
+        "T17"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "m-145-1",
+    "kind": "miss",
+    "rest": 145,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 66,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
+    "id": "r-146",
+    "kind": "rest",
+    "rest": 146,
+    "best": [
+      "T20",
+      "T18",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T19",
+        "D16"
+      ],
+      [
+        "T18",
+        "T20",
+        "D16"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 126,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T17",
+            "T17"
+          ],
+          "leaves": 24
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 68,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 48
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-146-0",
+    "kind": "miss",
+    "rest": 146,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 126,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "m-146-1",
+    "kind": "miss",
+    "rest": 146,
+    "thrown": [
+      "T20",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 68,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 48
+    }
+  },
+  {
+    "id": "r-147",
+    "kind": "rest",
+    "rest": 147,
+    "best": [
+      "T20",
+      "T17",
+      "D18"
+    ],
+    "reason": "Endet auf D18, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "Bull",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T19",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 127,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T17"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 70,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 16
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-147-0",
+    "kind": "miss",
+    "rest": 147,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 127,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-147-1",
+    "kind": "miss",
+    "rest": 147,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 70,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "r-148",
+    "kind": "rest",
+    "rest": 148,
+    "best": [
+      "T20",
+      "T20",
+      "D14"
+    ],
+    "reason": "Endet auf D14, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T16",
+        "D20"
+      ],
+      [
+        "T19",
+        "T17",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 128,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T19",
+            "T17"
+          ],
+          "leaves": 20
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 68,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 48
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-148-0",
+    "kind": "miss",
+    "rest": 148,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 128,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19",
+        "T17"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "m-148-1",
+    "kind": "miss",
+    "rest": 148,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 68,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 48
+    }
+  },
+  {
+    "id": "r-149",
+    "kind": "rest",
+    "rest": 149,
+    "best": [
+      "T20",
+      "T19",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T20",
+        "D16"
+      ],
+      [
+        "T20",
+        "T13",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 129,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18",
+            "T17"
+          ],
+          "leaves": 24
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 70,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 16
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-149-0",
+    "kind": "miss",
+    "rest": 149,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 129,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "m-149-1",
+    "kind": "miss",
+    "rest": 149,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 70,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "r-150",
+    "kind": "rest",
+    "rest": 150,
+    "best": [
+      "T20",
+      "T18",
+      "D18"
+    ],
+    "reason": "Endet auf D18, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "Bull",
+        "D20"
+      ],
+      [
+        "Bull",
+        "T20",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 130,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T18"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 72,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 52
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-150-0",
+    "kind": "miss",
+    "rest": 150,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 130,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-150-1",
+    "kind": "miss",
+    "rest": 150,
+    "thrown": [
+      "T20",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 72,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 52
+    }
+  },
+  {
+    "id": "r-151",
+    "kind": "rest",
+    "rest": 151,
+    "best": [
+      "T20",
+      "T17",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T18",
+        "D20"
+      ],
+      [
+        "T18",
+        "T19",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 131,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T17"
+          ],
+          "leaves": 20
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 74,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-151-0",
+    "kind": "miss",
+    "rest": 151,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 131,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "m-151-1",
+    "kind": "miss",
+    "rest": 151,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 74,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "r-152",
+    "kind": "rest",
+    "rest": 152,
+    "best": [
+      "T20",
+      "T20",
+      "D16"
+    ],
+    "reason": "Endet auf D16, das sich viermal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "T14",
+        "Bull"
+      ],
+      [
+        "T19",
+        "T15",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 132,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T19",
+            "T17"
+          ],
+          "leaves": 24
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 72,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 52
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-152-0",
+    "kind": "miss",
+    "rest": 152,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 132,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "m-152-1",
+    "kind": "miss",
+    "rest": 152,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 72,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 52
+    }
+  },
+  {
+    "id": "r-153",
+    "kind": "rest",
+    "rest": 153,
+    "best": [
+      "T20",
+      "T19",
+      "D18"
+    ],
+    "reason": "Endet auf D18, das sich einmal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T20",
+        "D18"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 133,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T19"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 74,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-153-0",
+    "kind": "miss",
+    "rest": 153,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 133,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-153-1",
+    "kind": "miss",
+    "rest": 153,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 74,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "r-154",
+    "kind": "rest",
+    "rest": 154,
+    "best": [
+      "T20",
+      "T18",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T19",
+        "D20"
+      ],
+      [
+        "T18",
+        "T20",
+        "D20"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 134,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T17",
+            "T17"
+          ],
+          "leaves": 32
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 76,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20"
+          ],
+          "leaves": 16
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-154-0",
+    "kind": "miss",
+    "rest": 154,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 134,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "m-154-1",
+    "kind": "miss",
+    "rest": 154,
+    "thrown": [
+      "T20",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 76,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "r-155",
+    "kind": "rest",
+    "rest": 155,
+    "best": [
+      "T20",
+      "T19",
+      "D19"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T20",
+        "T15",
+        "Bull"
+      ],
+      [
+        "T19",
+        "T16",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 135,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T17"
+          ],
+          "leaves": 24
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 76,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20"
+          ],
+          "leaves": 16
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-155-0",
+    "kind": "miss",
+    "rest": 155,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 135,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "m-155-1",
+    "kind": "miss",
+    "rest": 155,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 76,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "r-156",
+    "kind": "rest",
+    "rest": 156,
+    "best": [
+      "T20",
+      "T20",
+      "D18"
+    ],
+    "reason": "Endet auf D18, das sich einmal halbieren lässt.",
+    "alternatives": [],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 136,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T20"
+          ],
+          "leaves": 16
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 76,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20"
+          ],
+          "leaves": 16
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-156-0",
+    "kind": "miss",
+    "rest": 156,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 136,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "m-156-1",
+    "kind": "miss",
+    "rest": 156,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 76,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 16
+    }
+  },
+  {
+    "id": "r-157",
+    "kind": "rest",
+    "rest": 157,
+    "best": [
+      "T20",
+      "T19",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T19",
+        "T20",
+        "D20"
+      ],
+      [
+        "T19",
+        "Bull",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 137,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18",
+            "T17"
+          ],
+          "leaves": 32
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 78,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 24
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-157-0",
+    "kind": "miss",
+    "rest": 157,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 137,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "m-157-1",
+    "kind": "miss",
+    "rest": 157,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 78,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "r-158",
+    "kind": "rest",
+    "rest": 158,
+    "best": [
+      "T20",
+      "T20",
+      "D19"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T20",
+        "T16",
+        "Bull"
+      ],
+      [
+        "T19",
+        "T17",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 138,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T17",
+            "T17"
+          ],
+          "leaves": 36
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 78,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 24
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-158-0",
+    "kind": "miss",
+    "rest": 158,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 138,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "m-158-1",
+    "kind": "miss",
+    "rest": 158,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 78,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "b-159",
+    "kind": "bogey",
+    "rest": 159,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "r-160",
+    "kind": "rest",
+    "rest": 160,
+    "best": [
+      "T20",
+      "T20",
+      "D20"
+    ],
+    "reason": "Endet auf D20, das sich zweimal halbieren lässt.",
+    "alternatives": [
+      [
+        "T20",
+        "Bull",
+        "Bull"
+      ],
+      [
+        "Bull",
+        "T20",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 140,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T19",
+            "T17"
+          ],
+          "leaves": 32
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 80,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20"
+          ],
+          "leaves": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-160-0",
+    "kind": "miss",
+    "rest": 160,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 140,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "m-160-1",
+    "kind": "miss",
+    "rest": 160,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 80,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 20
+    }
+  },
+  {
+    "id": "r-161",
+    "kind": "rest",
+    "rest": 161,
+    "best": [
+      "T20",
+      "T17",
+      "Bull"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T19",
+        "T18",
+        "Bull"
+      ],
+      [
+        "T18",
+        "T19",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 141,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18",
+            "T17"
+          ],
+          "leaves": 36
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T17",
+        "hit": "S17",
+        "newRest": 84,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20"
+          ],
+          "leaves": 24
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-161-0",
+    "kind": "miss",
+    "rest": 161,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 141,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "m-161-1",
+    "kind": "miss",
+    "rest": 161,
+    "thrown": [
+      "T20",
+      "S17"
+    ],
+    "aimed": "T17",
+    "hit": "S17",
+    "newRest": 84,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "b-162",
+    "kind": "bogey",
+    "rest": 162,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "b-163",
+    "kind": "bogey",
+    "rest": 163,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "r-164",
+    "kind": "rest",
+    "rest": 164,
+    "best": [
+      "T20",
+      "T18",
+      "Bull"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T19",
+        "T19",
+        "Bull"
+      ],
+      [
+        "T18",
+        "T20",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 144,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T19",
+            "T17"
+          ],
+          "leaves": 36
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T18",
+        "hit": "S18",
+        "newRest": 86,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 32
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-164-0",
+    "kind": "miss",
+    "rest": 164,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 144,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "m-164-1",
+    "kind": "miss",
+    "rest": 164,
+    "thrown": [
+      "T20",
+      "S18"
+    ],
+    "aimed": "T18",
+    "hit": "S18",
+    "newRest": 86,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "b-165",
+    "kind": "bogey",
+    "rest": 165,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "b-166",
+    "kind": "bogey",
+    "rest": 166,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "r-167",
+    "kind": "rest",
+    "rest": 167,
+    "best": [
+      "T20",
+      "T19",
+      "Bull"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [
+      [
+        "T19",
+        "T20",
+        "Bull"
+      ]
+    ],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 147,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T17"
+          ],
+          "leaves": 36
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T19",
+        "hit": "S19",
+        "newRest": 88,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "S20"
+          ],
+          "leaves": 68
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-167-0",
+    "kind": "miss",
+    "rest": 167,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 147,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "m-167-1",
+    "kind": "miss",
+    "rest": 167,
+    "thrown": [
+      "T20",
+      "S19"
+    ],
+    "aimed": "T19",
+    "hit": "S19",
+    "newRest": 88,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "S20"
+      ],
+      "leaves": 68
+    }
+  },
+  {
+    "id": "b-168",
+    "kind": "bogey",
+    "rest": 168,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "b-169",
+    "kind": "bogey",
+    "rest": 169,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "r-170",
+    "kind": "rest",
+    "rest": 170,
+    "best": [
+      "T20",
+      "T20",
+      "Bull"
+    ],
+    "reason": "Kürzester Weg.",
+    "alternatives": [],
+    "singleCases": [
+      {
+        "dartIndex": 0,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 150,
+        "dartsLeft": 2,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T20",
+            "T18"
+          ],
+          "leaves": 36
+        }
+      },
+      {
+        "dartIndex": 1,
+        "aimed": "T20",
+        "hit": "S20",
+        "newRest": 90,
+        "dartsLeft": 1,
+        "follow": {
+          "kind": "setup",
+          "throws": [
+            "T18"
+          ],
+          "leaves": 36
+        }
+      }
+    ]
+  },
+  {
+    "id": "m-170-0",
+    "kind": "miss",
+    "rest": 170,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 150,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "m-170-1",
+    "kind": "miss",
+    "rest": 170,
+    "thrown": [
+      "T20",
+      "S20"
+    ],
+    "aimed": "T20",
+    "hit": "S20",
+    "newRest": 90,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 36
+    }
+  }
+]
