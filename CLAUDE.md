@@ -44,7 +44,7 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 
 - Oberfläche vollständig auf Deutsch. Keine Emojis. Icons nur aus `lucide-react` und nur, wo sie nötig sind.
 - Jede Seite hat eine Aufgabe. Die App muss schnell und übersichtlich bleiben.
-- Der beste Weg jeder Karte kommt aus der Referenztabelle (`src/lib/darts/reference.ts`). Übliche Tabellen gewinnen gegen das eigene Regelwerk, weniger Darts gewinnen immer.
+- Für die Reste 41 bis 170 gelten alle Regeln der Referenztabelle (`src/lib/darts/reference.ts`): Variante 1 als bester Weg, Variante 2 als Alternative, die Spalte „mit 2 Darts" und das Zielen zwischen zwei Feldern. Unter 41 gilt das eigene Regelwerk.
 - Kein E-Mail-Versand. Konten werden vom Betreiber manuell freigeschaltet.
 - Alles muss in kostenlosen Tarifen bleiben (Vercel Hobby, Neon Free).
 - Kein Zugriff auf Vercel, Neon oder andere fremde Dienste ohne vorherige Absprache mit dem Auftraggeber.

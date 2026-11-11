@@ -38,25 +38,22 @@ Die App ist gescheitert, auch wenn sie technisch funktioniert, wenn sie:
 
 ## Was ein „bester Weg" ist
 
-Vom Auftraggeber festgelegt, in dieser Reihenfolge wichtig:
+Stand 2026-11-11, vom Auftraggeber neu festgelegt: Es gelten alle Regeln der Referenztabelle. Die frühere Regel „weniger Darts gewinnen" entfällt.
 
-1. Weniger Darts gewinnen: Ein Weg mit zwei Darts schlägt einen mit drei, auch wenn der längere auf einem besseren Doppel endet (Rest 100: T20 · D20, nicht T20 · S8 · D16).
-2. Der Weg endet auf einem Doppel, das sich gut halbieren lässt (viele Split-Möglichkeiten: D16 vor D8 vor D4, D20, D12 usw.).
-3. Trifft man statt des Triple nur das Single, soll möglichst noch ein Finish offen bleiben, bevorzugt ein Bull-Finish.
+Referenz ist die Checkout-Tabelle von Guido Wessendorf (Universität Münster, https://www.uni-muenster.de/IT.GuidoWessendorf/checkout.html), angelehnt an „How the Pros Do It" von Ken Berman. Sie deckt die Reste 170 bis 41 ab. Aus ihr werden unverändert übernommen:
 
-Bei einem Widerspruch zwischen diesen Kriterien und den üblichen Checkout-Tabellen gewinnt die übliche Tabelle. Der Erbauer wählt dafür eine verbreitete Tabelle als Referenz, legt sie als Datei im Repository ab und nennt die Quelle (Entscheidung des Entwerfers: welche Tabelle, bleibt dem Erbauer überlassen). Der beste Weg jeder Rest-Karte entspricht dieser Referenz. Das Regelwerk liefert die Alternativen, die Begründung und die Fehlwurf-Folgewege und entscheidet dort, wo die Referenz mehrere Wege nennt.
+1. **Variante 1** ist der beste Weg mit drei Darts in der Hand, auch wenn er drei Darts braucht, wo zwei reichen würden (Rest 110: T20 · T10 · D10).
+2. **Variante 2** ist die Alternative. Nennt die Tabelle keine, zeigt die Karte keine.
+3. **„Mit 2 Darts"** ist der Weg, wenn nur noch zwei Darts in der Hand sind (Rest 110: T20 · Bull). Die Karte zeigt ihn als eigenen Hinweis, und er ist der Folgeweg, wenn nach einem Fehlwurf zwei Darts übrig sind.
+4. **Zielen zwischen zwei Felder** (Schreibweise der Tabelle „16/8", danach „D16/D20"): Man zielt auf die Grenze zweier Felder, beide Treffer lassen ein Doppel. Die Karte zeigt das so, wie die Tabelle es schreibt.
 
-Die Wege werden nicht von Hand abgeschrieben. Ein Regelwerk erzeugt für jeden Rest alle gültigen Wege mit höchstens drei Darts, bewertet sie nach den beiden Kriterien und wählt daraus:
+Für Reste unter 41 macht die Tabelle keine Vorgabe („ab hier sollte man selber klarkommen"). Dort gilt weiter das eigene Regelwerk: direkt auf das Doppel, sonst ein Single auf ein gut halbierbares Doppel. Dasselbe Regelwerk liefert die Stellwürfe, wenn kein Finish mehr möglich ist, und die Wege für Bogey-Zahlen.
 
-- den besten Weg,
-- bis zu zwei Alternativen,
-- eine kurze Begründung in einem Satz, warum der Weg der beste ist (z. B. „Bleibt bei Single 20 auf Bull-Finish").
+Jede Rest-Karte trägt eine kurze Begründung in einem Satz (z. B. „Bleibt bei Single 20 auf Bull-Finish").
 
-Ein Test stellt sicher, dass der beste Weg jedes Rests mit der Referenztabelle übereinstimmt.
+Ein Test stellt sicher, dass bester Weg, Alternative und Zwei-Dart-Weg jedes Rests von 41 bis 170 mit der Tabelle übereinstimmen.
 
 Annahme für alle Karten: drei Darts in der Hand.
-
-Die genaue Gewichtung der Bewertung ist Sache des Erbauers, solange die drei Kriterien oben in dieser Reihenfolge gelten und der Abgleich mit der Referenztabelle besteht.
 
 ## Karten
 
