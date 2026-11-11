@@ -1,6 +1,6 @@
 import { DartSlots } from "@/components/dart-slots";
 import { cn } from "@/lib/utils";
-import type { CardView } from "./card-view";
+import type { CardView, Note } from "./card-view";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -26,6 +26,22 @@ function Big({ value, compact = false }: { value: string; compact?: boolean }) {
     >
       {value}
     </p>
+  );
+}
+
+/** Erklärungen zur Auflösung, je ein Kasten mit Titel und Text. */
+export function NoteList({ notes }: { notes: Note[] }) {
+  return (
+    <dl className="flex flex-col gap-2 pt-2">
+      {notes.map((note, i) => (
+        <div key={i} className="rounded-lg bg-muted/60 px-4 py-3">
+          <dt className="text-xs font-medium tracking-[0.08em] text-muted-foreground uppercase">
+            {note.title}
+          </dt>
+          <dd className="pt-0.5 leading-snug">{note.text}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -66,18 +82,7 @@ export function StudyCard({ view, revealed }: { view: CardView; revealed: boolea
         <Big value={answer.big} compact />
       </div>
       <DartSlots slots={answer.slots} tone={answer.slotTone} missSlots={answer.missSlots} />
-      {answer.notes.length > 0 && (
-        <dl className="flex flex-col gap-2 pt-2">
-          {answer.notes.map((note, i) => (
-            <div key={i} className="rounded-lg bg-muted/60 px-4 py-3">
-              <dt className="text-xs font-medium tracking-[0.08em] text-muted-foreground uppercase">
-                {note.title}
-              </dt>
-              <dd className="pt-0.5 leading-snug">{note.text}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+      {answer.notes.length > 0 && <NoteList notes={answer.notes} />}
     </div>
   );
 }

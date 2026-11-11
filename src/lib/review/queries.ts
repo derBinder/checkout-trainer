@@ -104,3 +104,22 @@ export async function applyReview(
     return { ok: true };
   });
 }
+
+/** Rohdaten für die Statistik: alle Lernstände und Bewertungen eines Nutzers. */
+export async function loadStatsData(db: Db, userId: string) {
+  const [states, logs] = await Promise.all([
+    db
+      .select({
+        cardId: cardState.cardId,
+        state: cardState.state,
+        scheduledDays: cardState.scheduledDays,
+      })
+      .from(cardState)
+      .where(eq(cardState.userId, userId)),
+    db
+      .select({ cardId: reviewLog.cardId, rating: reviewLog.rating, reviewedAt: reviewLog.reviewedAt })
+      .from(reviewLog)
+      .where(eq(reviewLog.userId, userId)),
+  ]);
+  return { states, logs };
+}

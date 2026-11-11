@@ -1,7 +1,7 @@
-import type { Card, FollowText, SingleCase } from "@/lib/darts/cards";
+import type { BogeyCard, Card, FollowText, RestCard, SingleCase } from "@/lib/darts/cards";
 
 type Slots = (string | null)[];
-type Note = { title: string; text: string };
+export type Note = { title: string; text: string };
 
 export type CardView = {
   question: { label: string; big: string; slots: Slots; hint?: string };
@@ -43,27 +43,50 @@ function singleCaseNote(c: SingleCase): Note {
 
 const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];
 
+/** Was über einen Rest ohne Fehlwurf-Fälle zu wissen ist: Weg, Begründung, Alternativen oder der Stellwurf. */
+export type RestDetail =
+  | Pick<RestCard, "kind" | "rest" | "best" | "reason" | "alternatives">
+  | Pick<BogeyCard, "kind" | "rest" | "setup">;
+
+export type RestDetailView = { slots: Slots; slotTone: "best" | "none"; notes: Note[] };
+
+/** Auflösung eines Rests ohne die Fälle „Nur Single getroffen“ (Statistik, Kern der Rest-Karte). */
+export function restDetailView(detail: RestDetail): RestDetailView {
+  if (detail.kind === "bogey") {
+    return {
+      slots: toSlots(detail.setup.throws),
+      slotTone: "none",
+      notes: [
+        {
+          title: "Stellwurf",
+          text: `Kein Finish möglich. Stellen auf Rest ${detail.setup.leaves}.`,
+        },
+      ],
+    };
+  }
+  const notes: Note[] = [{ title: "Warum", text: detail.reason }];
+  if (detail.alternatives.length > 0) {
+    notes.push({
+      title: detail.alternatives.length === 1 ? "Alternative" : "Alternativen",
+      text: detail.alternatives.map(joinDarts).join(" oder "),
+    });
+  }
+  return { slots: toSlots(detail.best), slotTone: "best", notes };
+}
+
 /** Reine Abbildung Karte → Anzeige (Frage und Auflösung). */
 export function cardView(card: Card): CardView {
   switch (card.kind) {
     case "rest": {
-      const notes: Note[] = [{ title: "Warum", text: card.reason }];
-      if (card.alternatives.length > 0) {
-        notes.push({
-          title: card.alternatives.length === 1 ? "Alternative" : "Alternativen",
-          text: card.alternatives.map(joinDarts).join(" oder "),
-        });
-      }
-      notes.push(...card.singleCases.map(singleCaseNote));
+      const detail = restDetailView(card);
       return {
         question: { label: "Rest", big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
         answer: {
           label: "Rest",
           big: String(card.rest),
-          slots: toSlots(card.best),
-          slotTone: "best",
+          ...detail,
           missSlots: [],
-          notes,
+          notes: [...detail.notes, ...card.singleCases.map(singleCaseNote)],
         },
       };
     }
@@ -95,15 +118,8 @@ export function cardView(card: Card): CardView {
         answer: {
           label: `Rest ${card.rest}`,
           big: "Nicht checkbar",
-          slots: toSlots(card.setup.throws),
-          slotTone: "none",
+          ...restDetailView(card),
           missSlots: [],
-          notes: [
-            {
-              title: "Stellwurf",
-              text: `Kein Finish möglich. Stellen auf Rest ${card.setup.leaves}.`,
-            },
-          ],
         },
       };
   }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
-import { cardView } from "./card-view";
+import { cardView, restDetailView, type RestDetail } from "./card-view";
 
 const view = (id: string) => cardView(cardById(id)!);
 
@@ -77,5 +77,23 @@ describe("cardView", () => {
 
   it("keeps the outer bull as 25", () => {
     expect(view("r-91").answer.notes).toContainEqual({ title: "Alternative", text: "25 · T16 · D9" });
+  });
+});
+
+describe("restDetailView", () => {
+  it("shows route, reason and alternatives of a rest without the single cases", () => {
+    const detail = restDetailView(cardById("r-121") as RestDetail);
+    expect(detail.slots).toEqual(["T20", "T11", "D14"]);
+    expect(detail.slotTone).toBe("best");
+    expect(detail.notes.map((n) => n.title)).toEqual(["Warum", "Alternative"]);
+  });
+
+  it("shows the setup shot of a bogey number", () => {
+    const detail = restDetailView({ kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } });
+    expect(detail).toEqual({
+      slots: ["T20", "T19", "S20"],
+      slotTone: "none",
+      notes: [{ title: "Stellwurf", text: "Kein Finish möglich. Stellen auf Rest 32." }],
+    });
   });
 });
