@@ -1,0 +1,81 @@
+import { describe, expect, it } from "vitest";
+import { cardById } from "@/lib/cards";
+import { cardView } from "./card-view";
+
+const view = (id: string) => cardView(cardById(id)!);
+
+describe("cardView", () => {
+  it("shows a rest card as the rest with three empty slots, the answer with notes", () => {
+    const rest = view("r-121");
+    expect(rest.question).toEqual({ label: "Rest", big: "121", slots: [null, null, null] });
+    expect(rest.answer.slots).toEqual(["T20", "T11", "D14"]);
+    expect(rest.answer.notes.map((n) => n.title)).toEqual(
+      expect.arrayContaining(["Warum", "Alternative", "Nur Single 20 getroffen"]),
+    );
+  });
+
+  it("asks a miss card for the new rest and marks the miss", () => {
+    const miss = view("m-121-0");
+    expect(miss.question).toMatchObject({
+      label: "Rest war 121",
+      big: "?",
+      slots: ["S20", null, null],
+      hint: "Ziel war T20, getroffen: Single 20",
+    });
+    expect(miss.answer).toMatchObject({
+      label: "Neuer Rest",
+      big: "101",
+      slots: ["S20", "T17", "Bull"],
+      missSlots: [0],
+    });
+  });
+
+  it("asks a bogey card exactly like a rest card", () => {
+    const bogey = view("b-169");
+    expect(bogey.question).toEqual({ label: "Rest", big: "169", slots: [null, null, null] });
+    expect(bogey.answer.big).toBe("Nicht checkbar");
+    expect(bogey.answer.notes[0]).toMatchObject({ title: "Stellwurf" });
+    expect(bogey.answer.notes[0].text).toContain("Rest 32");
+  });
+
+  it("leaves unused slots empty when the route has fewer than three darts", () => {
+    const rest = view("r-100");
+    expect(rest.answer.slots).toEqual(["T20", "D20", null]);
+    expect(rest.answer.slotTone).toBe("best");
+    expect(rest.answer.missSlots).toEqual([]);
+  });
+
+  it("writes the follow-up route of a single case with darts left", () => {
+    const rest = view("r-121");
+    expect(rest.answer.notes).toContainEqual({
+      title: "Nur Single 20 getroffen",
+      text: "Rest 101, 2 Darts: T17 · Bull",
+    });
+    expect(rest.answer.notes).toContainEqual({
+      title: "Nur Single 11 getroffen",
+      text: "Rest 50, 1 Dart: Bull",
+    });
+    expect(rest.answer.notes[0]).toEqual({ title: "Warum", text: "Bleibt bei Single 20 auf Bull-Finish." });
+  });
+
+  it("joins several alternatives into one note", () => {
+    const rest = view("r-25");
+    expect(rest.answer.notes).toContainEqual({ title: "Alternativen", text: "S1 · D12 oder S17 · D4" });
+  });
+
+  it("names a setup shot as follow-up 'Kein Finish mehr'", () => {
+    const rest = view("r-125");
+    const setupCase = rest.answer.notes.find((n) => n.text.startsWith("Kein Finish mehr"));
+    expect(setupCase?.text).toMatch(/^Kein Finish mehr: .+, Rest \d+$/);
+
+    const miss = view("m-125-1");
+    expect(miss.answer.slots).toEqual(["T18", "S19", "S20"]);
+    expect(miss.answer.slotTone).toBe("none");
+    expect(miss.answer.missSlots).toEqual([1]);
+    expect(miss.answer.notes).toEqual([{ title: "Stellwurf", text: "Kein Finish mehr: S20, Rest 32" }]);
+  });
+
+  it("keeps the outer bull as 25", () => {
+    expect(view("r-91").answer.notes).toContainEqual({ title: "Alternative", text: "25 · T16 · D9" });
+  });
+});

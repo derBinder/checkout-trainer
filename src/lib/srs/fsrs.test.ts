@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { dayEnd } from "../time";
-import { formatInterval, previewIntervals, rate } from "./fsrs";
+import { formatInterval, intervalLabelChain, previewIntervals, rate } from "./fsrs";
 
 const now = new Date("2026-11-11T10:00:00Z");
 
@@ -71,5 +71,22 @@ describe("previewIntervals", () => {
     expect(formatInterval(3 * 86_400_000)).toBe("3 Tage");
     expect(formatInterval(60 * 86_400_000)).toBe("2 Monate");
     expect(formatInterval(730 * 86_400_000)).toBe("2 Jahre");
+  });
+});
+
+describe("intervalLabelChain", () => {
+  it("starts with the labels for the stored state", () => {
+    const reviewed = rate(rate(null, 3, new Date("2026-10-01T10:00:00Z")), 3, new Date("2026-10-10T10:00:00Z"));
+    const chain = intervalLabelChain(reviewed, now);
+    expect(chain[0]).toEqual(previewIntervals(reviewed, now));
+  });
+
+  it("follows each further Again until the labels stop changing", () => {
+    const reviewed = rate(rate(null, 3, new Date("2026-10-01T10:00:00Z")), 3, new Date("2026-10-10T10:00:00Z"));
+    const chain = intervalLabelChain(reviewed, now);
+    expect(chain[1]).toEqual(previewIntervals(rate(reviewed, 1, now), now));
+    expect(chain[1]).not.toEqual(chain[0]);
+    expect(chain.length).toBeLessThanOrEqual(5);
+    for (let i = 1; i < chain.length; i++) expect(chain[i]).not.toEqual(chain[i - 1]);
   });
 });

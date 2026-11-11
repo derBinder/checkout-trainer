@@ -29,6 +29,7 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
     dueCount: due.length,
     freshCount: fresh.length,
     reps: Object.fromEntries(rows.map((r) => [r.cardId, r.reps])),
+    states: Object.fromEntries(rows.map((r) => [r.cardId, r])),
   };
 }
 

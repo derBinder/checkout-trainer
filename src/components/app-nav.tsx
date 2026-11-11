@@ -29,6 +29,8 @@ const ADMIN_ITEM: NavItem = {
 export function AppNav({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   const items = isAdmin ? [...ITEMS, ADMIN_ITEM] : ITEMS;
+  // Die Lernseite hat nur eine Aufgabe und keine Navigation.
+  if (pathname === "/lernen") return null;
 
   return (
     <nav

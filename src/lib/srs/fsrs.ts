@@ -97,3 +97,25 @@ export function previewIntervals(prev: SrsState | null, now: Date): Record<Ratin
   }
   return out;
 }
+
+const MAX_LABEL_CHAIN = 5;
+
+const sameLabels = (a: Record<Rating, string>, b: Record<Rating, string>) =>
+  RATINGS.every((r) => a[r] === b[r]);
+
+/**
+ * Button labels for the stored state, then for the state after each further
+ * "Nochmal" in the same session, until they stop changing (at most five).
+ * The client picks entry min(againCount, length - 1), so it needs no scheduler.
+ */
+export function intervalLabelChain(prev: SrsState | null, now: Date): Record<Rating, string>[] {
+  const chain = [previewIntervals(prev, now)];
+  let state = prev;
+  while (chain.length < MAX_LABEL_CHAIN) {
+    state = rate(state, 1, now);
+    const next = previewIntervals(state, now);
+    if (sameLabels(next, chain[chain.length - 1])) break;
+    chain.push(next);
+  }
+  return chain;
+}

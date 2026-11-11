@@ -33,6 +33,7 @@ describe("loadQueue", () => {
     expect(q.freshCount).toBe(10);
     expect(q.cardIds).toEqual(CARD_ORDER.slice(0, 10));
     expect(q.reps).toEqual({});
+    expect(q.states).toEqual({});
   });
 
   it("drops a card after one Good and keeps it after Again", async () => {
@@ -47,6 +48,7 @@ describe("loadQueue", () => {
     expect(q2.cardIds).toContain("r-2");
     expect(q2.dueCount).toBe(1);
     expect(q2.reps["r-2"]).toBe(1);
+    expect(q2.states["r-2"]).toMatchObject({ reps: 1, due: now });
   });
 
   it("keeps an Again card in the queue on the next Berlin day", async () => {
