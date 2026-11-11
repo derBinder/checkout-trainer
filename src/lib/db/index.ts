@@ -35,6 +35,8 @@ function connect(): Db {
  * endet. Ohne das gehen beim Stoppen von `next dev` Daten verloren oder die
  * Datenbank lässt sich danach nicht mehr öffnen. Höchstens einmal pro Prozess.
  */
+const SHUTDOWN_TIMEOUT_MS = 3000;
+
 function closeOnShutdown(client: PGlite) {
   if (store.__checkoutTrainerPgliteShutdown) return;
   store.__checkoutTrainerPgliteShutdown = true;
@@ -43,10 +45,13 @@ function closeOnShutdown(client: PGlite) {
     // Doppelte Signale (Shell und `next dev` schicken beide SIGINT) ignorieren.
     if (closing) return;
     closing = true;
+    const exit = () => process.exit(signal === "SIGINT" ? 130 : 143);
+    // Falls close() nie fertig wird, trotzdem beenden (unter NEXT_EXIT_TIMEOUT_MS im dev-Skript).
+    setTimeout(exit, SHUTDOWN_TIMEOUT_MS).unref();
     client
       .close()
       .catch((error: unknown) => console.error(error))
-      .finally(() => process.exit(signal === "SIGINT" ? 130 : 143));
+      .finally(exit);
   };
   process.on("SIGINT", shutdown);
   process.on("SIGTERM", shutdown);
