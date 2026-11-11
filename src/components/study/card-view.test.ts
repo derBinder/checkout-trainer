@@ -86,6 +86,9 @@ describe("cardView", () => {
       "Nur Single 10 getroffen",
     ]);
     expect(view("r-100").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
+    // 63 und 69: die Tabelle nennt für zwei Darts denselben Weg wie Variante 1
+    expect(view("r-63").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
+    expect(view("r-69").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
   });
 
   it("shows a split route as the chart writes it", () => {

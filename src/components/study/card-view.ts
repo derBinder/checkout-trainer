@@ -71,7 +71,8 @@ export function restDetailView(detail: RestDetail): RestDetailView {
       text: detail.alternatives.map(joinDarts).join(" oder "),
     });
   }
-  if (detail.twoDarts) {
+  // Nennt die Tabelle für zwei Darts denselben Weg wie für drei, wäre der Hinweis eine Wiederholung.
+  if (detail.twoDarts && joinDarts(detail.twoDarts) !== joinDarts(detail.best)) {
     notes.push({ title: "Mit 2 Darts in der Hand", text: joinDarts(detail.twoDarts) });
   }
   return { slots: toSlots(detail.best), slotTone: "best", notes };
