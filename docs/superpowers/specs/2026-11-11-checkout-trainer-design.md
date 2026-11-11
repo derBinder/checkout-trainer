@@ -141,7 +141,13 @@ Bereitstellung: Gehört zum Bau, aber jeder Schritt an Vercel, Neon oder einem a
 
 ## Gestaltung
 
-Ruhig und typografisch. Die Zahl (der Rest) ist das größte Element auf der Lernseite. Viel Weißraum, wenig Farbe, Farbe nur mit Bedeutung (bester Weg, Fehlwurf, Lernstand). Heller und dunkler Modus. Keine Emojis, Icons nur für Navigation und wo ein Text allein nicht reicht. Die konkrete Ausarbeitung ist Sache des Erbauers mit dem Skill `frontend-design`.
+Richtung „C · Flutlicht“: hell, laut und sportlich wie eine Trainings-App. Eine einzige Schrift, Archivo, für Titel und große Zahlen in voller Stärke (900) und breit (Breitenachse etwa 112 %), für Fließtext normal breit in 400 bis 700. Die Zahl (der Rest) ist das größte Element auf der Lernseite und steht mittig im freien Raum.
+
+Farben hell: Hintergrund Weiß, Schrift fast Schwarz (#0b0b0c), Nebentext #65696e, Flächen #f3f3f5, Linien #ececee. Dunkel: Hintergrund #0b0b0c, Schrift Weiß, Flächen #1a1a1d, Linien #2a2a2e. Gelb (#ffd400) ist der einzige Akzent und steht nur als Fläche hinter schwarzer Schrift oder als Schrift und Fläche auf Schwarz, nie als Schrift auf Weiß. Rot nur für Fehler, Fehlwürfe und Löschen. Die Hauptaktion einer Seite ist hell schwarz mit gelber Schrift, dunkel gelb mit schwarzer Schrift; alle anderen Knöpfe sind ruhige Flächen.
+
+Formen: Knöpfe, Dart-Felder und Chips sind Pillen, Karten und Hinweise haben 16 px Radius, Bewertungsleiste, Sheets und Dialoge 18 px, Eingabefelder 14 px, Zellen im Statistik-Raster 10 px. Die vier Bewertungen sind eine durchgehende Leiste, „Gut“ ist als Normalfall gelb hervorgehoben. Lernstand: sicher in Schriftfarbe, im Lernen gelb, neu als Fläche, schwierig mit rotem Rand; die Textbezeichnungen bleiben, damit nichts allein an der Farbe hängt. Werte stehen als benannte Tokens im Tailwind-Theme (`src/app/globals.css`), freie Werte in eckigen Klammern gibt es nicht.
+
+Hell und dunkel sind umschaltbar: In den Einstellungen unter „Darstellung“ wählt man System (Standard), Hell oder Dunkel. Die Wahl gilt pro Gerät (localStorage) auf allen Seiten und wird vor dem ersten Zeichnen gesetzt; ohne JavaScript folgt die Seite dem System. Keine Verläufe, keine Schatten außer am Sheet, keine Emojis, Icons nur für Navigation und Schließen.
 
 ## Tests
 
