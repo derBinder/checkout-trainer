@@ -1,9 +1,9 @@
 import { asc, desc, eq, sql } from "drizzle-orm";
 import type { Auth } from "@/lib/auth";
-import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import type { SessionUser } from "@/lib/auth/guard";
 import type { Db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
+import { newPasswordSchema, validateField } from "@/lib/validation/schemas";
 
 type Result = { ok: boolean };
 
@@ -72,8 +72,7 @@ export async function setUserPassword(
   if (typeof userId !== "string" || userId === "") return { ok: false };
   if (
     typeof password !== "string" ||
-    password.length < MIN_PASSWORD_LENGTH ||
-    password.length > MAX_PASSWORD_LENGTH
+    validateField(newPasswordSchema, password) !== null
   ) {
     return { ok: false };
   }

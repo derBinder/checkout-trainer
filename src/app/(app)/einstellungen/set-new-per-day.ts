@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
-import { MAX_NEW_PER_DAY } from "@/lib/settings";
+import { newPerDaySchema, validateField } from "@/lib/validation/schemas";
 
 /**
  * Kern ohne Sitzung und ohne "use server": Die Server Action liefert die
@@ -12,12 +12,8 @@ export async function setNewPerDay(
   userId: string,
   value: unknown,
 ): Promise<{ ok: true } | { ok: false }> {
-  if (
-    typeof value !== "number" ||
-    !Number.isInteger(value) ||
-    value < 0 ||
-    value > MAX_NEW_PER_DAY
-  ) {
+  // Das Formular darf Zahlenstrings schicken, die Server Action bekommt eine Zahl.
+  if (typeof value !== "number" || validateField(newPerDaySchema, value)) {
     return { ok: false };
   }
   await db.update(user).set({ newPerDay: value }).where(eq(user.id, userId));
