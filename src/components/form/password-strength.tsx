@@ -28,7 +28,7 @@ export function PasswordStrength({
       : strengthHint(value);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="@container flex flex-col gap-2">
       <div aria-hidden className="h-2 overflow-hidden rounded-pill bg-border">
         <div
           className={cn(
@@ -41,7 +41,8 @@ export function PasswordStrength({
       <p
         id={id}
         aria-live="polite"
-        className="flex min-h-5 items-baseline justify-between gap-4 text-sm"
+        // In schmalen Dialogen bricht der Hinweis um: dort zwei Zeilen freihalten.
+        className="flex min-h-5 items-baseline justify-between gap-4 text-sm @max-xs:min-h-10"
       >
         <span className="font-bold">
           {strength ? (
