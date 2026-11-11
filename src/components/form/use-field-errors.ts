@@ -13,7 +13,7 @@ import {
   initialFieldErrors,
 } from "@/lib/validation/field-errors";
 import { validateField } from "@/lib/validation/schemas";
-import { type FieldSpec, validateValues } from "./form-values";
+import { type FieldSpec, leavesField, validateValues } from "./form-values";
 
 type FieldProps = {
   onBlur: FocusEventHandler<HTMLInputElement>;
@@ -51,12 +51,16 @@ export function useFieldErrors(fields: FieldSpec[]) {
       .filter(Boolean)
       .join(" ");
     return {
-      onBlur: (event) =>
+      onBlur: (event) => {
+        const related =
+          event.relatedTarget instanceof Element ? event.relatedTarget : null;
+        if (!leavesField(event.currentTarget.id, related)) return;
         dispatch({
           type: "blur",
           name,
           error: validate(name, event.currentTarget.value),
-        }),
+        });
+      },
       onChange: (event) =>
         dispatch({
           type: "change",

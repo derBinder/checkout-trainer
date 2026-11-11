@@ -5,7 +5,11 @@ import {
   newPasswordSchema,
   newPerDaySchema,
 } from "@/lib/validation/schemas";
-import { validateValues } from "./form-values";
+import {
+  leavesField,
+  PASSWORD_TOGGLE_ATTRIBUTE,
+  validateValues,
+} from "./form-values";
 
 const fields = [
   { name: "name", schema: nameSchema },
@@ -55,5 +59,26 @@ describe("validateValues", () => {
     expect(validateValues(perDay, { newPerDay: "12" })).toEqual({
       newPerDay: null,
     });
+  });
+});
+
+describe("leavesField", () => {
+  const toggleFor = (id: string | null) => ({
+    getAttribute: (name: string) =>
+      name === PASSWORD_TOGGLE_ATTRIBUTE ? id : null,
+  });
+
+  it("zählt den Wechsel zum eigenen Auge-Knopf nicht als Verlassen", () => {
+    expect(leavesField("pw", toggleFor("pw"))).toBe(false);
+  });
+
+  it("zählt jedes andere Ziel als Verlassen", () => {
+    expect(leavesField("pw", toggleFor("anderes"))).toBe(true);
+    expect(leavesField("pw", toggleFor(null))).toBe(true);
+    expect(leavesField("pw", null)).toBe(true);
+  });
+
+  it("zählt ohne Feld-ID immer als Verlassen", () => {
+    expect(leavesField("", toggleFor(""))).toBe(true);
   });
 });

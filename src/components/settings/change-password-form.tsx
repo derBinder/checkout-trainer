@@ -29,6 +29,8 @@ export function ChangePasswordForm() {
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [pending, setPending] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  // Neuer Schlüssel nach Erfolg: Die Felder starten wieder verborgen.
+  const [fieldsKey, setFieldsKey] = useState(0);
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
   const newPasswordProps = fieldProps("newPassword", "newPassword-hint");
@@ -52,6 +54,7 @@ export function ChangePasswordForm() {
         formElement.reset();
         reset();
         setNewPassword("");
+        setFieldsKey((key) => key + 1);
         setMessage({ text: "Passwort geändert. Andere Geräte sind abgemeldet.", ok: true });
       }
     } catch {
@@ -71,6 +74,7 @@ export function ChangePasswordForm() {
         <Field>
           <FieldLabel htmlFor="currentPassword">Aktuelles Passwort</FieldLabel>
           <PasswordInput
+            key={fieldsKey}
             id="currentPassword"
             name="currentPassword"
             autoComplete="current-password"
@@ -84,6 +88,7 @@ export function ChangePasswordForm() {
         <Field>
           <FieldLabel htmlFor="newPassword">Neues Passwort</FieldLabel>
           <PasswordInput
+            key={fieldsKey}
             id="newPassword"
             name="newPassword"
             autoComplete="new-password"

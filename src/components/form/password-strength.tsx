@@ -40,11 +40,12 @@ export function PasswordStrength({
       </div>
       <p
         id={id}
-        aria-live="polite"
         // In schmalen Dialogen bricht der Hinweis um: dort zwei Zeilen freihalten.
         className="flex min-h-5 items-baseline justify-between gap-4 text-sm @max-xs:min-h-10"
       >
-        <span className="font-bold">
+        {/* Nur die Stufe wird angesagt; der Hinweis ändert sich bei jedem
+            Zeichen und wird über aria-describedby gelesen. */}
+        <span aria-live="polite" aria-atomic="true" className="font-bold">
           {strength ? (
             <>
               <span className="sr-only">Stärke: </span>
