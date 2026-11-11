@@ -7,7 +7,7 @@ import { NoteList } from "@/components/study/study-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SWATCH } from "./level-style";
+import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SAMPLE } from "./level-style";
 
 type RestSheetProps = {
   details: Record<number, RestDetail>;
@@ -58,7 +58,7 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
           Rest {detail.rest}
         </SheetTitle>
         <SheetDescription className="flex items-center gap-2 text-sm font-medium">
-          <span aria-hidden className={cn(LEVEL_SWATCH, LEVEL_CELL[level])} />
+          <span aria-hidden className={cn(LEVEL_SAMPLE, LEVEL_CELL[level])} />
           Lernstand: {LEVEL_LABEL[level]}
         </SheetDescription>
       </SheetHeader>

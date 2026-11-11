@@ -98,7 +98,8 @@
   /* #777b80 aus dem Entwurf erreicht auf Weiß nur 4,3 : 1; so 5,5 : 1 auf Weiß, 5,0 : 1 auf --muted. */
   --muted-foreground: #65696e;
   --border: #ececee;
-  --input: #d4d5d8;
+  /* Rand von Eingabefeldern und „neu“-Zellen: mindestens 3 : 1 auf Weiß und auf --muted. */
+  --input: #85888d;
   --accent: #ffd400;
   --accent-foreground: #0b0b0c;
   /* Zweitschrift auf Gelb (5,9 : 1). */
@@ -119,7 +120,7 @@
   --destructive: #c62f22;
   --destructive-foreground: #ffffff;
 
-  --level-new: var(--muted);
+  --level-new: var(--background);
   --level-learning: var(--accent);
   --level-known: var(--foreground);
   --level-weak: var(--destructive);
@@ -132,7 +133,7 @@
     --muted: #1a1a1d;
     --muted-foreground: #9a9ea4;
     --border: #2a2a2e;
-    --input: #3a3a3f;
+    --input: #6b6f75;
 
     --primary: var(--accent);
     --primary-foreground: #0b0b0c;

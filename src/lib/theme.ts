@@ -33,23 +33,32 @@ export function themeAttribute(setting: ThemeSetting): Theme | null {
 }
 
 /**
+ * Farbe der Browserleiste bei fester Wahl; null bei „System“. Dann gelten die
+ * beiden theme-color-Zeilen von Next (viewport in layout.tsx), je eine pro
+ * Systemeinstellung.
+ */
+export function themeChoiceColor(setting: ThemeSetting): string | null {
+  return setting === "system" ? null : THEME_COLORS[setting];
+}
+
+/** Eigene theme-color-Zeile für eine feste Wahl. Der Browser nimmt die erste passende Zeile. */
+export const THEME_CHOICE_META_ID = "theme-color-choice";
+
+/**
  * Läuft im <head> vor dem ersten Zeichnen (siehe layout.tsx) und tut dasselbe
- * wie die Funktionen oben: data-theme setzen und jede theme-color-Zeile auf die
- * Farbe stellen, die bei ihrer Systemeinstellung gilt. Next schreibt diese
- * Zeilen erst nach dem Skript in den <head>, daher ein zweiter Durchgang bei
- * DOMContentLoaded. Der Test führt das Skript aus und vergleicht es mit resolveTheme.
+ * wie die Funktionen oben: data-theme setzen und bei fester Wahl eine eigene
+ * theme-color-Zeile einfügen. Sie landet vor den Zeilen von Next, die erst nach
+ * dem Skript geparst werden, und geht damit vor. Die Zeilen von Next bleiben
+ * unberührt, sonst fügt React beim Hydrieren eine zweite ein. Der Test führt
+ * das Skript aus und vergleicht es mit resolveTheme.
  */
 export const themeInitScript = `(function(){try{
 var s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});
-if(s!=="light"&&s!=="dark")s="system";
-var r=document.documentElement;
-if(s==="system")r.removeAttribute("data-theme");else r.setAttribute("data-theme",s);
-var c=${JSON.stringify(THEME_COLORS)};
-function f(){
-var m=document.querySelectorAll('meta[name="theme-color"]');
-for(var i=0;i<m.length;i++){
-var d=/dark/.test(m[i].getAttribute("media")||"");
-m[i].setAttribute("content",c[s==="system"?(d?"dark":"light"):s]);
-}}
-f();document.addEventListener("DOMContentLoaded",f);
+if(s!=="light"&&s!=="dark")return;
+document.documentElement.setAttribute("data-theme",s);
+var m=document.createElement("meta");
+m.id=${JSON.stringify(THEME_CHOICE_META_ID)};
+m.name="theme-color";
+m.content=${JSON.stringify(THEME_COLORS)}[s];
+document.head.appendChild(m);
 }catch(e){}})()`;

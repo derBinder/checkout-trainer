@@ -29,7 +29,7 @@ export function DartSlots({ slots, tone, missSlots = [] }: DartSlotsProps) {
             key={i}
             className={cn(
               "flex h-13 basis-1/3 items-center justify-center rounded-pill font-heading text-lg font-extrabold tabular-nums",
-              dart === null && "border-2 border-dashed border-input text-muted-foreground",
+              dart === null && "border-2 border-dashed border-input/50 text-muted-foreground",
               dart !== null && "bg-muted text-foreground",
               dart !== null && tone === "best" && "bg-primary text-primary-foreground",
               miss && "bg-destructive text-destructive-foreground",

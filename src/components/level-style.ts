@@ -6,15 +6,21 @@ export const LEVEL_LABEL: Record<Level, string> = {
   new: "neu",
 };
 
-/** Farbe eines Rests nach Lernstand: neu Fläche, im Lernen Gelb, sicher voll in Schriftfarbe. */
+/**
+ * Lernstand eines Rests, nicht nur über die Farbe unterscheidbar:
+ *   neu        umrandet, ohne Füllung, Zahl in normaler Stärke
+ *   im Lernen  gelbe Fläche
+ *   sicher     Fläche in Schriftfarbe mit kurzem Strich unter der Zahl
+ */
 export const LEVEL_CELL: Record<Level, string> = {
-  new: "bg-level-new text-foreground",
+  new: "border border-input bg-level-new font-normal text-foreground",
   learning: "bg-level-learning text-accent-foreground",
-  known: "bg-level-known text-background",
+  known:
+    "relative bg-level-known text-background after:absolute after:bottom-1 after:left-1/2 after:h-0.5 after:w-3 after:-translate-x-1/2 after:rounded-pill after:bg-background",
 };
 
-/** Kleines Farbfeld der Legende; der Rand hält „neu“ auf hellem Grund sichtbar. */
-export const LEVEL_SWATCH = "size-3 shrink-0 rounded-pill ring-1 ring-inset ring-foreground/20";
+/** Muster der Legende: dieselbe Zelle in klein, damit Legende und Raster übereinstimmen. */
+export const LEVEL_SAMPLE = "inline-block h-4 w-5 shrink-0 rounded-cell";
 
 /** Markierung der schwierigsten Reste. */
 export const WEAK_RING = "ring-2 ring-inset ring-level-weak";

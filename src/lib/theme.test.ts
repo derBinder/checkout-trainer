@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   THEME_COLORS,
   THEME_SETTINGS,
+  THEME_CHOICE_META_ID,
   THEME_STORAGE_KEY,
   parseThemeSetting,
   resolveTheme,
   themeAttribute,
+  themeChoiceColor,
   themeInitScript,
   type ThemeSetting,
 } from "./theme";
@@ -45,28 +47,14 @@ describe("themeAttribute", () => {
 /** Minimal DOM, just what the inline script touches. */
 function runScript(stored: string | null, opts: { storageThrows?: boolean } = {}) {
   const attrs = new Map<string, string>();
-  const metas = [
-    { media: "(prefers-color-scheme: light)", content: "x" },
-    { media: "(prefers-color-scheme: dark)", content: "x" },
-  ].map((m) => ({
-    getAttribute: (name: string) => (name === "media" ? m.media : null),
-    setAttribute: (name: string, value: string) => {
-      if (name === "content") m.content = value;
-    },
-    get content() {
-      return m.content;
-    },
-  }));
-  const onReady: (() => void)[] = [];
+  const added: { id: string; name: string; content: string }[] = [];
   const document = {
-    addEventListener: (type: string, fn: () => void) => {
-      if (type === "DOMContentLoaded") onReady.push(fn);
-    },
     documentElement: {
       setAttribute: (k: string, v: string) => attrs.set(k, v),
       removeAttribute: (k: string) => attrs.delete(k),
     },
-    querySelectorAll: (selector: string) => (selector === 'meta[name="theme-color"]' ? metas : []),
+    createElement: () => ({ id: "", name: "", content: "" }),
+    head: { appendChild: (el: { id: string; name: string; content: string }) => added.push(el) },
   };
   const localStorage = {
     getItem: (key: string) => {
@@ -75,11 +63,24 @@ function runScript(stored: string | null, opts: { storageThrows?: boolean } = {}
     },
   };
   new Function("document", "localStorage", themeInitScript)(document, localStorage);
-  // Die Meta-Zeilen entstehen erst nach dem Skript: so tun, als kämen sie jetzt dazu.
-  for (const m of metas) m.setAttribute("content", "x");
-  for (const fn of onReady) fn();
-  return { attr: attrs.get("data-theme") ?? null, metaColors: metas.map((m) => m.content) };
+  return { attr: attrs.get("data-theme") ?? null, added };
 }
+
+/**
+ * Farbe der Browserleiste: Der Browser nimmt die erste passende theme-color-Zeile.
+ * Die Zeile des Skripts steht vor denen von Next (eine pro Systemeinstellung).
+ */
+function effectiveColor(added: { content: string }[], prefersDark: boolean) {
+  return added[0]?.content ?? THEME_COLORS[prefersDark ? "dark" : "light"];
+}
+
+describe("themeChoiceColor", () => {
+  it("is only set for an explicit choice", () => {
+    expect(themeChoiceColor("system")).toBeNull();
+    expect(themeChoiceColor("light")).toBe(THEME_COLORS.light);
+    expect(themeChoiceColor("dark")).toBe(THEME_COLORS.dark);
+  });
+});
 
 describe("themeInitScript", () => {
   const cases: [string | null, ThemeSetting][] = [
@@ -91,17 +92,19 @@ describe("themeInitScript", () => {
   ];
 
   it.each(cases)("stored %s behaves like %s", (stored, setting) => {
-    const { attr, metaColors } = runScript(stored);
+    const { attr, added } = runScript(stored);
     expect(attr).toBe(themeAttribute(setting));
-    // Erst die Meta-Zeile für helles, dann für dunkles System.
-    expect(metaColors).toEqual([
-      THEME_COLORS[resolveTheme(setting, false)],
-      THEME_COLORS[resolveTheme(setting, true)],
-    ]);
+    // Die Zeilen von Next bleiben unberührt; das Skript fügt höchstens eine eigene hinzu.
+    expect(added.length).toBe(setting === "system" ? 0 : 1);
+    for (const el of added) {
+      expect(el).toMatchObject({ id: THEME_CHOICE_META_ID, name: "theme-color" });
+    }
+    expect(effectiveColor(added, false)).toBe(THEME_COLORS[resolveTheme(setting, false)]);
+    expect(effectiveColor(added, true)).toBe(THEME_COLORS[resolveTheme(setting, true)]);
   });
 
   it("does nothing when storage is unavailable", () => {
     expect(() => runScript(null, { storageThrows: true })).not.toThrow();
-    expect(runScript(null, { storageThrows: true }).attr).toBeNull();
+    expect(runScript(null, { storageThrows: true })).toEqual({ attr: null, added: [] });
   });
 });

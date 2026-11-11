@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SWATCH, WEAK_RING } from "@/components/level-style";
+import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SAMPLE, WEAK_RING } from "@/components/level-style";
 import { CELL_BASE, RestGrid } from "@/components/rest-grid";
 import { RestSheet } from "@/components/rest-sheet";
 import type { RestDetail } from "@/components/study/card-view";
@@ -47,8 +47,8 @@ export default async function StatsPage() {
       <dl className="grid grid-cols-3 gap-2">
         {COUNT_ORDER.map((level) => (
           <div key={level} className="flex flex-col gap-2">
-            <dt className="type-label order-2 flex items-center gap-1.5">
-              <span aria-hidden className={cn(LEVEL_SWATCH, LEVEL_CELL[level])} />
+            <dt className="type-label order-2 flex items-center gap-1.5 whitespace-nowrap">
+              <span aria-hidden className={cn(LEVEL_SAMPLE, LEVEL_CELL[level])} />
               {LEVEL_LABEL[level]}
             </dt>
             <dd className="type-display text-5xl tabular-nums">

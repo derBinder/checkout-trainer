@@ -21,7 +21,7 @@ export function ThemeSwitch({ labelledBy }: { labelledBy: string }) {
       {OPTIONS.map(({ value, label }) => (
         <label
           key={value}
-          className="flex h-12 cursor-pointer items-center justify-center rounded-field text-sm font-semibold text-muted-foreground transition-colors select-none hover:text-foreground has-checked:bg-accent has-checked:text-accent-foreground has-focus-visible:outline-2 has-focus-visible:outline-ring"
+          className="flex h-12 cursor-pointer items-center justify-center rounded-field text-sm font-semibold text-muted-foreground transition-colors select-none hover:text-foreground has-checked:bg-accent has-checked:font-bold has-checked:text-accent-foreground has-focus-visible:outline-2 has-focus-visible:outline-ring"
         >
           <input
             type="radio"
