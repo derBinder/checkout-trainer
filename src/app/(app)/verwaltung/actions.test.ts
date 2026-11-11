@@ -68,6 +68,12 @@ describe("setUserStatus", () => {
     expect(await statusOf(id)).toBe("active");
   });
 
+  it("lehnt eine wartende Registrierung ab (pending auf blocked)", async () => {
+    const id = await register("a@x.test");
+    expect(await setUserStatus(db, auth, admin, id, "blocked")).toEqual({ ok: true });
+    expect(await statusOf(id)).toBe("blocked");
+  });
+
   it("beendet beim Sperren alle Sitzungen und erlaubt danach keine Anmeldung", async () => {
     const id = await register("a@x.test", "active");
     await auth.api.signInEmail({ body: { email: "a@x.test", password: OLD } });

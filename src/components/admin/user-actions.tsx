@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
   changeUserPassword,
   changeUserStatus,
@@ -56,9 +56,7 @@ export function UserActions({ userId, name, status }: Props) {
       try {
         const { ok } = await changeUserPassword(userId, password);
         if (!ok) {
-          setDialogError(
-            `Das Passwort wurde nicht gesetzt. Es braucht mindestens ${MIN_PASSWORD_LENGTH} Zeichen.`,
-          );
+          setDialogError("Das Passwort wurde nicht gesetzt.");
           return;
         }
         setOpen(false);
@@ -72,15 +70,17 @@ export function UserActions({ userId, name, status }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
-        {status === "active" ? (
-          <Button variant="destructive" size="lg" disabled={pending} onClick={() => changeStatus("blocked")}>
-            Sperren
-          </Button>
-        ) : (
+        {status !== "active" ? (
           <Button size="lg" disabled={pending} onClick={() => changeStatus("active")}>
             {status === "blocked" ? "Entsperren" : "Freischalten"}
           </Button>
-        )}
+        ) : null}
+        {/* Auch eine wartende Registrierung lässt sich so ablehnen. */}
+        {status !== "blocked" ? (
+          <Button variant="destructive" size="lg" disabled={pending} onClick={() => changeStatus("blocked")}>
+            Sperren
+          </Button>
+        ) : null}
         <AlertDialog open={open} onOpenChange={handleOpenChange}>
           <AlertDialogTrigger render={<Button variant="outline" size="lg" disabled={pending} />}>
             Passwort setzen
@@ -102,6 +102,7 @@ export function UserActions({ userId, name, status }: Props) {
                   type="password"
                   autoComplete="new-password"
                   minLength={MIN_PASSWORD_LENGTH}
+                  maxLength={MAX_PASSWORD_LENGTH}
                   required
                 />
                 <FieldDescription>Mindestens {MIN_PASSWORD_LENGTH} Zeichen.</FieldDescription>

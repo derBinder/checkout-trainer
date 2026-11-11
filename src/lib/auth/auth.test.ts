@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
 import { user } from "../db/schema";
+import { AUTH_MESSAGES } from "./constants";
 import { createAuth, seedAdmin } from "./index";
 
 const OPERATOR = "betreiber@checkout-trainer.test";
@@ -80,6 +81,19 @@ describe("Registrierung", () => {
     await expect(signUp(OPERATOR)).rejects.toThrow();
     await expect(signUp("Betreiber@Checkout-Trainer.Test")).rejects.toThrow();
     expect(await userRow(OPERATOR)).toBeUndefined();
+  });
+
+  it("verweigert in Produktion ohne ADMIN_EMAIL jede Registrierung", async () => {
+    vi.stubEnv("ADMIN_EMAIL", undefined);
+    vi.stubEnv("NODE_ENV", "production");
+    await expect(signUp("g@example.test")).rejects.toThrow(AUTH_MESSAGES.signUpClosed);
+    expect(await userRow("g@example.test")).toBeUndefined();
+  });
+
+  it("erlaubt ohne ADMIN_EMAIL außerhalb der Produktion die Registrierung", async () => {
+    vi.stubEnv("ADMIN_EMAIL", undefined);
+    vi.stubEnv("NODE_ENV", "development");
+    await expect(signUp("h@example.test")).resolves.toBeDefined();
   });
 
   it("lehnt ein Passwort mit 9 Zeichen ab, nimmt 10 an", async () => {

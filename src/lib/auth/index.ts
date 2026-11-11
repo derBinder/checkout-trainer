@@ -10,8 +10,12 @@ import { AUTH_MESSAGES, MIN_PASSWORD_LENGTH } from "./constants";
 
 export { MIN_PASSWORD_LENGTH } from "./constants";
 
+function operatorEmail(): string | undefined {
+  return process.env.ADMIN_EMAIL?.trim().toLowerCase() || undefined;
+}
+
 function isOperatorEmail(email: unknown): boolean {
-  const operator = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const operator = operatorEmail();
   return (
     !!operator &&
     typeof email === "string" &&
@@ -51,6 +55,17 @@ export function createAuth(database: Db) {
     },
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
+        // Ohne ADMIN_EMAIL ließe sich die Betreiberadresse nicht schützen:
+        // in Produktion dann keine öffentliche Registrierung (fail closed).
+        if (
+          ctx.path === "/sign-up/email" &&
+          !operatorEmail() &&
+          process.env.NODE_ENV === "production"
+        ) {
+          throw new APIError("FORBIDDEN", {
+            message: AUTH_MESSAGES.signUpClosed,
+          });
+        }
         if (ctx.path === "/sign-up/email" && isOperatorEmail(ctx.body?.email)) {
           throw new APIError("BAD_REQUEST", {
             message: AUTH_MESSAGES.operatorEmail,

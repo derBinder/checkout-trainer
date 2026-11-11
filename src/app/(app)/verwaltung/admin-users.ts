@@ -1,12 +1,9 @@
 import { asc, desc, eq, sql } from "drizzle-orm";
 import type { Auth } from "@/lib/auth";
-import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import type { SessionUser } from "@/lib/auth/guard";
 import type { Db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
-
-// Entspricht dem Standardlimit von Better Auth (maxPasswordLength).
-export const MAX_PASSWORD_LENGTH = 128;
 
 type Result = { ok: boolean };
 
