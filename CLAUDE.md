@@ -4,7 +4,7 @@ Deutschsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per
 
 @AGENTS.md
 
-Die Datei [AGENTS.md](AGENTS.md) enthält den Index der lokalen Next.js-Dokumentation unter `.next-docs/`. Das Projekt läuft auf Next.js 16: Vor jeder Arbeit an Next.js-Code dort nachlesen, nicht aus der Erinnerung an ältere Versionen arbeiten.
+Die Datei [AGENTS.md](AGENTS.md) wird von `next dev` bei jedem Start aktualisiert und verweist auf die zur installierten Version passende Next.js-Dokumentation unter `node_modules/next/dist/docs/`. Das Projekt läuft auf Next.js 16: Vor jeder Arbeit an Next.js-Code dort nachlesen, nicht aus der Erinnerung an ältere Versionen arbeiten. Ändert ein Start die Datei, wird sie mit committet.
 
 ## Dokumente
 
