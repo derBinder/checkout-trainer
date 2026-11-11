@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { StreakChip } from "@/components/streak-chip";
+import { MoreCardsButton } from "@/components/today/more-cards-button";
 import { buttonVariants } from "@/components/ui/button";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
@@ -20,7 +21,7 @@ function Count({ value, label }: { value: number; label: string }) {
 export default async function TodayPage() {
   const user = await requireActiveUser();
   const now = new Date();
-  const [{ dueCount, freshCount }, { states, logs }] = await Promise.all([
+  const [{ dueCount, freshCount, unseenCount }, { states, logs }] = await Promise.all([
     loadQueue(db, user, now),
     loadStatsData(db, user.id),
   ]);
@@ -36,7 +37,15 @@ export default async function TodayPage() {
       </div>
 
       {nothingToDo ? (
-        <p className="text-lg font-medium text-muted-foreground">Für heute bist du fertig.</p>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-1">
+            <p className="text-lg font-medium text-muted-foreground">Für heute bist du fertig.</p>
+            {unseenCount === 0 ? (
+              <p className="text-sm text-muted-foreground">Du hast alle Karten begonnen.</p>
+            ) : null}
+          </div>
+          {unseenCount > 0 ? <MoreCardsButton /> : null}
+        </div>
       ) : (
         <dl className="flex gap-10">
           <Count value={dueCount} label="fällig" />
