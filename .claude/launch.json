@@ -4,8 +4,30 @@
     {
       "name": "checkout-trainer",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "checkout-trainer-3001",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "BETTER_AUTH_URL=http://localhost:3001 npm run dev -- -p 3001"
+      ],
+      "port": 3001,
+      "autoPort": false
+    },
+    {
+      "name": "checkout-trainer-prod",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "BETTER_AUTH_URL=http://localhost:3110 npx next start -p 3110"
+      ],
+      "port": 3110
     }
   ]
 }

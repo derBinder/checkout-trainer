@@ -31,6 +31,12 @@ npm run db:seed-admin  # Betreiberkonto aus ADMIN_EMAIL / ADMIN_INITIAL_PASSWORD
 
 Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`. Ist die lokale Datenbank beschädigt: `.data/pglite` löschen, dann `db:migrate` und `db:seed-admin`.
 
+### Testkonto für den Browser
+
+- Lokales Konto `testnutzer@checkout-trainer.test` mit Betreiberrolle (sieht alle Tabs inklusive Verwaltung). Passwort in `.data/test-user.json` (gitignored), nie in committete Dateien schreiben.
+- Angelegt mit `seedAdmin` aus `src/lib/auth` (Status aktiv, keine Freischaltung nötig). Wird `.data/pglite` gelöscht, ist das Konto weg: neu anlegen und `.data/test-user.json` aktualisieren. PGlite erlaubt nur einen Prozess, dafür den Dev-Server vorher anhalten.
+- Ist Port 3000 belegt, über den Launch-Eintrag `checkout-trainer-3001` starten. Er setzt `BETTER_AUTH_URL` auf Port 3001, sonst lehnt Better Auth die Anmeldung mit „Invalid origin" ab.
+
 ## Aufbau
 
 - `src/lib/darts/`: Dart-Modell, Aufzählung und Bewertung der Wege, Referenztabelle, Kartenerzeugung. Reine Logik.

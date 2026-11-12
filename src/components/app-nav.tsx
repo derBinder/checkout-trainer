@@ -64,14 +64,14 @@ function NavLink({ item: { href, label, icon: Icon } }: { item: NavItem }) {
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground -outline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",
+        "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground -outline-offset-4 hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",
         active && "text-foreground md:bg-primary md:text-primary-foreground md:hover:text-primary-foreground",
       )}
     >
       {/* Aktiv: Symbol in einer Pille der Hauptaktion (hell schwarz mit Gelb, dunkel Gelb mit Schwarz). */}
       <span
         className={cn(
-          "flex h-8 w-14 items-center justify-center rounded-pill transition-colors md:hidden",
+          "flex h-8 w-14 items-center justify-center rounded-pill md:hidden",
           active && "bg-primary text-primary-foreground",
         )}
       >
