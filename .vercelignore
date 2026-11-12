@@ -1,5 +1,5 @@
 # Nicht hochladen bei `vercel deploy` (direkte Bereitstellung ohne Git):
-# lokale Datenbank mit Testkonten, Umgebungsdateien, Arbeitsdateien.
+# lokale Datenbank mit Testkonten, Umgebungsdateien, Arbeitsdateien, Arbeitsbäume (.claude).
 .data
 .env*
 !.env.example
@@ -9,3 +9,4 @@
 docs/superpowers
 .next
 node_modules
+.claude
