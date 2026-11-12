@@ -1,27 +1,34 @@
 import { DartSlots } from "@/components/dart-slots";
+import type { Answer, Verdict } from "@/lib/darts/judge";
 import type { CardView, Note } from "./card-view";
+import { VerdictLine } from "./verdict";
 
 /** Beschriftung über der Zahl; das Skeleton der Fragenansicht übernimmt die Schrift. */
 export const EYEBROW = "type-label text-center";
 
-/** Die Zahl der Fragenansicht (bis drei Ziffern); das Skeleton übernimmt die Schrift. */
-export const BIG_NUMERAL = "type-display text-center tabular-nums text-numeral";
+/** Die Zahl der Fragenansicht über dem Tastenfeld; das Skeleton übernimmt die Schrift. */
+export const BIG_NUMERAL = "type-display text-center tabular-nums text-numeral-input";
+
+/** Kleine Beschriftung über einer Reihe Felder in der Auflösung. */
+const ROW_LABEL = "type-label";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return <p className={EYEBROW}>{children}</p>;
 }
 
-/** Die Zahl, nach der gefragt wird: das größte Element der Seite. */
-function Big({ value, compact = false }: { value: string; compact?: boolean }) {
+/** Die Zahl der Auflösung; ein Wort („Nicht checkbar“) kleiner. */
+function Big({ value, withResult }: { value: string; withResult: boolean }) {
   const word = value.length > 3;
   return (
     <p
       className={
         word
-          ? "type-display text-center tabular-nums py-2 text-5xl leading-none"
-          : compact
-            ? "type-display text-center tabular-nums text-numeral-compact"
-            : BIG_NUMERAL
+          ? withResult
+            ? "type-display text-center text-4xl leading-none"
+            : "type-display text-center tabular-nums py-1 text-5xl leading-none"
+          : withResult
+            ? "type-display text-center tabular-nums text-numeral-result"
+            : "type-display text-center tabular-nums text-numeral-compact"
       }
     >
       {value}
@@ -29,58 +36,79 @@ function Big({ value, compact = false }: { value: string; compact?: boolean }) {
   );
 }
 
-/** Erklärungen zur Auflösung, je ein Block mit Titel und Text. */
-export function NoteList({ notes }: { notes: Note[] }) {
+/**
+ * Erklärungen zur Auflösung, je ein Block mit Titel und Text. Kompakt (Lernkarte):
+ * Titel und Text in einer Zeile, damit die Auflösung ohne Scrollen passt.
+ */
+export function NoteList({ notes, compact = false }: { notes: Note[]; compact?: boolean }) {
   return (
-    <dl className="flex flex-col gap-2">
-      {notes.map((note, i) => (
-        <div key={i} className="rounded-card bg-muted px-4 py-3">
-          <dt className="type-label tracking-widest">{note.title}</dt>
-          <dd className="pt-1 text-base leading-snug font-medium">{note.text}</dd>
-        </div>
-      ))}
+    <dl className={compact ? "flex flex-col gap-1.5" : "flex flex-col gap-2"}>
+      {notes.map((note, i) =>
+        compact ? (
+          <div key={i} className="flex items-baseline gap-3 rounded-card bg-muted px-4 py-2">
+            <dt className="type-label shrink-0 tracking-widest">{note.title}</dt>
+            <dd className="text-base leading-snug font-medium">{note.text}</dd>
+          </div>
+        ) : (
+          <div key={i} className="rounded-card bg-muted px-4 py-3">
+            <dt className="type-label tracking-widest">{note.title}</dt>
+            <dd className="pt-1 text-base leading-snug font-medium">{note.text}</dd>
+          </div>
+        ),
+      )}
     </dl>
   );
 }
 
-/** Frage oder Auflösung einer Karte, ohne Bedienelemente. */
-export function StudyCard({ view, revealed }: { view: CardView; revealed: boolean }) {
-  if (!revealed) {
-    const { question } = view;
-    // Fehlwurf-Karte: erst der Wurf und was passiert ist, dann die Frage nach dem neuen Rest.
-    if (question.hint) {
-      return (
-        <div className="flex flex-col gap-4">
-          <Eyebrow>{question.label}</Eyebrow>
-          <DartSlots slots={question.slots} missSlots={view.answer.missSlots} />
-          <p className="text-center font-medium text-muted-foreground">{question.hint}</p>
-          <div className="flex flex-col gap-2 pt-6">
-            <Eyebrow>{view.answer.label}</Eyebrow>
-            <Big value={question.big} />
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Eyebrow>{question.label}</Eyebrow>
-          <Big value={question.big} />
-        </div>
-        <DartSlots slots={question.slots} />
-      </div>
-    );
-  }
+/** Ergebnis der Eingabe: wie geprüft, was eingegeben war, welche Darts schon feststanden. */
+export type StudyResult = { verdict: Verdict; answer: Answer; fixed: string[] };
 
-  const { answer } = view;
+/** „Dein Weg“: die eingegebenen Darts in neutraler Farbe, oder „Nicht checkbar“. */
+function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: number[] }) {
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1.5">
+      <p className={ROW_LABEL}>Dein Weg</p>
+      {result.answer.kind === "notCheckable" ? (
+        <p className="flex h-11 items-center justify-center rounded-pill bg-muted font-heading text-base font-extrabold">
+          Nicht checkbar
+        </p>
+      ) : (
+        <DartSlots slots={[...result.fixed, ...result.answer.darts]} tone="none" missSlots={missSlots} size="sm" />
+      )}
+    </div>
+  );
+}
+
+/** Auflösung einer Karte, ohne Bedienelemente; mit Ergebnis, wenn eine Antwort eingegeben war. */
+export function StudyCard({ view, result }: { view: CardView; result?: StudyResult }) {
+  const { answer } = view;
+  const slots = (
+    <DartSlots
+      slots={answer.slots}
+      tone={answer.slotTone}
+      missSlots={answer.missSlots}
+      size={result ? "sm" : undefined}
+    />
+  );
+  return (
+    <div className={result ? "flex flex-col gap-3" : "flex flex-col gap-5"}>
+      <div className="flex flex-col gap-1">
         <Eyebrow>{answer.label}</Eyebrow>
-        <Big value={answer.big} compact />
+        <Big value={answer.big} withResult={result !== undefined} />
       </div>
-      <DartSlots slots={answer.slots} tone={answer.slotTone} missSlots={answer.missSlots} />
-      {answer.notes.length > 0 && <NoteList notes={answer.notes} />}
+      {result ? (
+        <>
+          <VerdictLine verdict={result.verdict} />
+          <YourRoute result={result} missSlots={answer.missSlots} />
+          <div className="flex flex-col gap-1.5">
+            <p className={ROW_LABEL}>{answer.slotTone === "best" ? "Bester Weg" : "Stellwurf"}</p>
+            {slots}
+          </div>
+        </>
+      ) : (
+        slots
+      )}
+      {answer.notes.length > 0 && <NoteList notes={answer.notes} compact />}
     </div>
   );
 }

@@ -78,17 +78,17 @@ describe("cardView", () => {
   it("adds the chart's two-dart route as its own note", () => {
     const rest = view("r-110");
     expect(rest.answer.slots).toEqual(["T20", "T10", "D10"]);
-    expect(rest.answer.notes).toContainEqual({ title: "Mit 2 Darts in der Hand", text: "T20 · Bull" });
+    expect(rest.answer.notes).toContainEqual({ title: "Mit 2 Darts", text: "T20 · Bull" });
     expect(rest.answer.notes.map((n) => n.title)).toEqual([
       "Warum",
-      "Mit 2 Darts in der Hand",
+      "Mit 2 Darts",
       "Nur S20",
       "Nur S10",
     ]);
-    expect(view("r-100").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
+    expect(view("r-100").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts");
     // 63 und 69: die Tabelle nennt für zwei Darts denselben Weg wie Variante 1
-    expect(view("r-63").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
-    expect(view("r-69").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
+    expect(view("r-63").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts");
+    expect(view("r-69").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts");
   });
 
   it("shows a split route as the chart writes it", () => {
@@ -119,7 +119,7 @@ describe("restDetailView", () => {
     const detail = restDetailView(cardById("r-110") as RestDetail);
     expect(detail.notes).toEqual([
       { title: "Warum", text: (cardById("r-110") as RestDetail & { reason: string }).reason },
-      { title: "Mit 2 Darts in der Hand", text: "T20 · Bull" },
+      { title: "Mit 2 Darts", text: "T20 · Bull" },
     ]);
   });
 

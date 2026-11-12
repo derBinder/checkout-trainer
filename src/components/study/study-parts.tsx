@@ -14,7 +14,7 @@ export const STUDY_HEADER_ROW = "flex items-center justify-between";
 /** Zähler „7 / 20" rechts in der Kopfzeile. */
 export const STUDY_COUNTER = "text-sm font-semibold text-muted-foreground tabular-nums";
 /** Fläche der Karte zwischen Kopf- und Fußzeile. */
-export const STUDY_CONTENT = "flex flex-1 flex-col overflow-y-auto px-page py-6 outline-none";
+export const STUDY_CONTENT = "flex flex-1 flex-col overflow-y-auto px-page py-4 outline-none";
 /** Fußzeile mit dem Knopf „Weg zeigen" bzw. den Bewertungen. */
 export const STUDY_FOOTER = "flex touch-manipulation flex-col gap-3 px-page pt-3 pb-inset-bottom";
 

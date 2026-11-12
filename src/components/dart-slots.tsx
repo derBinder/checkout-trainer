@@ -6,6 +6,10 @@ type DartSlotsProps = {
   tone?: "best" | "none";
   /** Felder, die ein Fehlwurf sind. */
   missSlots?: number[];
+  /** Beim Eingeben: das nächste offene Feld, mit durchgezogenem Rand hervorgehoben. */
+  next?: number;
+  /** Kleiner für zwei Reihen untereinander (Auflösung mit „Dein Weg“). */
+  size?: "sm";
 };
 
 const SLOT_COUNT = 3;
@@ -21,7 +25,7 @@ export const SLOT_BOX =
  * Auflösung nur die geworfenen Darts. Jedes Feld ist ein Drittel breit, auch
  * wenn weniger als drei zu sehen sind.
  */
-export function DartSlots({ slots, tone, missSlots = [] }: DartSlotsProps) {
+export function DartSlots({ slots, tone, missSlots = [], next, size }: DartSlotsProps) {
   const answer = tone !== undefined;
   const shown = Array.from({ length: SLOT_COUNT }, (_, i) => ({ i, dart: slots[i] ?? null })).filter(
     ({ dart }) => !answer || dart !== null,
@@ -30,12 +34,16 @@ export function DartSlots({ slots, tone, missSlots = [] }: DartSlotsProps) {
     <ol aria-label="Darts" className={SLOTS_ROW}>
       {shown.map(({ i, dart }) => {
         const miss = dart !== null && missSlots.includes(i);
+        const isNext = dart === null && i === next;
         return (
           <li
             key={i}
+            aria-current={isNext ? "step" : undefined}
             className={cn(
               SLOT_BOX,
+              size === "sm" && "h-11 text-base",
               dart === null && "border-2 border-dashed border-input/50 text-muted-foreground",
+              isNext && "border-solid border-foreground",
               dart !== null && "bg-muted text-foreground",
               dart !== null && tone === "best" && "bg-primary text-primary-foreground",
               miss && "bg-destructive text-destructive-foreground",

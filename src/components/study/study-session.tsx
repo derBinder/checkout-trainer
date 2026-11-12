@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { judge, type Answer, type Check } from "@/lib/darts/judge";
 import { submitReview } from "@/lib/review/actions";
 import type { Rating } from "@/lib/srs/fsrs";
 import { cn } from "@/lib/utils";
 import type { CardView } from "./card-view";
+import { initInput, inputReducer, type InputAction, type InputState } from "./route-input";
 import { StudyCard } from "./study-card";
 import {
   STUDY_CONTENT,
@@ -19,11 +21,14 @@ import {
   StudyCloseLink,
   StudySurface as Surface,
 } from "./study-parts";
+import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
 
 export type StudyItem = {
   id: string;
   view: CardView;
+  /** Wogegen eine eingegebene Antwort geprüft wird. */
+  check: Check;
   /** Gespeicherte Wiederholungen beim Laden der Seite. */
   reps: number;
   /** Abstände unter den Knöpfen, je weiterem „Nochmal“ ein Eintrag (siehe intervalLabelChain). */
@@ -101,6 +106,18 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   const currentId = session.queue[0];
   const current = currentId ? byId.get(currentId) : undefined;
+
+  // Eingabe der aktuellen Runde. Jede Runde einer Karte (auch nach „Nochmal“) beginnt leer:
+  // Wechselt der Rundenschlüssel, wird der Zustand noch während des Renderns neu gesetzt.
+  const round = `${currentId}:${session.done}:${session.total}`;
+  const [inputRound, setInputRound] = useState(round);
+  const [input, setInput] = useState<InputState | null>(() => (current ? initInput(current.check) : null));
+  if (inputRound !== round) {
+    setInputRound(round);
+    setInput(current ? initInput(current.check) : null);
+  }
+  const onInput = (a: InputAction) => setInput((s) => (s ? inputReducer(s, a) : s));
+  const reveal = (answer?: Answer) => dispatch({ type: "reveal", at: performance.now(), answer });
 
   // Fokus auf den neuen Inhalt, damit Tastatur und Screenreader folgen.
   const contentRef = useRef<HTMLDivElement>(null);
@@ -224,7 +241,22 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       >
         {/* my-auto statt justify-center: mittig in der freien Fläche, bei Überlänge oben beginnend. */}
         <div className="my-auto">
-          <StudyCard view={current.view} revealed={session.revealed} />
+          {session.revealed ? (
+            <StudyCard
+              view={current.view}
+              result={
+                state.answer
+                  ? {
+                      verdict: judge(current.check, state.answer),
+                      answer: state.answer,
+                      fixed: fixedDarts(current.view),
+                    }
+                  : undefined
+              }
+            />
+          ) : (
+            input && <StudyQuestion view={current.view} input={input} onAction={onInput} />
+          )}
         </div>
       </div>
 
@@ -259,9 +291,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
             ))}
           </div>
         ) : (
-          <Button size="xl" className="w-full" onClick={() => dispatch({ type: "reveal", at: performance.now() })}>
-            Weg zeigen
-          </Button>
+          input && <QuestionFooter check={current.check} input={input} onReveal={reveal} />
         )}
       </footer>
     </Surface>
