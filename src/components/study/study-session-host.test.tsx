@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
+import { checkFor } from "@/lib/darts/judge";
 import { cardView } from "./card-view";
 import { REFRESH_TIMEOUT_MS } from "./study-load";
 
@@ -16,6 +17,7 @@ function items(...ids: string[]): StudyItem[] {
   return ids.map((id) => ({
     id,
     view: cardView(cardById(id)!),
+    check: checkFor(cardById(id)!),
     reps: 0,
     labels: [{ 1: "1 Min", 2: "2 T", 3: "3 T", 4: "8 T" }],
   }));
@@ -42,7 +44,7 @@ describe("StudySessionHost", () => {
   it("startet mit einer frischen Ladung die Sitzung, ohne neu zu laden", () => {
     render(<StudySessionHost loadId={newLoadId()} items={items("r-5", "r-7")} />);
     expect(screen.getByText("1 / 2")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Weg zeigen" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Prüfen" })).toBeTruthy();
     expect(router.refresh).not.toHaveBeenCalled();
   });
 
@@ -55,7 +57,7 @@ describe("StudySessionHost", () => {
     router.bfcacheId = "zurueck";
     const { container } = render(<StudySessionHost loadId={loadId} items={items("r-5")} />);
     expect(router.refresh).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole("button", { name: "Weg zeigen" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
     expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
     expect(screen.queryByText(ERROR_TEXT)).toBeNull();
 
@@ -74,7 +76,7 @@ describe("StudySessionHost", () => {
 
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-7", "r-4")} />);
     expect(screen.getByText("1 / 2")).toBeTruthy();
-    expect(screen.getByText("7")).toBeTruthy();
+    expect(screen.getByText("7", { selector: "p" })).toBeTruthy();
 
     await act(async () => vi.advanceTimersByTime(REFRESH_TIMEOUT_MS));
     expect(screen.queryByText(ERROR_TEXT)).toBeNull();
@@ -82,7 +84,7 @@ describe("StudySessionHost", () => {
 
   it("behält die laufende Sitzung, wenn der Server die Seite neu rendert", () => {
     const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
-    fireEvent.click(screen.getByRole("button", { name: "Weg zeigen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
     expect(screen.getByText("Warum")).toBeTruthy();
 
     const during = newLoadId();
@@ -99,12 +101,21 @@ describe("StudySessionHost", () => {
 
   it("beginnt nach einem neuen Seitenwechsel mit frischer Ladung von vorn", () => {
     const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
-    fireEvent.click(screen.getByRole("button", { name: "Weg zeigen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
     expect(screen.getByText("Warum")).toBeTruthy();
 
     router.bfcacheId = "neu";
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
     expect(screen.queryByText("Warum")).toBeNull();
-    expect(screen.getByRole("button", { name: "Weg zeigen" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Prüfen" })).toBeTruthy();
+  });
+
+  it("behält einen halb eingegebenen Weg, wenn der Server die Seite neu rendert", () => {
+    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
+    fireEvent.click(screen.getByRole("button", { name: "Single 1" }));
+    rerender(<StudySessionHost loadId={newLoadId()} items={items("r-7")} />);
+    const darts = within(screen.getByRole("list", { name: "Darts" })).getAllByRole("listitem");
+    expect(darts.map((li) => li.textContent)).toEqual(["S1", "?offen", "?offen"]);
+    expect(screen.getByText("5", { selector: "p" })).toBeTruthy();
   });
 });

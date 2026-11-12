@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { rate } from "@/lib/srs/fsrs";
@@ -25,6 +25,8 @@ const { StudySessionData } = await import("./study-data");
 
 beforeEach(() => {
   loadQueue.mockReset();
+  // jsdom kennt kein Element.scrollTo.
+  Element.prototype.scrollTo = vi.fn();
 });
 
 describe("StudySessionData", () => {
@@ -39,8 +41,14 @@ describe("StudySessionData", () => {
 
     expect(loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
     expect(screen.getByText("1 / 2")).toBeTruthy();
-    expect(screen.getByText("5")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Weg zeigen" })).toBeTruthy();
+    expect(screen.getByText("5", { selector: "p" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" })).toBeTruthy();
+
+    // Die Karten bringen mit, wogegen ein eingegebener Weg geprüft wird.
+    fireEvent.click(screen.getByRole("button", { name: "Single 1" }));
+    fireEvent.click(screen.getByRole("button", { name: "Doppel 2" }));
+    fireEvent.click(screen.getByRole("button", { name: "Prüfen" }));
+    expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
   });
 
   it("leitet zur Übersicht um, wenn heute nichts zu lernen ist", async () => {
