@@ -191,6 +191,15 @@
   letter-spacing: -0.03em;
 }
 
+/* Seitenrand links und rechts: auf dem Smartphone schmaler, damit das Raster der Reste Platz hat. */
+@utility px-page {
+  padding-inline: --spacing(4);
+
+  @variant sm {
+    padding-inline: --spacing(5);
+  }
+}
+
 /* Kleine Beschriftung in Versalien über oder unter einer Zahl. */
 @utility type-label {
   font-size: 0.6875rem;

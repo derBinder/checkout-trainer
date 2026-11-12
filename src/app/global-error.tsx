@@ -17,7 +17,7 @@ export default function GlobalError({ error, retry }: { error: unknown; retry: (
     <html lang="de">
       <body className="min-h-dvh bg-background text-foreground antialiased">
         <title>Fehler · Checkout-Trainer</title>
-        <main className="mx-auto flex w-full max-w-sm flex-col gap-6 px-5 py-16">
+        <main className="mx-auto flex w-full max-w-sm flex-col gap-6 px-page py-16">
           <h1 className="text-2xl font-bold">Das hat nicht geklappt.</h1>
           <p className="text-muted-foreground">
             Die Seite konnte nicht geladen werden. Versuche es gleich noch einmal.

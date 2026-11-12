@@ -19,7 +19,7 @@ export default function AppLayout({
           </Suspense>
         }
       />
-      <main className="mx-auto w-full max-w-2xl px-5 pt-10 pb-nav-clearance md:pt-12 md:pb-16">
+      <main className="mx-auto w-full max-w-2xl px-page pt-10 pb-nav-clearance md:pt-12 md:pb-16">
         {children}
       </main>
     </>

@@ -51,7 +51,7 @@ function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
 
   if (!active && failed) {
     return (
-      <StudySurface className="px-5 pt-screen-top pb-inset-bottom">
+      <StudySurface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
           <p role="alert" className="text-lg font-medium text-muted-foreground">
             Die Lernsitzung konnte nicht geladen werden.

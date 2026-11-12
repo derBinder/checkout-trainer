@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-screen-top pb-inset-bottom">
+    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-page pt-screen-top pb-inset-bottom">
       <main className="flex flex-1 flex-col gap-10">
         <h1 className="type-display text-hero hyphens-manual">
           Checkout-Trainer

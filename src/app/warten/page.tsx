@@ -14,7 +14,7 @@ export default async function WaitingPage() {
   if (user.status === "active") redirect("/heute");
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col gap-10 px-5 py-16">
+    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col gap-10 px-page py-16">
       <h1 className="type-display text-2xl leading-tight">
         {user.status === "blocked"
           ? "Dein Konto ist gesperrt."

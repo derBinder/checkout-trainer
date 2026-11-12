@@ -136,7 +136,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   if (state.signedOut) {
     return (
-      <Surface className="px-5 pt-screen-top pb-inset-bottom">
+      <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex-1" />
         {unsyncedCount > 0 && (
           <div className="flex flex-col gap-4">
@@ -158,7 +158,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
   if (!current) {
     const saved = isFinished(state);
     return (
-      <Surface className="px-5 pt-screen-top pb-inset-bottom">
+      <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
           <h1 className="type-display text-hero">Geschafft</h1>
           <p className="text-lg font-medium text-muted-foreground">

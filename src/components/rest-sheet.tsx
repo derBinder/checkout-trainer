@@ -53,7 +53,7 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
   const view = restDetailView(detail);
   return (
     <>
-      <SheetHeader className="gap-2 px-5 pt-6 pb-5">
+      <SheetHeader className="gap-2 px-page pt-6 pb-5">
         <SheetTitle className="type-display text-3xl font-black">
           Rest {detail.rest}
         </SheetTitle>
@@ -62,7 +62,7 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
           Lernstand: {LEVEL_LABEL[level]}
         </SheetDescription>
       </SheetHeader>
-      <div className="flex flex-col gap-4 px-5 pb-6">
+      <div className="flex flex-col gap-4 px-page pb-6">
         {detail.kind === "bogey" && (
           <p className="type-display text-2xl">Nicht checkbar</p>
         )}

@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Registrieren · Checkout-Trainer" };
 
 export default function RegisterPage() {
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col gap-10 px-5 py-16">
+    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col gap-10 px-page py-16">
       <h1 className="type-display text-3xl">Registrieren</h1>
       <RegisterForm />
       <p className="text-sm text-muted-foreground">
