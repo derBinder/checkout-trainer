@@ -40,6 +40,10 @@
   --color-secondary-hover: var(--secondary-hover);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-verdict-soft: var(--verdict-soft);
+  --color-verdict-soft-foreground: var(--verdict-soft-foreground);
+  --color-verdict-bad: var(--verdict-bad);
+  --color-verdict-bad-foreground: var(--verdict-bad-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -76,6 +80,11 @@
   --text-numeral--line-height: 0.95;
   --text-numeral-compact: clamp(5rem, 28vw, 7.5rem);
   --text-numeral-compact--line-height: 0.95;
+  /* Zahl über dem Tastenfeld und in der Auflösung mit Ergebniszeile: kleiner, damit alles ohne Scrollen passt. */
+  --text-numeral-input: clamp(3.5rem, 17vw, 4rem);
+  --text-numeral-input--line-height: 0.95;
+  --text-numeral-result: clamp(3rem, 15vw, 3.5rem);
+  --text-numeral-result--line-height: 0.95;
   --text-hero: clamp(3rem, 14.5vw, 5rem);
   --text-hero--line-height: 0.95;
 
@@ -126,6 +135,12 @@
   --destructive: #c62f22;
   --destructive-foreground: #ffffff;
 
+  /* Ergebniszeile beim Lernen: „auch richtig“ hellgelb, „falsch“ hellrot. Kontrast 18 : 1 und 6,6 : 1, dunkel 9,9 : 1 und 5,8 : 1. */
+  --verdict-soft: #fff6c2;
+  --verdict-soft-foreground: #0b0b0c;
+  --verdict-bad: #fde3e0;
+  --verdict-bad-foreground: #9a2318;
+
   --level-new: var(--background);
   --level-learning: var(--accent);
   --level-known: var(--foreground);
@@ -152,6 +167,11 @@
 
     --destructive: #ff6b5e;
     --destructive-foreground: #0b0b0c;
+
+    --verdict-soft: #332b00;
+    --verdict-soft-foreground: #ffd400;
+    --verdict-bad: #3a1411;
+    --verdict-bad-foreground: #ff6b5e;
 
     /* Auf der Spur (--border): 5,1 / 6,0 / 7,5 / 6,1. */
     --strength-weak: #ff6b5e;

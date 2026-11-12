@@ -76,14 +76,14 @@ describe("Skeleton-Bausteine", () => {
     expect(grid).toContain('aria-hidden="true"');
   });
 
-  it("Lernen: Gerüst mit Schließen-Kreuz, leerer Fortschrittslinie und drei Feldern, als ladend markiert", () => {
+  it("Lernen: Gerüst mit Schließen-Kreuz, leerer Fortschrittslinie, drei Feldern und Tastenfeld, als ladend markiert", () => {
     const html = renderToStaticMarkup(createElement(StudySkeleton));
     expect(html).toContain('aria-busy="true"');
     expect(html).toContain('href="/heute"');
     expect(html).toContain('aria-label="Lernen beenden"');
     expect(html).toContain('data-slot="progress"');
-    // Zähler, Beschriftung, Zahl, drei Felder, Knopf.
-    expect(skeletonTags(html)).toHaveLength(7);
+    // Zähler, Beschriftung, Zahl, drei Felder, drei Ring-Segmente, 23 Tasten, drei Knöpfe.
+    expect(skeletonTags(html)).toHaveLength(35);
   });
 
   it("Einstellungen: Beschriftung und Knopf stehen ohne gespeicherten Wert da, das Feld kommt nach", () => {

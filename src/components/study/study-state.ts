@@ -1,3 +1,4 @@
+import type { Answer } from "@/lib/darts/judge";
 import type { Rating } from "@/lib/srs/fsrs";
 import { initSession, sessionReducer, type SessionState } from "@/lib/srs/session";
 
@@ -25,6 +26,8 @@ export type StudyState = {
   lastFlipAt: number | null;
   /** Der Server meldete eine abgelaufene Anmeldung; nichts wird mehr gesendet oder bewertet. */
   signedOut: boolean;
+  /** Eingegebene Antwort der aufgedeckten Karte; null, wenn ohne Eingabe aufgedeckt. */
+  answer: Answer | null;
 };
 
 /**
@@ -38,7 +41,7 @@ export type SaveOutcome = "ok" | "stale" | "skipped";
 
 export type StudyAction =
   /** `at`: Zeitpunkt des Tipps in ms (z. B. performance.now()); ohne Angabe kein Doppeltipp-Schutz. */
-  | { type: "reveal"; at?: number }
+  | { type: "reveal"; at?: number; answer?: Answer }
   | { type: "rate"; rating: Rating; at?: number }
   | { type: "sending" }
   | { type: "result"; outcome: SaveOutcome }
@@ -58,6 +61,7 @@ export function initStudy(cardIds: string[], reps: Record<string, number>): Stud
     skipped: 0,
     lastFlipAt: null,
     signedOut: false,
+    answer: null,
   };
 }
 
@@ -73,7 +77,9 @@ export function studyReducer(s: StudyState, a: StudyAction): StudyState {
     case "reveal": {
       if (s.signedOut || s.session.revealed || tooSoon(s, a.at)) return s;
       const session = sessionReducer(s.session, a);
-      return session === s.session ? s : { ...s, session, lastFlipAt: a.at ?? null };
+      return session === s.session
+        ? s
+        : { ...s, session, lastFlipAt: a.at ?? null, answer: a.answer ?? null };
     }
     case "rate": {
       const cardId = s.session.queue[0];
@@ -85,7 +91,7 @@ export function studyReducer(s: StudyState, a: StudyAction): StudyState {
         reps: confirmed(s, cardId),
       });
       // Jede Bewertung ist auch ein Anlass für einen neuen Versuch.
-      return { ...s, session, failed: false, lastFlipAt: a.at ?? null };
+      return { ...s, session, failed: false, lastFlipAt: a.at ?? null, answer: null };
     }
     case "sending":
       return s.session.unsynced.length === 0 ? s : { ...s, sending: true };

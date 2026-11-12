@@ -5,6 +5,7 @@ import { cardById } from "@/lib/cards";
 import { db } from "@/lib/db";
 import { loadQueue } from "@/lib/review/queries";
 import { intervalLabelChain } from "@/lib/srs/fsrs";
+import { checkFor } from "@/lib/darts/judge";
 import { cardView } from "./card-view";
 import type { StudyItem } from "./study-session";
 import { StudySessionHost } from "./study-session-host";
@@ -25,6 +26,7 @@ const loadStudy = cache(async () => {
       {
         id,
         view: cardView(card),
+        check: checkFor(card),
         reps: queue.reps[id] ?? 0,
         labels: intervalLabelChain(queue.states[id] ?? null, now),
       },

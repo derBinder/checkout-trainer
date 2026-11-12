@@ -169,3 +169,29 @@ describe("retryDelayMs", () => {
     expect(retryDelayMs(10)).toBe(15000);
   });
 });
+
+describe("typed answer", () => {
+  const typed: StudyAction = { type: "reveal", answer: { kind: "darts", darts: ["T20", "D20"] } };
+
+  it("keeps the typed answer when revealing", () => {
+    expect(run(initStudy(["a"], {}), typed).answer).toEqual({ kind: "darts", darts: ["T20", "D20"] });
+  });
+
+  it("reveals without an answer as null", () => {
+    expect(run(initStudy(["a"], {}), reveal).answer).toBeNull();
+  });
+
+  it("drops the answer when rating, also on Nochmal", () => {
+    expect(run(initStudy(["a", "b"], {}), typed, rate(3)).answer).toBeNull();
+    const again = run(initStudy(["a", "b"], {}), typed, rate(1));
+    expect(again.answer).toBeNull();
+    expect(again.session.queue).toContain("a");
+  });
+
+  it("an ignored reveal keeps the answer unchanged", () => {
+    const s = run(initStudy(["a", "b"], {}), { ...typed, at: 1000 }, { type: "rate", rating: 3, at: 2000 });
+    const tooSoon = run(s, { type: "reveal", at: 2000 + TAP_GUARD_MS - 1, answer: { kind: "notCheckable" } });
+    expect(tooSoon.session.revealed).toBe(false);
+    expect(tooSoon.answer).toBeNull();
+  });
+});
