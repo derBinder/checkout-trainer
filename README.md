@@ -1,6 +1,6 @@
 # Checkout-Trainer
 
-Deutschsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Betreiber schaltet jedes Konto von Hand frei. Es werden keine E-Mails verschickt.
+Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Betreiber schaltet jedes Konto von Hand frei. Es werden keine E-Mails verschickt.
 
 ## Lokale Einrichtung
 
@@ -36,7 +36,7 @@ Deutschsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per
    npm run dev
    ```
 
-   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/verwaltung`. Dort schaltet der Betreiber sie frei, sperrt sie oder setzt ein neues Passwort.
+   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/de/admin` (bzw. `/en/admin`). Dort schaltet der Betreiber sie frei, sperrt sie oder setzt ein neues Passwort.
 
 Ist die lokale Datenbank beschädigt: `.data/pglite` löschen und die Schritte 3 und 4 wiederholen.
 

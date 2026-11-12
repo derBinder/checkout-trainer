@@ -10,6 +10,8 @@ Die Datei [AGENTS.md](AGENTS.md) wird von `next dev` bei jedem Start aktualisier
 
 - Entwurf: [docs/superpowers/specs/2026-11-11-checkout-trainer-design.md](docs/superpowers/specs/2026-11-11-checkout-trainer-design.md)
 - Umsetzungsplan: [docs/superpowers/plans/2026-11-11-checkout-trainer.md](docs/superpowers/plans/2026-11-11-checkout-trainer.md)
+- Entwurf Mehrsprachigkeit: [docs/superpowers/specs/2026-11-12-mehrsprachigkeit-design.md](docs/superpowers/specs/2026-11-12-mehrsprachigkeit-design.md)
+- Umsetzungsplan Mehrsprachigkeit: [docs/superpowers/plans/2026-11-12-mehrsprachigkeit.md](docs/superpowers/plans/2026-11-12-mehrsprachigkeit.md)
 
 ## Technik
 
@@ -46,7 +48,8 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - `src/lib/auth/`: Better-Auth-Konfiguration, Client, Zugriffsschutz.
 - `src/lib/srs/`, `src/lib/review/`: Wiederholungslogik (FSRS), Warteschlange, Speichern der Bewertungen.
 - `src/app/[lang]/`: alle Seiten unter dem Sprachsegment (`/de/…`, `/en/…`) mit englischen Seitennamen (`/today`, `/study`, `/stats`, `/settings`, `/admin`, `/pending`, `/sign-in`, `/sign-up`, `/imprint`, `/privacy`); die Startseite ist `/de` bzw. `/en`.
-- `src/i18n/`: `locales.ts` (Sprachen), `paths.ts` (Sprachpfade), `dictionaries/` (`de.ts` als Quelle des Typs `Dictionary`, `en.ts`), `server.ts` (`getDictionary()`, `getLocale()`), `client.tsx` (`useDictionary()`, `useLocale()`, `useLocalePath()`). Der Test `no-hardcoded-text.test.ts` schlägt bei harten Texten in der Oberfläche an.
+- `src/i18n/`: `locales.ts` (Sprachen), `paths.ts` (Sprachpfade), `dictionaries/` (`de.ts` als Quelle des Typs `Dictionary`, `en.ts`), `dictionaries/index.ts` (`DICTIONARIES`), `server.ts` (`getDictionary()`, `getLocale()`, `requestLocale()`, `localeRedirectPath()`), `client.tsx` (`useDictionary()`, `useLocale()`, `useLocalePath()`). Der Test `no-hardcoded-text.test.ts` schlägt bei harten Texten in der Oberfläche an.
+- Umleitungen in Server Actions und Zugriffsprüfungen nur über `localeRedirectPath()`; ein nacktes `redirect('/today')` wechselt still die Sprache.
 
 ## Cache Components
 
