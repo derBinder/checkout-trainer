@@ -8,17 +8,27 @@ import { describe, expect, it } from "vitest";
  *
  * Geprüft werden die Dateien unter SCANNED ohne Tests, nach dem Entfernen der
  * Kommentare. Ein Fund ist
- * - A: JSX-Text, also `>` gefolgt von Text mit mindestens drei Buchstaben vor
- *   dem nächsten `<` oder `{`;
+ * - A: JSX-Text mit mindestens drei Buchstaben zwischen `>` und dem nächsten `<`,
+ *   auch vor, zwischen und nach Ausdrücken (`<p>{n} Karten</p>`);
  * - B: ein Attribut (`aria-label="…"`, auch `aria-label={a ? "…" : "…"}`) oder
  *   eine Objekt-Eigenschaft (`title: "…"`, etwa in `metadata`) aus
  *   TEXT_ATTRIBUTES mit String-Literal;
  * - C: ein String-Literal mit Umlaut oder ß, außer direkt nach `new Error(`
  *   (Fehlertexte, die nur in Logs landen).
  * Der App-Name und Feldnamen (T20, D16, 25, Bull) sind in beiden Sprachen gleich
- * und zählen nicht. Nicht erkannt werden Texte ohne Umlaut in sonstigen
- * String-Literalen (etwa Bezeichnungen in einem `Record`) und Texte in
- * src/components/ui.
+ * und zählen nicht.
+ *
+ * Blinde Flecken, die beim Übersetzen von Hand mitgenommen werden müssen:
+ * - Texte ohne Umlaut in sonstigen String-Literalen, etwa `LEVEL_LABEL` in
+ *   components/level-style.ts („sicher“, „im Lernen“, „neu“) oder `title:` mit
+ *   Bedingung (`n === 1 ? "Alternative" : …`).
+ * - src/components/ui wird nicht geprüft; dort steht „Schließen“ in sheet.tsx.
+ * - src/lib/srs/fsrs.ts liegt außerhalb von SCANNED; die Abstände auf den
+ *   Bewertungsknöpfen („1 Tag“, „Min“, „gleich“) kommen von dort.
+ * - CODE_NOT_TEXT: Damit Code nach `>` (Typ-Klammern, Vergleiche) nicht als Text
+ *   gilt, zählt JSX-Text mit `;`, `=`, `&&`, `||`, einer Klammer ohne
+ *   Gegenstück, einem führenden `,`/`|`/`&`/`:` oder einem führenden Schlüsselwort
+ *   (`return`, `export`, …) nicht. Echter Text dieser Form wird übersehen.
  *
  * PENDING listet die Dateien, die noch harte Texte enthalten. Jede Übersetzung
  * streicht ihre Dateien daraus; am Ende ist die Liste leer.
@@ -124,13 +134,22 @@ function literalText(literal: string): string {
 }
 
 // `>` von `=>`, `->`, `>>` und `>=` beginnt keinen JSX-Text.
-const JSX_TEXT = /(?<![=>-])>(?!=)([^<>{}]*)(?=[<{])/g;
-// Code nach einem Vergleich oder einer schließenden Typ-Klammer
-// (`useState<string | null>(null); const …`, `if (n > 0) return`, `Set<number>, used: …`).
+// Kinder eines Elements: Text und Ausdrücke `{…}` (bis zu zwei Klammerebenen) bis
+// zum nächsten `<`; der Text vor, zwischen und nach den Ausdrücken zählt
+// (`<p>{n} Karten</p>`, `<p>{a} und {b}</p>`).
+const EXPRESSION = String.raw`\{(?:[^{}]|\{[^{}]*\})*\}`;
+// Nur das `>` wird verbraucht, die Kinder stehen im Lookahead: So wird auch JSX
+// innerhalb eines Ausdrucks (`{ok ? <b>Gut</b> : null}`) von seinem eigenen `>` aus geprüft.
+const JSX_CHILDREN = new RegExp(String.raw`(?<![=>-])>(?!=)(?=((?:[^<>{}]|${EXPRESSION})*)[<{])`, "g");
+const JSX_EXPRESSION = new RegExp(EXPRESSION, "g");
+// Code nach einem Vergleich, einer schließenden Typ-Klammer oder einem
+// Funktionsrumpf (`useState<string | null>(null); const …`, `if (n > 0) return`,
+// `Set<number>, used: …`, `Promise<void> { … } export function …`).
 const CODE_NOT_TEXT = [
   /[;=]|&&|\|\|/, // Anweisung, Zuweisung, Logik
-  /^[,|]/, // weiter in Parameter- oder Typliste
+  /^[,|&:]/, // weiter in Parameter- oder Typliste, Typangabe nach `{ a, b }`
   /^[^(]*\)|\([^)]*$/, // Klammer ohne Gegenstück
+  /^(?:as|async|await|case|catch|class|const|default|else|export|finally|for|function|if|import|in|instanceof|interface|let|new|of|return|satisfies|switch|throw|try|type|typeof|var|while)\b/,
 ];
 const LITERAL = String.raw`"[^"\n]*"|'[^'\n]*'|` + "`[^`]*`";
 // Wert: ein String-Literal oder ein Ausdruck in `{…}` (etwa `cond ? "A" : "B"`),
@@ -145,12 +164,14 @@ const UMLAUT = /[äöüÄÖÜß]/;
 export function hardcodedTexts(source: string): string[] {
   const code = stripComments(source);
   const found: string[] = [];
-  for (const [, raw] of code.matchAll(JSX_TEXT)) {
-    // HTML-Entitäten (`&nbsp;`) sind keine Buchstaben.
-    const text = squash(raw.replace(/&#?\w+;/g, " "));
-    if (letters(text) < 3 || allowed(text)) continue;
-    if (CODE_NOT_TEXT.some((pattern) => pattern.test(text))) continue;
-    found.push(`A: ${text}`);
+  for (const [, children] of code.matchAll(JSX_CHILDREN)) {
+    for (const piece of children.split(JSX_EXPRESSION)) {
+      // HTML-Entitäten (`&nbsp;`) sind keine Buchstaben.
+      const text = squash(piece.replace(/&#?\w+;/g, " "));
+      if (letters(text) < 3 || allowed(text)) continue;
+      if (CODE_NOT_TEXT.some((pattern) => pattern.test(text))) continue;
+      found.push(`A: ${text}`);
+    }
   }
   for (const [, name, value] of code.matchAll(TEXT_ATTRIBUTES)) {
     const literals = value.startsWith("{") ? (value.match(new RegExp(LITERAL, "g")) ?? []) : [value];
@@ -207,6 +228,32 @@ describe("hardcodedTexts", () => {
     ).toEqual([]);
     // Klammern im Text bleiben Text, wenn sie paarweise stehen.
     expect(hardcodedTexts("<span>(Fehlwurf)</span>")).toEqual(["A: (Fehlwurf)"]);
+  });
+
+  it("A: findet Text vor, zwischen und nach Ausdrücken", () => {
+    expect(hardcodedTexts("<p>{n} Karten</p>")).toEqual(["A: Karten"]);
+    expect(hardcodedTexts("<p>{a} und {b}</p>")).toEqual(["A: und"]);
+    expect(hardcodedTexts("<p>Passwort für {email} setzen</p>")).toEqual(["A: Passwort für", "A: setzen"]);
+    expect(hardcodedTexts("<p>{fmt({ n })} Tage Serie</p>")).toEqual(["A: Tage Serie"]);
+    // JSX in einem Ausdruck wird von seinem eigenen `>` aus geprüft.
+    expect(hardcodedTexts("<p>{ok ? <b>Richtig</b> : null} gelernt</p>")).toEqual(["A: gelernt", "A: Richtig"]);
+  });
+
+  it("A: übergeht Code nach einer schließenden geschweiften Klammer", () => {
+    expect(
+      hardcodedTexts(
+        [
+          "if (a > b) { x(); } else { y(); }",
+          "try { f(); } catch (error) { g(error); }",
+          "const run = async (): Promise<void> => {};",
+          "function h(): Map<string, number> { return m; }\nexport function Page({ a, b }: Props<Item>) {}",
+          "const list = items.filter((i) => i > 0).map(({ id }) => id);",
+          "type Props = Readonly<{ a: number }> & Pick<Card, \"id\">;",
+          "<ul>{items.map((item) => <li key={item.id}>{item.name}</li>)}</ul>",
+          "<p>{n}</p>",
+        ].join("\n"),
+      ),
+    ).toEqual([]);
   });
 
   it("B: findet Text-Attribute und Eigenschaften mit String-Literal", () => {
