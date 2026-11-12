@@ -12,11 +12,11 @@ export function StreakChip({ streak }: { streak: number }) {
   return <p className={cn(CHIP_BOX, "bg-accent text-accent-foreground")}>{label}</p>;
 }
 
-/** Platzhalter in Größe eines typischen Schildchens („6 Tage Serie"). */
+/** Platzhalter in Größe eines typischen Schildchens („00 Tage Serie", ohne Nutzerdaten). */
 export function StreakChipSkeleton() {
   return (
     <LoadingRegion>
-      <Skeleton className={cn(CHIP_BOX, "text-transparent")}>6 Tage Serie</Skeleton>
+      <Skeleton className={cn(CHIP_BOX, "text-transparent")}>00 Tage Serie</Skeleton>
     </LoadingRegion>
   );
 }
