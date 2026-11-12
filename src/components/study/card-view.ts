@@ -3,8 +3,16 @@ import type { BogeyCard, Card, FollowText, RestCard, SingleCase } from "@/lib/da
 type Slots = (string | null)[];
 export type Note = { title: string; text: string };
 
+/**
+ * Frage einer Karte: Rest- und Bogey-Karten zeigen den Rest als große Zahl,
+ * Fehlwurf-Karten stattdessen einen Hinweis zum Wurf.
+ */
+type QuestionView =
+  | { label: string; big: string; slots: Slots; hint?: undefined }
+  | { label: string; hint: string; slots: Slots; big?: undefined };
+
 export type CardView = {
-  question: { label: string; big: string; slots: Slots; hint?: string };
+  question: QuestionView;
   answer: {
     label: string;
     big: string;
@@ -102,7 +110,6 @@ export function cardView(card: Card): CardView {
       return {
         question: {
           label: `Rest war ${card.rest}`,
-          big: "?",
           slots: toSlots(card.thrown),
           hint: `Ziel war ${card.aimed}, getroffen: ${singleName(card.hit)}`,
         },

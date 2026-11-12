@@ -16,9 +16,9 @@ describe("cardView", () => {
 
   it("asks a miss card for the new rest and marks the miss", () => {
     const miss = view("m-121-0");
-    expect(miss.question).toMatchObject({
+    // Ohne große Zahl: Den neuen Rest rechnet der Nutzer im Kopf.
+    expect(miss.question).toEqual({
       label: "Rest war 121",
-      big: "?",
       slots: ["S20", null, null],
       hint: "Ziel war T20, getroffen: Single 20",
     });

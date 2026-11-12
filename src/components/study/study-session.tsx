@@ -84,11 +84,6 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     );
   }, [toSend]);
 
-  // Abgemeldet und nichts offen: sofort zur Anmeldung.
-  useEffect(() => {
-    if (state.signedOut && unsyncedCount === 0) router.replace("/anmelden");
-  }, [state.signedOut, unsyncedCount, router]);
-
   // Nach einem Fehler automatisch erneut versuchen, mit wachsendem Abstand.
   useEffect(() => {
     if (!state.failed) return;
@@ -151,23 +146,23 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     </p>
   );
 
+  // Abgemeldet wird nur beim Senden der ältesten offenen Bewertung; sie bleibt
+  // offen, es gibt hier also immer mindestens eine nicht gespeicherte.
   if (state.signedOut) {
     return (
       <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex-1" />
-        {unsyncedCount > 0 && (
-          <div className="flex flex-col gap-4">
-            <p role="alert" className="text-center text-sm font-medium text-destructive">
-              Du wurdest abgemeldet.{" "}
-              {unsyncedCount === 1
-                ? "1 Bewertung wurde nicht gespeichert."
-                : `${unsyncedCount} Bewertungen wurden nicht gespeichert.`}
-            </p>
-            <Button size="xl" className="w-full" onClick={() => router.replace("/anmelden")}>
-              Zur Anmeldung
-            </Button>
-          </div>
-        )}
+        <div className="flex flex-col gap-4">
+          <p role="alert" className="text-center text-sm font-medium text-destructive">
+            Du wurdest abgemeldet.{" "}
+            {unsyncedCount === 1
+              ? "1 Bewertung wurde nicht gespeichert."
+              : `${unsyncedCount} Bewertungen wurden nicht gespeichert.`}
+          </p>
+          <Button size="xl" className="w-full" onClick={() => router.replace("/anmelden")}>
+            Zur Anmeldung
+          </Button>
+        </div>
       </Surface>
     );
   }
