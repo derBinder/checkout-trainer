@@ -13,6 +13,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // PGlite braucht unter Last (Coverage, parallele Läufe) mehrere Sekunden zum Start;
+    // Tests, die ihre Datenbank im Testkörper anlegen, liefen sonst in die 5 s.
+    testTimeout: 15_000,
+    hookTimeout: 20_000,
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["./vitest.setup.ts"],
     coverage: {

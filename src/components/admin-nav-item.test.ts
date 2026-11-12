@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { ReactElement } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AdminNavLink } from "@/components/app-nav";
 
 const getSessionUser = vi.hoisted(() => vi.fn());
@@ -10,6 +10,11 @@ const { AdminNavItem } = await import("./admin-nav-item");
 
 beforeEach(() => {
   getSessionUser.mockReset();
+});
+
+// Stummgeschaltetes console.error auch nach einem fehlgeschlagenen Test zurücksetzen.
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("AdminNavItem", () => {
@@ -33,7 +38,6 @@ describe("AdminNavItem", () => {
     getSessionUser.mockRejectedValue(new Error("Datenbank nicht erreichbar"));
     await expect(AdminNavItem()).resolves.toBeNull();
     expect(log).toHaveBeenCalledOnce();
-    log.mockRestore();
   });
 
   it("reicht Steuerfehler von Next weiter", async () => {

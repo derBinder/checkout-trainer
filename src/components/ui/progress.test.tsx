@@ -13,7 +13,8 @@ describe("Progress", () => {
     );
     const bar = screen.getByRole("progressbar", { name: "Heute gelernt" });
     expect(bar.getAttribute("aria-valuenow")).toBe("40");
-    expect(screen.getByText("40%")).toBeTruthy();
+    // Je nach Gebietsschema „40%“ oder „40 %“.
+    expect(screen.getByText(/^40\s?%$/)).toBeTruthy();
   });
 
   it("zeigt einen eigenen Wert statt der Prozentangabe", () => {

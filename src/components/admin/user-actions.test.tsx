@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 import { Activity, Component, type ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const actions = vi.hoisted(() => ({
   changeUserStatus: vi.fn(),
@@ -52,6 +52,11 @@ beforeEach(() => {
   actions.changeUserPassword.mockReset();
 });
 
+// Stummgeschaltetes console.error auch nach einem fehlgeschlagenen Test zurücksetzen.
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe("UserActions: Status", () => {
   it("bietet bei einem aktiven Konto nur Sperren an", () => {
     setup("active");
@@ -73,10 +78,15 @@ describe("UserActions: Status", () => {
   });
 
   it("schaltet frei, ohne eine Meldung zu zeigen", async () => {
-    actions.changeUserStatus.mockResolvedValue({ ok: true });
+    let resolve!: (value: { ok: true }) => void;
+    actions.changeUserStatus.mockReturnValue(new Promise((r) => (resolve = r)));
     const { user } = setup("pending");
     await user.click(screen.getByRole("button", { name: "Freischalten" }));
     expect(actions.changeUserStatus).toHaveBeenCalledWith("u1", "active");
+    // Während die Aktion läuft, sind die Knöpfe gesperrt …
+    expect(screen.getByRole("button", { name: "Sperren" }).hasAttribute("disabled")).toBe(true);
+    resolve({ ok: true });
+    // … danach wieder frei, ohne Meldung.
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Sperren" }).hasAttribute("disabled")).toBe(false),
     );
@@ -118,12 +128,11 @@ describe("UserActions: Status", () => {
   });
 
   it("reicht eine Weiterleitung weiter statt einen Fehler zu zeigen", async () => {
-    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
     actions.changeUserStatus.mockImplementation(async () => redirect("/anmelden"));
     const { user } = setup("active");
     await user.click(screen.getByRole("button", { name: "Sperren" }));
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
-    log.mockRestore();
   });
 });
 
@@ -191,14 +200,13 @@ describe("UserActions: Passwort setzen", () => {
   });
 
   it("reicht eine Weiterleitung beim Passwort weiter", async () => {
-    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
     actions.changeUserPassword.mockImplementation(async () => redirect("/anmelden"));
     const { user } = setup();
     await openDialog(user);
     await user.type(screen.getByLabelText("Neues Passwort"), GOOD_PASSWORD);
     await user.click(submitButton());
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
-    log.mockRestore();
   });
 
   it("lässt sich nicht schließen, solange das Passwort gesetzt wird", async () => {

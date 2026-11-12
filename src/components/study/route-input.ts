@@ -4,9 +4,9 @@ import { dartValue, parseDart, type Ring } from "@/lib/darts/model";
 /**
  * Eingabe eines Wegs über das Tastenfeld, ohne React, damit testbar.
  * Der Ring startet auf S und bleibt gewählt, bis der Nutzer ihn wechselt. Bleibt
- * nach einem Dart ein Rest, der
- * mit einem Doppel direkt zu checken ist, springt er auf D. Löschen stellt den
- * Ring wieder her, der vor dem gelöschten Dart gewählt war.
+ * nach einem Dart ein Rest, der mit einem Doppel direkt zu checken ist, springt
+ * er auf D. Löschen stellt den Ring wieder her, der vor dem gelöschten Dart
+ * gewählt war.
  */
 export type InputState = {
   ring: Ring;

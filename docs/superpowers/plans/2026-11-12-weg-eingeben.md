@@ -183,7 +183,7 @@ Alle Kennungen stammen aus `src/data/cards.generated.json` (Stand 2026-11-12).
 
 - [ ] **Step 2: Run** `npx vitest run src/components/study/route-input.test.ts` → FAIL.
 
-- [ ] **Step 3: Implement.** Startring (Entscheidung dieses Plans, im Entwurf nicht festgelegt): `isDoubleOut(rest)` → `'D'`, sonst `rest > 60` → `'T'`, sonst `'S'`. Nach jedem Hinzufügen und nach `undo`: `isDoubleOut(remaining)` → Ring `'D'`, sonst Ring unverändert.
+- [ ] **Step 3: Implement.** Startring (Entscheidung dieses Plans, im Entwurf nicht festgelegt): `isDoubleOut(rest)` → `'D'`, sonst `rest > 60` → `'T'`, sonst `'S'`. Nach jedem Hinzufügen und nach `undo`: `isDoubleOut(remaining)` → Ring `'D'`, sonst Ring unverändert. *(Später geändert: Der Ring startet immer auf `'S'`, springt nicht bei 50 auf D, und `undo` stellt den vorigen Ring wieder her; maßgeblich ist der Entwurf.)*
 
 - [ ] **Step 4: Run** → PASS.
 

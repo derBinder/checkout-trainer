@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 import { Component, type ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const learnMoreCards = vi.hoisted(() => vi.fn());
 vi.mock("@/app/(app)/heute/actions", () => ({ learnMoreCards }));
@@ -32,6 +32,11 @@ async function clickButton() {
 
 beforeEach(() => {
   learnMoreCards.mockReset();
+});
+
+// Stummgeschaltetes console.error auch nach einem fehlgeschlagenen Test zurücksetzen.
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("MoreCardsButton", () => {
@@ -75,11 +80,10 @@ describe("MoreCardsButton", () => {
   });
 
   it("zeigt bei der Weiterleitung keine Fehlermeldung, sondern reicht sie weiter", async () => {
-    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
     learnMoreCards.mockImplementation(async () => redirect("/lernen"));
     await clickButton();
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
     expect(screen.queryByText("Keine Verbindung. Versuche es erneut.")).toBeNull();
-    log.mockRestore();
   });
 });

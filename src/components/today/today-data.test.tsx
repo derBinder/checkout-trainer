@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
 import { State } from "ts-fsrs";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 
 const user = vi.hoisted(() => ({
@@ -24,6 +24,10 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 function queue(dueCount: number, freshCount: number, unseenCount: number) {
   queries.loadQueue.mockResolvedValue({ cardIds: [], dueCount, freshCount, unseenCount, reps: {}, states: {} });
 }
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -73,6 +77,10 @@ describe("TodayOverview", () => {
 describe("TodayStreak", () => {
   it("zeigt die Serie der Lerntage", async () => {
     queue(0, 0, 0);
+    // Feste Zeit am Mittag: Serien zählen Berliner Kalendertage; „jetzt minus 24 Stunden“
+    // läge um die Zeitumstellung herum (etwa 2026-10-25T22:30Z) sonst auf demselben Tag.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
     queries.loadStatsData.mockResolvedValue({
       states: [],
