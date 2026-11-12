@@ -23,8 +23,8 @@ import { describe, expect, it } from "vitest";
  *   components/level-style.ts („sicher“, „im Lernen“, „neu“) oder `title:` mit
  *   Bedingung (`n === 1 ? "Alternative" : …`).
  * - src/components/ui wird nicht geprüft; dort steht „Schließen“ in sheet.tsx.
- * - src/lib/srs/fsrs.ts liegt außerhalb von SCANNED; die Abstände auf den
- *   Bewertungsknöpfen („1 Tag“, „Min“, „gleich“) kommen von dort.
+ * - src/lib/ liegt außerhalb von SCANNED. Die Abstände auf den Bewertungsknöpfen (fsrs.ts)
+ *   und die Gründe eines falschen Wegs (judge.ts) sind dort Daten; den Text liefert das Wörterbuch.
  * - CODE_NOT_TEXT: Damit Code nach `>` (Typ-Klammern, Vergleiche) nicht als Text
  *   gilt, zählt JSX-Text mit `;`, `=`, `&&`, `||`, einer Klammer ohne
  *   Gegenstück, einem führenden `,`/`|`/`&`/`:` oder einem führenden Schlüsselwort
@@ -61,7 +61,6 @@ const PENDING: string[] = [
   "components/admin/admin-skeleton.tsx",
   "components/admin/user-actions.tsx",
   "components/app-nav.tsx",
-  "components/dart-slots.tsx",
   "components/rest-grid.tsx",
   "components/rest-sheet.tsx",
   "components/settings/change-password-form.tsx",
@@ -71,15 +70,6 @@ const PENDING: string[] = [
   "components/settings/settings-skeleton.tsx",
   "components/stats/stats-data.tsx",
   "components/streak-chip.tsx",
-  "components/study/card-view.ts",
-  "components/study/route-pad.tsx",
-  "components/study/study-card.tsx",
-  "components/study/study-close-link.tsx",
-  "components/study/study-question.tsx",
-  "components/study/study-session-host.tsx",
-  "components/study/study-session.tsx",
-  "components/study/study-skeleton.tsx",
-  "components/study/verdict.tsx",
   "components/theme/theme-switch.tsx",
   "components/today/more-cards-button.tsx",
   "components/today/today-data.tsx",

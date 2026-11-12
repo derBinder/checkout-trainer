@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { restDetails } from "@/components/stats/rest-details";
+import { I18nProvider } from "@/i18n/client";
 import { CARDS } from "@/lib/cards";
 import { MAX_REST, MIN_REST, type Level } from "@/lib/stats";
 import { RestGrid } from "./rest-grid";
@@ -18,10 +19,12 @@ levels[170] = "learning";
 function setup() {
   const user = userEvent.setup();
   render(
-    <RestSheet details={details} levels={levels}>
-      <p>Tippe auf einen Rest.</p>
-      <RestGrid levels={levels} weak={new Set()} />
-    </RestSheet>,
+    <I18nProvider locale="de">
+      <RestSheet details={details} levels={levels}>
+        <p>Tippe auf einen Rest.</p>
+        <RestGrid levels={levels} weak={new Set()} />
+      </RestSheet>
+    </I18nProvider>,
   );
   return user;
 }

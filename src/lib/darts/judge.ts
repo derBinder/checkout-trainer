@@ -26,7 +26,13 @@ export type VerdictCode =
   | 'setupRight'
   | 'setupOther'
 
-export type Verdict = { code: VerdictCode; detail?: string }
+/** Warum ein Weg nicht aufgeht, als Daten; den Text liefert das Wörterbuch (`study.verdict.detail`). */
+export type VerdictDetail =
+  | { kind: 'total'; total: number; rest: number }
+  | { kind: 'notDouble' }
+  | { kind: 'notCheckable' }
+
+export type Verdict = { code: VerdictCode; detail?: VerdictDetail }
 
 /** Ein Weg der Karte, eventuell mit Teilung, als ein oder zwei ausgeschriebene Wege. */
 function expand(route: string[]): string[][] {
@@ -77,8 +83,8 @@ function judgeRoute(rest: number, best: string[][], good: string[][], darts: str
   if (good.some((r) => key(r) === k)) return { code: 'alternative' }
   const parsed = darts.map(parseDart)
   const total = parsed.reduce((sum, d) => sum + dartValue(d), 0)
-  if (total !== rest) return { code: 'noCheckout', detail: `Ergibt ${total} statt ${rest}` }
-  if (parsed.at(-1)?.ring !== 'D') return { code: 'noCheckout', detail: 'Letzter Dart ist kein Doppel' }
+  if (total !== rest) return { code: 'noCheckout', detail: { kind: 'total', total, rest } }
+  if (parsed.at(-1)?.ring !== 'D') return { code: 'noCheckout', detail: { kind: 'notDouble' } }
   return { code: 'notRecommended' }
 }
 
@@ -91,7 +97,7 @@ export function judge(check: Check, answer: Answer): Verdict {
   const { darts } = answer
   switch (check.kind) {
     case 'bogey':
-      return { code: 'noCheckout', detail: 'Rest ist nicht checkbar' }
+      return { code: 'noCheckout', detail: { kind: 'notCheckable' } }
     case 'rest':
       return judgeRoute(check.rest, check.best, check.good, darts)
     case 'follow':

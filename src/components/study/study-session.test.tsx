@@ -3,7 +3,8 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
-import type { Rating } from "@/lib/srs/fsrs";
+import type { IntervalLabel, Rating } from "@/lib/srs/fsrs";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { I18nProvider } from "@/i18n/client";
 
@@ -21,13 +22,15 @@ vi.mock("@/lib/review/actions", () => ({ submitReview }));
 const { StudySession } = await import("./study-session");
 type StudyItem = Parameters<typeof StudySession>[0]["items"][number];
 
-const FIRST_LABELS: Record<Rating, string> = { 1: "1 Min", 2: "2 T", 3: "3 T", 4: "8 T" };
-const AFTER_AGAIN: Record<Rating, string> = { 1: "5 Min", 2: "1 T", 3: "2 T", 4: "4 T" };
+const minutes = (value: number): IntervalLabel => ({ unit: "minutes", value });
+const days = (value: number): IntervalLabel => ({ unit: "days", value });
+const FIRST_LABELS: Record<Rating, IntervalLabel> = { 1: minutes(1), 2: days(2), 3: days(3), 4: days(8) };
+const AFTER_AGAIN: Record<Rating, IntervalLabel> = { 1: minutes(5), 2: days(1), 3: days(2), 4: days(4) };
 
 function item(id: string, reps = 0): StudyItem {
   const card = cardById(id);
   if (!card) throw new Error(`Karte ${id} fehlt`);
-  return { id, view: cardView(card), check: checkFor(card), reps, labels: [FIRST_LABELS, AFTER_AGAIN] };
+  return { id, view: cardView(card, de.study), check: checkFor(card), reps, labels: [FIRST_LABELS, AFTER_AGAIN] };
 }
 
 type Result = { ok: true } | { ok: false; reason: string };
@@ -117,9 +120,9 @@ describe("StudySession", () => {
     expect(screen.queryByRole("button", { name: "Ohne Eingabe aufdecken" })).toBeNull();
     for (const [name, label] of [
       ["Nochmal", "1 Min"],
-      ["Schwer", "2 T"],
-      ["Gut", "3 T"],
-      ["Leicht", "8 T"],
+      ["Schwer", "2 Tage"],
+      ["Gut", "3 Tage"],
+      ["Leicht", "8 Tage"],
     ]) {
       expect(intervalOn(name)).toBe(label);
     }
@@ -155,7 +158,7 @@ describe("StudySession", () => {
     expect(submitReview).toHaveBeenCalledWith({ cardId: "r-5", rating: 1, reps: 0 });
     expect(screen.getByText("1 / 2")).toBeTruthy();
     tap("Ohne Eingabe aufdecken");
-    expect(intervalOn("Gut")).toBe("2 T");
+    expect(intervalOn("Gut")).toBe("2 Tage");
     expect(intervalOn("Nochmal")).toBe("5 Min");
   });
 
@@ -360,7 +363,7 @@ describe("StudySession", () => {
       expect(row("Dein Weg")).toEqual(["S1", "D2"]);
       expect(row("Bester Weg")).toEqual(["S1", "D2"]);
       expect(screen.getByText("Warum")).toBeTruthy();
-      expect(intervalOn("Gut")).toBe("3 T");
+      expect(intervalOn("Gut")).toBe("3 Tage");
 
       // Die Bewertung bleibt Sache des Nutzers; die nächste Karte beginnt ohne Eingabe und Ergebnis.
       tap("Schwer");
@@ -431,5 +434,24 @@ describe("StudySession", () => {
       expect(row("Dein Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
       expect(big("40")).toBeTruthy();
     });
+  });
+});
+
+describe("StudySession auf Englisch", () => {
+  it("beschriftet Tastenfeld, Knöpfe und Bewertungsleiste auf Englisch", () => {
+    render(<StudySession items={[item("r-5")]} />, {
+      wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
+    });
+    expect(screen.getByRole("link", { name: "End studying" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Treble" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Delete last dart" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Check" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "No checkout" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Reveal without answering" }));
+    for (const name of ["Again", "Hard", "Good", "Easy"]) {
+      expect(screen.getByRole("button", { name: new RegExp(`^${name}`) })).toBeTruthy();
+    }
+    expect(intervalOn("Again")).toBe("1 min");
+    expect(intervalOn("Hard")).toBe("2 days");
   });
 });

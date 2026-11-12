@@ -1,4 +1,5 @@
 import { Delete } from "lucide-react";
+import { useDictionary } from "@/i18n/client";
 import type { Ring } from "@/lib/darts/model";
 import { cn } from "@/lib/utils";
 import { isFull, type InputAction, type InputState } from "./route-input";
@@ -11,11 +12,7 @@ export const PAD_KEY = "h-10 rounded-cell";
 /** Tasten im Raster: 20 Zahlen, „25“ und „Bull“ je zwei Spalten breit, Löschen. */
 export const PAD_KEY_SPANS = [...Array<number>(20).fill(1), 2, 2, 1];
 
-const RINGS: { ring: Ring; name: string }[] = [
-  { ring: "S", name: "Single" },
-  { ring: "D", name: "Doppel" },
-  { ring: "T", name: "Triple" },
-];
+const RINGS: Ring[] = ["S", "D", "T"];
 
 const NUMBERS = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -27,13 +24,14 @@ const KEY =
  * darstellend: Zustand und Logik liegen in route-input.ts.
  */
 export function RoutePad({ state, onAction }: { state: InputState; onAction: (a: InputAction) => void }) {
+  const t = useDictionary().study.pad;
   const full = isFull(state);
-  const ringName = RINGS.find((r) => r.ring === state.ring)!.name;
+  const ringName = t.rings[state.ring];
   return (
     // touch-manipulation: ein schneller zweiter Tipp (T20 · T20) zoomt nicht.
     <div className="flex touch-manipulation flex-col gap-2">
-      <div role="radiogroup" aria-label="Ring" className={RING_BAR}>
-        {RINGS.map(({ ring, name }) => {
+      <div role="radiogroup" aria-label={t.ring} className={RING_BAR}>
+        {RINGS.map((ring) => {
           const on = state.ring === ring;
           return (
             <button
@@ -41,7 +39,7 @@ export function RoutePad({ state, onAction }: { state: InputState; onAction: (a:
               type="button"
               role="radio"
               aria-checked={on}
-              aria-label={name}
+              aria-label={t.rings[ring]}
               className={cn(
                 KEY,
                 RING_SEGMENT,
@@ -70,7 +68,7 @@ export function RoutePad({ state, onAction }: { state: InputState; onAction: (a:
         <button
           type="button"
           disabled={full}
-          aria-label="Single Bull 25"
+          aria-label={t.singleBull}
           className={cn(KEY, PAD_KEY, "col-span-2 bg-muted hover:bg-secondary-hover")}
           onClick={() => onAction({ type: "outer" })}
         >
@@ -87,7 +85,7 @@ export function RoutePad({ state, onAction }: { state: InputState; onAction: (a:
         <button
           type="button"
           disabled={state.darts.length === 0}
-          aria-label="Letzten Dart löschen"
+          aria-label={t.deleteLast}
           className={cn(KEY, PAD_KEY, "bg-muted hover:bg-secondary-hover")}
           onClick={() => onAction({ type: "undo" })}
         >

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { localePath, ROUTES } from "@/i18n/paths";
-import { getLocale } from "@/i18n/server";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { cardById } from "@/lib/cards";
 import { db } from "@/lib/db";
@@ -19,6 +19,7 @@ import { StudySessionHost } from "./study-session-host";
  */
 const loadStudy = cache(async () => {
   const user = await requireActiveUser();
+  const t = (await getDictionary()).study;
   const now = new Date();
   const queue = await loadQueue(db, user, now);
   const items: StudyItem[] = queue.cardIds.flatMap((id) => {
@@ -27,7 +28,7 @@ const loadStudy = cache(async () => {
     return [
       {
         id,
-        view: cardView(card),
+        view: cardView(card, t),
         check: checkFor(card),
         reps: queue.reps[id] ?? 0,
         labels: intervalLabelChain(queue.states[id] ?? null, now),

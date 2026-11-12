@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import { useLocalePath } from "@/i18n/client";
+import { useDictionary, useLocalePath } from "@/i18n/client";
 import { ROUTES } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
 import { loadsToRecord, nextLoad, REFRESH_TIMEOUT_MS, type StudyLoad } from "./study-load";
@@ -30,6 +30,7 @@ export function StudySessionHost({ loadId, items }: StudyLoad<StudyItem[]>) {
 function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
   const router = useRouter();
   const localePath = useLocalePath();
+  const t = useDictionary().study.session;
   const incoming = { loadId, items };
   const [active, setActive] = useState(() => nextLoad(null, incoming, usedLoads));
   const next = nextLoad(active, incoming, usedLoads);
@@ -57,11 +58,11 @@ function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
       <StudySurface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
           <p role="alert" className="text-lg font-medium text-muted-foreground">
-            Die Lernsitzung konnte nicht geladen werden.
+            {t.loadFailed}
           </p>
         </div>
         <Link href={localePath(ROUTES.today)} className={cn(buttonVariants({ size: "xl" }), "w-full")}>
-          Zur Übersicht
+          {t.toOverview}
         </Link>
       </StudySurface>
     );

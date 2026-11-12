@@ -66,7 +66,7 @@ vi.mock("@/components/theme/theme-switch", () => ({
 
 const { default: TodayPage } = await import("./today/page");
 const { default: StatsPage, metadata: statsMetadata } = await import("./stats/page");
-const { default: StudyPage } = await import("./study/page");
+const { default: StudyPage, generateMetadata: studyMetadata } = await import("./study/page");
 const { default: AdminPage, metadata: adminMetadata } = await import("./admin/page");
 const { default: SettingsPage, metadata: settingsMetadata } = await import("./settings/page");
 const { default: AppLayout } = await import("./layout");
@@ -118,6 +118,10 @@ describe("Statistik", () => {
 });
 
 describe("Lernen", () => {
+  it("setzt den Seitentitel in der Sprache der Seite", async () => {
+    expect((await studyMetadata()).title).toBe("Lernen · Checkout-Trainer");
+  });
+
   it("zeigt die Lernsitzung", () => {
     render(<StudyPage />, { wrapper });
     expect(screen.getByText("Lernsitzung")).toBeTruthy();

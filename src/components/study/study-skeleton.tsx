@@ -1,5 +1,8 @@
+"use client";
+
 import { SLOT_BOX, SLOTS_ROW } from "@/components/dart-slots";
 import { buttonShape } from "@/components/ui/button";
+import { useDictionary } from "@/i18n/client";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -22,6 +25,7 @@ import { StudyCloseLink } from "./study-close-link";
  * enthalten keine Lerninhalte; sie geben den Skeletons die Höhe der Schrift.
  */
 export function StudySkeleton() {
+  const t = useDictionary().study;
   return (
     <StudySurface busy>
       <header className={STUDY_HEADER}>
@@ -39,7 +43,7 @@ export function StudySkeleton() {
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <div className={EYEBROW}>
-                  <Skeleton className="mx-auto w-fit rounded-cell text-transparent">Rest</Skeleton>
+                  <Skeleton className="mx-auto w-fit rounded-cell text-transparent">{t.card.score}</Skeleton>
                 </div>
                 <div className={BIG_NUMERAL}>
                   <Skeleton className="mx-auto w-fit rounded-card text-transparent">000</Skeleton>
@@ -69,10 +73,10 @@ export function StudySkeleton() {
 
       <footer className={STUDY_FOOTER}>
         <div className="grid grid-cols-2 gap-2">
-          <Skeleton className={cn(buttonShape("xl"), "w-full text-transparent")}>Nicht checkbar</Skeleton>
-          <Skeleton className={cn(buttonShape("xl"), "w-full text-transparent")}>Prüfen</Skeleton>
+          <Skeleton className={cn(buttonShape("xl"), "w-full text-transparent")}>{t.question.notCheckable}</Skeleton>
+          <Skeleton className={cn(buttonShape("xl"), "w-full text-transparent")}>{t.question.check}</Skeleton>
         </div>
-        <Skeleton className={cn(buttonShape("xs"), "self-center text-transparent")}>Ohne Eingabe aufdecken</Skeleton>
+        <Skeleton className={cn(buttonShape("xs"), "self-center text-transparent")}>{t.question.reveal}</Skeleton>
       </footer>
     </StudySurface>
   );

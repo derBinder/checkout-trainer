@@ -5,6 +5,11 @@ import { describe, expect, it, vi } from "vitest";
 import type { Ring } from "@/lib/darts/model";
 import type { InputState } from "./route-input";
 import { RoutePad } from "./route-pad";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 function state(ring: Ring, darts: string[] = [], max: 1 | 2 | 3 = 3): InputState {
   return { ring, darts, ringsBefore: darts.map(() => ring), rest: 121, max };
@@ -13,7 +18,7 @@ function state(ring: Ring, darts: string[] = [], max: 1 | 2 | 3 = 3): InputState
 function setup(s: InputState) {
   const user = userEvent.setup();
   const onAction = vi.fn();
-  render(<RoutePad state={s} onAction={onAction} />);
+  render(<RoutePad state={s} onAction={onAction} />, { wrapper });
   return { user, onAction };
 }
 

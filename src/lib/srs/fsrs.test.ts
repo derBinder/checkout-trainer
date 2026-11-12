@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { dayEnd } from "../time";
-import { formatInterval, intervalLabelChain, previewIntervals, rate } from "./fsrs";
+import { describeInterval, intervalLabelChain, previewIntervals, rate } from "./fsrs";
 
 const now = new Date("2026-11-11T10:00:00Z");
 
@@ -57,20 +57,21 @@ describe("previewIntervals", () => {
     expect(Object.keys(previewIntervals(null, now))).toEqual(["1", "2", "3", "4"]);
   });
 
-  it("uses short German labels", () => {
+  it("gives the intervals as data, not as text", () => {
     const p = previewIntervals(null, now);
-    expect(p[1]).toBe("gleich");
-    for (const r of [2, 3, 4] as const) expect(p[r]).toMatch(/^\d+ Tage?$/);
+    expect(p[1]).toEqual({ unit: "now", value: 0 });
+    for (const r of [2, 3, 4] as const) expect(p[r]).toMatchObject({ unit: "days" });
   });
 
-  it("formats durations", () => {
-    expect(formatInterval(30_000)).toBe("< 1 Min");
-    expect(formatInterval(10 * 60_000)).toBe("10 Min");
-    expect(formatInterval(3 * 3_600_000)).toBe("3 Std");
-    expect(formatInterval(86_400_000)).toBe("1 Tag");
-    expect(formatInterval(3 * 86_400_000)).toBe("3 Tage");
-    expect(formatInterval(60 * 86_400_000)).toBe("2 Monate");
-    expect(formatInterval(730 * 86_400_000)).toBe("2 Jahre");
+  it("describes durations", () => {
+    expect(describeInterval(30_000)).toEqual({ unit: "underMinute", value: 0 });
+    expect(describeInterval(10 * 60_000)).toEqual({ unit: "minutes", value: 10 });
+    expect(describeInterval(3 * 3_600_000)).toEqual({ unit: "hours", value: 3 });
+    expect(describeInterval(86_400_000)).toEqual({ unit: "days", value: 1 });
+    expect(describeInterval(3 * 86_400_000)).toEqual({ unit: "days", value: 3 });
+    expect(describeInterval(60 * 86_400_000)).toEqual({ unit: "months", value: 2 });
+    expect(describeInterval(730 * 86_400_000)).toEqual({ unit: "years", value: 2 });
+    expect(describeInterval(548 * 86_400_000)).toEqual({ unit: "years", value: 1.5 });
   });
 });
 

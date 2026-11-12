@@ -5,9 +5,15 @@ import { useReducer } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, type Answer } from "@/lib/darts/judge";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { initInput, inputReducer } from "./route-input";
 import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 /** Frage mit Fußzeile und echter Eingabelogik, wie in der Lernsitzung. */
 function Question({ id, onReveal }: { id: string; onReveal: (answer?: Answer) => void }) {
@@ -16,7 +22,7 @@ function Question({ id, onReveal }: { id: string; onReveal: (answer?: Answer) =>
   const [input, dispatch] = useReducer(inputReducer, check, initInput);
   return (
     <>
-      <StudyQuestion view={cardView(card)} input={input} onAction={dispatch} />
+      <StudyQuestion view={cardView(card, de.study)} input={input} onAction={dispatch} />
       <QuestionFooter check={check} input={input} onReveal={onReveal} />
     </>
   );
@@ -25,7 +31,7 @@ function Question({ id, onReveal }: { id: string; onReveal: (answer?: Answer) =>
 function setup(id: string) {
   const user = userEvent.setup();
   const onReveal = vi.fn();
-  render(<Question id={id} onReveal={onReveal} />);
+  render(<Question id={id} onReveal={onReveal} />, { wrapper });
   const press = (name: string) => user.click(screen.getByRole("button", { name }));
   const ring = (name: string) => user.click(screen.getByRole("radio", { name }));
   return { user, onReveal, press, ring };
@@ -189,7 +195,7 @@ describe("QuestionFooter", () => {
 
 describe("fixedDarts", () => {
   it("nennt die schon geworfenen Darts einer Fehlwurf-Karte, sonst keine", () => {
-    expect(fixedDarts(cardView(cardById("m-125-1")!))).toEqual(["T18", "S19"]);
-    expect(fixedDarts(cardView(cardById("r-121")!))).toEqual([]);
+    expect(fixedDarts(cardView(cardById("m-125-1")!, de.study))).toEqual(["T18", "S19"]);
+    expect(fixedDarts(cardView(cardById("r-121")!, de.study))).toEqual([]);
   });
 });

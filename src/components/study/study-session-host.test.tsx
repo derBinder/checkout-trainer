@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { REFRESH_TIMEOUT_MS } from "./study-load";
 import { I18nProvider } from "@/i18n/client";
@@ -22,10 +23,17 @@ type StudyItem = Parameters<typeof StudySessionHost>[0]["items"][number];
 function items(...ids: string[]): StudyItem[] {
   return ids.map((id) => ({
     id,
-    view: cardView(cardById(id)!),
+    view: cardView(cardById(id)!, de.study),
     check: checkFor(cardById(id)!),
     reps: 0,
-    labels: [{ 1: "1 Min", 2: "2 T", 3: "3 T", 4: "8 T" }],
+    labels: [
+      {
+        1: { unit: "minutes", value: 1 },
+        2: { unit: "days", value: 2 },
+        3: { unit: "days", value: 3 },
+        4: { unit: "days", value: 8 },
+      },
+    ],
   }));
 }
 

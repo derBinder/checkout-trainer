@@ -111,3 +111,39 @@ describe("Wörterbücher", () => {
     expect([missing, extra, other]).toHaveLength(3);
   });
 });
+
+describe("Lernen", () => {
+  it("schreibt die Abstände unter den Bewertungsknöpfen in beiden Sprachen", () => {
+    const labels = [
+      [{ unit: "now", value: 0 }, "gleich", "now"],
+      [{ unit: "underMinute", value: 0 }, "< 1 Min", "< 1 min"],
+      [{ unit: "minutes", value: 10 }, "10 Min", "10 min"],
+      [{ unit: "hours", value: 3 }, "3 Std", "3 h"],
+      [{ unit: "days", value: 1 }, "1 Tag", "1 day"],
+      [{ unit: "days", value: 3 }, "3 Tage", "3 days"],
+      [{ unit: "months", value: 1 }, "1 Monat", "1 month"],
+      [{ unit: "months", value: 2 }, "2 Monate", "2 months"],
+      [{ unit: "years", value: 1 }, "1 Jahr", "1 year"],
+      [{ unit: "years", value: 1.5 }, "1,5 Jahre", "1.5 years"],
+    ] as const;
+    for (const [label, german, english] of labels) {
+      expect(de.study.interval(label)).toBe(german);
+      expect(en.study.interval(label)).toBe(english);
+    }
+  });
+
+  it("zählt Bewertungen und Karten in Einzahl und Mehrzahl", () => {
+    expect(en.study.session.skipped(1)).toBe("One rating was not counted.");
+    expect(en.study.session.skipped(3)).toBe("3 ratings were not counted.");
+    expect(en.study.session.notSaved(1)).toBe("1 rating was not saved.");
+    expect(en.study.session.cardsStudied(1)).toBe("1 card studied.");
+    expect(en.study.session.cardsStudied(4)).toBe("4 cards studied.");
+    expect(de.study.session.cardsStudied(4)).toBe("4 Karten gelernt.");
+  });
+
+  it("nennt die Ringe und die Bewertungen auf Englisch", () => {
+    expect(en.study.pad.rings).toEqual({ S: "Single", D: "Double", T: "Treble" });
+    expect(Object.values(en.study.session.ratings)).toEqual(["Again", "Hard", "Good", "Easy"]);
+    expect(Object.values(de.study.session.ratings)).toEqual(["Nochmal", "Schwer", "Gut", "Leicht"]);
+  });
+});

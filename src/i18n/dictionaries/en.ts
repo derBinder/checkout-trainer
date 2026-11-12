@@ -2,6 +2,8 @@ import type { Dictionary } from "./de";
 
 /** Englisches Wörterbuch: britisches Englisch, Fachbegriffe nach dem Glossar. */
 import type { Reason } from "@/lib/darts/cards";
+import type { VerdictDetail } from "@/lib/darts/judge";
+import type { IntervalLabel } from "@/lib/srs/fsrs";
 import {
   MAX_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -116,6 +118,102 @@ export const en: Dictionary = {
         case "chart":
           return "The usual chart route.";
       }
+    },
+    metaTitle: "Study",
+    closeLabel: "End studying",
+    card: {
+      score: "Score",
+      scoreWas: (rest: number) => `Score was ${rest}`,
+      scoreOf: (rest: number) => `Score ${rest}`,
+      newScore: "New score",
+      notCheckable: "No checkout",
+      missHint: (aimed: string, field: string) => `Aimed at ${aimed}, hit: single ${field}`,
+      why: "Why",
+      setupShot: "Setup shot",
+      alternative: "Alternative",
+      alternatives: "Alternatives",
+      or: "or",
+      twoDarts: "With 2 darts",
+      only: (hit: string) => `Only ${hit}`,
+      setUp: (text: string) => `Set up: ${text}`,
+      setupShort: (throws: string, leaves: number) => `${throws}, ${leaves} left`,
+      afterwards: (leaves: number) => `Then ${leaves} left`,
+      bogeySetup: (leaves: number) => `No checkout. Set up ${leaves}.`,
+    },
+    result: {
+      yourRoute: "Your route",
+      bestRoute: "Best route",
+      setupShot: "Setup shot",
+      notCheckable: "No checkout",
+    },
+    verdict: {
+      codes: {
+        best: { title: "Best route", note: "spot on" },
+        alternative: { title: "Alternative", note: "also correct" },
+        notRecommended: { title: "Works, but not recommended", note: "The checkout is right, the route is worse" },
+        noCheckout: { title: "Does not check out", note: "The route does not lead to a finish" },
+        checkable: { title: "Can be checked out", note: "There is a route" },
+        bogeyRight: { title: "Correct", note: "No checkout from this score" },
+        setupRight: { title: "Correct setup shot", note: "spot on" },
+        setupOther: { title: "Different setup shot", note: "recommended one below" },
+      },
+      detail: (d: VerdictDetail): string => {
+        switch (d.kind) {
+          case "total":
+            return `Adds up to ${d.total}, not ${d.rest}`;
+          case "notDouble":
+            return "The last dart is not a double";
+          case "notCheckable":
+            return "No checkout from this score";
+        }
+      },
+    },
+    slots: { darts: "Darts", open: "empty", miss: "miss" },
+    pad: {
+      ring: "Ring",
+      rings: { S: "Single", D: "Double", T: "Treble" },
+      singleBull: "Single bull 25",
+      deleteLast: "Delete last dart",
+    },
+    question: {
+      notCheckable: "No checkout",
+      check: "Check",
+      reveal: "Reveal without answering",
+    },
+    interval: (l: IntervalLabel): string => {
+      switch (l.unit) {
+        case "now":
+          return "now";
+        case "underMinute":
+          return "< 1 min";
+        case "minutes":
+          return `${l.value} min`;
+        case "hours":
+          return `${l.value} h`;
+        case "days":
+          return l.value === 1 ? "1 day" : `${l.value} days`;
+        case "months":
+          return l.value === 1 ? "1 month" : `${l.value} months`;
+        case "years":
+          return l.value === 1 ? "1 year" : `${l.value} years`;
+      }
+    },
+    session: {
+      ratings: { 1: "Again", 2: "Hard", 3: "Good", 4: "Easy" },
+      progress: "Progress",
+      progressText: (done: number, total: number) => `${done} of ${total} cards studied`,
+      confirmClose: "Not everything is saved yet. Close anyway?",
+      saveFailed: "Not saved, trying again",
+      skipped: (n: number) => (n === 1 ? "One rating was not counted." : `${n} ratings were not counted.`),
+      signedOut: "You have been signed out.",
+      notSaved: (n: number) => (n === 1 ? "1 rating was not saved." : `${n} ratings were not saved.`),
+      toSignIn: "Sign in",
+      finished: "Done",
+      cardsStudied: (n: number) => `${n === 1 ? "1 card" : `${n} cards`} studied.`,
+      toOverview: "Back to overview",
+      retry: "Try again",
+      saving: "Saving …",
+      loadFailed: "The study session could not be loaded.",
     },
   },
   language: {

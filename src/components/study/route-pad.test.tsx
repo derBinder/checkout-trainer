@@ -1,6 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+import { de } from "@/i18n/dictionaries/de";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
 import { cardView } from "./card-view";
@@ -9,20 +11,22 @@ import { RoutePad } from "./route-pad";
 import { QuestionFooter, StudyQuestion } from "./study-question";
 
 const noop = () => {};
-const pad = (state: InputState) => renderToStaticMarkup(createElement(RoutePad, { state, onAction: noop }));
+const html = (element: React.ReactElement) =>
+  renderToStaticMarkup(<I18nProvider locale="de">{element}</I18nProvider>);
+const pad = (state: InputState) => html(createElement(RoutePad, { state, onAction: noop }));
 const count = (html: string, pattern: RegExp) => html.match(pattern)?.length ?? 0;
 
 function question(id: string, state?: InputState) {
   const card = cardById(id)!;
   const check = checkFor(card);
-  return renderToStaticMarkup(
-    createElement(StudyQuestion, { view: cardView(card), input: state ?? initInput(check), onAction: noop }),
+  return html(
+    createElement(StudyQuestion, { view: cardView(card, de.study), input: state ?? initInput(check), onAction: noop }),
   );
 }
 
 function footer(id: string, state?: InputState) {
   const check = checkFor(cardById(id)!);
-  return renderToStaticMarkup(
+  return html(
     createElement(QuestionFooter, { check, input: state ?? initInput(check), onReveal: noop }),
   );
 }

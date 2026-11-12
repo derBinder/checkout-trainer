@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { DartSlots } from "@/components/dart-slots";
+import { useDictionary } from "@/i18n/client";
 import { restDetailView, type RestDetail } from "@/components/study/card-view";
 import { NoteList } from "@/components/study/study-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -50,7 +51,7 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
 }
 
 function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level }) {
-  const view = restDetailView(detail);
+  const view = restDetailView(detail, useDictionary().study);
   return (
     <>
       <SheetHeader className="gap-2 px-page pt-6 pb-5">
