@@ -35,7 +35,7 @@ describe("cardView", () => {
     expect(bogey.question).toEqual({ label: "Rest", big: "169", slots: [null, null, null] });
     expect(bogey.answer.big).toBe("Nicht checkbar");
     expect(bogey.answer.notes[0]).toMatchObject({ title: "Stellwurf" });
-    expect(bogey.answer.notes[0].text).toContain("Rest 32");
+    expect(bogey.answer.notes).toEqual([{ title: "Stellwurf", text: "Danach Rest 32" }]);
   });
 
   it("leaves unused slots empty when the route has fewer than three darts", () => {

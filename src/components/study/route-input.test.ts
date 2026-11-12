@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, type Check } from "@/lib/darts/judge";
-import { initInput, inputReducer, isFull, remaining, type InputAction, type InputState } from "./route-input";
+import { initInput, inputReducer, isDoubleRest, isFull, remaining, type InputAction, type InputState } from "./route-input";
 
 const check = (id: string) => checkFor(cardById(id)!);
 const restCheck = (rest: number): Check => ({ kind: "rest", rest, best: [], good: [] });
@@ -10,7 +10,7 @@ const num = (n: number): InputAction => ({ type: "number", n });
 
 describe("initInput", () => {
   it("starts a high rest on T", () => {
-    expect(initInput(check("r-121"))).toEqual({ ring: "T", darts: [], rest: 121, max: 3 });
+    expect(initInput(check("r-121"))).toEqual({ ring: "T", darts: [], ringsBefore: [], rest: 121, max: 3 });
   });
 
   it("starts a rest up to 60 on S", () => {
@@ -21,8 +21,12 @@ describe("initInput", () => {
     expect(initInput(restCheck(32)).ring).toBe("D");
   });
 
+  it("does not start 50 on D, Bull is its own key", () => {
+    expect(initInput(restCheck(50)).ring).toBe("S");
+  });
+
   it("uses the new rest and the darts left on a miss card", () => {
-    expect(initInput(check("m-121-0"))).toEqual({ ring: "T", darts: [], rest: 101, max: 2 });
+    expect(initInput(check("m-121-0"))).toEqual({ ring: "T", darts: [], ringsBefore: [], rest: 101, max: 2 });
   });
 });
 
@@ -68,21 +72,33 @@ describe("inputReducer", () => {
     expect(run(empty, num(20), num(11), { type: "undo" }).darts).toEqual(["T20"]);
   });
 
-  it("re-applies the switch to D after undo", () => {
-    // 60: S20 lässt 40 (D); Ring auf S, Löschen → wieder 60, Ring bleibt S
-    const s = run(initInput(restCheck(60)), num(20));
+  it("does not switch to D when 50 is left", () => {
+    // 110: T20 lässt 50, der Ring bleibt T für T10 · D10
+    const s = run(initInput(restCheck(110)), num(20));
+    expect(remaining(s)).toBe(50);
+    expect(s.ring).toBe("T");
+  });
+
+  it("undo restores the ring that was set before the removed dart", () => {
+    // 121: T20, versehentlich T19 → Rest 4, Ring springt auf D; Löschen → wieder T
+    const s = run(initInput(restCheck(121)), num(20), num(19));
     expect(s.ring).toBe("D");
-    const back = run(s, { type: "ring", ring: "S" }, { type: "undo" });
-    expect(back.ring).toBe("S");
-    // 72: T16 lässt 24 → D; Löschen lässt 72, Ring bleibt D (nur Wechsel zu D)
-    const t = run(initInput(restCheck(72)), num(16), { type: "undo" });
-    expect(t.ring).toBe("D");
-    // 80: S20 lässt 60, dann T1 und Löschen → 60, kein Double-Out, Ring bleibt T
-    const u = run(initInput(restCheck(80)), { type: "ring", ring: "S" }, num(20), { type: "ring", ring: "T" }, num(1), { type: "undo" });
-    expect(remaining(u)).toBe(60);
+    expect(run(s, { type: "undo" }).ring).toBe("T");
+    // 60: S20 → D; Nutzer wählt S, Löschen → Ring vor S20 war S
+    const t = run(initInput(restCheck(60)), num(20), { type: "ring", ring: "S" }, { type: "undo" });
+    expect(t.ring).toBe("S");
+    // 40: Start auf D, Nutzer wählt T, T5, Löschen → T (vor T5 gewählt)
+    const u = run(initInput(restCheck(40)), { type: "ring", ring: "T" }, num(5), { type: "undo" });
     expect(u.ring).toBe("T");
-    // 40: Ring auf T, T5 lässt 25, Löschen → wieder 40 → D
-    const v = run(initInput(restCheck(40)), { type: "ring", ring: "T" }, num(5), { type: "undo" });
-    expect(v.ring).toBe("D");
+  });
+});
+
+describe("isDoubleRest", () => {
+  it("is true for even rests from 2 to 40", () => {
+    expect([2, 32, 40].map(isDoubleRest)).toEqual([true, true, true]);
+  });
+
+  it("is false otherwise, also for 50", () => {
+    expect([1, 33, 42, 0, 25, 50].map(isDoubleRest)).toEqual([false, false, false, false, false, false]);
   });
 });

@@ -30,7 +30,8 @@ export function RoutePad({ state, onAction }: { state: InputState; onAction: (a:
   const full = isFull(state);
   const ringName = RINGS.find((r) => r.ring === state.ring)!.name;
   return (
-    <div className="flex flex-col gap-2">
+    // touch-manipulation: ein schneller zweiter Tipp (T20 · T20) zoomt nicht.
+    <div className="flex touch-manipulation flex-col gap-2">
       <div role="radiogroup" aria-label="Ring" className={RING_BAR}>
         {RINGS.map(({ ring, name }) => {
           const on = state.ring === ring;

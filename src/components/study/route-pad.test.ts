@@ -39,6 +39,10 @@ describe("RoutePad", () => {
     expect(html).toContain(">Bull<");
   });
 
+  it("does not zoom on a quick second tap", () => {
+    expect(pad(initInput(checkFor(cardById("r-121")!)))).toMatch(/^<div class="[^"]*touch-manipulation/);
+  });
+
   it("disables all field keys but delete once full", () => {
     const start = initInput(checkFor(cardById("m-125-1")!)); // 1 Dart in der Hand
     const full = inputReducer(start, { type: "number", n: 20 });

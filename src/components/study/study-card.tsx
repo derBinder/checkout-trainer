@@ -73,7 +73,13 @@ function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: numb
           Nicht checkbar
         </p>
       ) : (
-        <DartSlots slots={[...result.fixed, ...result.answer.darts]} tone="none" missSlots={missSlots} size="sm" />
+        <DartSlots
+          slots={[...result.fixed, ...result.answer.darts]}
+          tone="none"
+          missSlots={missSlots}
+          size="sm"
+          label="Dein Weg"
+        />
       )}
     </div>
   );
@@ -82,12 +88,14 @@ function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: numb
 /** Auflösung einer Karte, ohne Bedienelemente; mit Ergebnis, wenn eine Antwort eingegeben war. */
 export function StudyCard({ view, result }: { view: CardView; result?: StudyResult }) {
   const { answer } = view;
+  const rowLabel = answer.slotTone === "best" ? "Bester Weg" : "Stellwurf";
   const slots = (
     <DartSlots
       slots={answer.slots}
       tone={answer.slotTone}
       missSlots={answer.missSlots}
       size={result ? "sm" : undefined}
+      label={result ? rowLabel : undefined}
     />
   );
   return (
@@ -101,7 +109,7 @@ export function StudyCard({ view, result }: { view: CardView; result?: StudyResu
           <VerdictLine verdict={result.verdict} />
           <YourRoute result={result} missSlots={answer.missSlots} />
           <div className="flex flex-col gap-1.5">
-            <p className={ROW_LABEL}>{answer.slotTone === "best" ? "Bester Weg" : "Stellwurf"}</p>
+            <p className={ROW_LABEL}>{rowLabel}</p>
             {slots}
           </div>
         </>

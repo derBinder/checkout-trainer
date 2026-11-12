@@ -71,11 +71,6 @@ export function offersNotCheckable(check: Check): boolean {
   return check.kind === 'rest' || check.kind === 'bogey'
 }
 
-/** Der Rest ist mit einem einzigen Doppel (oder Bull) zu checken. */
-export function isDoubleOut(remaining: number): boolean {
-  return remaining === 50 || (remaining % 2 === 0 && remaining >= 2 && remaining <= 40)
-}
-
 function judgeRoute(rest: number, best: string[][], good: string[][], darts: string[]): Verdict {
   const k = key(darts)
   if (best.some((r) => key(r) === k)) return { code: 'best' }

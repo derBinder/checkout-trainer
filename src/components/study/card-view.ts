@@ -123,6 +123,8 @@ export function cardView(card: Card): CardView {
           label: `Rest ${card.rest}`,
           big: "Nicht checkbar",
           ...restDetailView(card),
+          // Kurzform: „Nicht checkbar“ und die Stellwürfe stehen schon darüber.
+          notes: [{ title: "Stellwurf", text: `Danach Rest ${card.setup.leaves}` }],
           missSlots: [],
         },
       };

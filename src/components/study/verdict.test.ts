@@ -33,3 +33,19 @@ describe("VerdictLine", () => {
     expect(html).toContain("genau richtig");
   });
 });
+
+describe("result rows", () => {
+  it("names both dart rows for screen readers", async () => {
+    const { StudyCard } = await import("./study-card");
+    const { cardView } = await import("./card-view");
+    const { cardById } = await import("@/lib/cards");
+    const html = renderToStaticMarkup(
+      createElement(StudyCard, {
+        view: cardView(cardById("r-121")!),
+        result: { verdict: { code: "best" }, answer: { kind: "darts", darts: ["T20", "T11", "D14"] }, fixed: [] },
+      }),
+    );
+    expect(html).toContain('aria-label="Dein Weg"');
+    expect(html).toContain('aria-label="Bester Weg"');
+  });
+});

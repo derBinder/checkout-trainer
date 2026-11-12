@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cardById } from '@/lib/cards'
-import { checkFor, isDoubleOut, judge, offersNotCheckable, type Answer } from './judge'
+import { checkFor, judge, offersNotCheckable, type Answer } from './judge'
 
 const check = (id: string) => checkFor(cardById(id)!)
 const darts = (...d: string[]): Answer => ({ kind: 'darts', darts: d })
@@ -105,15 +105,5 @@ describe('judge', () => {
     expect(judge(check('m-125-1'), darts('S20'))).toEqual({ code: 'setupRight' })
     expect(judge(check('m-125-1'), darts('S12'))).toEqual({ code: 'setupOther' })
     expect(judge(check('m-125-1'), darts('T20'))).toEqual({ code: 'setupOther' })
-  })
-})
-
-describe('isDoubleOut', () => {
-  it('is true for even rests up to 40 and for 50', () => {
-    expect([2, 32, 40, 50].map(isDoubleOut)).toEqual([true, true, true, true])
-  })
-
-  it('is false otherwise', () => {
-    expect([1, 33, 42, 0, 25].map(isDoubleOut)).toEqual([false, false, false, false, false])
   })
 })

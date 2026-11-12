@@ -10,6 +10,8 @@ type DartSlotsProps = {
   next?: number;
   /** Kleiner für zwei Reihen untereinander (Auflösung mit „Dein Weg“). */
   size?: "sm";
+  /** Name der Reihe für Screenreader, wenn mehrere untereinander stehen. */
+  label?: string;
 };
 
 const SLOT_COUNT = 3;
@@ -25,13 +27,13 @@ export const SLOT_BOX =
  * Auflösung nur die geworfenen Darts. Jedes Feld ist ein Drittel breit, auch
  * wenn weniger als drei zu sehen sind.
  */
-export function DartSlots({ slots, tone, missSlots = [], next, size }: DartSlotsProps) {
+export function DartSlots({ slots, tone, missSlots = [], next, size, label = "Darts" }: DartSlotsProps) {
   const answer = tone !== undefined;
   const shown = Array.from({ length: SLOT_COUNT }, (_, i) => ({ i, dart: slots[i] ?? null })).filter(
     ({ dart }) => !answer || dart !== null,
   );
   return (
-    <ol aria-label="Darts" className={SLOTS_ROW}>
+    <ol aria-label={label} className={SLOTS_ROW}>
       {shown.map(({ i, dart }) => {
         const miss = dart !== null && missSlots.includes(i);
         const isNext = dart === null && i === next;
