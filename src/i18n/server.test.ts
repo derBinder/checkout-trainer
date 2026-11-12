@@ -12,7 +12,8 @@ vi.mock("next/root-params", () => ({ lang: () => lang() }));
 vi.mock("next/headers", () => ({ headers: async () => requestHeaders.current }));
 vi.mock("next/navigation", () => ({ notFound: () => notFound() }));
 
-const { getDictionary, getLocale, requestLocale } = await import("./server");
+const { getDictionary, getLocale, localeRedirectPath, requestLocale } = await import("./server");
+const { ROUTES } = await import("./paths");
 const { de } = await import("./dictionaries/de");
 const { en } = await import("./dictionaries/en");
 
@@ -72,5 +73,22 @@ describe("requestLocale", () => {
     requestHeaders.current = new Headers({ "x-locale": "en" });
     await requestLocale();
     expect(lang).not.toHaveBeenCalled();
+  });
+});
+
+describe("localeRedirectPath", () => {
+  it("setzt die Sprache aus dem Header von proxy.ts vor die Seite", async () => {
+    requestHeaders.current = new Headers({ "x-locale": "en" });
+    await expect(localeRedirectPath(ROUTES.signIn)).resolves.toBe("/en/sign-in");
+    requestHeaders.current = new Headers({ "x-locale": "de" });
+    await expect(localeRedirectPath(ROUTES.study)).resolves.toBe("/de/study");
+    await expect(localeRedirectPath(ROUTES.home)).resolves.toBe("/de");
+  });
+
+  it("lässt die Sprache ohne Header weg, proxy.ts ergänzt sie", async () => {
+    await expect(localeRedirectPath(ROUTES.pending)).resolves.toBe("/pending");
+    await expect(localeRedirectPath(ROUTES.home)).resolves.toBe("/");
+    requestHeaders.current = new Headers({ "x-locale": "fr" });
+    await expect(localeRedirectPath(ROUTES.today)).resolves.toBe("/today");
   });
 });

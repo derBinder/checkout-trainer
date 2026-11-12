@@ -3,6 +3,8 @@ import { cache } from "react";
 import { StreakChip } from "@/components/streak-chip";
 import { MoreCardsButton } from "@/components/today/more-cards-button";
 import { buttonVariants } from "@/components/ui/button";
+import { localePath, ROUTES } from "@/i18n/paths";
+import { getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { progressView } from "@/lib/progress";
@@ -34,6 +36,7 @@ export async function TodayStreak() {
 
 export async function TodayOverview() {
   const { dueCount, freshCount, unseenCount, progress } = await loadToday();
+  const locale = await getLocale();
   const nothingToDo = dueCount + freshCount === 0;
 
   return (
@@ -61,7 +64,7 @@ export async function TodayOverview() {
       </ProgressLine>
 
       {nothingToDo ? null : (
-        <Link href="/lernen" className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
+        <Link href={localePath(locale, ROUTES.study)} className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
           Lernen
         </Link>
       )}

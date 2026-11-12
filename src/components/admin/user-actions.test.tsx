@@ -9,7 +9,7 @@ const actions = vi.hoisted(() => ({
   changeUserStatus: vi.fn(),
   changeUserPassword: vi.fn(),
 }));
-vi.mock("@/app/(app)/verwaltung/actions", () => actions);
+vi.mock("@/app/[lang]/(app)/admin/actions", () => actions);
 
 const { UserActions } = await import("./user-actions");
 
@@ -129,7 +129,7 @@ describe("UserActions: Status", () => {
 
   it("reicht eine Weiterleitung weiter statt einen Fehler zu zeigen", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    actions.changeUserStatus.mockImplementation(async () => redirect("/anmelden"));
+    actions.changeUserStatus.mockImplementation(async () => redirect("/de/sign-in"));
     const { user } = setup("active");
     await user.click(screen.getByRole("button", { name: "Sperren" }));
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
@@ -201,7 +201,7 @@ describe("UserActions: Passwort setzen", () => {
 
   it("reicht eine Weiterleitung beim Passwort weiter", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    actions.changeUserPassword.mockImplementation(async () => redirect("/anmelden"));
+    actions.changeUserPassword.mockImplementation(async () => redirect("/de/sign-in"));
     const { user } = setup();
     await openDialog(user);
     await user.type(screen.getByLabelText("Neues Passwort"), GOOD_PASSWORD);

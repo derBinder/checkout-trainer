@@ -5,7 +5,7 @@ import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const updateNewPerDay = vi.hoisted(() => vi.fn());
-vi.mock("@/app/(app)/einstellungen/actions", () => ({ updateNewPerDay }));
+vi.mock("@/app/[lang]/(app)/settings/actions", () => ({ updateNewPerDay }));
 
 const { NewPerDayForm, NewPerDayInput } = await import("./new-per-day-form");
 

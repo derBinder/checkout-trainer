@@ -87,7 +87,7 @@ beforeEach(() => {
 });
 
 describe("Server Actions der Verwaltung", () => {
-  it("leiten einen aktiven Nicht-Betreiber nach /heute um und ändern nichts", async () => {
+  it("leiten einen aktiven Nicht-Betreiber nach /today um und ändern nichts", async () => {
     const actor = await register("active");
     const waiting = await register("pending");
     const other = await register("active");
@@ -95,9 +95,9 @@ describe("Server Actions der Verwaltung", () => {
     await signInAs(actor.email);
     const otherSessions = await sessionCount(other.id);
 
-    await expect(changeUserStatus(waiting.id, "active")).rejects.toThrow("NEXT_REDIRECT /heute");
-    await expect(changeUserStatus(other.id, "blocked")).rejects.toThrow("NEXT_REDIRECT /heute");
-    await expect(changeUserPassword(other.id, NEW)).rejects.toThrow("NEXT_REDIRECT /heute");
+    await expect(changeUserStatus(waiting.id, "active")).rejects.toThrow("NEXT_REDIRECT /today");
+    await expect(changeUserStatus(other.id, "blocked")).rejects.toThrow("NEXT_REDIRECT /today");
+    await expect(changeUserPassword(other.id, NEW)).rejects.toThrow("NEXT_REDIRECT /today");
 
     expect(await statusOf(waiting.id)).toBe("pending");
     expect(await statusOf(other.id)).toBe("active");
@@ -106,15 +106,15 @@ describe("Server Actions der Verwaltung", () => {
     expect(await canSignIn(other.email, PASSWORD)).toBe(true);
   });
 
-  it("schicken wartende Konten nach /warten und Besucher ohne Sitzung zur Anmeldung", async () => {
+  it("schicken wartende Konten nach /pending und Besucher ohne Sitzung zur Anmeldung", async () => {
     const target = await register("pending");
     const waiting = await register("pending");
     await signInAs(waiting.email);
-    await expect(changeUserStatus(target.id, "active")).rejects.toThrow("NEXT_REDIRECT /warten");
+    await expect(changeUserStatus(target.id, "active")).rejects.toThrow("NEXT_REDIRECT /pending");
 
     state.cookie = "";
-    await expect(changeUserStatus(target.id, "active")).rejects.toThrow("NEXT_REDIRECT /anmelden");
-    await expect(changeUserPassword(target.id, NEW)).rejects.toThrow("NEXT_REDIRECT /anmelden");
+    await expect(changeUserStatus(target.id, "active")).rejects.toThrow("NEXT_REDIRECT /sign-in");
+    await expect(changeUserPassword(target.id, NEW)).rejects.toThrow("NEXT_REDIRECT /sign-in");
     expect(await statusOf(target.id)).toBe("pending");
   });
 

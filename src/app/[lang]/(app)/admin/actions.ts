@@ -15,7 +15,7 @@ export async function changeUserStatus(
 ): Promise<{ ok: boolean }> {
   const actor = await requireAdmin();
   const result = await setUserStatus(db, auth, actor, userId, status);
-  if (result.ok) revalidatePath("/verwaltung");
+  if (result.ok) revalidatePath("/[lang]/(app)/admin", "page");
   return result;
 }
 

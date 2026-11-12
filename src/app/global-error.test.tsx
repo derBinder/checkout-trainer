@@ -24,7 +24,7 @@ describe("Globale Fehlerseite", () => {
 
     expect(log).toHaveBeenCalledWith(error);
     expect(screen.getByRole("heading", { name: "Das hat nicht geklappt." })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/heute");
+    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/today");
     fireEvent.click(screen.getByRole("button", { name: "Erneut versuchen" }));
     expect(retry).toHaveBeenCalledTimes(1);
   });

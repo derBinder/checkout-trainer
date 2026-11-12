@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, use, useLayoutEffect, useState, useTransition } from "react";
-import { updateNewPerDay } from "@/app/(app)/einstellungen/actions";
+import { updateNewPerDay } from "@/app/[lang]/(app)/settings/actions";
 import { type FieldSpec } from "@/components/form/form-values";
 import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";

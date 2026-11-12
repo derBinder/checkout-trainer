@@ -13,6 +13,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import {
   emailSchema,
@@ -28,6 +30,7 @@ const FIELDS: FieldSpec[] = [
 
 export function LoginForm() {
   const router = useRouter();
+  const localePath = useLocalePath();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
@@ -48,8 +51,8 @@ export function LoginForm() {
         setPending(false);
         return;
       }
-      // Wartende Konten leitet /heute weiter auf /warten.
-      router.replace("/heute");
+      // Wartende Konten leitet die Übersicht weiter auf die Warteseite.
+      router.replace(localePath(ROUTES.today));
     } catch {
       setError("Keine Verbindung. Versuche es erneut.");
       setPending(false);

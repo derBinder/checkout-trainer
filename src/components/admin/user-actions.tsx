@@ -24,7 +24,7 @@ import { newPasswordSchema } from "@/lib/validation/schemas";
 import {
   changeUserPassword,
   changeUserStatus,
-} from "@/app/(app)/verwaltung/actions";
+} from "@/app/[lang]/(app)/admin/actions";
 
 type Props = { userId: string; name: string; status: string };
 

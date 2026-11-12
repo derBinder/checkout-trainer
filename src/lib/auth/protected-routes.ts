@@ -3,39 +3,6 @@
 import { type Locale, pickLocale } from "@/i18n/locales";
 import { localePath, ROUTES, splitLocale } from "@/i18n/paths";
 
-/** Die Bereiche, die eine Anmeldung brauchen (/warten: wartende und gesperrte Konten). Der Matcher in src/proxy.ts muss dieselben nennen. */
-export const PROTECTED_PREFIXES = [
-  "/heute",
-  "/lernen",
-  "/statistik",
-  "/einstellungen",
-  "/verwaltung",
-  "/warten",
-] as const satisfies readonly string[];
-
-/** Exakter Treffer oder Unterpfad, also nicht `/heutemorgen` für `/heute`. */
-export function isProtectedPath(pathname: string): boolean {
-  return PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
-}
-
-/**
- * Nur Komfort, kein Schutz: Ein vorhandenes Cookie sagt nichts über eine gültige
- * Sitzung oder den Kontostatus. Das prüfen requireActiveUser() und requireAdmin().
- * Nur Seitenaufrufe (GET, HEAD) werden umgeleitet. Server Actions kommen als POST
- * an die Seitenadresse und antworten mit ihrer eigenen Prüfung: Eine Umleitung
- * könnte der Client nicht als Antwort der Action lesen.
- */
-export function needsLoginRedirect(
-  method: string,
-  pathname: string,
-  hasSessionCookie: boolean,
-): boolean {
-  if (method !== "GET" && method !== "HEAD") return false;
-  return !hasSessionCookie && isProtectedPath(pathname);
-}
-
 /** Die Bereiche, die eine Anmeldung brauchen, ohne Sprache (/pending: wartende und gesperrte Konten). */
 export const PROTECTED_ROUTES = [
   ROUTES.today,
@@ -47,11 +14,11 @@ export const PROTECTED_ROUTES = [
 ] as const;
 
 /** Pfad ohne Sprache; exakter Treffer oder Unterpfad, also nicht `/todayx` für `/today`. */
-export function isProtectedRoute(rest: string): boolean {
+export function isProtectedPath(rest: string): boolean {
   return PROTECTED_ROUTES.some((route) => rest === route || rest.startsWith(`${route}/`));
 }
 
-/** Alles außer api, _next und Dateien mit Endung. */
+/** Alles außer api, _next und Dateien mit Endung. Der Matcher in src/proxy.ts nennt denselben Ausdruck. */
 export const PROXY_MATCHER = "/((?!api|_next|.*\\..*).*)";
 
 export type ProxyDecision =
@@ -80,7 +47,7 @@ export function proxyDecision(req: {
     const picked = pickLocale({ cookie: req.cookieLocale, acceptLanguage: req.acceptLanguage });
     return { type: "redirect", location: `/${picked}${rest}` };
   }
-  if (isPageRequest && !req.hasSessionCookie && isProtectedRoute(rest)) {
+  if (isPageRequest && !req.hasSessionCookie && isProtectedPath(rest)) {
     return { type: "redirect", location: localePath(locale, ROUTES.signIn) };
   }
   return { type: "next", locale };

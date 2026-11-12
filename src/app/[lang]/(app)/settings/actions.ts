@@ -13,6 +13,6 @@ export async function updateNewPerDay(
   if (!u || u.status !== "active") return { ok: false };
 
   const result = await setNewPerDay(db, u.id, value);
-  if (result.ok) revalidatePath("/heute");
+  if (result.ok) revalidatePath("/[lang]/(app)/today", "page");
   return result;
 }

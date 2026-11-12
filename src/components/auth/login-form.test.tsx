@@ -2,6 +2,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const router = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -13,7 +19,7 @@ const { LoginForm } = await import("./login-form");
 
 async function fillAndSubmit(email: string, password: string) {
   const user = userEvent.setup();
-  render(<LoginForm />);
+  render(<LoginForm />, { wrapper });
   if (email) await user.type(screen.getByLabelText("E-Mail"), email);
   if (password) await user.type(screen.getByLabelText("Passwort"), password);
   await user.click(screen.getByRole("button", { name: "Anmelden" }));
@@ -30,7 +36,7 @@ describe("LoginForm", () => {
     signIn.mockResolvedValue({ error: null });
     await fillAndSubmit("  name@beispiel.de ", "geheim");
     expect(signIn).toHaveBeenCalledWith({ email: "name@beispiel.de", password: "geheim" });
-    expect(router.replace).toHaveBeenCalledWith("/heute");
+    expect(router.replace).toHaveBeenCalledWith("/de/today");
   });
 
   it("schickt nichts ab und zeigt Hinweise, solange Felder fehlen", async () => {
@@ -63,7 +69,7 @@ describe("LoginForm", () => {
 
   it("prüft ein Feld erst beim Verlassen", async () => {
     const user = userEvent.setup();
-    render(<LoginForm />);
+    render(<LoginForm />, { wrapper });
     const email = screen.getByLabelText("E-Mail");
     await user.type(email, "kaputt");
     expect(email.getAttribute("aria-invalid")).toBe("false");

@@ -1,12 +1,18 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 // Die Seiten sind Gerüste: Datenbausteine und Formulare haben eigene Tests und
 // stehen hier als Platzhalter. Bei `loading.value` warten die Datenbausteine
 // endlos, dann zeigt die Seite ihre Skeletons.
 const loading = vi.hoisted(() => ({ value: false }));
-const pathname = vi.hoisted(() => ({ value: "/heute" }));
+const pathname = vi.hoisted(() => ({ value: "/de/today" }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => pathname.value,
@@ -58,11 +64,11 @@ vi.mock("@/components/theme/theme-switch", () => ({
   ),
 }));
 
-const { default: TodayPage } = await import("./heute/page");
-const { default: StatsPage, metadata: statsMetadata } = await import("./statistik/page");
-const { default: StudyPage } = await import("./lernen/page");
-const { default: AdminPage, metadata: adminMetadata } = await import("./verwaltung/page");
-const { default: SettingsPage, metadata: settingsMetadata } = await import("./einstellungen/page");
+const { default: TodayPage } = await import("./today/page");
+const { default: StatsPage, metadata: statsMetadata } = await import("./stats/page");
+const { default: StudyPage } = await import("./study/page");
+const { default: AdminPage, metadata: adminMetadata } = await import("./admin/page");
+const { default: SettingsPage, metadata: settingsMetadata } = await import("./settings/page");
 const { default: AppLayout } = await import("./layout");
 const { default: AppError } = await import("./error");
 
@@ -70,7 +76,7 @@ const busy = (container: HTMLElement) => container.querySelectorAll('[aria-busy=
 
 beforeEach(() => {
   loading.value = false;
-  pathname.value = "/heute";
+  pathname.value = "/de/today";
 });
 
 afterEach(() => {
@@ -79,7 +85,7 @@ afterEach(() => {
 
 describe("Heute", () => {
   it("zeigt Überschrift, Serie und Übersicht", () => {
-    render(<TodayPage />);
+    render(<TodayPage />, { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Heute" })).toBeTruthy();
     expect(screen.getByText("Serie heute")).toBeTruthy();
     expect(screen.getByText("Heutige Karten")).toBeTruthy();
@@ -87,7 +93,7 @@ describe("Heute", () => {
 
   it("zeigt Skeletons, solange die Daten laden", () => {
     loading.value = true;
-    const { container } = render(<TodayPage />);
+    const { container } = render(<TodayPage />, { wrapper });
     expect(screen.getByRole("heading", { name: "Heute" })).toBeTruthy();
     expect(screen.queryByText("Heutige Karten")).toBeNull();
     expect(busy(container)).toBeGreaterThanOrEqual(2);
@@ -96,7 +102,7 @@ describe("Heute", () => {
 
 describe("Statistik", () => {
   it("zeigt Überschrift, Serie und Lernstände", () => {
-    render(<StatsPage />);
+    render(<StatsPage />, { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Statistik" })).toBeTruthy();
     expect(screen.getByText("Serie Statistik")).toBeTruthy();
     expect(screen.getByText("Lernstände")).toBeTruthy();
@@ -105,7 +111,7 @@ describe("Statistik", () => {
 
   it("zeigt Skeletons, solange die Daten laden", () => {
     loading.value = true;
-    const { container } = render(<StatsPage />);
+    const { container } = render(<StatsPage />, { wrapper });
     expect(screen.queryByText("Lernstände")).toBeNull();
     expect(busy(container)).toBeGreaterThanOrEqual(2);
   });
@@ -113,13 +119,13 @@ describe("Statistik", () => {
 
 describe("Lernen", () => {
   it("zeigt die Lernsitzung", () => {
-    render(<StudyPage />);
+    render(<StudyPage />, { wrapper });
     expect(screen.getByText("Lernsitzung")).toBeTruthy();
   });
 
   it("zeigt das Gerüst der Lernseite, solange die Karten laden", () => {
     loading.value = true;
-    const { container } = render(<StudyPage />);
+    const { container } = render(<StudyPage />, { wrapper });
     expect(screen.getByRole("link", { name: "Lernen beenden" })).toBeTruthy();
     expect(busy(container)).toBe(1);
   });
@@ -127,7 +133,7 @@ describe("Lernen", () => {
 
 describe("Verwaltung", () => {
   it("zeigt Überschrift und Nutzerliste", () => {
-    render(<AdminPage />);
+    render(<AdminPage />, { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Verwaltung" })).toBeTruthy();
     expect(screen.getByText("Nutzerliste")).toBeTruthy();
     expect(adminMetadata.title).toBe("Verwaltung · Checkout-Trainer");
@@ -135,7 +141,7 @@ describe("Verwaltung", () => {
 
   it("zeigt ein Skeleton, solange die Liste lädt", () => {
     loading.value = true;
-    const { container } = render(<AdminPage />);
+    const { container } = render(<AdminPage />, { wrapper });
     expect(screen.queryByText("Nutzerliste")).toBeNull();
     expect(busy(container)).toBe(1);
   });
@@ -143,7 +149,7 @@ describe("Verwaltung", () => {
 
 describe("Einstellungen", () => {
   it("zeigt alle Abschnitte", () => {
-    render(<SettingsPage />);
+    render(<SettingsPage />, { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Einstellungen" })).toBeTruthy();
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(["Darstellung", "Lernmenge", "Passwort ändern", "Abmelden"]);
@@ -157,7 +163,7 @@ describe("Einstellungen", () => {
 
   it("zeigt Skeletons für gespeicherte Werte und das Löschen, solange sie laden", () => {
     loading.value = true;
-    const { container } = render(<SettingsPage />);
+    const { container } = render(<SettingsPage />, { wrapper });
     expect(screen.queryByText("Feld Neue Karten")).toBeNull();
     expect(screen.queryByText("Abschnitt Konto löschen")).toBeNull();
     expect(screen.getByText("Formular Passwort")).toBeTruthy();
@@ -171,6 +177,7 @@ describe("Layout der angemeldeten Seiten", () => {
       <AppLayout>
         <h1>Inhalt</h1>
       </AppLayout>,
+      { wrapper },
     );
     const nav = screen.getByRole("navigation", { name: "Hauptnavigation" });
     expect(nav.textContent).toContain("Heute");
@@ -184,6 +191,7 @@ describe("Layout der angemeldeten Seiten", () => {
       <AppLayout>
         <h1>Inhalt</h1>
       </AppLayout>,
+      { wrapper },
     );
     const nav = screen.getByRole("navigation", { name: "Hauptnavigation" });
     expect(nav.textContent).not.toContain("Verwaltung");
@@ -195,12 +203,12 @@ describe("Fehlerseite der angemeldeten Seiten", () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     const retry = vi.fn();
     const error = new Error("Datenbank antwortet nicht");
-    render(<AppError error={error} retry={retry} />);
+    render(<AppError error={error} retry={retry} />, { wrapper });
 
     expect(screen.getByRole("alert")).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Das hat nicht geklappt." })).toBeTruthy();
     expect(log).toHaveBeenCalledWith(error);
-    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/heute");
+    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
 
     fireEvent.click(screen.getByRole("button", { name: "Erneut versuchen" }));
     expect(retry).toHaveBeenCalledTimes(1);

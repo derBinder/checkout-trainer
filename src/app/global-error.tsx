@@ -29,8 +29,9 @@ export default function GlobalError({ error, retry }: { error: unknown; retry: (
           >
             Erneut versuchen
           </button>
-          {/* Bewusst ein normaler Link: lädt die Seite ganz neu. */}
-          <a href="/heute" className="text-center font-semibold underline underline-offset-4">
+          {/* Bewusst ein normaler Link: lädt die Seite ganz neu. Ohne Sprache, die ergänzt proxy.ts. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Next.js hält /today für die Seite /[lang]. */}
+          <a href="/today" className="text-center font-semibold underline underline-offset-4">
             Zur Übersicht
           </a>
         </main>

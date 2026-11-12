@@ -6,7 +6,7 @@ import { Component, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const learnMoreCards = vi.hoisted(() => vi.fn());
-vi.mock("@/app/(app)/heute/actions", () => ({ learnMoreCards }));
+vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards }));
 
 const { MoreCardsButton } = await import("./more-cards-button");
 
@@ -81,7 +81,7 @@ describe("MoreCardsButton", () => {
 
   it("zeigt bei der Weiterleitung keine Fehlermeldung, sondern reicht sie weiter", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    learnMoreCards.mockImplementation(async () => redirect("/lernen"));
+    learnMoreCards.mockImplementation(async () => redirect("/de/study"));
     await clickButton();
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
     expect(screen.queryByText("Keine Verbindung. Versuche es erneut.")).toBeNull();

@@ -13,12 +13,22 @@ import { StreakChipSkeleton } from "@/components/streak-chip";
 import { StudySkeleton } from "@/components/study/study-skeleton";
 import { TodayOverviewSkeleton } from "@/components/today/today-skeleton";
 import { buttonShape, buttonVariants } from "@/components/ui/button";
+import { I18nProvider } from "@/i18n/client";
+
+/** Das Schließen-Kreuz der Lernseite liest die Sprache aus dem I18nProvider des Root-Layouts. */
+function studySkeleton(): ReactElement {
+  return (
+    <I18nProvider locale="de">
+      <StudySkeleton />
+    </I18nProvider>
+  );
+}
 
 const SKELETONS: [string, () => ReactElement][] = [
   ["Heute", () => createElement(TodayOverviewSkeleton)],
   ["Statistik", () => createElement(StatsOverviewSkeleton)],
   ["Serien-Schildchen", () => createElement(StreakChipSkeleton)],
-  ["Lernen", () => createElement(StudySkeleton)],
+  ["Lernen", studySkeleton],
   ["Neue Karten pro Tag", () => createElement(NewPerDayFieldSkeleton)],
   ["Konto löschen", () => createElement(DeleteAccountSectionSkeleton)],
   ["Verwaltung", () => createElement(UserListSkeleton)],
@@ -77,9 +87,9 @@ describe("Skeleton-Bausteine", () => {
   });
 
   it("Lernen: Gerüst mit Schließen-Kreuz, leerer Fortschrittslinie, drei Feldern und Tastenfeld, als ladend markiert", () => {
-    const html = renderToStaticMarkup(createElement(StudySkeleton));
+    const html = renderToStaticMarkup(studySkeleton());
     expect(html).toContain('aria-busy="true"');
-    expect(html).toContain('href="/heute"');
+    expect(html).toContain('href="/de/today"');
     expect(html).toContain('aria-label="Lernen beenden"');
     expect(html).toContain('data-slot="progress"');
     // Zähler, Beschriftung, Zahl, drei Felder, drei Ring-Segmente, 23 Tasten, drei Knöpfe.

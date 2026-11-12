@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { localePath, ROUTES } from "@/i18n/paths";
+import { getLocale } from "@/i18n/server";
 import { cn } from "@/lib/utils";
 
-export default function Home() {
+export default async function Home() {
+  const locale = await getLocale();
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-page pt-screen-top pb-inset-bottom">
       <main className="flex flex-1 flex-col gap-10">
@@ -15,11 +18,11 @@ export default function Home() {
           wenn statt des Triple nur das Single fällt.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link href="/registrieren" className={cn(buttonVariants({ size: "xl" }))}>
+          <Link href={localePath(locale, ROUTES.signUp)} className={cn(buttonVariants({ size: "xl" }))}>
             Registrieren
           </Link>
           <Link
-            href="/anmelden"
+            href={localePath(locale, ROUTES.signIn)}
             className={cn(buttonVariants({ size: "xl", variant: "secondary" }))}
           >
             Anmelden
@@ -27,10 +30,10 @@ export default function Home() {
         </div>
       </main>
       <footer className="flex gap-6 pt-16 text-sm font-medium text-muted-foreground">
-        <Link href="/impressum" className="py-2 hover:text-foreground">
+        <Link href={localePath(locale, ROUTES.imprint)} className="py-2 hover:text-foreground">
           Impressum
         </Link>
-        <Link href="/datenschutz" className="py-2 hover:text-foreground">
+        <Link href={localePath(locale, ROUTES.privacy)} className="py-2 hover:text-foreground">
           Datenschutz
         </Link>
       </footer>

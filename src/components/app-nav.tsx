@@ -9,21 +9,28 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES, splitLocale, type Route } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = { route: Route; label: string; icon: LucideIcon };
 
 const ITEMS: NavItem[] = [
-  { href: "/heute", label: "Heute", icon: Target },
-  { href: "/statistik", label: "Statistik", icon: ChartColumn },
-  { href: "/einstellungen", label: "Einstellungen", icon: Settings },
+  { route: ROUTES.today, label: "Heute", icon: Target },
+  { route: ROUTES.stats, label: "Statistik", icon: ChartColumn },
+  { route: ROUTES.settings, label: "Einstellungen", icon: Settings },
 ];
 
 const ADMIN_ITEM: NavItem = {
-  href: "/verwaltung",
+  route: ROUTES.admin,
   label: "Verwaltung",
   icon: Users,
 };
+
+/** Aktueller Pfad ohne Sprache (`/today` für `/de/today`). */
+function useRoutePath(): string {
+  return splitLocale(usePathname()).rest;
+}
 
 /**
  * Am Smartphone unten fixiert (Symbol und Wort), ab md oben als Textleiste.
@@ -31,9 +38,9 @@ const ADMIN_ITEM: NavItem = {
  * reicht das Layout als adminItem herein, er lädt hinter einer eigenen Suspense-Grenze.
  */
 export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
-  const pathname = usePathname();
+  const path = useRoutePath();
   // Die Lernseite hat nur eine Aufgabe und keine Navigation.
-  if (pathname === "/lernen") return null;
+  if (path === ROUTES.study) return null;
 
   return (
     <nav
@@ -43,7 +50,7 @@ export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
       <div className="mx-auto flex max-w-2xl items-stretch md:h-16 md:items-center md:gap-2 md:px-5">
         <span className="type-display hidden flex-1 text-lg md:block">Checkout-Trainer</span>
         {ITEMS.map((item) => (
-          <NavLink key={item.href} item={item} />
+          <NavLink key={item.route} item={item} />
         ))}
         {adminItem}
       </div>
@@ -56,12 +63,13 @@ export function AdminNavLink() {
   return <NavLink item={ADMIN_ITEM} />;
 }
 
-function NavLink({ item: { href, label, icon: Icon } }: { item: NavItem }) {
-  const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(`${href}/`);
+function NavLink({ item: { route, label, icon: Icon } }: { item: NavItem }) {
+  const path = useRoutePath();
+  const localePath = useLocalePath();
+  const active = path === route || path.startsWith(`${route}/`);
   return (
     <Link
-      href={href}
+      href={localePath(route)}
       aria-current={active ? "page" : undefined}
       className={cn(
         "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground -outline-offset-4 hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",

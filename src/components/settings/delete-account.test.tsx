@@ -3,6 +3,12 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const router = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -26,7 +32,7 @@ function cancelButton() {
 
 async function openDialog() {
   const user = userEvent.setup();
-  render(<DeleteAccount />);
+  render(<DeleteAccount />, { wrapper });
   await user.click(screen.getByRole("button", { name: "Konto löschen" }));
   await screen.findByRole("alertdialog");
   return user;
@@ -47,7 +53,7 @@ beforeEach(() => {
 
 describe("DeleteAccount", () => {
   it("zeigt die Rückfrage erst nach dem Tippen auf „Konto löschen“", async () => {
-    render(<DeleteAccount />);
+    render(<DeleteAccount />, { wrapper });
     expect(screen.queryByRole("alertdialog")).toBeNull();
     const user = userEvent.setup();
     await user.click(screen.getByRole("button", { name: "Konto löschen" }));
@@ -60,7 +66,7 @@ describe("DeleteAccount", () => {
     deleteUser.mockResolvedValue({ error: null });
     await openAndSubmit("geheim");
     expect(deleteUser).toHaveBeenCalledWith({ password: "geheim" });
-    expect(router.replace).toHaveBeenCalledWith("/");
+    expect(router.replace).toHaveBeenCalledWith("/de");
     expect(router.refresh).toHaveBeenCalledOnce();
   });
 
@@ -101,7 +107,7 @@ describe("DeleteAccount", () => {
     await user.keyboard("{Escape}");
     expect(screen.getByRole("alertdialog")).toBeTruthy();
     await act(async () => finish({ error: null }));
-    expect(router.replace).toHaveBeenCalledWith("/");
+    expect(router.replace).toHaveBeenCalledWith("/de");
   });
 
   it("schließt mit „Abbrechen“ und entfernt Fehler und Hinweise", async () => {
@@ -128,6 +134,7 @@ describe("DeleteAccount", () => {
       <Activity mode="visible">
         <DeleteAccount />
       </Activity>,
+      { wrapper },
     );
     await user.click(screen.getByRole("button", { name: "Konto löschen" }));
     await screen.findByRole("alertdialog");

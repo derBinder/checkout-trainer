@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { localePath, ROUTES } from "@/i18n/paths";
+import { getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { cardById } from "@/lib/cards";
 import { db } from "@/lib/db";
@@ -37,7 +39,7 @@ const loadStudy = cache(async () => {
 
 export async function StudySessionData() {
   const { empty, items } = await loadStudy();
-  if (empty) redirect("/heute");
+  if (empty) redirect(localePath(await getLocale(), ROUTES.today));
 
   // Kennung dieser Ladung: StudySessionHost erkennt daran eine Ladung aus dem
   // Zurück-Cache, mit der schon eine Sitzung lief.

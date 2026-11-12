@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
 import { loadsToRecord, nextLoad, REFRESH_TIMEOUT_MS, type StudyLoad } from "./study-load";
 import { StudySurface } from "./study-parts";
@@ -27,6 +29,7 @@ export function StudySessionHost({ loadId, items }: StudyLoad<StudyItem[]>) {
 
 function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
   const router = useRouter();
+  const localePath = useLocalePath();
   const incoming = { loadId, items };
   const [active, setActive] = useState(() => nextLoad(null, incoming, usedLoads));
   const next = nextLoad(active, incoming, usedLoads);
@@ -57,7 +60,7 @@ function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
             Die Lernsitzung konnte nicht geladen werden.
           </p>
         </div>
-        <Link href="/heute" className={cn(buttonVariants({ size: "xl" }), "w-full")}>
+        <Link href={localePath(ROUTES.today)} className={cn(buttonVariants({ size: "xl" }), "w-full")}>
           Zur Übersicht
         </Link>
       </StudySurface>

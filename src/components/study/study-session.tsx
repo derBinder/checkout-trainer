@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { judge, type Answer, type Check } from "@/lib/darts/judge";
 import { submitReview } from "@/lib/review/actions";
 import type { Rating } from "@/lib/srs/fsrs";
@@ -18,9 +20,9 @@ import {
   STUDY_FOOTER,
   STUDY_HEADER,
   STUDY_HEADER_ROW,
-  StudyCloseLink,
   StudySurface as Surface,
 } from "./study-parts";
+import { StudyCloseLink } from "./study-close-link";
 import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
 
@@ -46,6 +48,7 @@ const RATING_BUTTONS: { rating: Rating; label: string }[] = [
 
 export function StudySession({ items }: { items: StudyItem[] }) {
   const router = useRouter();
+  const localePath = useLocalePath();
   const [byId] = useState(() => new Map(items.map((item) => [item.id, item])));
   const [state, dispatch] = useReducer(studyReducer, items, (list) =>
     initStudy(
@@ -159,7 +162,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
               ? "1 Bewertung wurde nicht gespeichert."
               : `${unsyncedCount} Bewertungen wurden nicht gespeichert.`}
           </p>
-          <Button size="xl" className="w-full" onClick={() => router.replace("/anmelden")}>
+          <Button size="xl" className="w-full" onClick={() => router.replace(localePath(ROUTES.signIn))}>
             Zur Anmeldung
           </Button>
         </div>
@@ -181,7 +184,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
           {skippedHint}
           {failedHint}
           {saved ? (
-            <Link href="/heute" className={cn(buttonVariants({ size: "xl" }), "w-full")}>
+            <Link href={localePath(ROUTES.today)} className={cn(buttonVariants({ size: "xl" }), "w-full")}>
               Zur Übersicht
             </Link>
           ) : (

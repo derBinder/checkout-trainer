@@ -2,6 +2,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const router = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -13,7 +19,7 @@ const { SignOutButton } = await import("./sign-out-button");
 
 async function clickSignOut() {
   const user = userEvent.setup();
-  render(<SignOutButton />);
+  render(<SignOutButton />, { wrapper });
   await user.click(screen.getByRole("button", { name: "Abmelden" }));
   return user;
 }
@@ -33,7 +39,7 @@ describe("SignOutButton", () => {
     signOut.mockResolvedValue({ error: null });
     await clickSignOut();
     expect(signOut).toHaveBeenCalledOnce();
-    expect(router.replace).toHaveBeenCalledWith("/");
+    expect(router.replace).toHaveBeenCalledWith("/de");
     expect(router.refresh).toHaveBeenCalledOnce();
     expect(screen.queryByRole("alert")).toBeNull();
   });
@@ -44,7 +50,7 @@ describe("SignOutButton", () => {
     await clickSignOut();
     expect(buttonDisabled()).toBe(true);
     finish({ error: null });
-    await vi.waitFor(() => expect(router.replace).toHaveBeenCalledWith("/"));
+    await vi.waitFor(() => expect(router.replace).toHaveBeenCalledWith("/de"));
   });
 
   it("zeigt den Fehler der Abmeldung auf Deutsch und gibt den Knopf wieder frei", async () => {

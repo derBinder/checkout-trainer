@@ -2,7 +2,7 @@
 
 import { unstable_rethrow } from "next/navigation";
 import { useActionState } from "react";
-import { learnMoreCards, type MoreCardsState } from "@/app/(app)/heute/actions";
+import { learnMoreCards, type MoreCardsState } from "@/app/[lang]/(app)/today/actions";
 import { Button } from "@/components/ui/button";
 
 const MESSAGES: Record<NonNullable<MoreCardsState>["reason"] | "offline", string> = {

@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { listUsers } from "@/app/(app)/verwaltung/admin-users";
+import { listUsers } from "@/app/[lang]/(app)/admin/admin-users";
 import { requireAdmin } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { USER_LIST, USER_ROW, UserRowDetails } from "./admin-parts";

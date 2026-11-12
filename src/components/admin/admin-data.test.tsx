@@ -6,8 +6,8 @@ import { db } from "@/lib/db";
 const requireAdmin = vi.hoisted(() => vi.fn(async () => ({ id: "admin" })));
 const listUsers = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/auth/guard", () => ({ requireAdmin }));
-vi.mock("@/app/(app)/verwaltung/admin-users", () => ({ listUsers }));
-vi.mock("@/app/(app)/verwaltung/actions", () => ({
+vi.mock("@/app/[lang]/(app)/admin/admin-users", () => ({ listUsers }));
+vi.mock("@/app/[lang]/(app)/admin/actions", () => ({
   changeUserPassword: vi.fn(),
   changeUserStatus: vi.fn(),
 }));

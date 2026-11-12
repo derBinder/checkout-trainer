@@ -11,9 +11,9 @@ import {
   STUDY_FOOTER,
   STUDY_HEADER,
   STUDY_HEADER_ROW,
-  StudyCloseLink,
   StudySurface,
 } from "./study-parts";
+import { StudyCloseLink } from "./study-close-link";
 
 /**
  * Lernseite, solange die Sitzung lädt: echtes Schließen-Kreuz und leere

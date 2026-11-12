@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 
 /**
  * Fängt Fehler der angemeldeten Seiten ab, etwa wenn die Datenbank nicht antwortet.
  * Navigation und Layout bleiben stehen; retry() lädt den Seiteninhalt neu vom Server.
  */
 export default function AppError({ error, retry }: { error: unknown; retry: () => void }) {
+  const localePath = useLocalePath();
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -25,7 +28,7 @@ export default function AppError({ error, retry }: { error: unknown; retry: () =
         <Button size="xl" onClick={() => retry()}>
           Erneut versuchen
         </Button>
-        <Link href="/heute" className={buttonVariants({ variant: "secondary", size: "xl" })}>
+        <Link href={localePath(ROUTES.today)} className={buttonVariants({ variant: "secondary", size: "xl" })}>
           Zur Übersicht
         </Link>
       </div>

@@ -1,11 +1,9 @@
-import { X } from "lucide-react";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
  * Bausteine der Lernseite, die Sitzung und Skeleton gemeinsam nutzen, damit beide
- * dieselben Maße haben. Rein darstellend, ohne Datenzugriff.
+ * dieselben Maße haben. Rein darstellend, ohne Datenzugriff. Das Schließen-Kreuz
+ * liegt in study-close-link.tsx, weil es die Sprache aus dem Client-Kontext braucht.
  */
 
 /** Kopfzeile: Schließen-Kreuz und Zähler, darunter die Fortschrittslinie. */
@@ -35,19 +33,5 @@ export function StudySurface({
         {children}
       </div>
     </div>
-  );
-}
-
-/** Schließen-Kreuz oben links, zurück zur Übersicht. */
-export function StudyCloseLink({ onClick }: { onClick?: (event: React.MouseEvent) => void }) {
-  return (
-    <Link
-      href="/heute"
-      aria-label="Lernen beenden"
-      onClick={onClick}
-      className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "-ml-3")}
-    >
-      <X aria-hidden className="size-5" />
-    </Link>
   );
 }

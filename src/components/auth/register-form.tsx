@@ -14,6 +14,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
@@ -32,6 +34,7 @@ const FIELDS: FieldSpec[] = [
 
 export function RegisterForm() {
   const router = useRouter();
+  const localePath = useLocalePath();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [password, setPassword] = useState("");
@@ -55,7 +58,7 @@ export function RegisterForm() {
         setPending(false);
         return;
       }
-      router.replace("/warten");
+      router.replace(localePath(ROUTES.pending));
     } catch {
       setError("Keine Verbindung. Versuche es erneut.");
       setPending(false);

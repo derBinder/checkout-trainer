@@ -25,12 +25,12 @@ beforeEach(() => {
 
 describe("Warten auf Freischaltung", () => {
   it("schickt Besucher ohne Sitzung zur Anmeldung", async () => {
-    expect(await redirectTarget()).toBe("/anmelden");
+    expect(await redirectTarget()).toBe("/de/sign-in");
   });
 
   it("schickt freigeschaltete Konten zur Übersicht", async () => {
     session.user = { status: "active" };
-    expect(await redirectTarget()).toBe("/heute");
+    expect(await redirectTarget()).toBe("/de/today");
   });
 
   it("sagt einem wartenden Konto, dass der Betreiber es freischalten muss", async () => {
