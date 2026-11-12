@@ -33,7 +33,6 @@ beforeEach(() => {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
   router.bfcacheId = `seite-${n}`;
   router.refresh.mockReset();
-  Element.prototype.scrollTo = vi.fn();
 });
 
 afterEach(() => {

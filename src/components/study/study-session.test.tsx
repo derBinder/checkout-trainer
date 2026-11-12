@@ -81,8 +81,6 @@ beforeEach(() => {
   submitReview.mockResolvedValue({ ok: true });
   clock = 0;
   vi.spyOn(performance, "now").mockImplementation(() => clock);
-  // jsdom kennt kein Element.scrollTo.
-  Element.prototype.scrollTo = vi.fn();
 });
 
 afterEach(() => {

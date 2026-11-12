@@ -85,7 +85,7 @@ describe('bestSetup', () => {
         expect(rest - routeTotal(s.throws)).toBe(s.leaves)
       }
     }
-  })
+  }, 30_000) // Alle Reste mit 1 bis 3 Darts: parallel und mit Coverage über 5 Sekunden.
   it('lässt bei Bogey-Zahlen einen gültigen Rest', () => {
     for (const b of BOGEYS) {
       const s = bestSetup(b, 3)

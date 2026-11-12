@@ -68,9 +68,9 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - Kein Zugriff auf Vercel, Neon oder andere fremde Dienste ohne vorherige Absprache mit dem Auftraggeber.
 - Git: nur lokal committen, nie pushen. Keine Attributionszeilen in Commit-Nachrichten.
 - `src/lib/db/schema.ts` von Hand pflegen und Migrationen mit `db:generate` erzeugen. Den Better-Auth-CLI-Generator nicht in diese Datei schreiben lassen, er überschreibt die Handänderungen.
-- Tests zuerst schreiben. Vor jedem Commit: `npm test`, `npm run typecheck`, `npm run lint`.
-- Testabdeckung mindestens 80 % (Zeilen, Anweisungen, Zweige, Funktionen), getrennt für Backend (`src/lib`, `src/proxy.ts`, `src/app/api`, `src/app/**/*.ts`) und Frontend (`src/components`, `src/app/**/*.tsx`). Die Schwellen stehen in `vitest.config.ts`; `npm run test:coverage` muss vor jedem Commit durchlaufen. Neuer Code bringt seine Tests mit, die Schwellen werden nicht gesenkt.
-- Komponententests als `*.test.tsx` mit `// @vitest-environment jsdom` in der ersten Zeile, Testing Library und user-event. Geprüft wird sichtbares Verhalten (Rollen, Beschriftungen, Texte), nicht der Aufbau.
+- Tests zuerst schreiben. Vor jedem Commit: `npm run test:coverage`, `npm run typecheck`, `npm run lint`.
+- Testabdeckung mindestens 80 % (Zeilen, Anweisungen, Zweige, Funktionen), getrennt für Backend (`src/lib`, `src/proxy.ts`, `src/app/api`, `src/app/**/*.ts`) und Frontend (`src/components`, `src/app/**/*.tsx`). Die Schwellen stehen in `vitest.config.ts`. Neuer Code bringt seine Tests mit, die Schwellen werden nicht gesenkt.
+- Komponententests als `*.test.tsx` mit `// @vitest-environment jsdom` in der ersten Zeile und Testing Library. Eingaben mit user-event; `fireEvent` nur, wo user-event nicht passt (etwa mit nachgebildeter Uhr in der Lernsitzung, deren Tippschutz kurz aufeinanderfolgende Tipps verwirft). Geprüft wird sichtbares Verhalten (Rollen, Beschriftungen, Texte), nicht der Aufbau.
 
 ## Pakete installieren
 

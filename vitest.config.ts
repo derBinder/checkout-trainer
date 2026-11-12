@@ -15,13 +15,11 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["./vitest.setup.ts"],
-    // Die vollständigen Durchläufe über alle Reste (scoring.test.ts) brauchen
-    // parallel und mit Coverage-Messung mehr als die voreingestellten 5 Sekunden.
-    testTimeout: 30_000,
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/**/*.test.{ts,tsx}"],
+      // test-db.ts ist eine Testhilfe und läuft nie in der App.
+      exclude: ["src/**/*.test.{ts,tsx}", "src/lib/db/test-db.ts"],
       reporter: ["text-summary", "html"],
       thresholds: { [BACKEND]: MIN, [FRONTEND]: MIN },
     },

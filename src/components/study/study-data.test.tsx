@@ -25,8 +25,6 @@ const { StudySessionData } = await import("./study-data");
 
 beforeEach(() => {
   loadQueue.mockReset();
-  // jsdom kennt kein Element.scrollTo.
-  Element.prototype.scrollTo = vi.fn();
 });
 
 describe("StudySessionData", () => {

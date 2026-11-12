@@ -8,7 +8,9 @@ vi.mock("@/lib/db", () => ({ db: {} }));
 
 // Komponententests (`// @vitest-environment jsdom`): gerenderte Bäume nach jedem
 // Test wieder aushängen, sonst sammeln sich die Knoten im gemeinsamen document.
+// jsdom kennt kein Element.scrollTo; die Lernsitzung ruft es beim Kartenwechsel auf.
 if (typeof document !== "undefined") {
   const { cleanup } = await import("@testing-library/react");
   afterEach(cleanup);
+  Element.prototype.scrollTo ??= () => {};
 }

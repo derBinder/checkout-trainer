@@ -10,3 +10,4 @@ docs/superpowers
 .next
 node_modules
 .claude
+coverage
