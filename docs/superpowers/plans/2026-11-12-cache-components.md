@@ -4,7 +4,7 @@
 
 **Goal:** Der Wechsel zwischen den angemeldeten Seiten zeigt sofort ein vorgerendertes Gerüst, Nutzerdaten erscheinen als Skeleton und füllen sich beim Nachladen.
 
-**Architecture:** Cache Components und Partial Prefetching werden eingeschaltet. Jede angemeldete Seite wird in ein Gerüst ohne Datenzugriff und in Datenbausteine hinter Suspense-Grenzen zerlegt, deren Rückfall-Inhalt Skeletons sind. Die Sitzungsprüfung wandert aus dem gemeinsamen Layout in die Datenbausteine, davor steht eine reine Cookie-Vorprüfung in `proxy.ts`. Die Verwaltung zieht in eine eigene, blockierende Routengruppe um.
+**Architecture:** Cache Components und Partial Prefetching werden eingeschaltet. Jede angemeldete Seite wird in ein Gerüst ohne Datenzugriff und in Datenbausteine hinter Suspense-Grenzen zerlegt, deren Rückfall-Inhalt Skeletons sind. Die Sitzungsprüfung wandert aus dem gemeinsamen Layout in die Datenbausteine, davor steht eine reine Cookie-Vorprüfung in `proxy.ts`. Die Verwaltung wird wie die anderen Seiten zerlegt und leitet Nicht-Betreiber auf `/heute` um.
 
 **Tech Stack:** Next.js 16.4.5 (`cacheComponents`, `partialPrefetching`, `proxy.ts`, Route-Segment-Config `instant`), React 19 Suspense, Better Auth 1.7 (`getSessionCookie` aus `better-auth/cookies`), shadcn Skeleton, Tailwind 4, Vitest.
 
@@ -16,7 +16,8 @@
 - Kein `use cache`, kein `use cache: private`, kein `use cache: remote` für Nutzerdaten oder Sitzung. Lerndaten und Sitzungsstatus werden bei jeder Anfrage frisch aus der Datenbank gelesen.
 - Das Gerüst enthält weder Nutzerdaten noch Lerninhalte (Wege, Begründungen, Alternativen, Stellwürfe, Karten). Alles davon lädt erst in einem Datenbaustein, der zuerst `requireActiveUser()` bzw. `requireAdmin()` aufruft.
 - `proxy.ts` prüft nur, ob ein Sitzungs-Cookie vorhanden ist. Keine Datenbankabfrage, keine Sitzungsvalidierung. Sie ersetzt keine Prüfung.
-- Nicht-Betreiber erhalten auf `/verwaltung` weiterhin HTTP-Status 404 und kein Gerüst. Lässt sich das nicht halten: anhalten und melden, nicht auf eine gestreamte Fehlerseite mit Status 200 ausweichen.
+- Mit Cache Components liefert jede Route zuerst das vorgerenderte äußere Gerüst mit Status 200 (in Task 1 gemessen). Echte Status-Codes gibt es nur noch aus `proxy.ts`. Umleitungen und `notFound()` aus Seiten kommen als Anweisung im Datenstrom.
+- Ein angemeldeter Nicht-Betreiber wird auf `/verwaltung` nach `/heute` umgeleitet (Entscheidung des Auftraggebers). Ist das nicht möglich, erscheint die Fehlerseite. Die Nutzerliste erhält er nie.
 - Skeletons haben die Maße des Inhalts im Normalfall. Über dem ersten Bildschirm (375 × 812) springt im Normalfall nichts. Hingenommen: Heute im Fertig-Zustand, Einstellungen des Betreibers, Listen am Seitenende, der Betreiber-Eintrag der Navigation.
 - Skeletons sind für Screenreader versteckt (`aria-hidden`), der ladende Bereich trägt `aria-busy`. Pulsieren nur ohne `prefers-reduced-motion`.
 - Keine Verhaltens-, Text- oder Datenänderung. Server Actions bleiben unverändert und prüfen weiter selbst.
@@ -26,7 +27,7 @@
 
 ## Review Focus
 
-1. **Beliebiges Cookie:** Eine Anfrage mit einem erfundenen Sitzungs-Cookie erhält das Gerüst, aber die Antwort enthält keinen Lerninhalt und keine Nutzerdaten, und sie endet mit einer Umleitung auf `/anmelden`. Prüfung in Task 4.
+1. **Beliebiges Cookie:** Eine Anfrage mit einem erfundenen Sitzungs-Cookie erhält das Gerüst, aber die Antwort enthält keinen Lerninhalt und keine Nutzerdaten, und der Browser landet auf `/anmelden`. Prüfung in Task 4.
 2. **Sitzung endet zwischen Gerüst und Daten** (abgelaufen, gesperrt, wartend): Der Datenbaustein leitet um, es erscheinen keine Daten. Prüfung in Task 2 (wartendes Konto) und Task 4.
 3. **Stand nach einer Lernsitzung:** Heute und Statistik zeigen nach dem Zurückwechseln den neuen Stand, nicht einen im Browser gehaltenen alten. Prüfung in Task 3.
 4. **Vorabladen löst keine Datenbankarbeit aus:** Sichtbare Links laden nur das Gerüst. Die Datenbausteine laufen erst bei der Navigation. Prüfung in Task 2 über die Server-Ausgabe eines Produktionsstarts.
@@ -43,8 +44,6 @@ src/app/(app)/layout.tsx                    Gerüst ohne blockierende Sitzungspr
 src/app/(app)/<seite>/page.tsx              Gerüst der Seite, Suspense um Datenbausteine
 src/components/<bereich>/*-data.tsx         Datenbausteine (async, prüfen Sitzung, laden)
 src/components/<bereich>/*-skeleton.tsx     Skeletons je Datenbaustein
-src/app/(verwaltung)/layout.tsx             blockierende Betreiber-Prüfung
-src/app/(verwaltung)/verwaltung/page.tsx    Verwaltung, Adresse bleibt /verwaltung
 ```
 
 ---
@@ -59,7 +58,7 @@ src/app/(verwaltung)/verwaltung/page.tsx    Verwaltung, Adresse bleibt /verwaltu
 - Produces:
   ```ts
   // protected-routes.ts (rein, ohne Next-Importe)
-  PROTECTED_PREFIXES: readonly string[]      // ['/heute', '/lernen', '/statistik', '/einstellungen', '/verwaltung']
+  PROTECTED_PREFIXES: readonly string[]      // ['/heute', '/lernen', '/statistik', '/einstellungen', '/verwaltung', '/warten']
   isProtectedPath(pathname: string): boolean // exakter Treffer oder Präfix mit '/' danach
   needsLoginRedirect(pathname: string, hasSessionCookie: boolean): boolean
   // skeleton.tsx
@@ -71,9 +70,9 @@ src/app/(verwaltung)/verwaltung/page.tsx    Verwaltung, Adresse bleibt /verwaltu
 
 ```ts
 // protected-routes.test.ts
-for (const p of ['/heute', '/lernen', '/statistik', '/einstellungen', '/verwaltung', '/heute/', '/statistik/x'])
+for (const p of ['/heute', '/lernen', '/statistik', '/einstellungen', '/verwaltung', '/warten', '/heute/', '/statistik/x'])
   expect(isProtectedPath(p)).toBe(true)
-for (const p of ['/', '/anmelden', '/registrieren', '/warten', '/impressum', '/datenschutz', '/api/auth/sign-in/email', '/heutemorgen', '/lernenx'])
+for (const p of ['/', '/anmelden', '/registrieren', '/impressum', '/datenschutz', '/api/auth/sign-in/email', '/heutemorgen', '/lernenx'])
   expect(isProtectedPath(p)).toBe(false)
 expect(needsLoginRedirect('/heute', false)).toBe(true)
 expect(needsLoginRedirect('/heute', true)).toBe(false)
@@ -82,7 +81,7 @@ expect(needsLoginRedirect('/', false)).toBe(false)
 ```
 
 - [ ] **Step 2:** `npx vitest run src/lib/auth/protected-routes.test.ts`. Erwartet: FAIL (Modul fehlt).
-- [ ] **Step 3:** `protected-routes.ts` implementieren. `src/proxy.ts` anlegen: liest das Sitzungs-Cookie mit `getSessionCookie(request)` aus `better-auth/cookies`, leitet bei `needsLoginRedirect` auf `/anmelden` um, sonst weiter. `config.matcher` auf die fünf Präfixe beschränken. Dateiname, Exportname und Matcher-Syntax gegen die Doku zu `proxy` prüfen.
+- [ ] **Step 3:** `protected-routes.ts` implementieren. `src/proxy.ts` anlegen: liest das Sitzungs-Cookie mit `getSessionCookie(request)` aus `better-auth/cookies`, leitet bei `needsLoginRedirect` auf `/anmelden` um, sonst weiter. `config.matcher` auf die sechs Präfixe beschränken. Dateiname, Exportname und Matcher-Syntax gegen die Doku zu `proxy` prüfen.
 - [ ] **Step 4:** In `next.config.ts` `cacheComponents: true` und `partialPrefetching: true` setzen. Alle Segmente unter `src/app/(app)/` sowie `src/app/warten/page.tsx` mit `export const instant = false` ausnehmen. `npm run build` ausführen und jede Meldung nach der Migrationsanleitung beheben (synchrone Ein-/Ausgabe wie `new Date()` im Gerüst, veraltete Segment-Configs, Root-Layout). Erwartet: Build grün, ohne dass eine Datenbank geöffnet wird.
 - [ ] **Step 5:** Skeleton-Baustein über die shadcn-CLI hinzufügen (Version ausdrücklich angeben) und anpassen: Rundung und Flächenfarbe über vorhandene Tokens, `aria-hidden`, `motion-reduce:animate-none`. Keine freien Tailwind-Werte (der Wächter-Test `src/styles/no-arbitrary-classes.test.ts` muss bestehen).
 - [ ] **Step 6:** `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. Erwartet: alles grün. Mit `next start` prüfen (curl, ohne Cookie): `/heute` → 307 nach `/anmelden`, `/` → 200, `/anmelden` → 200.
@@ -134,29 +133,28 @@ expect(needsLoginRedirect('/', false)).toBe(false)
 ### Task 4: Verwaltung, Zugriffsprüfung, Abschluss
 
 **Files:**
-- Create: `src/app/(verwaltung)/layout.tsx`, Skeleton für die Nutzerliste
-- Move: `src/app/(app)/verwaltung/` nach `src/app/(verwaltung)/verwaltung/` (Seite, Actions, Tests; Importpfade anpassen)
-- Modify: `CLAUDE.md`
+- Create: Datenbaustein und Skeleton für die Nutzerliste unter `src/components/admin/`
+- Modify: `src/app/(app)/verwaltung/page.tsx`, `src/lib/auth/guard.ts`, `src/lib/auth/protected-routes.ts` (falls nötig), `CLAUDE.md`
+- Test: bestehende Tests der Verwaltung bleiben grün
 
 **Interfaces:**
-- Consumes: `requireAdmin`, `AppNav`, `listUsers`, `Skeleton`.
-- Produces: `/verwaltung` unter derselben Adresse, blockierend, mit echter 404-Antwort für Nicht-Betreiber.
+- Consumes: `requireAdmin`, `listUsers`, `Skeleton`.
+- Produces: `/verwaltung` ohne `instant = false`. `requireAdmin()` leitet einen aktiven Nicht-Betreiber auf `/heute` um, statt `notFound()` aufzurufen. Nicht angemeldete und nicht aktive Nutzer werden wie bisher über `requireActiveUser()` behandelt.
 
-- [ ] **Step 1:** Die Verwaltung in die Routengruppe `(verwaltung)` verschieben. Das neue Layout ruft `requireAdmin()` vor dem Rendern auf, trägt `export const instant = false`, enthält oberhalb der Prüfung keine Suspense-Grenze und rendert danach die Navigation mit dem Betreiber-Eintrag und den Seitenrahmen. Die Nutzerliste lädt in einem Datenbaustein hinter Suspense mit Skeleton.
-- [ ] **Step 2:** `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. Erwartet: alles grün. `/warten` und `/verwaltung` sind die einzigen Routen mit `instant = false` (mit `grep` belegen).
-- [ ] **Step 3:** Zugriffsprüfung gegen einen Produktionsstart mit `curl`. Dafür lokal drei Testkonten anlegen (aktiv, wartend, Betreiber) und je ein Sitzungs-Cookie über `POST /api/auth/sign-in/email` holen. Erwartet:
+- [ ] **Step 1:** `requireAdmin()` in `src/lib/auth/guard.ts` ändern: Nicht-Betreiber → `redirect("/heute")`. Alle Aufrufer prüfen (`grep -rn requireAdmin src`): Die Server Actions der Verwaltung rufen `requireAdmin()` ebenfalls auf, eine Umleitung dort ist unkritisch, weil die Kernfunktionen den Akteur selbst prüfen. Tests anpassen, die bisher `notFound` erwarten.
+- [ ] **Step 2:** Verwaltung zerlegen. Gerüst: Titel. Datenbaustein: ruft zuerst `requireAdmin()` auf, lädt dann die Nutzerliste. Skeleton: drei Zeilen in der Höhe einer Nutzerzeile. `instant = false` entfernen, Prüfhinweise abarbeiten.
+- [ ] **Step 3:** `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. Erwartet: alles grün. `/warten` ist die einzige Route mit `instant = false` (mit `grep` belegen).
+- [ ] **Step 4:** Zugriffsprüfung gegen einen Produktionsstart. Dafür lokal drei Testkonten anlegen (aktiv, wartend, Betreiber) und je ein Sitzungs-Cookie über `POST /api/auth/sign-in/email` holen. Mit `curl` die Antworten lesen, Umleitungen im Datenstrom zusätzlich im Browser bestätigen. Erwartet:
 
 | Anfrage | Erwartung |
 |---|---|
-| `/heute` ohne Cookie | 307 nach `/anmelden` |
-| `/heute` mit erfundenem Cookie | Antwort enthält weder `Bleibt bei` noch `Der übliche Weg` noch eine Nutzer-Zahl und führt zur Umleitung auf `/anmelden` |
+| `/heute`, `/verwaltung`, `/warten` ohne Cookie | HTTP 307 nach `/anmelden` (aus `proxy.ts`) |
+| `/heute` mit erfundenem Cookie | Antwort enthält weder `Bleibt bei` noch `Der übliche Weg` noch eine Nutzer-Zahl, der Browser landet auf `/anmelden` |
 | `/statistik` mit erfundenem Cookie | wie oben, zusätzlich kein `Nicht checkbar` |
-| `/heute` mit wartendem Konto | Umleitung auf `/warten`, keine Daten |
-| `/verwaltung` ohne Cookie | 307 nach `/anmelden` |
-| `/verwaltung` mit aktivem Nicht-Betreiber | HTTP 404, kein Navigations- oder Seitengerüst im Body |
-| `/verwaltung` mit Betreiber | HTTP 200, Nutzerliste |
+| `/heute` mit wartendem Konto | der Browser landet auf `/warten`, keine Daten in der Antwort |
+| `/verwaltung` mit aktivem Nicht-Betreiber | der Browser landet auf `/heute`, die Antwort enthält keine E-Mail-Adresse eines Nutzers |
+| `/verwaltung` mit Betreiber | Nutzerliste erscheint nach dem Skeleton |
 
-  Weicht der Status bei Nicht-Betreibern von 404 ab: anhalten und melden.
-- [ ] **Step 4:** Im Browser bei 375 px mit dem Betreiberkonto: Verwaltung öffnen, Nutzerliste erscheint nach dem Skeleton, Freischalten und Sperren funktionieren wie bisher. Mit dem aktiven Konto alle vier Seiten einmal durchwechseln.
-- [ ] **Step 5:** `CLAUDE.md` ergänzen: Cache Components und Partial Prefetching sind eingeschaltet, Nutzerdaten werden nie gecacht, jeder Datenbaustein prüft die Sitzung selbst, das Gerüst enthält keine Nutzerdaten und keine Lerninhalte, `proxy.ts` ist nur eine Cookie-Vorprüfung.
-- [ ] **Step 6:** Testkonten und ihre Daten aus der lokalen Datenbank entfernen. Commit `feat: blocking admin area and access checks for the instant shell`.
+- [ ] **Step 5:** Im Browser bei 375 px mit dem Betreiberkonto: Freischalten und Sperren funktionieren wie bisher. Mit dem aktiven Konto alle vier Seiten durchwechseln. In den Einstellungen ein Passwort eintippen, die Seite wechseln und zurückkehren: die Passwortfelder sind leer und verdeckt (Cache Components kann Formularzustand beim Zurückkehren erhalten; für Passwortfelder ist das nicht zulässig, bei Bedarf nach `migrating-to-cache-components.md`, Abschnitt „UI state preservation", beheben).
+- [ ] **Step 6:** `CLAUDE.md` ergänzen: Cache Components und Partial Prefetching sind eingeschaltet, Nutzerdaten werden nie gecacht, jeder Datenbaustein prüft die Sitzung selbst, das Gerüst enthält keine Nutzerdaten und keine Lerninhalte, `proxy.ts` ist nur eine Cookie-Vorprüfung, echte Status-Codes gibt es nur aus `proxy.ts`.
+- [ ] **Step 7:** Testkonten und ihre Daten aus der lokalen Datenbank entfernen. Commit `feat: admin area in the instant shell and access checks`.

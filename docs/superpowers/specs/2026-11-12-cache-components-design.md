@@ -43,7 +43,7 @@ Vom Auftraggeber anhand eines Entwurfs bestätigt (`.superpowers/brainstorm/6222
 | Lernen | Kopfzeile mit Schließen-Kreuz, leere Fortschrittslinie | Zähler „7 / 20", die Karte (Beschriftung, Zahl, Felder), der Knopf unten |
 | Statistik | Titel, die drei Beschriftungen mit Legende, das Raster mit den Zahlen 2 bis 170 in neutraler Darstellung | Serien-Schildchen, die drei Zähler, die Einfärbung der Rasterfelder, die Liste der schwierigsten Reste, die Inhalte der Detailansicht je Rest |
 | Einstellungen | Titel, alle Abschnittsüberschriften, Darstellungs-Umschalter, die Formulare für Passwort, Abmelden | Der gespeicherte Wert „Neue Karten pro Tag", der Abschnitt „Konto löschen" (für das Betreiberkonto ausgeblendet) |
-| Verwaltung | nichts vor der Betreiber-Prüfung, danach Titel und Navigation | Die Nutzerliste |
+| Verwaltung | Titel | Die Nutzerliste (nur für den Betreiber, sonst Umleitung auf `/heute`) |
 | Navigation | Die drei Einträge Heute, Statistik, Einstellungen | Der vierte Eintrag „Verwaltung" für das Betreiberkonto |
 
 Regeln für Skeletons:
@@ -58,11 +58,11 @@ Regeln für Skeletons:
 
 Heute prüft das Layout der angemeldeten Seiten die Sitzung, bevor irgendetwas gerendert wird, und jede Seite prüft noch einmal selbst. Mit einer vorgerenderten Shell kann das Layout nicht mehr vor dem Rendern warten. Neue Aufteilung:
 
-1. **Schnelle Vorprüfung in `proxy.ts`** (Entscheidung des Entwerfers): Für die fünf angemeldeten Routen prüft sie nur, ob ein Sitzungs-Cookie vorhanden ist. Fehlt es, leitet sie sofort auf `/anmelden` um, bevor eine Shell ausgeliefert wird. Keine Datenbankabfrage. Sie ist Komfort, nicht Schutz.
+1. **Schnelle Vorprüfung in `proxy.ts`** (Entscheidung des Entwerfers): Für die fünf angemeldeten Routen und für `/warten` prüft sie nur, ob ein Sitzungs-Cookie vorhanden ist. Fehlt es, leitet sie sofort auf `/anmelden` um, bevor eine Shell ausgeliefert wird. Keine Datenbankabfrage. Sie ist Komfort, nicht Schutz.
 2. **Echte Prüfung bei den Daten:** Jeder Baustein, der Nutzerdaten lädt, ruft `requireActiveUser()` (bzw. `requireAdmin()`) selbst auf, bevor er etwas lädt. Das ist heute schon so und bleibt die maßgebliche Stelle. Die Prüfung liest den Status weiterhin frisch aus der Datenbank.
 3. **Das Gerüst enthält keine Nutzerdaten und keine Lerninhalte.** Es ist für alle gleich und darf deshalb vor der Prüfung ausgeliefert werden. Die Vorprüfung sieht nur, dass irgendein Cookie da ist, das Gerüst erreicht also auch wartende und gesperrte Konten. Deshalb bleiben auch die Karteninhalte (Wege, Begründungen, Alternativen, Stellwürfe) hinter der echten Prüfung, so wie heute: Die Detailansicht der Statistik und die Karten der Lernsitzung werden erst im Datenbaustein geladen. (Entscheidung des Entwerfers: nichts wird ausgeliefert, was heute ein aktives Konto braucht.)
 4. **Wartende und gesperrte Nutzer** haben ein Cookie und passieren die Vorprüfung. Sie sehen kurz das Gerüst und werden dann aus dem Datenbaustein heraus auf `/warten` umgeleitet. Daten sehen sie nie.
-5. **Verwaltung bleibt blockierend** (Entscheidung des Entwerfers): Eine 404-Antwort ist nur möglich, solange noch nichts gestreamt wurde. Deshalb zieht die Verwaltung aus dem gemeinsamen Layout in eine eigene Routengruppe mit eigenem Layout um. Dieses Layout prüft `requireAdmin()` vor dem Rendern, ist vom sofortigen Wechsel ausgenommen (`instant = false`) und enthält keine Suspense-Grenze oberhalb der Prüfung. Nicht-Betreiber erhalten weiter eine echte 404-Antwort und kein Gerüst. Die Adresse `/verwaltung` bleibt gleich, die Navigation wird dort mit dem Betreiber-Eintrag gerendert. Die Nutzerliste kommt nach bestandener Prüfung per Skeleton. Lässt sich die echte 404-Antwort so nicht halten, hält der Erbauer an und meldet es, statt auf eine gestreamte Fehlerseite mit Status 200 auszuweichen.
+5. **Verwaltung leitet Nicht-Betreiber um** (Entscheidung des Auftraggebers, 2026-11-12): Beim Bau hat sich gezeigt, dass Cache Components bei jeder Route zuerst das vorgerenderte äußere Gerüst ausliefert. Der Status steht damit auf 200, bevor eine Prüfung läuft, eine echte 404-Antwort ist nicht mehr möglich. Die Verwaltung bleibt deshalb im gemeinsamen Bereich und wird wie die anderen Seiten zerlegt. Ihr Datenbaustein prüft `requireAdmin()` vor dem Laden der Nutzerliste. Ein angemeldeter Nicht-Betreiber wird auf `/heute` umgeleitet. Sollte die Umleitung nicht möglich sein, erscheint die Fehlerseite mit Status 200. Daten sieht er in keinem Fall.
 6. **Server Actions** sind nicht betroffen. Sie prüfen wie bisher selbst.
 
 ## Technik
@@ -73,7 +73,7 @@ Heute prüft das Layout der angemeldeten Seiten die Sitzung, bevor irgendetwas g
 - Zeitabhängiges (`new Date()` für die Tagesgrenze) darf nicht im vorgerenderten Gerüst stehen und wandert in die Datenbausteine.
 - Kein `use cache`, kein `use cache: private`, kein `use cache: remote` für Nutzerdaten.
 - Baustein `src/components/ui/skeleton.tsx` über die shadcn-CLI, angepasst an die Tokens des Designs (keine freien Tailwind-Werte).
-- Vorgehen nach der Next.js-Anleitung zur schrittweisen Umstellung: Schalter einschalten, alle angemeldeten Routen zunächst mit `instant = false` vom sofortigen Wechsel ausnehmen, damit die App baut und läuft, dann Route für Route umstellen und die Ausnahme entfernen. Am Ende trägt nur noch die Verwaltung die Ausnahme.
+- Vorgehen nach der Next.js-Anleitung zur schrittweisen Umstellung: Schalter einschalten, alle angemeldeten Routen zunächst mit `instant = false` vom sofortigen Wechsel ausnehmen, damit die App baut und läuft, dann Route für Route umstellen und die Ausnahme entfernen. Am Ende trägt nur noch `/warten` die Ausnahme.
 - Maßgeblich ist die mitgelieferte Dokumentation unter `node_modules/next/dist/docs/` (vor allem `migrating-to-cache-components.md`, `authentication-with-cache-components.md`, `instant-navigation.md`, `adopting-partial-prefetching.md`), nicht das Gedächtnis.
 - Der Bau bei Vercel (`scripts/vercel-build.sh`) bleibt unverändert. Der lokale Bau darf weiterhin keine Datenbank öffnen.
 
@@ -83,7 +83,7 @@ Heute prüft das Layout der angemeldeten Seiten die Sitzung, bevor irgendetwas g
 - Die Build-Ausgabe weist die vier umgestellten Routen (Heute, Lernen, Statistik, Einstellungen) als teilweise vorgerendert aus.
 - Alle bestehenden Tests bleiben grün. Neue Tests für alles, was sich als reine Logik herauslösen lässt (zum Beispiel die Entscheidung der Vorprüfung).
 - Im Browser bei Handybreite, hell und dunkel, mit gedrosselter Verbindung: Beim Tippen auf einen Navigationseintrag erscheint das Gerüst sofort, Skeletons füllen sich ohne Springen.
-- Zugriff: ohne Cookie sofortige Umleitung, mit Cookie eines wartenden oder gesperrten Kontos Umleitung auf `/warten` ohne Daten und ohne Lerninhalte in der Antwort (im ausgelieferten HTML und in den nachgeladenen Daten nach einem Karteninhalt suchen), Nicht-Betreiber auf `/verwaltung` erhalten Status 404.
+- Zugriff: ohne Cookie sofortige Umleitung, mit Cookie eines wartenden oder gesperrten Kontos Umleitung auf `/warten` ohne Daten und ohne Lerninhalte in der Antwort (im ausgelieferten HTML und in den nachgeladenen Daten nach einem Karteninhalt suchen), Nicht-Betreiber auf `/verwaltung` werden auf `/heute` umgeleitet und erhalten keine Nutzerliste.
 - Nach einer Lernsitzung zeigen Heute und Statistik den neuen Stand.
 
 ## Auslieferung
