@@ -24,7 +24,7 @@
 - Datenbank, Schema, Lernlogik und Karten-IDs ändern sich nicht.
 - Cache-Components-Regeln aus `CLAUDE.md` gelten weiter: kein Cachen von Nutzerdaten, jeder Datenbaustein prüft die Sitzung zuerst, das Gerüst enthält keine Nutzerdaten und keine Lerninhalte.
 - Keine Tailwind-Klassen mit freien Werten in eckigen Klammern, keine Emojis, Icons nur aus `lucide-react`.
-- Tests zuerst. Vor jedem Commit: `npm test`, `npm run typecheck`, `npm run lint`. Nur lokal committen, keine Attributionszeilen.
+- Tests zuerst. Vor jedem Commit: `npm run test:coverage`, `npm run typecheck`, `npm run lint`. Abdeckung mindestens 80 % getrennt für Backend und Frontend (Schwellen in `vitest.config.ts`, werden nicht gesenkt): neue Dateien in `src/i18n/` bringen ihre Tests mit. Testdateien heißen `*.test.ts` oder `*.test.tsx`. Nur lokal committen, keine Attributionszeilen.
 
 ## Glossar (Englisch)
 
@@ -83,10 +83,10 @@ Die englischen Texte schreibt der Umsetzer. Diese Begriffe sind gesetzt:
 
 - [ ] **Step 1: Prüfen, dass `feat/weg-eingeben` in `develop` gemergt ist**
 
-Run: `git branch --merged develop | grep feat/weg-eingeben`
-Expected: eine Zeile. Fehlt sie: anhalten und beim Auftraggeber nachfragen.
+Run: `git log --merges --oneline develop | grep "feat/weg-eingeben"`
+Expected: eine Zeile (gemergt in `1eb152a`). Erledigt am 2026-11-12.
 
-- [ ] **Step 2: Arbeitszweig `feat/mehrsprachigkeit` von `develop` anlegen** (Worktree nach `superpowers:using-git-worktrees`) und `npm test` grün sehen.
+- [ ] **Step 2: Arbeitszweig `feat/mehrsprachigkeit` von `develop` anlegen** (Worktree nach `superpowers:using-git-worktrees`) und `npm run test:coverage` grün sehen.
 
 - [ ] **Step 3: Dateiliste abgleichen**
 
@@ -410,7 +410,7 @@ export type Reason =
 **Files:**
 - Modify: `src/i18n/no-hardcoded-text.test.ts` (`PENDING` leer, Test 2 entfällt), `CLAUDE.md`
 
-- [ ] **Step 1: `PENDING` ist leer; `npm test`, `npm run typecheck`, `npm run lint` – PASS**
+- [ ] **Step 1: `PENDING` ist leer; `npm run test:coverage`, `npm run typecheck`, `npm run lint` – PASS**
 - [ ] **Step 2: `CLAUDE.md` anpassen:** Routen im Abschnitt „Aufbau“ (`src/app/[lang]/`, englische Seitennamen), `src/i18n/` mit Wörterbüchern, Regel „Oberfläche vollständig auf Deutsch“ wird „Oberfläche vollständig auf Deutsch und Englisch, alle Texte in `src/i18n/dictionaries/`“, Cache-Components-Abschnitt: `proxy.ts` leitet zusätzlich auf die Sprache um (307) und setzt `x-locale`; aktiver Nicht-Betreiber geht von `/<lang>/admin` nach `/<lang>/today`.
 - [ ] **Step 3: `npm run build` – erfolgreich**
 - [ ] **Step 4: Prüfung im Browser** in beiden Sprachen mit dem Testkonto: jede Seite einmal, Lernsitzung mit Eingabe und Aufdecken, Statistik mit Rest-Detail, Verwaltung. Umschalter in den Einstellungen (bleibt auf `/…/settings`) und in der Fußzeile der Startseite. Erstaufruf von `/` ohne Cookie mit deutscher und mit französischer Browsersprache (Header per `curl -H "Accept-Language: …" -sI localhost:3000/`). Auf jeder Seite nach deutschen Resten im Englischen suchen (`get_page_text`).
