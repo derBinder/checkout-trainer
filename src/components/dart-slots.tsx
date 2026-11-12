@@ -10,6 +10,12 @@ type DartSlotsProps = {
 
 const SLOT_COUNT = 3;
 
+/** Reihe der Felder; das Skeleton der Fragenansicht nutzt sie mit. */
+export const SLOTS_ROW = "flex justify-center gap-2";
+/** Form und Maße eines Felds; das Skeleton der Fragenansicht nutzt sie mit. */
+export const SLOT_BOX =
+  "flex h-13 basis-1/3 items-center justify-center rounded-pill font-heading text-lg font-extrabold tabular-nums";
+
 /**
  * Dart-Felder als Pillen. In der Frage immer drei, offene mit „?“; in der
  * Auflösung nur die geworfenen Darts. Jedes Feld ist ein Drittel breit, auch
@@ -21,14 +27,14 @@ export function DartSlots({ slots, tone, missSlots = [] }: DartSlotsProps) {
     ({ dart }) => !answer || dart !== null,
   );
   return (
-    <ol aria-label="Darts" className="flex justify-center gap-2">
+    <ol aria-label="Darts" className={SLOTS_ROW}>
       {shown.map(({ i, dart }) => {
         const miss = dart !== null && missSlots.includes(i);
         return (
           <li
             key={i}
             className={cn(
-              "flex h-13 basis-1/3 items-center justify-center rounded-pill font-heading text-lg font-extrabold tabular-nums",
+              SLOT_BOX,
               dart === null && "border-2 border-dashed border-input/50 text-muted-foreground",
               dart !== null && "bg-muted text-foreground",
               dart !== null && tone === "best" && "bg-primary text-primary-foreground",

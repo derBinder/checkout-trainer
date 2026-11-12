@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { StatsOverviewSkeleton } from "@/components/stats/stats-skeleton";
 import { StreakChipSkeleton } from "@/components/streak-chip";
+import { StudySkeleton } from "@/components/study/study-skeleton";
 import { TodayOverviewSkeleton } from "@/components/today/today-skeleton";
 import { buttonShape, buttonVariants } from "@/components/ui/button";
 
@@ -10,6 +11,7 @@ const SKELETONS: [string, () => ReactElement][] = [
   ["Heute", () => createElement(TodayOverviewSkeleton)],
   ["Statistik", () => createElement(StatsOverviewSkeleton)],
   ["Serien-Schildchen", () => createElement(StreakChipSkeleton)],
+  ["Lernen", () => createElement(StudySkeleton)],
 ];
 
 function classesOf(tag: string): string[] {
@@ -20,7 +22,7 @@ function skeletonTags(html: string): string[] {
   return html.match(/<[a-z]+[^>]*data-slot="skeleton"[^>]*>/g) ?? [];
 }
 
-/** Blockelemente (div, p, dl, ol …) innerhalb eines span sind kein gültiges HTML. */
+/** Blockelemente (div, p, dl, ol …) innerhalb eines span oder p sind kein gültiges HTML. */
 function blockInsideSpan(html: string): string | null {
   const stack: string[] = [];
   for (const [, closing, name] of html.matchAll(/<(\/?)([a-z0-9]+)[^>]*?>/g)) {
@@ -28,7 +30,9 @@ function blockInsideSpan(html: string): string | null {
       stack.splice(stack.lastIndexOf(name), 1);
       continue;
     }
-    if (["div", "p", "dl", "ol", "ul", "section"].includes(name) && stack.includes("span")) return name;
+    if (["div", "p", "dl", "ol", "ul", "section"].includes(name) && (stack.includes("span") || stack.includes("p"))) {
+      return name;
+    }
     if (!["input", "br", "img"].includes(name)) stack.push(name);
   }
   return null;
@@ -52,7 +56,7 @@ describe("Skeleton-Bausteine", () => {
     }
   });
 
-  it.each(SKELETONS)("%s: keine Blockelemente in span", (_, render) => {
+  it.each(SKELETONS)("%s: keine Blockelemente in span oder p", (_, render) => {
     expect(blockInsideSpan(renderToStaticMarkup(render()))).toBeNull();
   });
 
@@ -60,5 +64,15 @@ describe("Skeleton-Bausteine", () => {
     const html = renderToStaticMarkup(createElement(StatsOverviewSkeleton));
     const grid = html.match(/<ol[^>]*>/)?.[0] ?? "";
     expect(grid).toContain('aria-hidden="true"');
+  });
+
+  it("Lernen: Gerüst mit Schließen-Kreuz, leerer Fortschrittslinie und drei Feldern, als ladend markiert", () => {
+    const html = renderToStaticMarkup(createElement(StudySkeleton));
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('href="/heute"');
+    expect(html).toContain('aria-label="Lernen beenden"');
+    expect(html).toContain('data-slot="progress"');
+    // Zähler, Beschriftung, Zahl, drei Felder, Knopf.
+    expect(skeletonTags(html)).toHaveLength(7);
   });
 });
