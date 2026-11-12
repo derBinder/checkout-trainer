@@ -27,18 +27,18 @@ const joinDarts = (darts: string[]) => darts.join(" · ");
 /** "S20" → "Single 20" */
 const singleName = (hit: string) => `Single ${hit.slice(1)}`;
 
-const dartsLeftText = (n: 1 | 2) => (n === 1 ? "1 Dart" : `${n} Darts`);
-
+/** Stellwurf in Kurzform: "S20, Rest 32". */
 function setupText(follow: Extract<FollowText, { kind: "setup" }>): string {
-  return `Kein Finish mehr: ${joinDarts(follow.throws)}, Rest ${follow.leaves}`;
+  return `${joinDarts(follow.throws)}, Rest ${follow.leaves}`;
 }
 
+/** Ein Fall „Nur Single getroffen“ in Kurzform: „Nur S20“ / „101: T17 · Bull“. */
 function singleCaseNote(c: SingleCase): Note {
   const text =
     c.follow.kind === "finish"
-      ? `Rest ${c.newRest}, ${dartsLeftText(c.dartsLeft)}: ${joinDarts(c.follow.route)}`
-      : setupText(c.follow);
-  return { title: `Nur ${singleName(c.hit)} getroffen`, text };
+      ? `${c.newRest}: ${joinDarts(c.follow.route)}`
+      : `Stellen: ${setupText(c.follow)}`;
+  return { title: `Nur ${c.hit}`, text };
 }
 
 const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];
@@ -73,7 +73,7 @@ export function restDetailView(detail: RestDetail): RestDetailView {
   }
   // Nennt die Tabelle für zwei Darts denselben Weg wie für drei, wäre der Hinweis eine Wiederholung.
   if (detail.twoDarts && joinDarts(detail.twoDarts) !== joinDarts(detail.best)) {
-    notes.push({ title: "Mit 2 Darts in der Hand", text: joinDarts(detail.twoDarts) });
+    notes.push({ title: "Mit 2 Darts", text: joinDarts(detail.twoDarts) });
   }
   return { slots: toSlots(detail.best), slotTone: "best", notes };
 }
@@ -123,6 +123,8 @@ export function cardView(card: Card): CardView {
           label: `Rest ${card.rest}`,
           big: "Nicht checkbar",
           ...restDetailView(card),
+          // Kurzform: „Nicht checkbar“ und die Stellwürfe stehen schon darüber.
+          notes: [{ title: "Stellwurf", text: `Danach Rest ${card.setup.leaves}` }],
           missSlots: [],
         },
       };
