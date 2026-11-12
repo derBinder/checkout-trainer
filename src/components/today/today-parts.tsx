@@ -13,9 +13,13 @@ export function Counts({ children }: { children: React.ReactNode }) {
   return <dl className="flex gap-10">{children}</dl>;
 }
 
+/**
+ * Feste Spaltenbreite für bis zu drei Ziffern, damit „neu" unabhängig von der Stellenzahl
+ * der fälligen Karten und vom Skeleton immer an derselben Stelle steht.
+ */
 export function Count({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-36 flex-col gap-2">
       <dt className="type-label order-2">{label}</dt>
       <dd className="type-display text-6xl tabular-nums">{children}</dd>
     </div>
