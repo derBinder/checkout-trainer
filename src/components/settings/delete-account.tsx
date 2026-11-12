@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { authErrorMessage } from "@/components/auth/auth-error";
 import {
   AlertDialog,
@@ -30,6 +30,16 @@ export function DeleteAccount() {
   const [pending, setPending] = useState(false);
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
+
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity): Die
+  // Rückfrage samt eingegebenem Passwort soll beim Zurückkehren nicht offen stehen.
+  useLayoutEffect(() => {
+    return () => {
+      setOpen(false);
+      setError(null);
+      reset();
+    };
+  }, [reset]);
 
   function handleOpenChange(next: boolean) {
     if (pending) return;

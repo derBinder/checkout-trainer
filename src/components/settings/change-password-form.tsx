@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { authErrorMessage } from "@/components/auth/auth-error";
 import { type FieldSpec } from "@/components/form/form-values";
 import { PasswordInput } from "@/components/form/password-input";
@@ -34,6 +34,21 @@ export function ChangePasswordForm() {
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
   const newPasswordProps = fieldProps("newPassword", "newPassword-hint");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity). Ein
+  // Passwort soll nicht stehen bleiben: Beim Verbergen leeren, wieder verborgen
+  // zeigen und alte Hinweise entfernen, wie nach einem erfolgreichen Ändern.
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    return () => {
+      form?.reset();
+      reset();
+      setNewPassword("");
+      setFieldsKey((key) => key + 1);
+      setMessage(null);
+    };
+  }, [reset]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,6 +80,7 @@ export function ChangePasswordForm() {
 
   return (
     <form
+      ref={formRef}
       method="post"
       noValidate
       onSubmit={handleSubmit}

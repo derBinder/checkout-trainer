@@ -1,6 +1,11 @@
 import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { NewPerDayForm, NewPerDayInput } from "@/components/settings/new-per-day-form";
+import {
+  DeleteAccountSectionSkeleton,
+  NewPerDayFieldSkeleton,
+} from "@/components/settings/settings-skeleton";
 import { StatsOverviewSkeleton } from "@/components/stats/stats-skeleton";
 import { StreakChipSkeleton } from "@/components/streak-chip";
 import { StudySkeleton } from "@/components/study/study-skeleton";
@@ -12,6 +17,8 @@ const SKELETONS: [string, () => ReactElement][] = [
   ["Statistik", () => createElement(StatsOverviewSkeleton)],
   ["Serien-Schildchen", () => createElement(StreakChipSkeleton)],
   ["Lernen", () => createElement(StudySkeleton)],
+  ["Neue Karten pro Tag", () => createElement(NewPerDayFieldSkeleton)],
+  ["Konto löschen", () => createElement(DeleteAccountSectionSkeleton)],
 ];
 
 function classesOf(tag: string): string[] {
@@ -74,5 +81,18 @@ describe("Skeleton-Bausteine", () => {
     expect(html).toContain('data-slot="progress"');
     // Zähler, Beschriftung, Zahl, drei Felder, Knopf.
     expect(skeletonTags(html)).toHaveLength(7);
+  });
+
+  it("Einstellungen: Beschriftung und Knopf stehen ohne gespeicherten Wert da, das Feld kommt nach", () => {
+    const shell = renderToStaticMarkup(createElement(NewPerDayForm, null, createElement(NewPerDayFieldSkeleton)));
+    expect(shell).toContain("Neue Karten pro Tag");
+    expect(shell).toContain("Speichern");
+    expect(shell).not.toContain("<input");
+
+    const filled = renderToStaticMarkup(createElement(NewPerDayForm, null, createElement(NewPerDayInput, { initial: 7 })));
+    const input = filled.match(/<input[^>]*>/)?.[0] ?? "";
+    expect(input).toContain('id="newPerDay"');
+    expect(input).toContain('value="7"');
+    expect(input).toContain('aria-describedby="newPerDay-hint"');
   });
 });

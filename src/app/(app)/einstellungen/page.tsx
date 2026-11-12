@@ -1,53 +1,47 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
-import { DeleteAccount } from "@/components/settings/delete-account";
 import { NewPerDayForm } from "@/components/settings/new-per-day-form";
+import { DeleteAccountSection, NewPerDayField } from "@/components/settings/settings-data";
+import { SETTINGS_BODY, SettingsSection } from "@/components/settings/settings-parts";
+import {
+  DeleteAccountSectionSkeleton,
+  NewPerDayFieldSkeleton,
+} from "@/components/settings/settings-skeleton";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
-import { requireActiveUser } from "@/lib/auth/guard";
-
-// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
-export const instant = false;
 
 export const metadata: Metadata = { title: "Einstellungen · Checkout-Trainer" };
 
-const SECTION_TITLE = "text-xl font-extrabold font-stretch-semi-expanded";
-
-export default async function SettingsPage() {
-  const user = await requireActiveUser();
-
+/** Gerüst ohne Datenzugriff; die Datenbausteine prüfen den Zugriff selbst. */
+export default function SettingsPage() {
   return (
-    <div className="flex flex-col gap-12">
+    <div className={SETTINGS_BODY}>
       <h1 className="type-display text-3xl">Einstellungen</h1>
 
-      <section className="flex flex-col gap-5">
-        <h2 id="darstellung" className={SECTION_TITLE}>
-          Darstellung
-        </h2>
+      <SettingsSection title="Darstellung" titleId="darstellung">
         <ThemeSwitch labelledBy="darstellung" />
-      </section>
+      </SettingsSection>
 
-      <section className="flex flex-col gap-5">
-        <h2 className={SECTION_TITLE}>Lernmenge</h2>
-        <NewPerDayForm initial={user.newPerDay} />
-      </section>
+      <SettingsSection title="Lernmenge">
+        <NewPerDayForm>
+          <Suspense fallback={<NewPerDayFieldSkeleton />}>
+            <NewPerDayField />
+          </Suspense>
+        </NewPerDayForm>
+      </SettingsSection>
 
-      <section className="flex flex-col gap-5">
-        <h2 className={SECTION_TITLE}>Passwort ändern</h2>
+      <SettingsSection title="Passwort ändern">
         <ChangePasswordForm />
-      </section>
+      </SettingsSection>
 
-      <section className="flex flex-col gap-5">
-        <h2 className={SECTION_TITLE}>Abmelden</h2>
+      <SettingsSection title="Abmelden">
         <SignOutButton />
-      </section>
+      </SettingsSection>
 
-      {user.role === "admin" ? null : (
-        <section className="flex flex-col gap-5">
-          <h2 className={SECTION_TITLE}>Konto löschen</h2>
-          <DeleteAccount />
-        </section>
-      )}
+      <Suspense fallback={<DeleteAccountSectionSkeleton />}>
+        <DeleteAccountSection />
+      </Suspense>
     </div>
   );
 }
