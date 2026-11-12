@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { de } from "@/i18n/dictionaries/de";
 import { cardById } from "@/lib/cards";
 import { cardView, restDetailView, type RestDetail } from "./card-view";
 
@@ -118,7 +119,7 @@ describe("restDetailView", () => {
   it("shows the two-dart route of a rest", () => {
     const detail = restDetailView(cardById("r-110") as RestDetail);
     expect(detail.notes).toEqual([
-      { title: "Warum", text: (cardById("r-110") as RestDetail & { reason: string }).reason },
+      { title: "Warum", text: de.study.reason((cardById("r-110") as Extract<RestDetail, { kind: "rest" }>).reason) },
       { title: "Mit 2 Darts", text: "T20 · Bull" },
     ]);
   });

@@ -84,7 +84,6 @@ const PENDING: string[] = [
   "components/today/more-cards-button.tsx",
   "components/today/today-data.tsx",
   "components/today/today-skeleton.tsx",
-  "lib/darts/cards.ts",
 ];
 
 const ALLOWED = [/^Checkout-Trainer$/, /^(S|D|T)\d{1,2}$|^25$|^Bull$/];

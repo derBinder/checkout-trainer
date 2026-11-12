@@ -1,6 +1,7 @@
 import type { Dictionary } from "./de";
 
 /** Englisches Wörterbuch: britisches Englisch, Fachbegriffe nach dem Glossar. */
+import type { Reason } from "@/lib/darts/cards";
 import {
   MAX_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -96,6 +97,26 @@ export const en: Dictionary = {
     metaTitle: "Approval",
     blocked: "Your account is blocked.",
     waiting: "Your account is waiting for approval by the operator.",
+  },
+  study: {
+    reason: (r: Reason): string => {
+      switch (r.kind) {
+        case "only":
+          return "The only route.";
+        case "direct":
+          return "Straight at the double.";
+        case "split":
+          return `Aim between ${r.a} and ${r.b}: either one leaves a double.`;
+        case "singleFinish":
+          return r.bull
+            ? `A single ${r.field} still leaves the bull.`
+            : `A single ${r.field} still leaves a finish.`;
+        case "halving":
+          return `Ends on ${r.double}, which splits down ${["", "once", "twice", "three times", "four times"][r.times]}.`;
+        case "chart":
+          return "The usual chart route.";
+      }
+    },
   },
   language: {
     label: "Language",

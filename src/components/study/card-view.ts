@@ -1,3 +1,4 @@
+import { de } from "@/i18n/dictionaries/de";
 import type { BogeyCard, Card, FollowText, RestCard, SingleCase } from "@/lib/darts/cards";
 
 type Slots = (string | null)[];
@@ -72,7 +73,8 @@ export function restDetailView(detail: RestDetail): RestDetailView {
       ],
     };
   }
-  const notes: Note[] = [{ title: "Warum", text: detail.reason }];
+  // Übergang: Task 7 ersetzt das deutsche Wörterbuch durch das der aktuellen Sprache.
+  const notes: Note[] = [{ title: "Warum", text: de.study.reason(detail.reason) }];
   if (detail.alternatives.length > 0) {
     notes.push({
       title: detail.alternatives.length === 1 ? "Alternative" : "Alternativen",

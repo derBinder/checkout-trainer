@@ -4,6 +4,7 @@
  * vor: Das englische Wörterbuch muss genau dieselben Einträge haben.
  */
 
+import type { Reason } from "@/lib/darts/cards";
 import {
   MAX_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
@@ -105,6 +106,26 @@ export const de = {
     metaTitle: "Freischaltung",
     blocked: "Dein Konto ist gesperrt.",
     waiting: "Dein Konto wartet auf Freischaltung durch den Betreiber.",
+  },
+  study: {
+    reason: (r: Reason): string => {
+      switch (r.kind) {
+        case "only":
+          return "Der einzige Weg.";
+        case "direct":
+          return "Direkt auf das Doppel.";
+        case "split":
+          return `Zwischen ${r.a} und ${r.b} gezielt lässt jedes der beiden Felder ein Doppel.`;
+        case "singleFinish":
+          return r.bull
+            ? `Bleibt bei Single ${r.field} auf Bull-Finish.`
+            : `Bleibt bei Single ${r.field} auf einem Finish.`;
+        case "halving":
+          return `Endet auf ${r.double}, das sich ${["", "einmal", "zweimal", "dreimal", "viermal"][r.times]} halbieren lässt.`;
+        case "chart":
+          return "Der übliche Weg nach Tabelle.";
+      }
+    },
   },
   language: {
     label: "Sprache",
