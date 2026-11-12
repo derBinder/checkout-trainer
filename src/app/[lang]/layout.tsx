@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeSync } from "@/components/theme/theme-sync";
 import { I18nProvider } from "@/i18n/client";
 import { LOCALES } from "@/i18n/locales";
-import { getLocale } from "@/i18n/server";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { THEME_COLORS, themeInitScript } from "@/lib/theme";
 import "../globals.css";
 
@@ -17,10 +17,10 @@ const archivo = Archivo({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Checkout-Trainer",
-  description: "Checkout-Wege im Darts mit Karteikarten lernen.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return { title: t.common.appName, description: t.common.description };
+}
 
 export const viewport: Viewport = {
   viewportFit: "cover",

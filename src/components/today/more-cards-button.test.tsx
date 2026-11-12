@@ -1,12 +1,18 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 import { Component, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+import type { Locale } from "@/i18n/locales";
 
 const learnMoreCards = vi.hoisted(() => vi.fn());
 vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards }));
+
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const { MoreCardsButton } = await import("./more-cards-button");
 
@@ -20,14 +26,16 @@ class Boundary extends Component<{ children: ReactNode }, { error: unknown }> {
   }
 }
 
-async function clickButton() {
+async function clickButton(locale: Locale = "de", name = "Weitere 5 Karten lernen") {
   const user = userEvent.setup();
   render(
-    <Boundary>
-      <MoreCardsButton />
-    </Boundary>,
+    <I18nProvider locale={locale}>
+      <Boundary>
+        <MoreCardsButton />
+      </Boundary>
+    </I18nProvider>,
   );
-  await user.click(screen.getByRole("button", { name: "Weitere 5 Karten lernen" }));
+  await user.click(screen.getByRole("button", { name }));
 }
 
 beforeEach(() => {
@@ -41,7 +49,7 @@ afterEach(() => {
 
 describe("MoreCardsButton", () => {
   it("zeigt zunächst nur den Knopf ohne Hinweis", () => {
-    render(<MoreCardsButton />);
+    render(<MoreCardsButton />, { wrapper });
     expect(screen.getByRole("button", { name: "Weitere 5 Karten lernen" })).toBeTruthy();
     expect(screen.queryByRole("alert")).toBeNull();
   });
@@ -85,5 +93,18 @@ describe("MoreCardsButton", () => {
     await clickButton();
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
     expect(screen.queryByText("Keine Verbindung. Versuche es erneut.")).toBeNull();
+  });
+
+  it("meldet auf Englisch den Grund und die fehlende Verbindung", async () => {
+    learnMoreCards.mockResolvedValue({ ok: false, reason: "cap" });
+    await clickButton("en", "Study 5 more cards");
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "No more cards are possible today. Carry on tomorrow.",
+    );
+    cleanup();
+
+    learnMoreCards.mockRejectedValue(new Error("offline"));
+    await clickButton("en", "Study 5 more cards");
+    expect((await screen.findByRole("alert")).textContent).toBe("No connection. Please try again.");
   });
 });

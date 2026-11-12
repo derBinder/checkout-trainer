@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { localePath, ROUTES } from "@/i18n/paths";
-import { getLocale } from "@/i18n/server";
+import { getDictionary, getLocale } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Impressum · Checkout-Trainer" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return { title: `${t.legal.imprint}${t.common.titleSuffix}` };
+}
 
 export default async function Page() {
-  const locale = await getLocale();
+  const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col gap-6 px-page py-16">
-      <h1 className="type-display text-3xl">Impressum</h1>
+      <h1 className="type-display text-3xl">{t.legal.imprint}</h1>
       <p className="text-lg font-medium text-muted-foreground">
-        Dieser Text wird vom Betreiber ergänzt.
+        {t.legal.placeholder}
       </p>
       <Link href={localePath(locale, ROUTES.home)} className="w-fit py-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
-        Zur Startseite
+        {t.legal.toHome}
       </Link>
     </main>
   );

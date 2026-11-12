@@ -8,12 +8,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 async function renderSwitch() {
   // theme-store merkt sich die Wahl im Modul: je Test frisch laden.
   vi.resetModules();
+  // Nach resetModules gehören Provider und Komponente zur selben frischen Modulkopie.
+  const { I18nProvider } = await import("@/i18n/client");
   const { ThemeSwitch } = await import("./theme-switch");
   render(
-    <>
+    <I18nProvider locale="de">
       <span id="theme-label">Darstellung</span>
       <ThemeSwitch labelledBy="theme-label" />
-    </>,
+    </I18nProvider>,
   );
 }
 
@@ -42,8 +44,14 @@ describe("ThemeSwitch", () => {
   it("wählt beim Vorrendern auf dem Server System, auch wenn etwas gespeichert ist", async () => {
     localStorage.setItem("theme", "dark");
     vi.resetModules();
-    const { ThemeSwitch } = await import("./theme-switch");
-    const html = renderToString(<ThemeSwitch labelledBy="theme-label" />);
+    // Nach resetModules gehören Provider und Komponente zur selben frischen Modulkopie.
+  const { I18nProvider } = await import("@/i18n/client");
+  const { ThemeSwitch } = await import("./theme-switch");
+    const html = renderToString(
+      <I18nProvider locale="de">
+        <ThemeSwitch labelledBy="theme-label" />
+      </I18nProvider>,
+    );
     const container = document.createElement("div");
     container.innerHTML = html;
     const checked = container.querySelector<HTMLInputElement>("input:checked");
@@ -77,5 +85,20 @@ describe("ThemeSwitch", () => {
       window.dispatchEvent(new StorageEvent("storage", { key: "theme", newValue: "dark" }));
     });
     expect(radio("Dunkel").checked).toBe(true);
+  });
+
+  it("beschriftet die Wahl auf Englisch", async () => {
+    vi.resetModules();
+    // Nach resetModules gehören Provider und Komponente zur selben frischen Modulkopie.
+  const { I18nProvider } = await import("@/i18n/client");
+  const { ThemeSwitch } = await import("./theme-switch");
+    render(
+      <I18nProvider locale="en">
+        <ThemeSwitch labelledBy="theme-label" />
+      </I18nProvider>,
+    );
+    expect(radio("System")).toBeTruthy();
+    expect(radio("Light")).toBeTruthy();
+    expect(radio("Dark")).toBeTruthy();
   });
 });

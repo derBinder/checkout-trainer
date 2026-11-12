@@ -31,6 +31,16 @@ describe("AppNav", () => {
     }
   });
 
+  it("beschriftet die Einträge in der Sprache der Seite", () => {
+    const de = render("/de/today");
+    for (const label of ["Heute", "Statistik", "Einstellungen", "Verwaltung"]) expect(de).toContain(label);
+    expect(de).toContain('aria-label="Hauptnavigation"');
+    const en = render("/en/today");
+    for (const label of ["Today", "Stats", "Settings", "Admin"]) expect(en).toContain(label);
+    expect(en).toContain('aria-label="Main navigation"');
+    expect(en).not.toContain("Heute");
+  });
+
   it("fehlt auf der Lernseite, die nur eine Aufgabe hat", () => {
     expect(render("/en/study")).toBe("");
     expect(render("/de/study")).toBe("");

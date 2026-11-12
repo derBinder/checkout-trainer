@@ -1,38 +1,44 @@
 "use client";
 
 import { useEffect } from "react";
+import { localeFromLocation } from "@/i18n/client";
+import { DICTIONARIES } from "@/i18n/dictionaries";
+import { localePath, ROUTES } from "@/i18n/paths";
 import "./globals.css";
 
 /**
  * Letzter Rückfall, wenn selbst das Root-Layout scheitert. Ersetzt das ganze
  * Dokument: kein Layout, keine Schrift, keine feste Farbwahl aus den Einstellungen
- * (die Farben folgen dem System). Deshalb nur einfache Elemente.
+ * (die Farben folgen dem System). Deshalb nur einfache Elemente. Die Sprache kommt
+ * aus der Adresse, nicht aus dem Provider des Layouts.
  */
 export default function GlobalError({ error, retry }: { error: unknown; retry: () => void }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
 
+  const locale = localeFromLocation();
+  const t = DICTIONARIES[locale].errors;
   return (
-    <html lang="de">
+    // Beim Rendern auf dem Server ist die Sprache der Adresse unbekannt, daher suppressHydrationWarning.
+    <html lang={locale} suppressHydrationWarning>
       <body className="min-h-dvh bg-background text-foreground antialiased">
-        <title>Fehler · Checkout-Trainer</title>
+        <title>{`${t.metaTitle}${DICTIONARIES[locale].common.titleSuffix}`}</title>
         <main className="mx-auto flex w-full max-w-sm flex-col gap-6 px-page py-16">
-          <h1 className="text-2xl font-bold">Das hat nicht geklappt.</h1>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
           <p className="text-muted-foreground">
-            Die Seite konnte nicht geladen werden. Versuche es gleich noch einmal.
+            {t.description}
           </p>
           <button
             type="button"
             onClick={() => retry()}
             className="h-13 rounded-pill bg-primary px-6 font-semibold text-primary-foreground"
           >
-            Erneut versuchen
+            {t.retry}
           </button>
-          {/* Bewusst ein normaler Link: lädt die Seite ganz neu. Ohne Sprache, die ergänzt proxy.ts. */}
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Next.js hält /today für die Seite /[lang]. */}
-          <a href="/today" className="text-center font-semibold underline underline-offset-4">
-            Zur Übersicht
+          {/* Bewusst ein normaler Link: lädt die Seite ganz neu. */}
+          <a href={localePath(locale, ROUTES.today)} className="text-center font-semibold underline underline-offset-4">
+            {t.toOverview}
           </a>
         </main>
       </body>

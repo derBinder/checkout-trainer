@@ -4,6 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { restDetails } from "@/components/stats/rest-details";
 import { I18nProvider } from "@/i18n/client";
+import { de } from "@/i18n/dictionaries/de";
+import { en } from "@/i18n/dictionaries/en";
+import type { Locale } from "@/i18n/locales";
 import { CARDS } from "@/lib/cards";
 import { MAX_REST, MIN_REST, type Level } from "@/lib/stats";
 import { RestGrid } from "./rest-grid";
@@ -16,13 +19,13 @@ const levels: Record<number, Level> = Object.fromEntries(
 levels[100] = "known";
 levels[170] = "learning";
 
-function setup() {
+function setup(locale: Locale = "de") {
   const user = userEvent.setup();
   render(
-    <I18nProvider locale="de">
+    <I18nProvider locale={locale}>
       <RestSheet details={details} levels={levels}>
         <p>Tippe auf einen Rest.</p>
-        <RestGrid levels={levels} weak={new Set()} />
+        <RestGrid levels={levels} weak={new Set()} t={(locale === "de" ? de : en).stats} />
       </RestSheet>
     </I18nProvider>,
   );
@@ -71,5 +74,15 @@ describe("RestSheet", () => {
     await user.click(within(dialog).getByRole("button", { name: "Schließen" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(document.activeElement).toBe(cell);
+  });
+
+  it("öffnet auf Englisch mit englischen Texten und Schließen-Knopf", async () => {
+    const user = setup("en");
+    await user.click(screen.getByRole("button", { name: "169, new, no checkout" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByRole("heading", { name: "Score 169" })).toBeTruthy();
+    expect(dialog.textContent).toContain("Level: new");
+    expect(dialog.textContent).toContain("No checkout");
+    expect(within(dialog).getByRole("button", { name: "Close" })).toBeTruthy();
   });
 });

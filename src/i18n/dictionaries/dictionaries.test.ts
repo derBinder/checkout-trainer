@@ -107,7 +107,14 @@ describe("Wörterbücher", () => {
       language: { ...en.language, extra: "z" },
     };
     // Literal-Strings sind geweitet: andere Texte als die deutschen passen in den Typ.
-    const other: Dictionary["common"] = { appName: "a", titleSuffix: "b", description: "c" };
+    const other: Dictionary["common"] = {
+      appName: "a",
+      titleSuffix: "b",
+      description: "c",
+      cancel: "d",
+      close: "e",
+      percent: () => "f",
+    };
     expect([missing, extra, other]).toHaveLength(3);
   });
 });
@@ -145,5 +152,32 @@ describe("Lernen", () => {
     expect(en.study.pad.rings).toEqual({ S: "Single", D: "Double", T: "Treble" });
     expect(Object.values(en.study.session.ratings)).toEqual(["Again", "Hard", "Good", "Easy"]);
     expect(Object.values(de.study.session.ratings)).toEqual(["Nochmal", "Schwer", "Gut", "Leicht"]);
+  });
+});
+
+describe("Übrige Seiten", () => {
+  it("schreibt die Serie und den Fortschritt in beiden Sprachen", () => {
+    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["1 Tag Serie", "12 Tage Serie"]);
+    expect([en.streak.label(1), en.streak.label(12)]).toEqual(["1-day streak", "12-day streak"]);
+    expect(de.today.progress(2, 169, 1)).toBe("2 von 169 begonnen, 1 sicher");
+    expect(en.today.progress(2, 169, 1)).toBe("2 of 169 started, 1 known");
+    expect(de.common.percent(6)).toBe("6\u00a0%");
+    expect(en.common.percent(6)).toBe("6%");
+  });
+
+  it("nennt Lernstände, Zähler und Anzahl der Nochmal in beiden Sprachen", () => {
+    expect(de.stats.levels).toEqual({ known: "sicher", learning: "im Lernen", new: "neu" });
+    expect(en.stats.levels).toEqual({ known: "known", learning: "learning", new: "new" });
+    expect(de.stats.againCount(3)).toBe("3× „Nochmal“");
+    expect(en.stats.againCount(3)).toBe("3× “Again”");
+    expect(de.stats.levelOf("neu")).toBe("Lernstand: neu");
+    expect(en.stats.levelOf("new")).toBe("Level: new");
+  });
+
+  it("setzt Namen und Datum in die Texte der Verwaltung", () => {
+    expect(de.admin.passwordFor("Anna")).toBe("Passwort für Anna setzen");
+    expect(en.admin.passwordFor("Anna")).toBe("Set password for Anna");
+    expect(de.admin.registered("04.11.2026")).toBe("registriert am 04.11.2026");
+    expect(en.admin.registered("4 Nov 2026")).toBe("registered on 4 Nov 2026");
   });
 });

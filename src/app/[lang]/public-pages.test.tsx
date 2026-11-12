@@ -23,9 +23,9 @@ vi.mock("../globals.css", () => ({}));
 const { default: Home } = await import("./page");
 const { default: LoginPage, generateMetadata: loginMetadata } = await import("./sign-in/page");
 const { default: RegisterPage, generateMetadata: registerMetadata } = await import("./sign-up/page");
-const { default: Imprint, metadata: imprintMetadata } = await import("./imprint/page");
-const { default: Privacy, metadata: privacyMetadata } = await import("./privacy/page");
-const { default: RootLayout, generateStaticParams, metadata, viewport } = await import("./layout");
+const { default: Imprint, generateMetadata: imprintMetadata } = await import("./imprint/page");
+const { default: Privacy, generateMetadata: privacyMetadata } = await import("./privacy/page");
+const { default: RootLayout, generateStaticParams, generateMetadata, viewport } = await import("./layout");
 const { themeInitScript } = await import("@/lib/theme");
 
 const href = (name: string) => screen.getByRole("link", { name }).getAttribute("href");
@@ -52,8 +52,8 @@ describe("Startseite", () => {
   it("verlinkt in der Sprache der Seite", async () => {
     rootParams.lang = "en";
     render(await Home());
-    expect(href("Registrieren")).toBe("/en/sign-up");
-    expect(href("Datenschutz")).toBe("/en/privacy");
+    expect(href("Sign up")).toBe("/en/sign-up");
+    expect(href("Privacy")).toBe("/en/privacy");
   });
 });
 
@@ -95,6 +95,38 @@ describe("Anmelden und Registrieren auf Englisch", () => {
   });
 });
 
+describe("Startseite und Pflichtseiten auf Englisch", () => {
+  it("zeigt Text, Links und Titel auf Englisch", async () => {
+    rootParams.lang = "en";
+    render(await Home());
+    expect(screen.getByText(/checkout routes from 170 downwards/)).toBeTruthy();
+    expect(href("Sign up")).toBe("/en/sign-up");
+    expect(href("Sign in")).toBe("/en/sign-in");
+    expect(href("Imprint")).toBe("/en/imprint");
+    expect(href("Privacy")).toBe("/en/privacy");
+    cleanup();
+
+    render(await Imprint());
+    expect(screen.getByRole("heading", { level: 1, name: "Imprint" })).toBeTruthy();
+    expect(screen.getByText("The operator will add this text.")).toBeTruthy();
+    expect(href("Back to the start page")).toBe("/en");
+    expect((await imprintMetadata()).title).toBe("Imprint · Checkout-Trainer");
+    cleanup();
+
+    render(await Privacy());
+    expect(screen.getByRole("heading", { level: 1, name: "Privacy" })).toBeTruthy();
+    expect((await privacyMetadata()).title).toBe("Privacy · Checkout-Trainer");
+  });
+
+  it("beschreibt die App im Seitenkopf auf Englisch", async () => {
+    rootParams.lang = "en";
+    expect(await generateMetadata()).toEqual({
+      title: "Checkout-Trainer",
+      description: "Learn darts checkout routes with flashcards.",
+    });
+  });
+});
+
 describe.each([
   ["Impressum", Imprint, imprintMetadata],
   ["Datenschutz", Privacy, privacyMetadata],
@@ -104,7 +136,7 @@ describe.each([
     expect(screen.getByRole("heading", { level: 1, name: title })).toBeTruthy();
     expect(screen.getByText("Dieser Text wird vom Betreiber ergänzt.")).toBeTruthy();
     expect(href("Zur Startseite")).toBe("/de");
-    expect(pageMetadata.title).toBe(`${title} · Checkout-Trainer`);
+    expect((await pageMetadata()).title).toBe(`${title} · Checkout-Trainer`);
   });
 });
 
@@ -116,7 +148,10 @@ describe("Root-Layout", () => {
     expect(html.indexOf("<script>")).toBeLessThan(html.indexOf("<main>Inhalt</main>"));
     expect(html).toContain('data-testid="analytics"');
     expect(html).toContain('data-testid="speed"');
-    expect(metadata.title).toBe("Checkout-Trainer");
+    expect(await generateMetadata()).toEqual({
+      title: "Checkout-Trainer",
+      description: "Checkout-Wege im Darts mit Karteikarten lernen.",
+    });
     expect(viewport.viewportFit).toBe("cover");
   });
 

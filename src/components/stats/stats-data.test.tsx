@@ -2,7 +2,13 @@
 import { render, screen, within } from "@testing-library/react";
 import { State } from "ts-fsrs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
 import { db } from "@/lib/db";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
 vi.mock("@/lib/auth/guard", () => ({
@@ -34,7 +40,7 @@ describe("StatsOverview", () => {
       ],
       logs: [again("r-7"), again("r-7"), again("r-5")],
     });
-    render(await StatsOverview());
+    render(await StatsOverview(), { wrapper });
 
     expect(queries.loadStatsData).toHaveBeenCalledWith(db, "u1");
     expect(screen.getByText("sicher").nextElementSibling?.textContent).toBe("1");
@@ -55,7 +61,7 @@ describe("StatsOverview", () => {
 
   it("lässt die schwierigsten Reste weg, solange es kein „Nochmal“ gab", async () => {
     queries.loadStatsData.mockResolvedValue({ states: [], logs: [] });
-    render(await StatsOverview());
+    render(await StatsOverview(), { wrapper });
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("169");
     expect(screen.queryByRole("heading", { name: "Am schwierigsten" })).toBeNull();
   });
@@ -64,7 +70,7 @@ describe("StatsOverview", () => {
 describe("StatsStreak", () => {
   it("zeigt die Serie der Lerntage", async () => {
     queries.loadStatsData.mockResolvedValue({ states: [], logs: [again("r-5")] });
-    render(await StatsStreak());
+    render(await StatsStreak(), { wrapper });
     expect(screen.getByText("1 Tag Serie")).toBeTruthy();
   });
 });

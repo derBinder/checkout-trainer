@@ -46,35 +46,7 @@ const SCANNED = [
 // shadcn-Bausteine ohne eigene Texte.
 const SKIPPED = ["components/ui"];
 
-const PENDING: string[] = [
-  "app/[lang]/(app)/admin/page.tsx",
-  "app/[lang]/(app)/error.tsx",
-  "app/[lang]/(app)/settings/page.tsx",
-  "app/[lang]/(app)/stats/page.tsx",
-  "app/[lang]/(app)/today/page.tsx",
-  "app/[lang]/imprint/page.tsx",
-  "app/[lang]/layout.tsx",
-  "app/[lang]/page.tsx",
-  "app/[lang]/privacy/page.tsx",
-  "app/global-error.tsx",
-  "components/admin/admin-data.tsx",
-  "components/admin/admin-skeleton.tsx",
-  "components/admin/user-actions.tsx",
-  "components/app-nav.tsx",
-  "components/rest-grid.tsx",
-  "components/rest-sheet.tsx",
-  "components/settings/change-password-form.tsx",
-  "components/settings/delete-account.tsx",
-  "components/settings/new-per-day-form.tsx",
-  "components/settings/settings-data.tsx",
-  "components/settings/settings-skeleton.tsx",
-  "components/stats/stats-data.tsx",
-  "components/streak-chip.tsx",
-  "components/theme/theme-switch.tsx",
-  "components/today/more-cards-button.tsx",
-  "components/today/today-data.tsx",
-  "components/today/today-skeleton.tsx",
-];
+const PENDING: string[] = [];
 
 const ALLOWED = [/^Checkout-Trainer$/, /^(S|D|T)\d{1,2}$|^25$|^Bull$/];
 

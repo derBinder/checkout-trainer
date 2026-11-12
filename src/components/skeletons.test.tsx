@@ -15,23 +15,23 @@ import { TodayOverviewSkeleton } from "@/components/today/today-skeleton";
 import { buttonShape, buttonVariants } from "@/components/ui/button";
 import { I18nProvider } from "@/i18n/client";
 
-/** Das Schließen-Kreuz der Lernseite liest die Sprache aus dem I18nProvider des Root-Layouts. */
+/** Die Skeletons lesen die Sprache aus dem I18nProvider des Root-Layouts. */
+function inGerman(element: ReactElement): ReactElement {
+  return <I18nProvider locale="de">{element}</I18nProvider>;
+}
+
 function studySkeleton(): ReactElement {
-  return (
-    <I18nProvider locale="de">
-      <StudySkeleton />
-    </I18nProvider>
-  );
+  return inGerman(<StudySkeleton />);
 }
 
 const SKELETONS: [string, () => ReactElement][] = [
-  ["Heute", () => createElement(TodayOverviewSkeleton)],
-  ["Statistik", () => createElement(StatsOverviewSkeleton)],
-  ["Serien-Schildchen", () => createElement(StreakChipSkeleton)],
+  ["Heute", () => inGerman(createElement(TodayOverviewSkeleton))],
+  ["Statistik", () => inGerman(createElement(StatsOverviewSkeleton))],
+  ["Serien-Schildchen", () => inGerman(createElement(StreakChipSkeleton))],
   ["Lernen", studySkeleton],
-  ["Neue Karten pro Tag", () => createElement(NewPerDayFieldSkeleton)],
-  ["Konto löschen", () => createElement(DeleteAccountSectionSkeleton)],
-  ["Verwaltung", () => createElement(UserListSkeleton)],
+  ["Neue Karten pro Tag", () => inGerman(createElement(NewPerDayFieldSkeleton))],
+  ["Konto löschen", () => inGerman(createElement(DeleteAccountSectionSkeleton))],
+  ["Verwaltung", () => inGerman(createElement(UserListSkeleton))],
 ];
 
 function classesOf(tag: string): string[] {
@@ -81,7 +81,7 @@ describe("Skeleton-Bausteine", () => {
   });
 
   it("Statistik: das neutrale Raster ist für Screenreader versteckt", () => {
-    const html = renderToStaticMarkup(createElement(StatsOverviewSkeleton));
+    const html = renderToStaticMarkup(inGerman(createElement(StatsOverviewSkeleton)));
     const grid = html.match(/<ol[^>]*>/)?.[0] ?? "";
     expect(grid).toContain('aria-hidden="true"');
   });
@@ -110,7 +110,7 @@ describe("Skeleton-Bausteine", () => {
   });
 
   it("Verwaltung: drei Zeilen aus dem Zeilenaufbau der Nutzerliste, ohne Adressen, als ladend markiert", () => {
-    const html = renderToStaticMarkup(createElement(UserListSkeleton));
+    const html = renderToStaticMarkup(inGerman(createElement(UserListSkeleton)));
     expect(html).toMatch(/^<div aria-busy="true"/);
     const rows = skeletonTags(html);
     expect(rows).toHaveLength(3);
@@ -121,5 +121,16 @@ describe("Skeleton-Bausteine", () => {
       expect(classes).toContain("*:invisible");
     }
     expect(html).not.toContain("@");
+  });
+
+  it("beschriftet Platzhalter in der Sprache der Seite", () => {
+    const english = (element: ReactElement) =>
+      renderToStaticMarkup(<I18nProvider locale="en">{element}</I18nProvider>);
+    expect(english(createElement(TodayOverviewSkeleton))).toContain("due");
+    expect(english(createElement(StatsOverviewSkeleton))).toContain("known");
+    expect(english(createElement(StatsOverviewSkeleton))).toContain("All scores from 2 to 170");
+    expect(english(createElement(UserListSkeleton))).toContain("Set password");
+    expect(english(createElement(DeleteAccountSectionSkeleton))).toContain("Delete account");
+    expect(english(createElement(StreakChipSkeleton))).toContain("00-day streak");
   });
 });

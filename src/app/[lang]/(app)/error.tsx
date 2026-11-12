@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useLocalePath } from "@/i18n/client";
+import { useDictionary, useLocalePath } from "@/i18n/client";
 import { ROUTES } from "@/i18n/paths";
 
 /**
@@ -12,6 +12,7 @@ import { ROUTES } from "@/i18n/paths";
  */
 export default function AppError({ error, retry }: { error: unknown; retry: () => void }) {
   const localePath = useLocalePath();
+  const t = useDictionary().errors;
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -19,17 +20,17 @@ export default function AppError({ error, retry }: { error: unknown; retry: () =
   return (
     <div role="alert" className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <h1 className="type-display text-3xl">Das hat nicht geklappt.</h1>
+        <h1 className="type-display text-3xl">{t.title}</h1>
         <p className="text-muted-foreground">
-          Die Seite konnte nicht geladen werden. Versuche es gleich noch einmal.
+          {t.description}
         </p>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button size="xl" onClick={() => retry()}>
-          Erneut versuchen
+          {t.retry}
         </Button>
         <Link href={localePath(ROUTES.today)} className={buttonVariants({ variant: "secondary", size: "xl" })}>
-          Zur Übersicht
+          {t.toOverview}
         </Link>
       </div>
     </div>

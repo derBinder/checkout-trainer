@@ -1,6 +1,9 @@
+"use client";
+
 import { LoadingRegion } from "@/components/loading-region";
 import { buttonShape } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDictionary } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { USER_ACTIONS_ROW, USER_LIST, USER_ROW, UserRowDetails } from "./admin-parts";
 
@@ -13,14 +16,15 @@ const ROWS = 3;
  * unsichtbarer Mustertext und gibt nur die Höhe vor.
  */
 export function UserListSkeleton() {
+  const t = useDictionary().admin;
   return (
     <LoadingRegion className={USER_LIST}>
       {Array.from({ length: ROWS }, (_, i) => (
         <Skeleton key={i} className={cn(USER_ROW, "*:invisible")}>
-          <UserRowDetails name="Name" email="name" meta="status · registriert am 00.00.0000" />
+          <UserRowDetails name="Name" email="name" meta={t.metaSample} />
           <div className={USER_ACTIONS_ROW}>
-            <div className={buttonShape("lg")}>Sperren</div>
-            <div className={buttonShape("lg")}>Passwort setzen</div>
+            <div className={buttonShape("lg")}>{t.block}</div>
+            <div className={buttonShape("lg")}>{t.setPassword}</div>
           </div>
         </Skeleton>
       ))}

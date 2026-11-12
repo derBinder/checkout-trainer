@@ -1,6 +1,9 @@
+"use client";
+
 import { LoadingRegion } from "@/components/loading-region";
 import { NeutralRestGrid } from "@/components/rest-grid";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDictionary } from "@/i18n/client";
 import { LevelCounts, STATS_BODY } from "./stats-parts";
 
 /**
@@ -9,10 +12,11 @@ import { LevelCounts, STATS_BODY } from "./stats-parts";
  * am Seitenende und bekommt keinen Platzhalter.
  */
 export function StatsOverviewSkeleton() {
+  const t = useDictionary().stats;
   return (
     <LoadingRegion className={STATS_BODY}>
-      <LevelCounts value={() => <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>} />
-      <NeutralRestGrid />
+      <LevelCounts value={() => <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>} t={t} />
+      <NeutralRestGrid t={t} />
     </LoadingRegion>
   );
 }

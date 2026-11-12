@@ -13,7 +13,6 @@ export type ProgressView = {
   /** Breiten der beiden Balkenabschnitte in Prozent, zusammen höchstens 100. */
   knownWidth: number;
   learningWidth: number;
-  label: string;
 };
 
 function width(count: number, total: number): number {
@@ -34,6 +33,5 @@ export function progressView(counts: Record<Level, number>): ProgressView {
     percent: total === 0 ? 0 : Math.round((started / total) * 100),
     knownWidth,
     learningWidth,
-    label: `${started} von ${total} begonnen, ${counts.known} sicher`,
   };
 }

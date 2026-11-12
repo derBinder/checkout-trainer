@@ -9,21 +9,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLocalePath } from "@/i18n/client";
+import { useDictionary, useLocalePath } from "@/i18n/client";
+import type { Dictionary } from "@/i18n/dictionaries";
 import { ROUTES, splitLocale, type Route } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
 
-type NavItem = { route: Route; label: string; icon: LucideIcon };
+type NavItem = { route: Route; key: Exclude<keyof Dictionary["nav"], "label">; icon: LucideIcon };
 
 const ITEMS: NavItem[] = [
-  { route: ROUTES.today, label: "Heute", icon: Target },
-  { route: ROUTES.stats, label: "Statistik", icon: ChartColumn },
-  { route: ROUTES.settings, label: "Einstellungen", icon: Settings },
+  { route: ROUTES.today, key: "today", icon: Target },
+  { route: ROUTES.stats, key: "stats", icon: ChartColumn },
+  { route: ROUTES.settings, key: "settings", icon: Settings },
 ];
 
 const ADMIN_ITEM: NavItem = {
   route: ROUTES.admin,
-  label: "Verwaltung",
+  key: "admin",
   icon: Users,
 };
 
@@ -39,12 +40,13 @@ function useRoutePath(): string {
  */
 export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
   const path = useRoutePath();
+  const t = useDictionary().nav;
   // Die Lernseite hat nur eine Aufgabe und keine Navigation.
   if (path === ROUTES.study) return null;
 
   return (
     <nav
-      aria-label="Hauptnavigation"
+      aria-label={t.label}
       className="fixed inset-x-0 bottom-0 z-10 border-t bg-background/95 pb-home-indicator backdrop-blur md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:pb-0"
     >
       <div className="mx-auto flex max-w-2xl items-stretch md:h-16 md:items-center md:gap-2 md:px-5">
@@ -58,14 +60,15 @@ export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
   );
 }
 
-/** Der Eintrag „Verwaltung"; nur für das Betreiberkonto gerendert (siehe AdminNavItem). */
+/** Der Eintrag „Verwaltung“; nur für das Betreiberkonto gerendert (siehe AdminNavItem). */
 export function AdminNavLink() {
   return <NavLink item={ADMIN_ITEM} />;
 }
 
-function NavLink({ item: { route, label, icon: Icon } }: { item: NavItem }) {
+function NavLink({ item: { route, key, icon: Icon } }: { item: NavItem }) {
   const path = useRoutePath();
   const localePath = useLocalePath();
+  const t = useDictionary().nav;
   const active = path === route || path.startsWith(`${route}/`);
   return (
     <Link
@@ -85,7 +88,7 @@ function NavLink({ item: { route, label, icon: Icon } }: { item: NavItem }) {
       >
         <Icon aria-hidden className="size-5" strokeWidth={active ? 2.25 : 1.75} />
       </span>
-      {label}
+      {t[key]}
     </Link>
   );
 }

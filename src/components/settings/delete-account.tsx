@@ -29,6 +29,7 @@ export function DeleteAccount() {
   const router = useRouter();
   const localePath = useLocalePath();
   const t = useDictionary();
+  const text = t.settings.deleteAccount;
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -75,7 +76,7 @@ export function DeleteAccount() {
       router.replace(localePath(ROUTES.home));
       router.refresh();
     } catch {
-      setError("Keine Verbindung. Dein Konto wurde nicht gelöscht.");
+      setError(t.settings.deleteAccount.noConnection);
       setPending(false);
     }
   }
@@ -84,7 +85,7 @@ export function DeleteAccount() {
     // Neu eingehängt nach dem Verbergen: kommt geschlossen zurück, ohne Schließ-Animation.
     <AlertDialog key={dialogKey} open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger render={<Button variant="destructive" size="xl" />}>
-        Konto löschen
+        {text.title}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <form
@@ -94,14 +95,13 @@ export function DeleteAccount() {
           className="grid gap-4"
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>Konto löschen?</AlertDialogTitle>
+            <AlertDialogTitle>{text.question}</AlertDialogTitle>
             <AlertDialogDescription>
-              Dein Konto und dein gesamter Lernstand werden endgültig gelöscht.
-              Das lässt sich nicht rückgängig machen.
+              {text.description}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Field>
-            <FieldLabel htmlFor="deletePassword">Passwort zur Bestätigung</FieldLabel>
+            <FieldLabel htmlFor="deletePassword">{text.password}</FieldLabel>
             <PasswordInput
               id="deletePassword"
               name="password"
@@ -117,9 +117,9 @@ export function DeleteAccount() {
             </p>
           ) : null}
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending}>Abbrechen</AlertDialogCancel>
+            <AlertDialogCancel disabled={pending}>{t.common.cancel}</AlertDialogCancel>
             <Button type="submit" variant="destructive" disabled={pending}>
-              Endgültig löschen
+              {text.confirm}
             </Button>
           </AlertDialogFooter>
         </form>

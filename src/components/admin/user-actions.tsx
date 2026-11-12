@@ -19,6 +19,7 @@ import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { USER_ACTIONS_ROW } from "@/components/admin/admin-parts";
+import { useDictionary } from "@/i18n/client";
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import { newPasswordSchema } from "@/lib/validation/schemas";
 import {
@@ -30,9 +31,9 @@ type Props = { userId: string; name: string; status: string };
 
 const FIELDS: FieldSpec[] = [{ name: "password", schema: newPasswordSchema }];
 
-const FAILED = "Das hat nicht geklappt. Lade die Seite neu und versuche es erneut.";
-
 export function UserActions({ userId, name, status }: Props) {
+  const t = useDictionary();
+  const text = t.admin;
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [open, setOpen] = useState(false);
@@ -63,11 +64,11 @@ export function UserActions({ userId, name, status }: Props) {
     startTransition(async () => {
       try {
         const { ok } = await changeUserStatus(userId, next);
-        if (!ok) setMessage({ text: FAILED, ok: false });
+        if (!ok) setMessage({ text: text.failed, ok: false });
       } catch (error) {
         // Eine Weiterleitung aus der Action (etwa zur Anmeldung) ist kein Fehler.
         unstable_rethrow(error);
-        setMessage({ text: "Keine Verbindung. Versuche es erneut.", ok: false });
+        setMessage({ text: t.auth.noConnection, ok: false });
       }
     });
   }
@@ -91,16 +92,16 @@ export function UserActions({ userId, name, status }: Props) {
       try {
         const { ok } = await changeUserPassword(userId, value);
         if (!ok) {
-          setDialogError("Das Passwort wurde nicht gesetzt.");
+          setDialogError(text.notSet);
           return;
         }
         setOpen(false);
         setPassword("");
         reset();
-        setMessage({ text: "Passwort gesetzt. Alle Sitzungen des Nutzers sind beendet.", ok: true });
+        setMessage({ text: text.passwordSet, ok: true });
       } catch (error) {
         unstable_rethrow(error);
-        setDialogError("Keine Verbindung. Das Passwort wurde nicht gesetzt.");
+        setDialogError(text.notSetNoConnection);
       }
     });
   }
@@ -110,19 +111,19 @@ export function UserActions({ userId, name, status }: Props) {
       <div className={USER_ACTIONS_ROW}>
         {status !== "active" ? (
           <Button variant="secondary" size="lg" disabled={pending} onClick={() => changeStatus("active")}>
-            {status === "blocked" ? "Entsperren" : "Freischalten"}
+            {status === "blocked" ? text.unblock : text.approve}
           </Button>
         ) : null}
         {/* Auch eine wartende Registrierung lässt sich so ablehnen. */}
         {status !== "blocked" ? (
           <Button variant="destructive" size="lg" disabled={pending} onClick={() => changeStatus("blocked")}>
-            Sperren
+            {text.block}
           </Button>
         ) : null}
         {/* Neu eingehängt nach dem Verbergen: kommt geschlossen zurück, ohne Schließ-Animation. */}
         <AlertDialog key={dialogKey} open={open} onOpenChange={handleOpenChange}>
           <AlertDialogTrigger render={<Button variant="outline" size="lg" disabled={pending} />}>
-            Passwort setzen
+            {text.setPassword}
           </AlertDialogTrigger>
           <AlertDialogContent>
             <form
@@ -132,14 +133,13 @@ export function UserActions({ userId, name, status }: Props) {
               className="grid gap-4"
             >
               <AlertDialogHeader>
-                <AlertDialogTitle>Passwort für {name} setzen</AlertDialogTitle>
+                <AlertDialogTitle>{text.passwordFor(name)}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Alle Sitzungen des Nutzers werden beendet. Gib das neue
-                  Passwort dem Nutzer persönlich weiter.
+                  {text.passwordDescription}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <Field>
-                <FieldLabel htmlFor={passwordId}>Neues Passwort</FieldLabel>
+                <FieldLabel htmlFor={passwordId}>{text.newPassword}</FieldLabel>
                 <PasswordInput
                   id={passwordId}
                   name="password"
@@ -162,9 +162,9 @@ export function UserActions({ userId, name, status }: Props) {
                 </p>
               ) : null}
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={pending}>Abbrechen</AlertDialogCancel>
+                <AlertDialogCancel disabled={pending}>{t.common.cancel}</AlertDialogCancel>
                 <Button type="submit" disabled={pending}>
-                  Passwort setzen
+                  {text.setPassword}
                 </Button>
               </AlertDialogFooter>
             </form>

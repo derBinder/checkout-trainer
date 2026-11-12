@@ -10,20 +10,25 @@ import {
   NewPerDayFieldSkeleton,
 } from "@/components/settings/settings-skeleton";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
+import { getDictionary } from "@/i18n/server";
 
-export const metadata: Metadata = { title: "Einstellungen · Checkout-Trainer" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getDictionary();
+  return { title: `${t.nav.settings}${t.common.titleSuffix}` };
+}
 
 /** Gerüst ohne Datenzugriff; die Datenbausteine prüfen den Zugriff selbst. */
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const t = await getDictionary();
   return (
     <div className={SETTINGS_BODY}>
-      <h1 className="type-display text-3xl">Einstellungen</h1>
+      <h1 className="type-display text-3xl">{t.nav.settings}</h1>
 
-      <SettingsSection title="Darstellung" titleId="darstellung">
-        <ThemeSwitch labelledBy="darstellung" />
+      <SettingsSection title={t.settings.appearance} titleId="appearance">
+        <ThemeSwitch labelledBy="appearance" />
       </SettingsSection>
 
-      <SettingsSection title="Lernmenge">
+      <SettingsSection title={t.settings.amount}>
         <NewPerDayForm>
           <Suspense fallback={<NewPerDayFieldSkeleton />}>
             <NewPerDayField />
@@ -31,11 +36,11 @@ export default function SettingsPage() {
         </NewPerDayForm>
       </SettingsSection>
 
-      <SettingsSection title="Passwort ändern">
+      <SettingsSection title={t.settings.password.title}>
         <ChangePasswordForm />
       </SettingsSection>
 
-      <SettingsSection title="Abmelden">
+      <SettingsSection title={t.auth.signOut}>
         <SignOutButton />
       </SettingsSection>
 

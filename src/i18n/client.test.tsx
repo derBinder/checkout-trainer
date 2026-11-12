@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
-import { I18nProvider, useDictionary, useLocale, useLocalePath } from "./client";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider, localeFromLocation, useDictionary, useLocale, useLocalePath } from "./client";
 import { ROUTES } from "./paths";
 
 function Probe() {
@@ -37,5 +37,26 @@ describe("I18nProvider", () => {
 
   it("meldet einen fehlenden Provider, statt still eine Sprache zu raten", () => {
     expect(() => renderToStaticMarkup(<Probe />)).toThrow(/I18nProvider/);
+  });
+});
+
+describe("localeFromLocation", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it.each([
+    ["/de/today", "de"],
+    ["/en", "en"],
+    ["/", "en"],
+    ["/dexter", "en"],
+  ])("liest die Sprache aus %s", (pathname, locale) => {
+    vi.stubGlobal("window", { location: { pathname } });
+    expect(localeFromLocation()).toBe(locale);
+  });
+
+  it("nimmt ohne Fenster die Vorgabe", () => {
+    vi.stubGlobal("window", undefined);
+    expect(localeFromLocation()).toBe("en");
   });
 });

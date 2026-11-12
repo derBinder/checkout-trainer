@@ -7,7 +7,6 @@ describe("progressView", () => {
     expect(view.started).toBe(10);
     expect(view.known).toBe(0);
     expect(view.total).toBe(169);
-    expect(view.label).toBe("10 von 169 begonnen, 0 sicher");
     expect(view.percent).toBe(6);
   });
 
@@ -20,7 +19,6 @@ describe("progressView", () => {
   it("ist ohne Lernstand leer", () => {
     const view = progressView({ new: 169, learning: 0, known: 0 });
     expect(view).toMatchObject({ started: 0, percent: 0, learningWidth: 0, knownWidth: 0 });
-    expect(view.label).toBe("0 von 169 begonnen, 0 sicher");
   });
 
   it("hält einen einzelnen Rest sichtbar", () => {
@@ -34,7 +32,6 @@ describe("progressView", () => {
     expect(view.knownWidth).toBe(100);
     expect(view.learningWidth).toBe(0);
     expect(view.percent).toBe(100);
-    expect(view.label).toBe("169 von 169 begonnen, 169 sicher");
   });
 
   it("überschreitet zusammen nie die volle Breite", () => {

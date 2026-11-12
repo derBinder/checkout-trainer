@@ -8,8 +8,8 @@
 
 import { createContext, useCallback, useContext, type ReactNode } from "react";
 import { DICTIONARIES, type Dictionary } from "./dictionaries";
-import type { Locale } from "./locales";
-import { localePath, type Route } from "./paths";
+import { DEFAULT_LOCALE, type Locale } from "./locales";
+import { localePath, splitLocale, type Route } from "./paths";
 
 const LocaleContext = createContext<Locale | null>(null);
 
@@ -31,4 +31,14 @@ export function useDictionary(): Dictionary {
 export function useLocalePath(): (route: Route) => string {
   const locale = useLocale();
   return useCallback((route: Route) => localePath(locale, route), [locale]);
+}
+
+/**
+ * Sprache aus der Adresse des Fensters, für global-error.tsx: Die Seite ersetzt das
+ * Root-Layout und liegt damit außerhalb des Providers. Ohne Sprache im Pfad (oder
+ * ohne Fenster, beim Rendern auf dem Server) gilt die Vorgabe.
+ */
+export function localeFromLocation(): Locale {
+  if (typeof window === "undefined") return DEFAULT_LOCALE;
+  return splitLocale(window.location.pathname).locale ?? DEFAULT_LOCALE;
 }
