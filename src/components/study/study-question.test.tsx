@@ -47,17 +47,14 @@ describe("StudyQuestion", () => {
     expect(nextSlot()).toBe(0);
   });
 
-  it.each([
-    ["r-5", "Single"],
-    ["r-40", "Doppel"],
-    ["r-121", "Triple"],
-  ])("beginnt auf %s mit dem Ring %s", (id, ring) => {
+  it.each(["r-5", "r-40", "r-121", "b-169", "m-56-0"])("beginnt auf %s mit dem Ring Single", (id) => {
     setup(id);
-    expect(checkedRing()).toBe(ring);
+    expect(checkedRing()).toBe("Single");
   });
 
   it("füllt die Felder Dart für Dart und springt auf D, sobald ein direktes Doppel bleibt", async () => {
-    const { press } = setup("r-121");
+    const { press, ring } = setup("r-121");
+    await ring("Triple");
     await press("Triple 20");
     expect(darts()).toEqual(["T20", "?offen", "?offen"]);
     expect(nextSlot()).toBe(1);
@@ -76,7 +73,6 @@ describe("StudyQuestion", () => {
 
   it("lässt den Ring wechseln, und Löschen stellt den Ring vor dem gelöschten Dart wieder her", async () => {
     const { press, ring } = setup("r-121");
-    await ring("Single");
     expect(checkedRing()).toBe("Single");
     await press("Single 20");
     await ring("Triple");
@@ -95,15 +91,16 @@ describe("StudyQuestion", () => {
   });
 
   it("nimmt 25 und Bull unabhängig vom gewählten Ring", async () => {
-    const { press } = setup("r-121");
-    expect(checkedRing()).toBe("Triple");
+    const { press, ring } = setup("r-121");
+    await ring("Triple");
     await press("Single Bull 25");
     await press("Bull");
     expect(darts()).toEqual(["25", "Bull", "?offen"]);
   });
 
   it("sperrt nach drei Darts die Feldtasten, Löschen bleibt", async () => {
-    const { press } = setup("r-121");
+    const { press, ring } = setup("r-121");
+    await ring("Triple");
     await press("Triple 20");
     await press("Triple 20");
     await press("Triple 20");
@@ -116,7 +113,7 @@ describe("StudyQuestion", () => {
   });
 
   it("fragt bei einem Fehlwurf nach dem Folgeweg, die geworfenen Darts stehen fest", async () => {
-    const { press } = setup("m-56-0");
+    const { press, ring } = setup("m-56-0");
     expect(screen.getByText("Rest war 56")).toBeTruthy();
     expect(screen.getByText("Ziel war T16, getroffen: Single 16")).toBeTruthy();
     // Den neuen Rest rechnet der Nutzer im Kopf: keine große Zahl.
@@ -126,6 +123,7 @@ describe("StudyQuestion", () => {
     // Nur eigene Darts lassen sich löschen.
     expect(isDisabled("Letzten Dart löschen")).toBe(true);
 
+    await ring("Doppel");
     await press("Doppel 20");
     expect(darts()).toEqual(["S16 (Fehlwurf)", "D20", "?offen"]);
     await press("Letzten Dart löschen");
@@ -147,11 +145,12 @@ describe("StudyQuestion", () => {
 
 describe("QuestionFooter", () => {
   it("prüft erst, wenn ein Dart eingegeben ist, und gibt den eingegebenen Weg weiter", async () => {
-    const { press, onReveal } = setup("r-100");
+    const { press, ring, onReveal } = setup("r-100");
     expect(isDisabled("Prüfen")).toBe(true);
     await press("Prüfen");
     expect(onReveal).not.toHaveBeenCalled();
 
+    await ring("Triple");
     await press("Triple 20");
     await press("Doppel 20");
     await press("Prüfen");
@@ -160,14 +159,14 @@ describe("QuestionFooter", () => {
 
   it("„Nicht checkbar“ ist auch mit eingegebenen Darts aktiv und gibt nur die Wahl weiter", async () => {
     const { press, onReveal } = setup("r-121");
-    await press("Triple 20");
+    await press("Single 20");
     await press("Nicht checkbar");
     expect(onReveal).toHaveBeenCalledWith({ kind: "notCheckable" });
   });
 
   it("„Ohne Eingabe aufdecken“ deckt ohne Antwort auf", async () => {
     const { press, onReveal } = setup("r-121");
-    await press("Triple 20");
+    await press("Single 20");
     await press("Ohne Eingabe aufdecken");
     expect(onReveal).toHaveBeenCalledTimes(1);
     expect(onReveal.mock.calls[0]).toEqual([]);
@@ -177,7 +176,7 @@ describe("QuestionFooter", () => {
     setup("b-169");
     expect(screen.getByText("169", { selector: "p" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Nicht checkbar" })).toBeTruthy();
-    expect(checkedRing()).toBe("Triple");
+    expect(checkedRing()).toBe("Single");
   });
 
   it("bietet auf Fehlwurf-Karten kein „Nicht checkbar“ an", () => {

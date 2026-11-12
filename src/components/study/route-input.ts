@@ -3,7 +3,8 @@ import { dartValue, parseDart, type Ring } from "@/lib/darts/model";
 
 /**
  * Eingabe eines Wegs über das Tastenfeld, ohne React, damit testbar.
- * Der Ring bleibt gewählt, bis der Nutzer ihn wechselt. Bleibt ein Rest, der
+ * Der Ring startet auf S und bleibt gewählt, bis der Nutzer ihn wechselt. Bleibt
+ * nach einem Dart ein Rest, der
  * mit einem Doppel direkt zu checken ist, springt er auf D. Löschen stellt den
  * Ring wieder her, der vor dem gelöschten Dart gewählt war.
  */
@@ -34,14 +35,9 @@ export function isDoubleRest(rest: number): boolean {
   return rest % 2 === 0 && rest >= 2 && rest <= 40;
 }
 
-/** Startring: D bei direktem Doppel, über 60 T, sonst S. */
-function startRing(rest: number): Ring {
-  if (isDoubleRest(rest)) return "D";
-  return rest > 60 ? "T" : "S";
-}
-
 export function initInput(check: Check): InputState {
-  return { ring: startRing(check.rest), darts: [], ringsBefore: [], rest: check.rest, max: maxDarts(check) };
+  // Jede Karte beginnt auf Single, auch wenn der Rest ein direktes Doppel ist.
+  return { ring: "S", darts: [], ringsBefore: [], rest: check.rest, max: maxDarts(check) };
 }
 
 export function remaining(s: InputState): number {

@@ -33,7 +33,7 @@ describe("RoutePad", () => {
     expect(count(html, /<button/g)).toBe(26);
     expect(html).toContain('role="radiogroup" aria-label="Ring"');
     expect(count(html, /role="radio"/g)).toBe(3);
-    expect(html).toMatch(/aria-checked="true"[^>]*>T</);
+    expect(html).toMatch(/aria-checked="true"[^>]*>S</);
     expect(html).toContain('aria-label="Letzten Dart löschen"');
     expect(html).toContain(">25<");
     expect(html).toContain(">Bull<");
@@ -67,8 +67,9 @@ describe("StudyQuestion", () => {
   it("shows the darts already thrown on a miss card and fills the rest from the input", () => {
     const check = checkFor(cardById("m-121-0")!);
     const html = question("m-121-0", inputReducer(initInput(check), { type: "number", n: 17 }));
+    // Startring Single: aus 17 wird S17.
     expect(html).toContain("S20");
-    expect(html).toContain("T17");
+    expect(html).toContain("S17");
   });
 });
 

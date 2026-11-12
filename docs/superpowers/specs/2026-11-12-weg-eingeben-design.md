@@ -38,10 +38,11 @@ Aufbau des Fragebildschirms von oben nach unten:
 
 Verhalten:
 
+- Der Ring steht zu Beginn jeder Karte auf S (Single), auch wenn der Rest ein direktes Doppel ist (Entscheidung des Nutzers).
 - Ein Tipp auf eine Zahl setzt einen Dart mit dem gewählten Ring. Der Ring bleibt gewählt, bis man ihn wechselt. Meist also ein Tipp pro Dart, nur beim Ringwechsel zwei.
 - 25 und Bull sind eigene Tasten und hängen nicht vom Ring ab (25 = Single Bull, Bull = Doppel).
 - Ist T gewählt, bleiben 25 und Bull trotzdem tippbar (sie ignorieren den Ring).
-- Automatischer Ringwechsel: Ist der verbleibende Rest nach den eingegebenen Darts mit einem Doppel direkt zu checken (gerade Zahl von 2 bis 40), springt der Ring auf D. Nicht bei 50: Bull hat eine eigene Taste, und auf 110 würde nach T20 sonst aus T10 ein D10. Der Nutzer kann jederzeit zurückschalten. Löschen stellt den Ring wieder her, der vor dem gelöschten Dart gewählt war. (Meine Präzisierung von „beim letzten Dart springt er auf D“, nach dem Code-Review angepasst.)
+- Automatischer Ringwechsel: Ist der verbleibende Rest nach einem eingegebenen Dart mit einem Doppel direkt zu checken (gerade Zahl von 2 bis 40), springt der Ring auf D. Nicht bei 50: Bull hat eine eigene Taste, und auf 110 würde nach T20 sonst aus T10 ein D10. Der Nutzer kann jederzeit zurückschalten. Löschen stellt den Ring wieder her, der vor dem gelöschten Dart gewählt war. (Meine Präzisierung von „beim letzten Dart springt er auf D“, nach dem Code-Review angepasst.)
 - Höchstens drei Darts. Nach dem dritten sind die Zahlentasten gesperrt, Löschen bleibt.
 - „Prüfen“ ist aktiv, sobald mindestens ein Dart eingegeben ist. Ein Weg mit einem oder zwei Darts ist erlaubt (z. B. 100 = T20 · D20).
 - „Nicht checkbar“ ist immer aktiv, auch mit eingegebenen Darts, und prüft sofort (die Darts werden verworfen). Die Taste steht auf Rest- und Bogey-Karten gleichermaßen, damit der Bildschirm nicht verrät, welche Art vorliegt. Auf Fehlwurf-Karten fehlt sie (siehe Kartenarten).

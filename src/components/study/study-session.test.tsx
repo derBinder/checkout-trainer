@@ -414,8 +414,9 @@ describe("StudySession", () => {
 
     it("füllt bei einem Fehlwurf nur die Felder nach den geworfenen Darts und prüft den Folgeweg", () => {
       render(<StudySession items={[item("m-56-0")]} />);
-      // Neuer Rest 40 ist ein direktes Doppel.
-      expect(checkedRing()).toBe("Doppel");
+      // Auch bei einem direkten Doppel (neuer Rest 40) beginnt der Ring auf Single.
+      expect(checkedRing()).toBe("Single");
+      fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
       press("Doppel 20");
       expect(row("Darts")).toEqual(["S16 (Fehlwurf)", "D20", "?offen"]);
 
