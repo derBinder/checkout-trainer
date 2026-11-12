@@ -9,6 +9,7 @@ import {
   DeleteAccountSectionSkeleton,
   NewPerDayFieldSkeleton,
 } from "@/components/settings/settings-skeleton";
+import { LanguageSwitch } from "@/components/language/language-switch";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
 import { getDictionary } from "@/i18n/server";
 
@@ -26,6 +27,10 @@ export default async function SettingsPage() {
 
       <SettingsSection title={t.settings.appearance} titleId="appearance">
         <ThemeSwitch labelledBy="appearance" />
+      </SettingsSection>
+
+      <SettingsSection title={t.language.label} titleId="sprache">
+        <LanguageSwitch variant="settings" labelledBy="sprache" />
       </SettingsSection>
 
       <SettingsSection title={t.settings.amount}>

@@ -71,6 +71,12 @@ vi.mock("@/components/theme/theme-switch", () => ({
   ),
 }));
 
+vi.mock("@/components/language/language-switch", () => ({
+  LanguageSwitch: ({ labelledBy }: { labelledBy: string }) => (
+    <div role="radiogroup" aria-labelledby={labelledBy} />
+  ),
+}));
+
 const { default: TodayPage, generateMetadata: todayMetadata } = await import("./today/page");
 const { default: StatsPage, generateMetadata: statsMetadata } = await import("./stats/page");
 const { default: StudyPage, generateMetadata: studyMetadata } = await import("./study/page");
@@ -164,7 +170,7 @@ describe("Einstellungen", () => {
     render(await SettingsPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Einstellungen" })).toBeTruthy();
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Darstellung", "Lernmenge", "Passwort ändern", "Abmelden"]);
+    expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Passwort ändern", "Abmelden"]);
     expect(screen.getByRole("radiogroup", { name: "Darstellung" })).toBeTruthy();
     expect(screen.getByText("Feld Neue Karten")).toBeTruthy();
     expect(screen.getByText("Formular Passwort")).toBeTruthy();
@@ -248,7 +254,7 @@ describe("Angemeldete Seiten auf Englisch", () => {
     rootParams.lang = "en";
     render(await SettingsPage(), { wrapper: wrapperEn });
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Appearance", "Study amount", "Change password", "Sign out"]);
+    expect(sections).toEqual(["Appearance", "Language", "Study amount", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
   });
 

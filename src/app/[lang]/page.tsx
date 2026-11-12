@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PublicFooter } from "@/components/public-footer";
 import { buttonVariants } from "@/components/ui/button";
 import { localePath, ROUTES } from "@/i18n/paths";
 import { getDictionary, getLocale } from "@/i18n/server";
@@ -27,14 +28,7 @@ export default async function Home() {
           </Link>
         </div>
       </main>
-      <footer className="flex gap-6 pt-16 text-sm font-medium text-muted-foreground">
-        <Link href={localePath(locale, ROUTES.imprint)} className="py-2 hover:text-foreground">
-          {t.legal.imprint}
-        </Link>
-        <Link href={localePath(locale, ROUTES.privacy)} className="py-2 hover:text-foreground">
-          {t.legal.privacy}
-        </Link>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

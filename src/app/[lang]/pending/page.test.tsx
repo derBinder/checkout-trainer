@@ -1,9 +1,19 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
 
 type Status = "pending" | "active" | "blocked";
 const session = vi.hoisted(() => ({ user: null as null | { status: Status } }));
+// Der Sprachschalter im Fuß liest den Pfad und navigiert.
+vi.mock("next/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/navigation")>()),
+  usePathname: () => "/de/pending",
+  useRouter: () => ({ push: vi.fn() }),
+}));
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 vi.mock("@/lib/auth/guard", () => ({ getSessionUser: async () => session.user }));
 vi.mock("@/components/auth/sign-out-button", () => ({
   SignOutButton: () => <button type="button">Abmelden</button>,
@@ -35,7 +45,7 @@ describe("Warten auf Freischaltung", () => {
 
   it("sagt einem wartenden Konto, dass der Betreiber es freischalten muss", async () => {
     session.user = { status: "pending" };
-    render(await WaitingPage());
+    render(await WaitingPage(), { wrapper });
     expect(
       screen.getByRole("heading", { name: "Dein Konto wartet auf Freischaltung durch den Betreiber." }),
     ).toBeTruthy();
@@ -44,7 +54,7 @@ describe("Warten auf Freischaltung", () => {
 
   it("sagt einem gesperrten Konto, dass es gesperrt ist", async () => {
     session.user = { status: "blocked" };
-    render(await WaitingPage());
+    render(await WaitingPage(), { wrapper });
     expect(screen.getByRole("heading", { name: "Dein Konto ist gesperrt." })).toBeTruthy();
   });
 

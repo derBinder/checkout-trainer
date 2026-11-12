@@ -2,10 +2,23 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+import type { Locale } from "@/i18n/locales";
 
 // Sprache aus dem ersten URL-Segment; ohne Angabe Deutsch.
 const rootParams = vi.hoisted(() => ({ lang: "de" }));
 vi.mock("next/root-params", () => ({ lang: async () => rootParams.lang }));
+
+// Der Sprachschalter im Fuß liest den Pfad und navigiert.
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
+// Die Fußzeile liest die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale={rootParams.lang as Locale}>{children}</I18nProvider>;
+}
 
 // Formulare und Dienste haben eigene Tests oder laufen nur in Next bzw. bei Vercel.
 vi.mock("@/components/auth/login-form", () => ({ LoginForm: () => <form aria-label="Anmeldung" /> }));
@@ -40,7 +53,7 @@ afterEach(() => {
 
 describe("Startseite", () => {
   it("stellt die App vor und führt zu Registrierung, Anmeldung und den Pflichtseiten", async () => {
-    render(await Home());
+    render(await Home(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Checkout-Trainer" })).toBeTruthy();
     expect(screen.getByText(/Checkout-Wege von 170 abwärts/)).toBeTruthy();
     expect(href("Registrieren")).toBe("/de/sign-up");
@@ -51,7 +64,7 @@ describe("Startseite", () => {
 
   it("verlinkt in der Sprache der Seite", async () => {
     rootParams.lang = "en";
-    render(await Home());
+    render(await Home(), { wrapper });
     expect(href("Sign up")).toBe("/en/sign-up");
     expect(href("Privacy")).toBe("/en/privacy");
   });
@@ -59,7 +72,7 @@ describe("Startseite", () => {
 
 describe("Anmelden", () => {
   it("zeigt das Formular, den Hinweis zum Passwort und den Weg zur Registrierung", async () => {
-    render(await LoginPage());
+    render(await LoginPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Anmelden" })).toBeTruthy();
     expect(screen.getByRole("form", { name: "Anmeldung" })).toBeTruthy();
     expect(screen.getByText(/Wende dich an den Betreiber/)).toBeTruthy();
@@ -70,7 +83,7 @@ describe("Anmelden", () => {
 
 describe("Registrieren", () => {
   it("zeigt das Formular und den Weg zur Anmeldung", async () => {
-    render(await RegisterPage());
+    render(await RegisterPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Registrieren" })).toBeTruthy();
     expect(screen.getByRole("form", { name: "Registrierung" })).toBeTruthy();
     expect(href("Anmelden")).toBe("/de/sign-in");
@@ -81,14 +94,14 @@ describe("Registrieren", () => {
 describe("Anmelden und Registrieren auf Englisch", () => {
   it("zeigt Überschriften, Links und Titel auf Englisch", async () => {
     rootParams.lang = "en";
-    render(await LoginPage());
+    render(await LoginPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Sign in" })).toBeTruthy();
     expect(screen.getByText(/Ask the operator/)).toBeTruthy();
     expect(href("Sign up")).toBe("/en/sign-up");
     expect((await loginMetadata()).title).toBe("Sign in · Checkout-Trainer");
     cleanup();
 
-    render(await RegisterPage());
+    render(await RegisterPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Sign up" })).toBeTruthy();
     expect(href("Sign in")).toBe("/en/sign-in");
     expect((await registerMetadata()).title).toBe("Sign up · Checkout-Trainer");
@@ -98,7 +111,7 @@ describe("Anmelden und Registrieren auf Englisch", () => {
 describe("Startseite und Pflichtseiten auf Englisch", () => {
   it("zeigt Text, Links und Titel auf Englisch", async () => {
     rootParams.lang = "en";
-    render(await Home());
+    render(await Home(), { wrapper });
     expect(screen.getByText(/checkout routes from 170 downwards/)).toBeTruthy();
     expect(href("Sign up")).toBe("/en/sign-up");
     expect(href("Sign in")).toBe("/en/sign-in");
