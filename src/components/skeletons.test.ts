@@ -1,6 +1,8 @@
 import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { USER_ROW } from "@/components/admin/admin-parts";
+import { UserListSkeleton } from "@/components/admin/admin-skeleton";
 import { NewPerDayForm, NewPerDayInput } from "@/components/settings/new-per-day-form";
 import {
   DeleteAccountSectionSkeleton,
@@ -19,6 +21,7 @@ const SKELETONS: [string, () => ReactElement][] = [
   ["Lernen", () => createElement(StudySkeleton)],
   ["Neue Karten pro Tag", () => createElement(NewPerDayFieldSkeleton)],
   ["Konto löschen", () => createElement(DeleteAccountSectionSkeleton)],
+  ["Verwaltung", () => createElement(UserListSkeleton)],
 ];
 
 function classesOf(tag: string): string[] {
@@ -94,5 +97,19 @@ describe("Skeleton-Bausteine", () => {
     expect(input).toContain('id="newPerDay"');
     expect(input).toContain('value="7"');
     expect(input).toContain('aria-describedby="newPerDay-hint"');
+  });
+
+  it("Verwaltung: drei Zeilen aus dem Zeilenaufbau der Nutzerliste, ohne Adressen, als ladend markiert", () => {
+    const html = renderToStaticMarkup(createElement(UserListSkeleton));
+    expect(html).toMatch(/^<div aria-busy="true"/);
+    const rows = skeletonTags(html);
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      const classes = classesOf(row);
+      for (const cls of USER_ROW.split(" ")) expect(classes).toContain(cls);
+      // Der Mustertext gibt nur die Höhe vor und bleibt unsichtbar.
+      expect(classes).toContain("*:invisible");
+    }
+    expect(html).not.toContain("@");
   });
 });
