@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveDbTarget } from "./driver";
+import { resolveDbTarget, withVerifiedSsl } from "./driver";
 
 const build = "phase-production-build";
 
@@ -45,5 +45,31 @@ describe("resolveDbTarget", () => {
   it("nutzt auf Vercel mit DATABASE_URL pg", () => {
     const url = "postgres://example.test/db";
     expect(resolveDbTarget({ VERCEL: "1", DATABASE_URL: url })).toEqual({ driver: "pg", url });
+  });
+});
+
+describe("withVerifiedSsl", () => {
+  it.each(["require", "prefer", "verify-ca"])("macht aus sslmode=%s verify-full", (mode) => {
+    expect(
+      withVerifiedSsl(`postgresql://u:p@host.neon.tech/db?sslmode=${mode}&channel_binding=require`),
+    ).toBe("postgresql://u:p@host.neon.tech/db?sslmode=verify-full&channel_binding=require");
+  });
+
+  it("lässt Adressen ohne sslmode und mit anderen Modi unverändert", () => {
+    for (const url of [
+      "postgres://example.test/db",
+      "postgres://example.test/db?sslmode=verify-full",
+      "postgres://example.test/db?sslmode=disable",
+      "postgres://example.test/db?uselibpqcompat=true&sslmode=require",
+    ]) {
+      expect(withVerifiedSsl(url)).toBe(url);
+    }
+  });
+
+  it("wird von resolveDbTarget angewendet", () => {
+    expect(resolveDbTarget({ DATABASE_URL: "postgres://example.test/db?sslmode=require" })).toEqual({
+      driver: "pg",
+      url: "postgres://example.test/db?sslmode=verify-full",
+    });
   });
 });

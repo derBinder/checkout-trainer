@@ -15,7 +15,7 @@ export const PGLITE_DIRECTORY = ".data/pglite";
 export function resolveDbTarget(
   env: Readonly<Record<string, string | undefined>>,
 ): DbTarget {
-  if (env.DATABASE_URL) return { driver: "pg", url: env.DATABASE_URL };
+  if (env.DATABASE_URL) return { driver: "pg", url: withVerifiedSsl(env.DATABASE_URL) };
   if (env.NEXT_PHASE === "phase-production-build") {
     return { driver: "pglite", location: undefined };
   }
@@ -25,4 +25,17 @@ export function resolveDbTarget(
     );
   }
   return { driver: "pglite", location: PGLITE_DIRECTORY };
+}
+
+/**
+ * Neon liefert Adressen mit `sslmode=require`. pg 8 behandelt `require`,
+ * `prefer` und `verify-ca` bereits wie `verify-full` (Zertifikat und Hostname
+ * werden geprüft), warnt aber bei jedem Verbindungsaufbau, dass pg 9 sie auf
+ * die schwächere libpq-Bedeutung umstellt. Hier wird das heutige Verhalten
+ * ausdrücklich festgeschrieben. Mit `uselibpqcompat=true` bleibt die Adresse
+ * unverändert, dann ist die libpq-Bedeutung gewollt.
+ */
+export function withVerifiedSsl(url: string): string {
+  if (/[?&]uselibpqcompat=true(&|$)/.test(url)) return url;
+  return url.replace(/([?&]sslmode=)(require|prefer|verify-ca)(?=&|$)/, "$1verify-full");
 }
