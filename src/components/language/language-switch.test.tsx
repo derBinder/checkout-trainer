@@ -6,12 +6,19 @@ import { I18nProvider } from "@/i18n/client";
 import type { Locale } from "@/i18n/locales";
 import { LanguageSwitch } from "./language-switch";
 
-const push = vi.fn();
-const usePathname = vi.fn(() => "/de/settings");
-vi.mock("next/navigation", () => ({
-  usePathname: () => usePathname(),
-  useRouter: () => ({ push }),
-}));
+const assign = vi.fn();
+
+function setLocation(path: string) {
+  Object.defineProperty(window, "location", {
+    configurable: true,
+    value: {
+      pathname: new URL(path, "http://localhost").pathname,
+      search: new URL(path, "http://localhost").search,
+      hash: new URL(path, "http://localhost").hash,
+      assign,
+    },
+  });
+}
 
 function renderSwitch(locale: Locale, variant: "settings" | "compact") {
   render(
@@ -27,8 +34,8 @@ function radio(name: string) {
 }
 
 beforeEach(() => {
-  push.mockClear();
-  usePathname.mockReturnValue("/de/settings");
+  assign.mockClear();
+  setLocation("/de/settings?a=1#x");
   document.cookie = "lang=; path=/; max-age=0";
 });
 
@@ -59,15 +66,26 @@ describe("LanguageSwitch", () => {
     renderSwitch("de", "settings");
     await user.click(screen.getByText("English"));
     expect(document.cookie).toContain("lang=en");
-    expect(push).toHaveBeenCalledWith("/en/settings");
+    expect(assign).toHaveBeenCalledWith("/en/settings?a=1#x");
   });
 
   it("wechselt in der kompakten Form von der Startseite", async () => {
     const user = userEvent.setup();
-    usePathname.mockReturnValue("/en");
+    setLocation("/en");
     renderSwitch("en", "compact");
     await user.click(screen.getByText("DE"));
     expect(document.cookie).toContain("lang=de");
-    expect(push).toHaveBeenCalledWith("/de");
+    expect(assign).toHaveBeenCalledWith("/de");
+  });
+
+  it("gibt jeder Instanz eine eigene Gruppe, damit versteckte Seiten keine Auswahl sperren", () => {
+    render(
+      <I18nProvider locale="de">
+        <LanguageSwitch variant="compact" />
+        <LanguageSwitch variant="settings" />
+      </I18nProvider>,
+    );
+    const names = new Set(screen.getAllByRole("radio").map((r) => r.getAttribute("name")));
+    expect(names.size).toBe(2);
   });
 });

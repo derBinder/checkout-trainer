@@ -5,12 +5,6 @@ import { I18nProvider } from "@/i18n/client";
 
 type Status = "pending" | "active" | "blocked";
 const session = vi.hoisted(() => ({ user: null as null | { status: Status } }));
-// Der Sprachschalter im Fuß liest den Pfad und navigiert.
-vi.mock("next/navigation", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("next/navigation")>()),
-  usePathname: () => "/de/pending",
-  useRouter: () => ({ push: vi.fn() }),
-}));
 function wrapper({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale="de">{children}</I18nProvider>;
 }

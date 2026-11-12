@@ -9,12 +9,6 @@ import type { Locale } from "@/i18n/locales";
 const rootParams = vi.hoisted(() => ({ lang: "de" }));
 vi.mock("next/root-params", () => ({ lang: async () => rootParams.lang }));
 
-// Der Sprachschalter im Fuß liest den Pfad und navigiert.
-vi.mock("next/navigation", () => ({
-  usePathname: () => "/",
-  useRouter: () => ({ push: vi.fn() }),
-}));
-
 // Die Fußzeile liest die Sprache aus dem I18nProvider des Root-Layouts.
 function wrapper({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale={rootParams.lang as Locale}>{children}</I18nProvider>;

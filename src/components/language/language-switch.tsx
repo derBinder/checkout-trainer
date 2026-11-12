@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useId } from "react";
 import { useDictionary, useLocale } from "@/i18n/client";
 import { LOCALE_COOKIE, LOCALES, type Locale } from "@/i18n/locales";
 import { switchLocalePath } from "@/i18n/paths";
@@ -26,13 +26,14 @@ export function LanguageSwitch({
 }) {
   const t = useDictionary().language;
   const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
+  const groupName = useId();
   const compact = variant === "compact";
 
   function change(to: Locale) {
     rememberLocale(to);
-    router.push(switchLocalePath(pathname, to));
+    // Voller Seitenaufruf: Das Root-Layout (Sprache, Theme-Skript) baut das Dokument neu.
+    const { pathname, search, hash } = window.location;
+    window.location.assign(switchLocalePath(pathname, to) + search + hash);
   }
 
   return (
@@ -58,7 +59,7 @@ export function LanguageSwitch({
         >
           <input
             type="radio"
-            name={compact ? "language-compact" : "language"}
+            name={groupName}
             value={value}
             checked={locale === value}
             onChange={() => change(value)}
