@@ -39,8 +39,9 @@ export function ProgressLine({
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex items-baseline justify-between gap-4 text-sm">
-        <span className="font-bold tabular-nums">{label}</span>
-        <span className="font-medium text-muted-foreground tabular-nums">{percent}</span>
+        {/* div statt span: Die Plätze nehmen auch die Skeletons (Blockelemente) auf. */}
+        <div className="font-bold tabular-nums">{label}</div>
+        <div className="font-medium text-muted-foreground tabular-nums">{percent}</div>
       </div>
       {/* Der Text darüber sagt dasselbe, der Balken ist nur Bild: links sicher, daneben im Lernen. */}
       <div aria-hidden className="flex h-2.5 overflow-hidden rounded-pill bg-muted">

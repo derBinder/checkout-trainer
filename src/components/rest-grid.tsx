@@ -11,10 +11,23 @@ export const CELL_BASE =
 /** Maße einer Rasterzelle; eingefärbtes und neutrales Raster teilen sie. */
 const CELL_SIZE = "h-11 w-full text-sm md:text-base";
 
-/** Zehnerreihen (2 bis 9, 10 bis 19, …); cell rendert den Inhalt je Rest. */
-function RestCells({ cell }: { cell: (rest: number) => React.ReactNode }) {
+/**
+ * Zehnerreihen (2 bis 9, 10 bis 19, …); cell rendert den Inhalt je Rest.
+ * placeholder: Platzhalter, für Screenreader versteckt.
+ */
+function RestCells({
+  cell,
+  placeholder = false,
+}: {
+  cell: (rest: number) => React.ReactNode;
+  placeholder?: boolean;
+}) {
   return (
-    <ol aria-label="Alle Reste von 2 bis 170" className="grid grid-cols-10 gap-1">
+    <ol
+      aria-label="Alle Reste von 2 bis 170"
+      aria-hidden={placeholder || undefined}
+      className="grid grid-cols-10 gap-1"
+    >
       {RESTS.map((rest) => (
         // Reste unter 10 beginnen in der dritten Spalte, damit jede Reihe bei einer Zehnerzahl anfängt.
         <li key={rest} className={cn(rest === MIN_REST && "col-start-3")}>
@@ -60,8 +73,14 @@ export function RestGrid({ levels, weak }: { levels: Record<number, Level>; weak
 
 /**
  * Das Raster im Gerüst, solange die Lernstände laden: alle Felder in der Darstellung
- * „neu", ohne Antipp-Funktion und ohne Nutzerdaten.
+ * „neu", ohne Antipp-Funktion und ohne Nutzerdaten. Für Screenreader versteckt, damit
+ * die 169 Zahlen nicht vor dem echten Raster ein zweites Mal vorgelesen werden.
  */
 export function NeutralRestGrid() {
-  return <RestCells cell={(rest) => <span className={cn(CELL_BASE, CELL_SIZE, LEVEL_CELL.new)}>{rest}</span>} />;
+  return (
+    <RestCells
+      placeholder
+      cell={(rest) => <span className={cn(CELL_BASE, CELL_SIZE, LEVEL_CELL.new)}>{rest}</span>}
+    />
+  );
 }

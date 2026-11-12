@@ -1,4 +1,5 @@
 import { LoadingRegion } from "@/components/loading-region";
+import { buttonShape } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Count, Counts, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
@@ -14,21 +15,19 @@ export function TodayOverviewSkeleton() {
     <LoadingRegion className={TODAY_BODY}>
       <Counts>
         <Count label="fällig">
-          <Skeleton className="w-fit text-transparent">00</Skeleton>
+          <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>
         </Count>
         <Count label="neu">
-          <Skeleton className="w-fit text-transparent">00</Skeleton>
+          <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>
         </Count>
       </Counts>
 
       <ProgressLine
-        label={<Skeleton className="text-transparent">00 von 169 begonnen, 00 sicher</Skeleton>}
-        percent={<Skeleton className="text-transparent">00&nbsp;%</Skeleton>}
+        label={<Skeleton className="rounded-cell text-transparent">00 von 169 begonnen, 00 sicher</Skeleton>}
+        percent={<Skeleton className="rounded-cell text-transparent">00&nbsp;%</Skeleton>}
       />
 
-      <Skeleton
-        className={cn("h-13 rounded-pill px-6 text-base font-semibold text-transparent", LEARN_BUTTON_LAYOUT)}
-      >
+      <Skeleton className={cn(buttonShape("xl"), "text-transparent", LEARN_BUTTON_LAYOUT)}>
         Lernen
       </Skeleton>
     </LoadingRegion>

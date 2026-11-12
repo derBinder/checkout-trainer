@@ -11,7 +11,7 @@ import { LevelCounts, STATS_BODY } from "./stats-parts";
 export function StatsOverviewSkeleton() {
   return (
     <LoadingRegion className={STATS_BODY}>
-      <LevelCounts value={() => <Skeleton className="w-fit text-transparent">00</Skeleton>} />
+      <LevelCounts value={() => <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>} />
       <NeutralRestGrid />
     </LoadingRegion>
   );
