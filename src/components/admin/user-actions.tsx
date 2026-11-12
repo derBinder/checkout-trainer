@@ -1,5 +1,6 @@
 "use client";
 
+import { unstable_rethrow } from "next/navigation";
 import { useLayoutEffect, useState, useTransition } from "react";
 import {
   AlertDialog,
@@ -63,7 +64,9 @@ export function UserActions({ userId, name, status }: Props) {
       try {
         const { ok } = await changeUserStatus(userId, next);
         if (!ok) setMessage({ text: FAILED, ok: false });
-      } catch {
+      } catch (error) {
+        // Eine Weiterleitung aus der Action (etwa zur Anmeldung) ist kein Fehler.
+        unstable_rethrow(error);
         setMessage({ text: "Keine Verbindung. Versuche es erneut.", ok: false });
       }
     });
@@ -95,7 +98,8 @@ export function UserActions({ userId, name, status }: Props) {
         setPassword("");
         reset();
         setMessage({ text: "Passwort gesetzt. Alle Sitzungen des Nutzers sind beendet.", ok: true });
-      } catch {
+      } catch (error) {
+        unstable_rethrow(error);
         setDialogError("Keine Verbindung. Das Passwort wurde nicht gesetzt.");
       }
     });
