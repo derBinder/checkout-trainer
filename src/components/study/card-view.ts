@@ -27,18 +27,18 @@ const joinDarts = (darts: string[]) => darts.join(" · ");
 /** "S20" → "Single 20" */
 const singleName = (hit: string) => `Single ${hit.slice(1)}`;
 
-const dartsLeftText = (n: 1 | 2) => (n === 1 ? "1 Dart" : `${n} Darts`);
-
+/** Stellwurf in Kurzform: "S20, Rest 32". */
 function setupText(follow: Extract<FollowText, { kind: "setup" }>): string {
-  return `Kein Finish mehr: ${joinDarts(follow.throws)}, Rest ${follow.leaves}`;
+  return `${joinDarts(follow.throws)}, Rest ${follow.leaves}`;
 }
 
+/** Ein Fall „Nur Single getroffen“ in Kurzform: „Nur S20“ / „101: T17 · Bull“. */
 function singleCaseNote(c: SingleCase): Note {
   const text =
     c.follow.kind === "finish"
-      ? `Rest ${c.newRest}, ${dartsLeftText(c.dartsLeft)}: ${joinDarts(c.follow.route)}`
-      : setupText(c.follow);
-  return { title: `Nur ${singleName(c.hit)} getroffen`, text };
+      ? `${c.newRest}: ${joinDarts(c.follow.route)}`
+      : `Stellen: ${setupText(c.follow)}`;
+  return { title: `Nur ${c.hit}`, text };
 }
 
 const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];

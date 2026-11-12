@@ -10,7 +10,7 @@ describe("cardView", () => {
     expect(rest.question).toEqual({ label: "Rest", big: "121", slots: [null, null, null] });
     expect(rest.answer.slots).toEqual(["T20", "T11", "D14"]);
     expect(rest.answer.notes.map((n) => n.title)).toEqual(
-      expect.arrayContaining(["Warum", "Alternative", "Nur Single 20 getroffen"]),
+      expect.arrayContaining(["Warum", "Alternative", "Nur S20"]),
     );
   });
 
@@ -48,12 +48,12 @@ describe("cardView", () => {
   it("writes the follow-up route of a single case with darts left", () => {
     const rest = view("r-121");
     expect(rest.answer.notes).toContainEqual({
-      title: "Nur Single 20 getroffen",
-      text: "Rest 101, 2 Darts: T17 · Bull",
+      title: "Nur S20",
+      text: "101: T17 · Bull",
     });
     expect(rest.answer.notes).toContainEqual({
-      title: "Nur Single 11 getroffen",
-      text: "Rest 50, 1 Dart: Bull",
+      title: "Nur S11",
+      text: "50: Bull",
     });
     expect(rest.answer.notes[0]).toEqual({ title: "Warum", text: "Bleibt bei Single 20 auf Bull-Finish." });
   });
@@ -63,16 +63,16 @@ describe("cardView", () => {
     expect(rest.answer.notes).toContainEqual({ title: "Alternativen", text: "S1 · D12 oder S17 · D4" });
   });
 
-  it("names a setup shot as follow-up 'Kein Finish mehr'", () => {
+  it("names a setup shot as follow-up 'Stellen'", () => {
     const rest = view("r-125");
-    const setupCase = rest.answer.notes.find((n) => n.text.startsWith("Kein Finish mehr"));
-    expect(setupCase?.text).toMatch(/^Kein Finish mehr: .+, Rest \d+$/);
+    const setupCase = rest.answer.notes.find((n) => n.text.startsWith("Stellen"));
+    expect(setupCase?.text).toMatch(/^Stellen: .+, Rest \d+$/);
 
     const miss = view("m-125-1");
     expect(miss.answer.slots).toEqual(["T18", "S19", "S20"]);
     expect(miss.answer.slotTone).toBe("none");
     expect(miss.answer.missSlots).toEqual([1]);
-    expect(miss.answer.notes).toEqual([{ title: "Stellwurf", text: "Kein Finish mehr: S20, Rest 32" }]);
+    expect(miss.answer.notes).toEqual([{ title: "Stellwurf", text: "S20, Rest 32" }]);
   });
 
   it("adds the chart's two-dart route as its own note", () => {
@@ -82,8 +82,8 @@ describe("cardView", () => {
     expect(rest.answer.notes.map((n) => n.title)).toEqual([
       "Warum",
       "Mit 2 Darts in der Hand",
-      "Nur Single 20 getroffen",
-      "Nur Single 10 getroffen",
+      "Nur S20",
+      "Nur S10",
     ]);
     expect(view("r-100").answer.notes.map((n) => n.title)).not.toContain("Mit 2 Darts in der Hand");
     // 63 und 69: die Tabelle nennt für zwei Darts denselben Weg wie Variante 1
