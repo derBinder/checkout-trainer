@@ -26,7 +26,7 @@ describe("Unbekannte Adresse unter einer Sprache", () => {
     render(await NotFound());
     expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeTruthy();
     expect(screen.getByText("There is no page at this address.")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Back to the start page" }).getAttribute("href")).toBe("/en");
+    expect(screen.getByRole("link", { name: "Back to the home page" }).getAttribute("href")).toBe("/en");
   });
 
   it("löst über die Sammelroute die Fehlerseite aus", () => {

@@ -51,13 +51,13 @@ export const en: Dictionary = {
       USER_ALREADY_EXISTS: "There is already an account with this email address.",
       USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL:
         "There is already an account with this email address.",
-      INVALID_EMAIL_OR_PASSWORD: "The email address or password is wrong.",
+      INVALID_EMAIL_OR_PASSWORD: "The email address or password is incorrect.",
       INVALID_EMAIL: "This email address is not valid.",
       PASSWORD_TOO_SHORT: "The password is too short.",
       PASSWORD_TOO_LONG: "The password is too long.",
-      INVALID_PASSWORD: "The password is wrong.",
+      INVALID_PASSWORD: "The password is incorrect.",
       CREDENTIAL_ACCOUNT_NOT_FOUND: "This account has no password.",
-      SESSION_EXPIRED: "Your session is too old. Please sign in again.",
+      SESSION_EXPIRED: "Your session has expired. Please sign in again.",
     },
     tooManyAttempts: "Too many attempts. Wait a few minutes and try again.",
     fallback: "That did not work. Please try again.",
@@ -74,7 +74,7 @@ export const en: Dictionary = {
       minimum: (min) => `At least ${min} characters.`,
       remaining: (count) =>
         `${count} more ${count === 1 ? "character" : "characters"} to the minimum.`,
-      stronger: "Longer or more varied is stronger.",
+      stronger: "Make it longer or more varied to strengthen it.",
     },
   },
   signIn: {
@@ -117,7 +117,7 @@ export const en: Dictionary = {
             ? `A single ${r.field} still leaves the bull.`
             : `A single ${r.field} still leaves a finish.`;
         case "halving":
-          return `Ends on ${r.double}, which splits down ${["", "once", "twice", "three times", "four times"][r.times]}.`;
+          return `Ends on ${r.double}, which you can halve ${["", "once", "twice", "three times", "four times"][r.times]}.`;
         case "chart":
           return "The usual chart route.";
       }
@@ -215,7 +215,7 @@ export const en: Dictionary = {
       cardsStudied: (n: number) => `${n === 1 ? "1 card" : `${n} cards`} studied.`,
       toOverview: "Back to overview",
       retry: "Try again",
-      saving: "Saving …",
+      saving: "Saving…",
       loadFailed: "The study session could not be loaded.",
     },
   },
@@ -240,7 +240,7 @@ export const en: Dictionary = {
     imprint: "Imprint",
     privacy: "Privacy",
     placeholder: "The operator will add this text.",
-    toHome: "Back to the start page",
+    toHome: "Back to the home page",
   },
   errors: {
     title: "That did not work.",
@@ -251,7 +251,7 @@ export const en: Dictionary = {
     notFound: {
       title: "Page not found",
       description: "There is no page at this address.",
-      toHome: "Back to the start page",
+      toHome: "Back to the home page",
     },
   },
   today: {
@@ -261,7 +261,7 @@ export const en: Dictionary = {
     allStarted: "You have started every card.",
     learn: "Study",
     moreCards: "Study 5 more cards",
-    preparing: "Preparing cards …",
+    preparing: "Preparing cards…",
     progress: (started: number, total: number, known: number) =>
       `${started} of ${total} started, ${known} known`,
     progressSample: "00 of 169 started, 00 known",
@@ -288,7 +288,7 @@ export const en: Dictionary = {
     amount: "Study amount",
     newPerDay: {
       label: "New cards per day",
-      hint: (max: number) => `From 0 to ${max}. Cards that are due always come on top.`,
+      hint: (max: number) => `From 0 to ${max}. Cards due for review are added on top.`,
       save: "Save",
       saved: "Saved.",
     },

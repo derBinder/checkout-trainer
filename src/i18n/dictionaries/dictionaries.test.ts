@@ -85,10 +85,10 @@ describe("Wörterbücher", () => {
     expect(r({ kind: "split", a: 16, b: 8 })).toBe("Aim between 16 and 8: either one leaves a double.");
     expect(r({ kind: "singleFinish", field: 19, bull: false })).toBe("A single 19 still leaves a finish.");
     expect(r({ kind: "singleFinish", field: 20, bull: true })).toBe("A single 20 still leaves the bull.");
-    expect(r({ kind: "halving", double: "D16", times: 1 })).toBe("Ends on D16, which splits down once.");
-    expect(r({ kind: "halving", double: "D16", times: 2 })).toBe("Ends on D16, which splits down twice.");
-    expect(r({ kind: "halving", double: "D16", times: 3 })).toBe("Ends on D16, which splits down three times.");
-    expect(r({ kind: "halving", double: "D16", times: 4 })).toBe("Ends on D16, which splits down four times.");
+    expect(r({ kind: "halving", double: "D16", times: 1 })).toBe("Ends on D16, which you can halve once.");
+    expect(r({ kind: "halving", double: "D16", times: 2 })).toBe("Ends on D16, which you can halve twice.");
+    expect(r({ kind: "halving", double: "D16", times: 3 })).toBe("Ends on D16, which you can halve three times.");
+    expect(r({ kind: "halving", double: "D16", times: 4 })).toBe("Ends on D16, which you can halve four times.");
     expect(r({ kind: "chart" })).toBe("The usual chart route.");
   });
 

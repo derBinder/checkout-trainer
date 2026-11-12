@@ -116,7 +116,7 @@ describe("Startseite und Pflichtseiten auf Englisch", () => {
     render(await Imprint());
     expect(screen.getByRole("heading", { level: 1, name: "Imprint" })).toBeTruthy();
     expect(screen.getByText("The operator will add this text.")).toBeTruthy();
-    expect(href("Back to the start page")).toBe("/en");
+    expect(href("Back to the home page")).toBe("/en");
     expect((await imprintMetadata()).title).toBe("Imprint · Checkout-Trainer");
     cleanup();
 

@@ -36,7 +36,7 @@ describe("authErrorMessage", () => {
       "E-Mail-Adresse oder Passwort stimmt nicht.",
     );
     expect(authErrorMessage(error, en.auth)).toBe(
-      "The email address or password is wrong.",
+      "The email address or password is incorrect.",
     );
   });
 
