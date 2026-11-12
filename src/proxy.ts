@@ -4,14 +4,15 @@ import { needsLoginRedirect } from "@/lib/auth/protected-routes";
 
 /**
  * Schnelle Vorprüfung vor dem Ausliefern der Seite: Fehlt das Sitzungs-Cookie,
- * geht es sofort zur Anmeldung. Nur hier entsteht noch ein echter Status-Code,
- * Umleitungen aus Seiten kommen mit Cache Components im Datenstrom.
+ * geht ein Seitenaufruf sofort zur Anmeldung. Server Actions (POST) laufen durch
+ * und prüfen selbst. Nur hier entsteht noch ein echter Status-Code, Umleitungen
+ * aus Seiten kommen mit Cache Components im Datenstrom.
  * Keine Datenbank, keine Sitzungsprüfung. Den Zugriff schützen weiterhin
  * requireActiveUser() und requireAdmin().
  */
 export function proxy(request: NextRequest) {
   const hasSessionCookie = getSessionCookie(request) !== null;
-  if (needsLoginRedirect(request.nextUrl.pathname, hasSessionCookie)) {
+  if (needsLoginRedirect(request.method, request.nextUrl.pathname, hasSessionCookie)) {
     return NextResponse.redirect(new URL("/anmelden", request.url));
   }
   return NextResponse.next();

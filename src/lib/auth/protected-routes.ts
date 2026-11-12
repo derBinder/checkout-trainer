@@ -20,7 +20,15 @@ export function isProtectedPath(pathname: string): boolean {
 /**
  * Nur Komfort, kein Schutz: Ein vorhandenes Cookie sagt nichts über eine gültige
  * Sitzung oder den Kontostatus. Das prüfen requireActiveUser() und requireAdmin().
+ * Nur Seitenaufrufe (GET, HEAD) werden umgeleitet. Server Actions kommen als POST
+ * an die Seitenadresse und antworten mit ihrer eigenen Prüfung: Eine Umleitung
+ * könnte der Client nicht als Antwort der Action lesen.
  */
-export function needsLoginRedirect(pathname: string, hasSessionCookie: boolean): boolean {
+export function needsLoginRedirect(
+  method: string,
+  pathname: string,
+  hasSessionCookie: boolean,
+): boolean {
+  if (method !== "GET" && method !== "HEAD") return false;
   return !hasSessionCookie && isProtectedPath(pathname);
 }

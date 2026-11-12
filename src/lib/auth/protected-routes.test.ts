@@ -26,9 +26,19 @@ describe("isProtectedPath", () => {
 
 describe("needsLoginRedirect", () => {
   it("leitet nur ohne Sitzungs-Cookie auf geschützten Pfaden um", () => {
-    expect(needsLoginRedirect("/heute", false)).toBe(true);
-    expect(needsLoginRedirect("/heute", true)).toBe(false);
-    expect(needsLoginRedirect("/anmelden", false)).toBe(false);
-    expect(needsLoginRedirect("/", false)).toBe(false);
+    expect(needsLoginRedirect("GET", "/heute", false)).toBe(true);
+    expect(needsLoginRedirect("GET", "/heute", true)).toBe(false);
+    expect(needsLoginRedirect("GET", "/anmelden", false)).toBe(false);
+    expect(needsLoginRedirect("GET", "/", false)).toBe(false);
+  });
+
+  it("leitet auch HEAD ohne Cookie um", () => {
+    expect(needsLoginRedirect("HEAD", "/heute", false)).toBe(true);
+  });
+
+  it("lässt andere Methoden durch: Server Actions antworten mit ihrer eigenen Prüfung", () => {
+    for (const method of ["POST", "PUT", "PATCH", "DELETE"]) {
+      expect(needsLoginRedirect(method, "/lernen", false)).toBe(false);
+    }
   });
 });
