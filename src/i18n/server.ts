@@ -1,7 +1,7 @@
 /**
  * Sprache und Wörterbuch auf dem Server. Seiten und Server Components lesen die
- * Sprache aus dem ersten URL-Segment (`next/root-params`); Server Actions und
- * Route Handler kennen keine Root-Params und lesen den Header von proxy.ts.
+ * Sprache aus dem ersten URL-Segment (`next/root-params`); Server Actions
+ * kennen keine Root-Params und lesen den Header von proxy.ts.
  * Ohne `server-only`: `next/root-params` lässt sich ohnehin nur auf dem Server
  * importieren.
  */

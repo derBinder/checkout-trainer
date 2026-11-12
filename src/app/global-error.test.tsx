@@ -33,21 +33,24 @@ describe("Globale Fehlerseite", () => {
 
   it("ersetzt das ganze Dokument, mit eigenem Titel", () => {
     window.history.replaceState(null, "", "/de/stats");
-    const html = renderToStaticMarkup(<GlobalError error={new Error("kaputt")} retry={() => {}} />);
-    expect(html).toMatch(/^<html lang="de"/);
-    expect(html).toContain("<title>Fehler · Checkout-Trainer</title>");
+    render(<GlobalError error={new Error("kaputt")} retry={() => {}} />, { container: document });
+    expect(document.documentElement.getAttribute("lang")).toBe("de");
+    expect(document.title).toBe("Fehler · Checkout-Trainer");
   });
 
-  it("nimmt die Sprache aus der Adresse und ohne Sprache Englisch", () => {
+  it("nimmt im Browser die Sprache aus der Adresse", () => {
     window.history.replaceState(null, "", "/en/today");
-    let html = renderToStaticMarkup(<GlobalError error={new Error("kaputt")} retry={() => {}} />);
+    render(<GlobalError error={new Error("kaputt")} retry={() => {}} />, { container: document });
+    expect(document.documentElement.getAttribute("lang")).toBe("en");
+    expect(screen.getByRole("heading", { name: "That did not work." })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Back to overview" }).getAttribute("href")).toBe("/en/today");
+  });
+
+  it("rendert auf dem Server immer Englisch, damit die Hydrierung nicht abweicht", () => {
+    window.history.replaceState(null, "", "/de/stats");
+    const html = renderToStaticMarkup(<GlobalError error={new Error("kaputt")} retry={() => {}} />);
     expect(html).toMatch(/^<html lang="en"/);
     expect(html).toContain("<title>Error · Checkout-Trainer</title>");
-    expect(html).toContain("That did not work.");
     expect(html).toContain('href="/en/today"');
-
-    window.history.replaceState(null, "", "/");
-    html = renderToStaticMarkup(<GlobalError error={new Error("kaputt")} retry={() => {}} />);
-    expect(html).toMatch(/^<html lang="en"/);
   });
 });

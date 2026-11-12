@@ -30,12 +30,13 @@ export function proxy(request: NextRequest) {
     const location = addsLocale ? decision.location + search : decision.location;
     return NextResponse.redirect(new URL(location, request.url));
   }
-  if (decision.locale === null) return NextResponse.next();
 
-  // Server Actions und Route Handler kennen keine Root-Params: Sie lesen die
-  // Sprache aus diesem Header (requestLocale in src/i18n/server.ts).
+  // Server Actions kennen keine Root-Params: Sie lesen die Sprache aus diesem
+  // Header (requestLocale in src/i18n/server.ts). Ein vom Client mitgeschickter
+  // Wert wird immer entfernt; gesetzt wird er nur bei einem Pfad mit Sprache.
   const headers = new Headers(request.headers);
-  headers.set(LOCALE_HEADER, decision.locale);
+  headers.delete(LOCALE_HEADER);
+  if (decision.locale !== null) headers.set(LOCALE_HEADER, decision.locale);
   return NextResponse.next({ request: { headers } });
 }
 

@@ -43,4 +43,16 @@ describe("proxy", () => {
     expect(response.headers.get("location")).toBeNull();
     expect(response.headers.get("x-middleware-request-x-locale")).toBeNull();
   });
+
+  it("entfernt einen vom Client mitgeschickten x-locale-Header", () => {
+    const response = proxy(request("/today", { method: "POST", headers: { "x-locale": "de" } }));
+    expect(response.headers.get("x-middleware-request-x-locale")).toBeNull();
+    // Die Kopfzeilen werden überschrieben (sonst bliebe der Client-Wert), und x-locale fehlt darin.
+    const overridden = response.headers.get("x-middleware-override-headers");
+    expect(overridden).not.toBeNull();
+    expect(overridden).not.toContain("x-locale");
+
+    const withLocale = proxy(request("/en/sign-in", { headers: { "x-locale": "de" } }));
+    expect(withLocale.headers.get("x-middleware-request-x-locale")).toBe("en");
+  });
 });
