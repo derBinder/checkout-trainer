@@ -1,6 +1,6 @@
 # Checkout-Trainer
 
-Deutschsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen: bester Weg, Alternativen, Folgeweg nach Single statt Triple, Bogey-Zahlen. Hauptsächlich am Smartphone genutzt.
+Zweisprachige Web-App (Deutsch und Englisch), mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen: bester Weg, Alternativen, Folgeweg nach Single statt Triple, Bogey-Zahlen. Hauptsächlich am Smartphone genutzt.
 
 @AGENTS.md
 
@@ -45,21 +45,23 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - `src/lib/db/`: Schema, Datenbankinstanz, Test-Datenbank.
 - `src/lib/auth/`: Better-Auth-Konfiguration, Client, Zugriffsschutz.
 - `src/lib/srs/`, `src/lib/review/`: Wiederholungslogik (FSRS), Warteschlange, Speichern der Bewertungen.
-- `src/app/`: Seiten mit deutschen Routen (`/heute`, `/lernen`, `/statistik`, `/einstellungen`, `/verwaltung`, …).
+- `src/app/[lang]/`: alle Seiten unter dem Sprachsegment (`/de/…`, `/en/…`) mit englischen Seitennamen (`/today`, `/study`, `/stats`, `/settings`, `/admin`, `/pending`, `/sign-in`, `/sign-up`, `/imprint`, `/privacy`); die Startseite ist `/de` bzw. `/en`.
+- `src/i18n/`: `locales.ts` (Sprachen), `paths.ts` (Sprachpfade), `dictionaries/` (`de.ts` als Quelle des Typs `Dictionary`, `en.ts`), `server.ts` (`getDictionary()`, `getLocale()`), `client.tsx` (`useDictionary()`, `useLocale()`, `useLocalePath()`). Der Test `no-hardcoded-text.test.ts` schlägt bei harten Texten in der Oberfläche an.
 
 ## Cache Components
 
-- `cacheComponents` ist eingeschaltet: Jede angemeldete Seite liefert sofort ein vorgerendertes Gerüst, die Nutzerdaten kommen hinter Suspense-Grenzen mit Skeletons nach. Nur `/warten` trägt `export const instant = false`.
+- `cacheComponents` ist eingeschaltet: Jede angemeldete Seite liefert sofort ein vorgerendertes Gerüst, die Nutzerdaten kommen hinter Suspense-Grenzen mit Skeletons nach. Nur `/pending` trägt `export const instant = false`.
 - `partialPrefetching` bleibt ausgeschaltet. Mit dem Schalter laufen Sitzungsprüfung und Datenabfragen je Seitenaufruf doppelt (gemessen); das Gerüst erscheint auch ohne ihn sofort.
 - Nutzerdaten werden nie gecacht: kein `use cache`, `use cache: private` oder `use cache: remote` für Sitzung oder Lerndaten. `React.cache` nur zum Teilen einer Abfrage innerhalb einer Anfrage.
 - Jeder Datenbaustein prüft die Sitzung selbst: Der Lader ruft zuerst `requireActiveUser()` bzw. `requireAdmin()` auf, dann erst `new Date()` und die Abfragen. Aufbau je Seite unter `src/components/<bereich>/`: `*-parts` (gemeinsames Layout), `*-data` (Lader und Datenbausteine), `*-skeleton` (Rückfall-Inhalt in `LoadingRegion`).
 - Das Gerüst (Seite ohne Datenbausteine, Layout, Skeletons) enthält keine Nutzerdaten und keine Lerninhalte (Wege, Begründungen, Alternativen, Stellwürfe, Karten).
-- `src/proxy.ts` ist nur eine Cookie-Vorprüfung ohne Datenbank und ersetzt keine Prüfung. Echte Status-Codes gibt es nur noch aus `proxy.ts` (307 nach `/anmelden` ohne Sitzungs-Cookie). Jede Seite antwortet sonst mit 200; `redirect()` und `notFound()` aus Datenbausteinen kommen als Anweisung im Datenstrom. Ein aktiver Nicht-Betreiber wird von `/verwaltung` nach `/heute` umgeleitet.
+- `src/proxy.ts` ist nur eine Cookie-Vorprüfung ohne Datenbank und ersetzt keine Prüfung. Echte Status-Codes gibt es nur noch aus `proxy.ts` (307 nach `/<lang>/sign-in` ohne Sitzungs-Cookie). Jede Seite antwortet sonst mit 200; `redirect()` und `notFound()` aus Datenbausteinen kommen als Anweisung im Datenstrom. Ein aktiver Nicht-Betreiber wird von `/<lang>/admin` nach `/<lang>/today` umgeleitet.
+- `proxy.ts` leitet außerdem Adressen ohne Sprache auf `/<lang>/…` um (307): Sprache aus dem Cookie `lang`, dann aus `Accept-Language`, sonst Englisch. Es setzt `x-locale` für die Seite. Der Sprachumschalter lädt die Seite vollständig neu.
 - Clientzustand überlebt Seitenwechsel (Activity). Formulare mit Geheimnissen (Passwortfelder, Rückfragen mit Passwort) setzen sich beim Verbergen per `useLayoutEffect`-Cleanup zurück. Die Lernsitzung bekommt je Navigation einen eigenen React-Schlüssel (`bfcacheId`) und startet nach dem Verlassen frisch.
 
 ## Regeln
 
-- Oberfläche vollständig auf Deutsch. Keine Emojis. Icons nur aus `lucide-react` und nur, wo sie nötig sind.
+- Oberfläche vollständig auf Deutsch und Englisch, alle Texte in `src/i18n/dictionaries/`. Keine Emojis. Icons nur aus `lucide-react` und nur, wo sie nötig sind.
 - Jede Seite hat eine Aufgabe. Die App muss schnell und übersichtlich bleiben.
 - Keine Tailwind-Klassen mit freien Werten in eckigen Klammern (`h-[3px]`, `text-[0.8125rem]`, `shadow-[…]`). Standardklassen der Skala verwenden (`shadow-lg`, `text-sm`). Fehlt ein Wert, einen benannten Token im Tailwind-Theme (`@theme` in `src/app/globals.css`) anlegen und dessen Klasse nutzen. Gilt auch für `src/components/ui/`.
 - Für die Reste 41 bis 170 gelten alle Regeln der Referenztabelle (`src/lib/darts/reference.ts`): Variante 1 als bester Weg, Variante 2 als Alternative, die Spalte „mit 2 Darts" und das Zielen zwischen zwei Feldern. Unter 41 gilt das eigene Regelwerk.
