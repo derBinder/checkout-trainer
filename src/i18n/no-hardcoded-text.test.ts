@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -19,19 +19,16 @@ import { describe, expect, it } from "vitest";
  * und zählen nicht.
  *
  * Blinde Flecken, die beim Übersetzen von Hand mitgenommen werden müssen:
- * - Texte ohne Umlaut in sonstigen String-Literalen, etwa `LEVEL_LABEL` in
- *   components/level-style.ts („sicher“, „im Lernen“, „neu“) oder `title:` mit
+ * - Texte ohne Umlaut in sonstigen String-Literalen, etwa `title:` mit
  *   Bedingung (`n === 1 ? "Alternative" : …`).
- * - src/components/ui wird nicht geprüft; dort steht „Schließen“ in sheet.tsx.
+ * - src/components/ui wird nicht geprüft (shadcn-Bausteine; Texte wie „Schließen“
+ *   in sheet.tsx kommen aus dem Wörterbuch).
  * - src/lib/ liegt außerhalb von SCANNED. Die Abstände auf den Bewertungsknöpfen (fsrs.ts)
  *   und die Gründe eines falschen Wegs (judge.ts) sind dort Daten; den Text liefert das Wörterbuch.
  * - CODE_NOT_TEXT: Damit Code nach `>` (Typ-Klammern, Vergleiche) nicht als Text
  *   gilt, zählt JSX-Text mit `;`, `=`, `&&`, `||`, einer Klammer ohne
  *   Gegenstück, einem führenden `,`/`|`/`&`/`:` oder einem führenden Schlüsselwort
  *   (`return`, `export`, …) nicht. Echter Text dieser Form wird übersehen.
- *
- * PENDING listet die Dateien, die noch harte Texte enthalten. Jede Übersetzung
- * streicht ihre Dateien daraus; am Ende ist die Liste leer.
  */
 
 const SRC = join(import.meta.dirname, "..");
@@ -45,8 +42,6 @@ const SCANNED = [
 ];
 // shadcn-Bausteine ohne eigene Texte.
 const SKIPPED = ["components/ui"];
-
-const PENDING: string[] = [];
 
 const ALLOWED = [/^Checkout-Trainer$/, /^(S|D|T)\d{1,2}$|^25$|^Bull$/];
 
@@ -239,20 +234,11 @@ describe("hardcodedTexts", () => {
 
 const files = SCANNED.flatMap((path) => sourceFiles(join(SRC, path))).map((file) => relative(SRC, file));
 
-function findingsOf(file: string): string[] {
-  return hardcodedTexts(readFileSync(join(SRC, file), "utf8"));
-}
-
 describe("Quelldateien", () => {
-  it("außerhalb von PENDING haben keine harten Texte", () => {
-    const offenders = files
-      .filter((file) => !PENDING.includes(file))
-      .flatMap((file) => findingsOf(file).map((finding) => `${file}: ${finding}`));
+  it("haben keine harten Texte", () => {
+    const offenders = files.flatMap((file) =>
+      hardcodedTexts(readFileSync(join(SRC, file), "utf8")).map((finding) => `${file}: ${finding}`),
+    );
     expect(offenders).toEqual([]);
-  });
-
-  it("in PENDING haben noch harte Texte (sonst aus der Liste streichen)", () => {
-    const stale = PENDING.filter((file) => !existsSync(join(SRC, file)) || findingsOf(file).length === 0);
-    expect(stale).toEqual([]);
   });
 });
