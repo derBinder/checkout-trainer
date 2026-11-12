@@ -1,5 +1,6 @@
+import { unstable_rethrow } from "next/navigation";
 import { AdminNavLink } from "@/components/app-nav";
-import { getSessionUser } from "@/lib/auth/guard";
+import { getSessionUser, type SessionUser } from "@/lib/auth/guard";
 import { isActiveOperator } from "@/lib/auth/operator";
 
 /**
@@ -8,6 +9,16 @@ import { isActiveOperator } from "@/lib/auth/operator";
  * machen die Datenbausteine der Seiten.
  */
 export async function AdminNavItem() {
-  const user = await getSessionUser();
+  let user: SessionUser | null;
+  try {
+    user = await getSessionUser();
+  } catch (error) {
+    // Steuerfehler von Next (etwa eine Umleitung) weiterreichen.
+    unstable_rethrow(error);
+    // Das Layout liegt außerhalb von error.tsx: Scheitert die Sitzungsabfrage,
+    // fehlt nur dieser Eintrag, Navigation und Seite bleiben bedienbar.
+    console.error(error);
+    return null;
+  }
   return isActiveOperator(user) ? <AdminNavLink /> : null;
 }
