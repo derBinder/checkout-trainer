@@ -12,7 +12,7 @@ Ursache: Jede dieser Seiten wartet auf dem Server zuerst auf die Sitzungsprüfun
 
 - Ein Seitenwechsel zeigt die neue Seite im Moment des Tippens: das feste Gerüst sofort, Nutzerdaten als Skeleton, die sich füllen, sobald die Daten da sind.
 - Das feste Gerüst wird auf dem Server vorgerendert (statische Shell).
-- Umsetzung mit Cache Components von Next.js 16 (Entscheidung des Auftraggebers), dazu Partial Prefetching (Entscheidung des Entwerfers).
+- Umsetzung mit Cache Components von Next.js 16 (Entscheidung des Auftraggebers). Partial Prefetching war zunächst vorgesehen (Entscheidung des Entwerfers) und ist nach Messung wieder abgeschaltet: Es rendert jede Anfrage zweimal und verdoppelt Sitzungsprüfung und Datenabfragen (2 statt 1 je Seitenaufruf), bringt hier aber nichts, weil keine Sitzungsdaten zwischengespeichert werden. Das statische Gerüst wird auch ohne den Schalter vorab geladen.
 - Skeletons mit dem shadcn-Baustein „Skeleton".
 - Der Zugriffsschutz bleibt mindestens so stark wie heute.
 
@@ -67,7 +67,7 @@ Heute prüft das Layout der angemeldeten Seiten die Sitzung, bevor irgendetwas g
 
 ## Technik
 
-- `next.config.ts`: `cacheComponents: true` und `partialPrefetching: true`.
+- `next.config.ts`: `cacheComponents: true`. `partialPrefetching` bleibt aus (siehe Ziele).
 - Die Sitzungsprüfung im Layout `src/app/(app)/layout.tsx` entfällt als blockierender Aufruf. Der Betreiber-Eintrag der Navigation wird in einem eigenen Baustein hinter einer Suspense-Grenze geladen.
 - Jede Seite wird in ein Gerüst (ohne Datenzugriff) und Datenbausteine hinter Suspense-Grenzen zerlegt. Die Skeletons sind die Rückfall-Inhalte dieser Grenzen.
 - Zeitabhängiges (`new Date()` für die Tagesgrenze) darf nicht im vorgerenderten Gerüst stehen und wandert in die Datenbausteine.

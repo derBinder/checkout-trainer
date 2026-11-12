@@ -12,6 +12,7 @@
 
 ## Global Constraints
 
+- `partialPrefetching` bleibt ausgeschaltet (in Task 2 gemessen: mit dem Schalter laufen Sitzungsprüfung und Datenabfragen je Seitenaufruf doppelt). Nicht wieder einschalten.
 - Maßgeblich für jede Next.js-Frage ist die mitgelieferte Dokumentation unter `node_modules/next/dist/docs/01-app/`, vor allem `02-guides/migrating-to-cache-components.md`, `authentication-with-cache-components.md`, `instant-navigation.md`, `adopting-partial-prefetching.md`, `streaming.md` und `03-api-reference/03-file-conventions/` (`proxy`, `loading`, `not-found`, `02-route-segment-config/instant.md`). Nicht aus dem Gedächtnis arbeiten.
 - Kein `use cache`, kein `use cache: private`, kein `use cache: remote` für Nutzerdaten oder Sitzung. Lerndaten und Sitzungsstatus werden bei jeder Anfrage frisch aus der Datenbank gelesen.
 - Das Gerüst enthält weder Nutzerdaten noch Lerninhalte (Wege, Begründungen, Alternativen, Stellwürfe, Karten). Alles davon lädt erst in einem Datenbaustein, der zuerst `requireActiveUser()` bzw. `requireAdmin()` aufruft.
