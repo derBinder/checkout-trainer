@@ -4,7 +4,7 @@
 
 **Goal:** Der Wechsel zwischen den angemeldeten Seiten zeigt sofort ein vorgerendertes Gerüst, Nutzerdaten erscheinen als Skeleton und füllen sich beim Nachladen.
 
-**Architecture:** Cache Components und Partial Prefetching werden eingeschaltet. Jede angemeldete Seite wird in ein Gerüst ohne Datenzugriff und in Datenbausteine hinter Suspense-Grenzen zerlegt, deren Rückfall-Inhalt Skeletons sind. Die Sitzungsprüfung wandert aus dem gemeinsamen Layout in die Datenbausteine, davor steht eine reine Cookie-Vorprüfung in `proxy.ts`. Die Verwaltung wird wie die anderen Seiten zerlegt und leitet Nicht-Betreiber auf `/heute` um.
+**Architecture:** Cache Components werden eingeschaltet, Partial Prefetching bleibt ausgeschaltet (siehe Global Constraints). Jede angemeldete Seite wird in ein Gerüst ohne Datenzugriff und in Datenbausteine hinter Suspense-Grenzen zerlegt, deren Rückfall-Inhalt Skeletons sind. Die Sitzungsprüfung wandert aus dem gemeinsamen Layout in die Datenbausteine, davor steht eine reine Cookie-Vorprüfung in `proxy.ts`. Die Verwaltung wird wie die anderen Seiten zerlegt und leitet Nicht-Betreiber auf `/heute` um.
 
 **Tech Stack:** Next.js 16.4.5 (`cacheComponents`, `partialPrefetching`, `proxy.ts`, Route-Segment-Config `instant`), React 19 Suspense, Better Auth 1.7 (`getSessionCookie` aus `better-auth/cookies`), shadcn Skeleton, Tailwind 4, Vitest.
 
@@ -83,7 +83,7 @@ expect(needsLoginRedirect('/', false)).toBe(false)
 
 - [ ] **Step 2:** `npx vitest run src/lib/auth/protected-routes.test.ts`. Erwartet: FAIL (Modul fehlt).
 - [ ] **Step 3:** `protected-routes.ts` implementieren. `src/proxy.ts` anlegen: liest das Sitzungs-Cookie mit `getSessionCookie(request)` aus `better-auth/cookies`, leitet bei `needsLoginRedirect` auf `/anmelden` um, sonst weiter. `config.matcher` auf die sechs Präfixe beschränken. Dateiname, Exportname und Matcher-Syntax gegen die Doku zu `proxy` prüfen.
-- [ ] **Step 4:** In `next.config.ts` `cacheComponents: true` und `partialPrefetching: true` setzen. Alle Segmente unter `src/app/(app)/` sowie `src/app/warten/page.tsx` mit `export const instant = false` ausnehmen. `npm run build` ausführen und jede Meldung nach der Migrationsanleitung beheben (synchrone Ein-/Ausgabe wie `new Date()` im Gerüst, veraltete Segment-Configs, Root-Layout). Erwartet: Build grün, ohne dass eine Datenbank geöffnet wird.
+- [ ] **Step 4:** In `next.config.ts` `cacheComponents: true` und `partialPrefetching: false` setzen (in Task 2 gemessen, siehe Global Constraints). Alle Segmente unter `src/app/(app)/` sowie `src/app/warten/page.tsx` mit `export const instant = false` ausnehmen. `npm run build` ausführen und jede Meldung nach der Migrationsanleitung beheben (synchrone Ein-/Ausgabe wie `new Date()` im Gerüst, veraltete Segment-Configs, Root-Layout). Erwartet: Build grün, ohne dass eine Datenbank geöffnet wird.
 - [ ] **Step 5:** Skeleton-Baustein über die shadcn-CLI hinzufügen (Version ausdrücklich angeben) und anpassen: Rundung und Flächenfarbe über vorhandene Tokens, `aria-hidden`, `motion-reduce:animate-none`. Keine freien Tailwind-Werte (der Wächter-Test `src/styles/no-arbitrary-classes.test.ts` muss bestehen).
 - [ ] **Step 6:** `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. Erwartet: alles grün. Mit `next start` prüfen (curl, ohne Cookie): `/heute` → 307 nach `/anmelden`, `/` → 200, `/anmelden` → 200.
 - [ ] **Step 7:** Commit `feat: enable cache components with a cookie pre-check and skeleton primitive`.
@@ -157,5 +157,5 @@ expect(needsLoginRedirect('/', false)).toBe(false)
 | `/verwaltung` mit Betreiber | Nutzerliste erscheint nach dem Skeleton |
 
 - [ ] **Step 5:** Im Browser bei 375 px mit dem Betreiberkonto: Freischalten und Sperren funktionieren wie bisher. Mit dem aktiven Konto alle vier Seiten durchwechseln. In den Einstellungen ein Passwort eintippen, die Seite wechseln und zurückkehren: die Passwortfelder sind leer und verdeckt (Cache Components kann Formularzustand beim Zurückkehren erhalten; für Passwortfelder ist das nicht zulässig, bei Bedarf nach `migrating-to-cache-components.md`, Abschnitt „UI state preservation", beheben).
-- [ ] **Step 6:** `CLAUDE.md` ergänzen: Cache Components und Partial Prefetching sind eingeschaltet, Nutzerdaten werden nie gecacht, jeder Datenbaustein prüft die Sitzung selbst, das Gerüst enthält keine Nutzerdaten und keine Lerninhalte, `proxy.ts` ist nur eine Cookie-Vorprüfung, echte Status-Codes gibt es nur aus `proxy.ts`.
+- [ ] **Step 6:** `CLAUDE.md` ergänzen: Cache Components sind eingeschaltet, Partial Prefetching ist ausgeschaltet, Nutzerdaten werden nie gecacht, jeder Datenbaustein prüft die Sitzung selbst, das Gerüst enthält keine Nutzerdaten und keine Lerninhalte, `proxy.ts` ist nur eine Cookie-Vorprüfung, echte Status-Codes gibt es nur aus `proxy.ts`.
 - [ ] **Step 7:** Testkonten und ihre Daten aus der lokalen Datenbank entfernen. Commit `feat: admin area in the instant shell and access checks`.

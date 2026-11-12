@@ -5,7 +5,6 @@ const getSessionUser = vi.fn<() => Promise<SessionUser | null>>();
 const grantExtraNewCards = vi.fn();
 const redirect = vi.fn();
 vi.mock("@/lib/auth/guard", () => ({ getSessionUser: () => getSessionUser() }));
-vi.mock("@/lib/db", () => ({ db: {} }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: (to: string) => redirect(to) }));
 vi.mock("./grant-extra-cards", () => ({

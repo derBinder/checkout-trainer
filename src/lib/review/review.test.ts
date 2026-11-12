@@ -8,8 +8,6 @@ import type { SessionUser } from "@/lib/auth/guard";
 
 const getSessionUser = vi.fn<() => Promise<SessionUser | null>>();
 vi.mock("@/lib/auth/guard", () => ({ getSessionUser: () => getSessionUser() }));
-// submitReview importiert die echte Datenbank; die Tests erreichen sie nicht.
-vi.mock("@/lib/db", () => ({ db: {} }));
 
 import { applyReview, loadQueue } from "./queries";
 import { submitReview } from "./actions";
