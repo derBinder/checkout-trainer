@@ -5,13 +5,15 @@ import {
   type FocusEventHandler,
   useCallback,
   useId,
+  useMemo,
   useReducer,
 } from "react";
+import { useDictionary } from "@/i18n/client";
 import {
   fieldErrorsReducer,
   initialFieldErrors,
 } from "@/lib/validation/field-errors";
-import { validateField } from "@/lib/validation/schemas";
+import { validateField, type ValidationKey } from "@/lib/validation/schemas";
 import {
   describedBy,
   type FieldSpec,
@@ -35,6 +37,15 @@ type FieldProps = {
 export function useFieldErrors(fields: FieldSpec[]) {
   const [state, dispatch] = useReducer(fieldErrorsReducer, initialFieldErrors);
   const prefix = useId();
+  const t = useDictionary();
+  // Der Zustand hält Schlüssel; die Formulare zeigen den Text der aktuellen Sprache.
+  const errors = useMemo(() => {
+    const texts: Record<string, string | null> = {};
+    for (const [name, key] of Object.entries(state.errors)) {
+      texts[name] = key === null ? null : t.validation[key as ValidationKey];
+    }
+    return texts;
+  }, [state.errors, t]);
 
   const errorId = useCallback(
     (name: string) => `${prefix}-${name}-error`,
@@ -91,5 +102,5 @@ export function useFieldErrors(fields: FieldSpec[]) {
 
   const reset = useCallback(() => dispatch({ type: "reset" }), []);
 
-  return { errors: state.errors, fieldProps, errorId, validateForm, reset };
+  return { errors, fieldProps, errorId, validateForm, reset };
 }

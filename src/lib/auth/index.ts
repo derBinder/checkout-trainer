@@ -8,7 +8,7 @@ import { db, type Db } from "../db";
 import { user as userTable } from "../db/schema";
 import { parseName } from "../validation/schemas";
 import {
-  AUTH_MESSAGES,
+  AUTH_ERRORS,
   MAX_EMAIL_LENGTH,
   MIN_PASSWORD_LENGTH,
 } from "./constants";
@@ -41,7 +41,7 @@ function checkProfileInput(path: "/sign-up/email" | "/update-user", body: unknow
   if (!isRecord(body)) return;
   if (body.image !== undefined) {
     throw new APIError("BAD_REQUEST", {
-      message: AUTH_MESSAGES.imageNotAllowed,
+      message: AUTH_ERRORS.imageNotAllowed,
     });
   }
   if (
@@ -49,7 +49,7 @@ function checkProfileInput(path: "/sign-up/email" | "/update-user", body: unknow
     typeof body.email === "string" &&
     body.email.length > MAX_EMAIL_LENGTH
   ) {
-    throw new APIError("BAD_REQUEST", { message: AUTH_MESSAGES.emailTooLong });
+    throw new APIError("BAD_REQUEST", { message: AUTH_ERRORS.emailTooLong });
   }
   // Bei der Profiländerung ist der Name optional, bei der Registrierung Pflicht.
   if (path === "/update-user" && body.name === undefined) return;
@@ -82,7 +82,7 @@ export function createAuth(database: Db) {
         beforeDelete: async (u) => {
           if ((u as { role?: string | null }).role === "admin") {
             throw new APIError("FORBIDDEN", {
-              message: AUTH_MESSAGES.operatorDelete,
+              message: AUTH_ERRORS.operatorDelete,
             });
           }
         },
@@ -104,12 +104,12 @@ export function createAuth(database: Db) {
           process.env.NODE_ENV === "production"
         ) {
           throw new APIError("FORBIDDEN", {
-            message: AUTH_MESSAGES.signUpClosed,
+            message: AUTH_ERRORS.signUpClosed,
           });
         }
         if (ctx.path === "/sign-up/email" && isOperatorEmail(ctx.body?.email)) {
           throw new APIError("BAD_REQUEST", {
-            message: AUTH_MESSAGES.operatorEmail,
+            message: AUTH_ERRORS.operatorEmail,
           });
         }
         if (ctx.path === "/sign-up/email" || ctx.path === "/update-user") {
@@ -121,7 +121,7 @@ export function createAuth(database: Db) {
           const password = isRecord(ctx.body) ? ctx.body.password : undefined;
           if (typeof password !== "string" || password === "") {
             throw new APIError("BAD_REQUEST", {
-              message: AUTH_MESSAGES.passwordRequired,
+              message: AUTH_ERRORS.passwordRequired,
             });
           }
         }
@@ -153,7 +153,7 @@ export function createAuth(database: Db) {
               .where(eq(userTable.id, session.userId));
             if (row?.status === "blocked") {
               throw new APIError("FORBIDDEN", {
-                message: AUTH_MESSAGES.blocked,
+                message: AUTH_ERRORS.blocked,
               });
             }
           },

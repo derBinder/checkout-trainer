@@ -3,6 +3,11 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const updateNewPerDay = vi.hoisted(() => vi.fn());
 vi.mock("@/app/[lang]/(app)/settings/actions", () => ({ updateNewPerDay }));
@@ -14,6 +19,7 @@ function renderForm(initial = 10) {
     <NewPerDayForm>
       <NewPerDayInput initial={initial} />
     </NewPerDayForm>,
+    { wrapper },
   );
 }
 
@@ -115,6 +121,7 @@ describe("NewPerDayForm", () => {
       <NewPerDayForm>
         <span>lädt</span>
       </NewPerDayForm>,
+      { wrapper },
     );
     await user.click(saveButton());
     expect(updateNewPerDay).not.toHaveBeenCalled();
@@ -131,7 +138,7 @@ describe("NewPerDayForm", () => {
         </NewPerDayForm>
       </Activity>
     );
-    const { rerender } = render(tree("visible"));
+    const { rerender } = render(tree("visible"), { wrapper });
     await user.clear(field());
     await user.type(field(), "20");
     await user.click(saveButton());

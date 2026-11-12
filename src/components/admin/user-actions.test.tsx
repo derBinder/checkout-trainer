@@ -4,6 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 import { Activity, Component, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const actions = vi.hoisted(() => ({
   changeUserStatus: vi.fn(),
@@ -32,6 +37,7 @@ function setup(status = "active") {
     <Boundary>
       <UserActions userId="u1" name="Erika" status={status} />
     </Boundary>,
+    { wrapper },
   );
   return { user, ...view };
 }
@@ -249,7 +255,7 @@ describe("UserActions: Passwort setzen", () => {
         <UserActions userId="u1" name="Erika" status="active" />
       </Activity>
     );
-    const { rerender } = render(page("visible"));
+    const { rerender } = render(page("visible"), { wrapper });
     await user.click(screen.getByRole("button", { name: "Sperren" }));
     await screen.findByRole("alert");
     await openDialog(user);

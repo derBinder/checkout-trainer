@@ -9,7 +9,6 @@ describe("passwordStrength", () => {
   it("bewertet zu kurze Passwörter immer als Schwach", () => {
     expect(passwordStrength("abc")).toMatchObject({
       level: 0,
-      label: "Schwach",
       percent: 25,
     });
     expect(passwordStrength("Aa1!Aa1!x")!.level).toBe(0);
@@ -25,7 +24,6 @@ describe("passwordStrength", () => {
   it("bewertet gute Passwörter hoch", () => {
     expect(passwordStrength("Triple20-und-Bull!")).toMatchObject({
       level: 3,
-      label: "Stark",
       percent: 100,
     });
     expect(
@@ -61,12 +59,10 @@ describe("passwordStrength", () => {
 
 describe("strengthHint", () => {
   it("nennt die fehlenden Zeichen und Verbesserungen", () => {
-    expect(strengthHint("")).toBe("");
-    expect(strengthHint("abc")).toBe("Noch 7 Zeichen bis zum Minimum.");
-    expect(strengthHint("abcdefghi")).toBe("Noch 1 Zeichen bis zum Minimum.");
-    expect(strengthHint("kurzeswort")).toBe(
-      "Länger oder gemischter wird stärker.",
-    );
-    expect(strengthHint("Triple20-und-Bull!")).toBe("");
+    expect(strengthHint("")).toBeNull();
+    expect(strengthHint("abc")).toEqual({ kind: "remaining", count: 7 });
+    expect(strengthHint("abcdefghi")).toEqual({ kind: "remaining", count: 1 });
+    expect(strengthHint("kurzeswort")).toEqual({ kind: "stronger" });
+    expect(strengthHint("Triple20-und-Bull!")).toBeNull();
   });
 });

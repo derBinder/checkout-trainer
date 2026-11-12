@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -21,8 +21,8 @@ vi.mock("@/components/theme/theme-sync", () => ({ ThemeSync: () => null }));
 vi.mock("../globals.css", () => ({}));
 
 const { default: Home } = await import("./page");
-const { default: LoginPage, metadata: loginMetadata } = await import("./sign-in/page");
-const { default: RegisterPage, metadata: registerMetadata } = await import("./sign-up/page");
+const { default: LoginPage, generateMetadata: loginMetadata } = await import("./sign-in/page");
+const { default: RegisterPage, generateMetadata: registerMetadata } = await import("./sign-up/page");
 const { default: Imprint, metadata: imprintMetadata } = await import("./imprint/page");
 const { default: Privacy, metadata: privacyMetadata } = await import("./privacy/page");
 const { default: RootLayout, generateStaticParams, metadata, viewport } = await import("./layout");
@@ -64,7 +64,7 @@ describe("Anmelden", () => {
     expect(screen.getByRole("form", { name: "Anmeldung" })).toBeTruthy();
     expect(screen.getByText(/Wende dich an den Betreiber/)).toBeTruthy();
     expect(href("Registrieren")).toBe("/de/sign-up");
-    expect(loginMetadata.title).toBe("Anmelden · Checkout-Trainer");
+    expect((await loginMetadata()).title).toBe("Anmelden · Checkout-Trainer");
   });
 });
 
@@ -74,7 +74,24 @@ describe("Registrieren", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Registrieren" })).toBeTruthy();
     expect(screen.getByRole("form", { name: "Registrierung" })).toBeTruthy();
     expect(href("Anmelden")).toBe("/de/sign-in");
-    expect(registerMetadata.title).toBe("Registrieren · Checkout-Trainer");
+    expect((await registerMetadata()).title).toBe("Registrieren · Checkout-Trainer");
+  });
+});
+
+describe("Anmelden und Registrieren auf Englisch", () => {
+  it("zeigt Überschriften, Links und Titel auf Englisch", async () => {
+    rootParams.lang = "en";
+    render(await LoginPage());
+    expect(screen.getByRole("heading", { level: 1, name: "Sign in" })).toBeTruthy();
+    expect(screen.getByText(/Ask the operator/)).toBeTruthy();
+    expect(href("Sign up")).toBe("/en/sign-up");
+    expect((await loginMetadata()).title).toBe("Sign in · Checkout-Trainer");
+    cleanup();
+
+    render(await RegisterPage());
+    expect(screen.getByRole("heading", { level: 1, name: "Sign up" })).toBeTruthy();
+    expect(href("Sign in")).toBe("/en/sign-in");
+    expect((await registerMetadata()).title).toBe("Sign up · Checkout-Trainer");
   });
 });
 

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocalePath } from "@/i18n/client";
+import { useDictionary, useLocalePath } from "@/i18n/client";
 import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import { authErrorMessage } from "./auth-error";
@@ -11,6 +11,7 @@ import { authErrorMessage } from "./auth-error";
 export function SignOutButton() {
   const router = useRouter();
   const localePath = useLocalePath();
+  const t = useDictionary().auth;
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,14 +21,14 @@ export function SignOutButton() {
     try {
       const { error } = await authClient.signOut();
       if (error) {
-        setError(authErrorMessage(error));
+        setError(authErrorMessage(error, t));
         setPending(false);
         return;
       }
       router.replace(localePath(ROUTES.home));
       router.refresh();
     } catch {
-      setError("Keine Verbindung. Du bist noch angemeldet.");
+      setError(t.signOutNoConnection);
       setPending(false);
     }
   }
@@ -35,7 +36,7 @@ export function SignOutButton() {
   return (
     <div className="flex flex-col gap-3">
       <Button variant="secondary" size="xl" onClick={handleClick} disabled={pending}>
-        Abmelden
+        {t.signOut}
       </Button>
       {error ? (
         <p role="alert" className="text-sm text-destructive">

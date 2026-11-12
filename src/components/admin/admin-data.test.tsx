@@ -2,6 +2,11 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const requireAdmin = vi.hoisted(() => vi.fn(async () => ({ id: "admin" })));
 const listUsers = vi.hoisted(() => vi.fn());
@@ -25,7 +30,7 @@ describe("UserList", () => {
       { id: "3", name: "Chef", email: "chef@beispiel.de", status: "active", role: "admin", createdAt: created },
       { id: "4", name: "Dora", email: "dora@beispiel.de", status: "unbekannt", role: "user", createdAt: created },
     ]);
-    render(await UserList());
+    render(await UserList(), { wrapper });
 
     expect(requireAdmin).toHaveBeenCalled();
     expect(listUsers).toHaveBeenCalledWith(db);

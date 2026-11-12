@@ -3,15 +3,14 @@ import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 export type StrengthLevel = 0 | 1 | 2 | 3;
 export type Strength = {
   level: StrengthLevel;
-  label: "Schwach" | "Mittel" | "Gut" | "Stark";
   percent: 25 | 50 | 75 | 100;
 };
 
 const LEVELS: Strength[] = [
-  { level: 0, label: "Schwach", percent: 25 },
-  { level: 1, label: "Mittel", percent: 50 },
-  { level: 2, label: "Gut", percent: 75 },
-  { level: 3, label: "Stark", percent: 100 },
+  { level: 0, percent: 25 },
+  { level: 1, percent: 50 },
+  { level: 2, percent: 75 },
+  { level: 3, percent: 100 },
 ];
 
 const OBVIOUS_PARTS = [
@@ -68,11 +67,16 @@ export function passwordStrength(value: string): Strength | null {
   return LEVELS[0];
 }
 
-export function strengthHint(value: string): string {
-  if (value === "") return "";
+export type StrengthHint =
+  | { kind: "remaining"; count: number }
+  | { kind: "stronger" };
+
+/** Hinweis als Daten; der Text steht im Wörterbuch (`form.strength`). null: kein Hinweis. */
+export function strengthHint(value: string): StrengthHint | null {
+  if (value === "") return null;
   if (value.length < MIN_PASSWORD_LENGTH) {
-    return `Noch ${MIN_PASSWORD_LENGTH - value.length} Zeichen bis zum Minimum.`;
+    return { kind: "remaining", count: MIN_PASSWORD_LENGTH - value.length };
   }
-  if (passwordStrength(value)?.level === 3) return "";
-  return "Länger oder gemischter wird stärker.";
+  if (passwordStrength(value)?.level === 3) return null;
+  return { kind: "stronger" };
 }

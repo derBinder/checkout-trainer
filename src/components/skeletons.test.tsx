@@ -97,12 +97,12 @@ describe("Skeleton-Bausteine", () => {
   });
 
   it("Einstellungen: Beschriftung und Knopf stehen ohne gespeicherten Wert da, das Feld kommt nach", () => {
-    const shell = renderToStaticMarkup(createElement(NewPerDayForm, null, createElement(NewPerDayFieldSkeleton)));
+    const shell = renderToStaticMarkup(<I18nProvider locale="de">{createElement(NewPerDayForm, null, createElement(NewPerDayFieldSkeleton))}</I18nProvider>);
     expect(shell).toContain("Neue Karten pro Tag");
     expect(shell).toContain("Speichern");
     expect(shell).not.toContain("<input");
 
-    const filled = renderToStaticMarkup(createElement(NewPerDayForm, null, createElement(NewPerDayInput, { initial: 7 })));
+    const filled = renderToStaticMarkup(<I18nProvider locale="de">{createElement(NewPerDayForm, null, createElement(NewPerDayInput, { initial: 7 }))}</I18nProvider>);
     const input = filled.match(/<input[^>]*>/)?.[0] ?? "";
     expect(input).toContain('id="newPerDay"');
     expect(input).toContain('value="7"');

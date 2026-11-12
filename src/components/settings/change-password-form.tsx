@@ -13,6 +13,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { useDictionary } from "@/i18n/client";
 import { authClient } from "@/lib/auth/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
@@ -26,6 +27,7 @@ const FIELDS: FieldSpec[] = [
 ];
 
 export function ChangePasswordForm() {
+  const t = useDictionary();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [pending, setPending] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -64,7 +66,7 @@ export function ChangePasswordForm() {
         revokeOtherSessions: true,
       });
       if (error) {
-        setMessage({ text: authErrorMessage(error), ok: false });
+        setMessage({ text: authErrorMessage(error, t.auth), ok: false });
       } else {
         formElement.reset();
         reset();

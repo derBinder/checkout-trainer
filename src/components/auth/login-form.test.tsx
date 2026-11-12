@@ -81,3 +81,24 @@ describe("LoginForm", () => {
     expect(email.getAttribute("aria-invalid")).toBe("false");
   });
 });
+
+describe("LoginForm auf Englisch", () => {
+  it("zeigt Beschriftungen, Prüfmeldungen und Anmeldefehler auf Englisch", async () => {
+    const user = userEvent.setup();
+    render(<LoginForm />, {
+      wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
+    });
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    expect(signIn).not.toHaveBeenCalled();
+    expect(screen.getByText("Please enter your email address.")).toBeTruthy();
+    expect(screen.getByText("Please enter a password.")).toBeTruthy();
+
+    signIn.mockResolvedValue({ error: { status: 429 } });
+    await user.type(screen.getByLabelText("Email"), "name@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "Too many attempts. Wait a few minutes and try again.",
+    );
+  });
+});

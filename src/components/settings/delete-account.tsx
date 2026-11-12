@@ -18,7 +18,7 @@ import { PasswordInput } from "@/components/form/password-input";
 import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { useLocalePath } from "@/i18n/client";
+import { useDictionary, useLocalePath } from "@/i18n/client";
 import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import { currentPasswordSchema } from "@/lib/validation/schemas";
@@ -28,6 +28,7 @@ const FIELDS: FieldSpec[] = [{ name: "password", schema: currentPasswordSchema }
 export function DeleteAccount() {
   const router = useRouter();
   const localePath = useLocalePath();
+  const t = useDictionary();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -67,7 +68,7 @@ export function DeleteAccount() {
         password: String(form.get("password")),
       });
       if (error) {
-        setError(authErrorMessage(error));
+        setError(authErrorMessage(error, t.auth));
         setPending(false);
         return;
       }

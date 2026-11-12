@@ -9,7 +9,7 @@ vi.mock("@/components/auth/sign-out-button", () => ({
   SignOutButton: () => <button type="button">Abmelden</button>,
 }));
 
-const { default: WaitingPage, instant, metadata } = await import("./page");
+const { default: WaitingPage, instant, generateMetadata } = await import("./page");
 
 async function redirectTarget() {
   const error = await WaitingPage().then(
@@ -48,8 +48,8 @@ describe("Warten auf Freischaltung", () => {
     expect(screen.getByRole("heading", { name: "Dein Konto ist gesperrt." })).toBeTruthy();
   });
 
-  it("bleibt beim Seitenwechsel blockierend", () => {
+  it("bleibt beim Seitenwechsel blockierend", async () => {
     expect(instant).toBe(false);
-    expect(metadata.title).toBe("Freischaltung · Checkout-Trainer");
+    expect((await generateMetadata()).title).toBe("Freischaltung · Checkout-Trainer");
   });
 });

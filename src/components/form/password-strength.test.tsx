@@ -1,16 +1,23 @@
-import { createElement } from "react";
+import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { I18nProvider } from "@/i18n/client";
 import { PasswordStrength } from "./password-strength";
 
-function render(value: string) {
-  const html = renderToStaticMarkup(
+function render(value: string, locale: "de" | "en" = "de") {
+  const html = renderDe(
     createElement(PasswordStrength, { id: "hint", value }),
+    locale,
   );
   // Inhalt der Live-Region: vom Attribut bis zum Hinweis daneben.
   const live =
     html.split('aria-live="polite"')[1]?.split('<span class="text-right')[0] ?? "";
   return { html, live };
+}
+
+/** Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts. */
+function renderDe(element: ReactElement, locale: "de" | "en" = "de"): string {
+  return renderToStaticMarkup(<I18nProvider locale={locale}>{element}</I18nProvider>);
 }
 
 describe("PasswordStrength", () => {
@@ -36,5 +43,14 @@ describe("PasswordStrength", () => {
     const { html } = render("");
     expect(html).toMatch(/<span[^>]*aria-live="polite"[^>]*><\/span>/);
     expect(html).toContain("Mindestens 10 Zeichen.");
+  });
+
+  it("zeigt Stufe und Hinweise auf Englisch", () => {
+    const { html, live } = render("abcdefg", "en");
+    expect(live).toContain("Strength: ");
+    expect(live).toContain("Weak");
+    expect(html).toContain("3 more characters to the minimum.");
+    expect(render("abcdefghi", "en").html).toContain("1 more character to the minimum.");
+    expect(render("", "en").html).toContain("At least 10 characters.");
   });
 });
