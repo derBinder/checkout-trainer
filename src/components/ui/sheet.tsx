@@ -47,7 +47,7 @@ function SheetContent({
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
   /** Beschriftung des Schließen-Knopfs für Screenreader, aus dem Wörterbuch. */
-  closeLabel?: string
+  closeLabel: string
 }) {
   return (
     <SheetPortal>

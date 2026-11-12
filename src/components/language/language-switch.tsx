@@ -51,10 +51,10 @@ export function LanguageSwitch({
         <label
           key={value}
           className={cn(
-            "flex cursor-pointer items-center justify-center font-semibold transition-colors select-none has-focus-visible:outline-2 has-focus-visible:outline-ring",
-            compact
-              ? "h-8 rounded-pill px-3 text-xs text-muted-foreground has-checked:bg-accent has-checked:font-bold has-checked:text-accent-foreground"
-              : "h-12 rounded-field text-sm text-muted-foreground hover:text-foreground has-checked:bg-accent has-checked:font-bold has-checked:text-accent-foreground",
+            "group flex cursor-pointer items-center justify-center font-semibold select-none",
+            // Kompakt: Die Beschriftung ist die 44 px hohe Tippfläche, der sichtbare Knopf
+            // (32 px) sitzt darin; der negative Rand hält die Höhe der Gruppe.
+            compact ? "-my-1.5 h-11 px-0.5" : "h-12 rounded-field",
           )}
         >
           <input
@@ -63,10 +63,30 @@ export function LanguageSwitch({
             value={value}
             checked={locale === value}
             onChange={() => change(value)}
-            aria-label={compact ? t.names[value] : undefined}
-            className="sr-only"
+            className="peer sr-only"
           />
-          {compact ? t.short[value] : t.names[value]}
+          <span
+            className={cn(
+              "flex w-full items-center justify-center transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-ring",
+              compact
+                ? "h-8 rounded-pill px-2.5 text-xs text-muted-foreground peer-checked:bg-accent peer-checked:font-bold peer-checked:text-accent-foreground"
+                : "h-full rounded-field text-sm text-muted-foreground group-hover:text-foreground peer-checked:bg-accent peer-checked:font-bold peer-checked:text-accent-foreground",
+            )}
+          >
+            {/* Die Sprachnamen tragen ihre eigene Sprache, damit Screenreader sie richtig sprechen. */}
+            {compact ? (
+              <>
+                <span lang={value} aria-hidden="true">
+                  {t.short[value]}
+                </span>
+                <span lang={value} className="sr-only">
+                  {t.names[value]}
+                </span>
+              </>
+            ) : (
+              <span lang={value}>{t.names[value]}</span>
+            )}
+          </span>
         </label>
       ))}
     </div>

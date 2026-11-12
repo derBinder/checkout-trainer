@@ -1,7 +1,7 @@
 // Nur zod/mini und Konstanten: Die Datei wird auch von Client-Formularen importiert.
 import * as z from "zod/mini";
 import {
-    MAX_EMAIL_LENGTH,
+  MAX_EMAIL_LENGTH,
   MAX_NAME_LENGTH,
   MAX_PASSWORD_LENGTH,
   MIN_PASSWORD_LENGTH,

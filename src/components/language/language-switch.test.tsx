@@ -88,4 +88,23 @@ describe("LanguageSwitch", () => {
     const names = new Set(screen.getAllByRole("radio").map((r) => r.getAttribute("name")));
     expect(names.size).toBe(2);
   });
+
+  it("kennzeichnet die Sprachnamen mit ihrer eigenen Sprache", () => {
+    renderSwitch("en", "settings");
+    expect(screen.getByText("Deutsch").getAttribute("lang")).toBe("de");
+    expect(screen.getByText("English").getAttribute("lang")).toBe("en");
+  });
+
+  it("kennzeichnet in der kompakten Form Kürzel und ausgeschriebenen Namen", () => {
+    renderSwitch("de", "compact");
+    expect(screen.getByText("DE").getAttribute("lang")).toBe("de");
+    expect(screen.getByText("EN").getAttribute("lang")).toBe("en");
+    expect(screen.getByText("English").getAttribute("lang")).toBe("en");
+    expect(screen.getByText("Deutsch").getAttribute("lang")).toBe("de");
+  });
+
+  it("gibt der kompakten Form eine mindestens 44 px hohe Tippfläche", () => {
+    renderSwitch("de", "compact");
+    expect(radio("English").closest("label")?.className).toContain("h-11");
+  });
 });

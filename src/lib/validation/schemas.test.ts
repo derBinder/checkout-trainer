@@ -126,9 +126,14 @@ describe("validateField", () => {
     }
   });
 
-  it("nennt für unbekannte Fehler den Schlüssel invalid", () => {
+  it("nennt den Schlüssel der Prüfmeldung", () => {
     expect(validateField(nameSchema, 123)).toBe("nameRequired");
     expect(validateField(newPerDaySchema, "x")).toBe("newPerDayInvalid");
+  });
+
+  it("nennt den Schlüssel invalid, wenn die Prüfung selbst scheitert", () => {
+    const broken = {} as unknown as Parameters<typeof validateField>[0];
+    expect(validateField(broken, "x")).toBe("invalid");
   });
 
   it("wirft nie und lehnt falsche Typen ab", () => {
