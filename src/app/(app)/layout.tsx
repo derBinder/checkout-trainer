@@ -1,14 +1,24 @@
+import { Suspense } from "react";
+import { AdminNavItem } from "@/components/admin-nav-item";
 import { AppNav } from "@/components/app-nav";
-import { requireActiveUser } from "@/lib/auth/guard";
 
-export default async function AppLayout({
+/**
+ * Gerüst der angemeldeten Seiten, ohne Sitzungsabfrage: Es wird vorgerendert und
+ * enthält keine Nutzerdaten. Jede Seite prüft den Zugriff in ihren Datenbausteinen.
+ */
+export default function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const user = await requireActiveUser();
-
   return (
     <>
-      <AppNav isAdmin={user.role === "admin"} />
+      <AppNav
+        adminItem={
+          // Kein sichtbarer Platzhalter: Der Eintrag erscheint nur beim Betreiber nachträglich.
+          <Suspense fallback={null}>
+            <AdminNavItem />
+          </Suspense>
+        }
+      />
       <main className="mx-auto w-full max-w-2xl px-5 pt-10 pb-nav-clearance md:pt-12 md:pb-16">
         {children}
       </main>

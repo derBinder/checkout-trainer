@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { createContext, use, useLayoutEffect, useState, useTransition } from "react";
 import { updateNewPerDay } from "@/app/(app)/einstellungen/actions";
 import { type FieldSpec } from "@/components/form/form-values";
 import { useFieldErrors } from "@/components/form/use-field-errors";
@@ -18,13 +18,30 @@ import { newPerDaySchema } from "@/lib/validation/schemas";
 
 const FIELDS: FieldSpec[] = [{ name: "newPerDay", schema: newPerDaySchema }];
 
-export function NewPerDayForm({ initial }: { initial: number }) {
+type FieldProps = ReturnType<ReturnType<typeof useFieldErrors>["fieldProps"]>;
+
+/** Prüfung und Verknüpfungen des Formulars für das Eingabefeld, das mit dem gespeicherten Wert nachlädt. */
+const NewPerDayFieldProps = createContext<FieldProps | null>(null);
+
+/**
+ * Formular „Neue Karten pro Tag" ohne den gespeicherten Wert: Beschriftung, Hinweis
+ * und Knopf stehen sofort da. children ist der Platz für das Eingabefeld
+ * (NewPerDayInput), das mit dem gespeicherten Wert nachlädt.
+ */
+export function NewPerDayForm({ children }: { children: React.ReactNode }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
 
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity): Die
+  // Rückmeldung zum letzten Speichern soll beim Zurückkehren nicht stehen bleiben.
+  // Eine noch nicht gespeicherte Eingabe bleibt.
+  useLayoutEffect(() => () => setMessage(null), []);
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Das Feld lädt noch: nichts zu speichern.
+    if (!event.currentTarget.elements.namedItem("newPerDay")) return;
     setMessage(null);
     if (!validateForm(event.currentTarget)) return;
     const value = Number(
@@ -54,18 +71,9 @@ export function NewPerDayForm({ initial }: { initial: number }) {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="newPerDay">Neue Karten pro Tag</FieldLabel>
-          <Input
-            id="newPerDay"
-            name="newPerDay"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={MAX_NEW_PER_DAY}
-            step={1}
-            defaultValue={initial}
-            required
-            {...fieldProps("newPerDay", "newPerDay-hint")}
-          />
+          <NewPerDayFieldProps value={fieldProps("newPerDay", "newPerDay-hint")}>
+            {children}
+          </NewPerDayFieldProps>
           <FieldDescription id="newPerDay-hint">
             Von 0 bis {MAX_NEW_PER_DAY}. Fällige Wiederholungen kommen immer dazu.
           </FieldDescription>
@@ -86,5 +94,24 @@ export function NewPerDayForm({ initial }: { initial: number }) {
         ) : null}
       </div>
     </form>
+  );
+}
+
+/** Das Eingabefeld mit dem gespeicherten Wert; steht nur innerhalb von NewPerDayForm. */
+export function NewPerDayInput({ initial }: { initial: number }) {
+  const fieldProps = use(NewPerDayFieldProps);
+  return (
+    <Input
+      id="newPerDay"
+      name="newPerDay"
+      type="number"
+      inputMode="numeric"
+      min={0}
+      max={MAX_NEW_PER_DAY}
+      step={1}
+      defaultValue={initial}
+      required
+      {...fieldProps}
+    />
   );
 }

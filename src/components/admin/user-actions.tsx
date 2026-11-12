@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { unstable_rethrow } from "next/navigation";
+import { useLayoutEffect, useState, useTransition } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -17,6 +18,7 @@ import { PasswordStrength } from "@/components/form/password-strength";
 import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { USER_ACTIONS_ROW } from "@/components/admin/admin-parts";
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import { newPasswordSchema } from "@/lib/validation/schemas";
 import {
@@ -36,10 +38,25 @@ export function UserActions({ userId, name, status }: Props) {
   const [open, setOpen] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
+  const [dialogKey, setDialogKey] = useState(0);
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
   const passwordId = `pw-${userId}`;
   const passwordProps = fieldProps("password", `${passwordId}-hint`);
+
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity). Ein
+  // eingetipptes Passwort soll beim Zurückkehren weder im Feld stehen noch sichtbar
+  // geschaltet sein: Rückfrage schließen und neu einhängen, alte Hinweise weg.
+  useLayoutEffect(() => {
+    return () => {
+      setOpen(false);
+      setDialogError(null);
+      setPassword("");
+      reset();
+      setDialogKey((key) => key + 1);
+      setMessage(null);
+    };
+  }, [reset]);
 
   function changeStatus(next: "active" | "blocked") {
     setMessage(null);
@@ -47,7 +64,9 @@ export function UserActions({ userId, name, status }: Props) {
       try {
         const { ok } = await changeUserStatus(userId, next);
         if (!ok) setMessage({ text: FAILED, ok: false });
-      } catch {
+      } catch (error) {
+        // Eine Weiterleitung aus der Action (etwa zur Anmeldung) ist kein Fehler.
+        unstable_rethrow(error);
         setMessage({ text: "Keine Verbindung. Versuche es erneut.", ok: false });
       }
     });
@@ -79,7 +98,8 @@ export function UserActions({ userId, name, status }: Props) {
         setPassword("");
         reset();
         setMessage({ text: "Passwort gesetzt. Alle Sitzungen des Nutzers sind beendet.", ok: true });
-      } catch {
+      } catch (error) {
+        unstable_rethrow(error);
         setDialogError("Keine Verbindung. Das Passwort wurde nicht gesetzt.");
       }
     });
@@ -87,7 +107,7 @@ export function UserActions({ userId, name, status }: Props) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-2">
+      <div className={USER_ACTIONS_ROW}>
         {status !== "active" ? (
           <Button variant="secondary" size="lg" disabled={pending} onClick={() => changeStatus("active")}>
             {status === "blocked" ? "Entsperren" : "Freischalten"}
@@ -99,7 +119,8 @@ export function UserActions({ userId, name, status }: Props) {
             Sperren
           </Button>
         ) : null}
-        <AlertDialog open={open} onOpenChange={handleOpenChange}>
+        {/* Neu eingehängt nach dem Verbergen: kommt geschlossen zurück, ohne Schließ-Animation. */}
+        <AlertDialog key={dialogKey} open={open} onOpenChange={handleOpenChange}>
           <AlertDialogTrigger render={<Button variant="outline" size="lg" disabled={pending} />}>
             Passwort setzen
           </AlertDialogTrigger>

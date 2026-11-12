@@ -40,6 +40,16 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - `src/lib/srs/`, `src/lib/review/`: Wiederholungslogik (FSRS), Warteschlange, Speichern der Bewertungen.
 - `src/app/`: Seiten mit deutschen Routen (`/heute`, `/lernen`, `/statistik`, `/einstellungen`, `/verwaltung`, …).
 
+## Cache Components
+
+- `cacheComponents` ist eingeschaltet: Jede angemeldete Seite liefert sofort ein vorgerendertes Gerüst, die Nutzerdaten kommen hinter Suspense-Grenzen mit Skeletons nach. Nur `/warten` trägt `export const instant = false`.
+- `partialPrefetching` bleibt ausgeschaltet. Mit dem Schalter laufen Sitzungsprüfung und Datenabfragen je Seitenaufruf doppelt (gemessen); das Gerüst erscheint auch ohne ihn sofort.
+- Nutzerdaten werden nie gecacht: kein `use cache`, `use cache: private` oder `use cache: remote` für Sitzung oder Lerndaten. `React.cache` nur zum Teilen einer Abfrage innerhalb einer Anfrage.
+- Jeder Datenbaustein prüft die Sitzung selbst: Der Lader ruft zuerst `requireActiveUser()` bzw. `requireAdmin()` auf, dann erst `new Date()` und die Abfragen. Aufbau je Seite unter `src/components/<bereich>/`: `*-parts` (gemeinsames Layout), `*-data` (Lader und Datenbausteine), `*-skeleton` (Rückfall-Inhalt in `LoadingRegion`).
+- Das Gerüst (Seite ohne Datenbausteine, Layout, Skeletons) enthält keine Nutzerdaten und keine Lerninhalte (Wege, Begründungen, Alternativen, Stellwürfe, Karten).
+- `src/proxy.ts` ist nur eine Cookie-Vorprüfung ohne Datenbank und ersetzt keine Prüfung. Echte Status-Codes gibt es nur noch aus `proxy.ts` (307 nach `/anmelden` ohne Sitzungs-Cookie). Jede Seite antwortet sonst mit 200; `redirect()` und `notFound()` aus Datenbausteinen kommen als Anweisung im Datenstrom. Ein aktiver Nicht-Betreiber wird von `/verwaltung` nach `/heute` umgeleitet.
+- Clientzustand überlebt Seitenwechsel (Activity). Formulare mit Geheimnissen (Passwortfelder, Rückfragen mit Passwort) setzen sich beim Verbergen per `useLayoutEffect`-Cleanup zurück. Die Lernsitzung bekommt je Navigation einen eigenen React-Schlüssel (`bfcacheId`) und startet nach dem Verlassen frisch.
+
 ## Regeln
 
 - Oberfläche vollständig auf Deutsch. Keine Emojis. Icons nur aus `lucide-react` und nur, wo sie nötig sind.

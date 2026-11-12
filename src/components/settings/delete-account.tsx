@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { authErrorMessage } from "@/components/auth/auth-error";
 import {
   AlertDialog,
@@ -28,8 +28,21 @@ export function DeleteAccount() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [dialogKey, setDialogKey] = useState(0);
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
+
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity). Ein
+  // eingetipptes Passwort soll beim Zurückkehren weder im Feld stehen noch sichtbar
+  // geschaltet sein: Rückfrage schließen und neu einhängen, alte Hinweise weg.
+  useLayoutEffect(() => {
+    return () => {
+      setOpen(false);
+      setError(null);
+      reset();
+      setDialogKey((key) => key + 1);
+    };
+  }, [reset]);
 
   function handleOpenChange(next: boolean) {
     if (pending) return;
@@ -64,7 +77,8 @@ export function DeleteAccount() {
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={handleOpenChange}>
+    // Neu eingehängt nach dem Verbergen: kommt geschlossen zurück, ohne Schließ-Animation.
+    <AlertDialog key={dialogKey} open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger render={<Button variant="destructive" size="xl" />}>
         Konto löschen
       </AlertDialogTrigger>

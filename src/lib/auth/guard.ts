@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { cache } from "react";
 import { auth } from "./index";
 
@@ -41,8 +41,13 @@ export async function requireActiveUser(): Promise<SessionUser> {
   return u;
 }
 
+/**
+ * Nur das aktive Betreiberkonto. Ein aktiver Nicht-Betreiber landet auf /heute:
+ * Mit Cache Components steht der Status 200 schon fest, bevor diese Prüfung
+ * läuft, eine echte 404 gibt es nicht mehr (Entscheidung des Auftraggebers).
+ */
 export async function requireAdmin(): Promise<SessionUser> {
   const u = await requireActiveUser();
-  if (u.role !== "admin") notFound();
+  if (u.role !== "admin") redirect("/heute");
   return u;
 }

@@ -1,9 +1,14 @@
 import { DartSlots } from "@/components/dart-slots";
-import { cn } from "@/lib/utils";
 import type { CardView, Note } from "./card-view";
 
+/** Beschriftung über der Zahl; das Skeleton der Fragenansicht übernimmt die Schrift. */
+export const EYEBROW = "type-label text-center";
+
+/** Die Zahl der Fragenansicht (bis drei Ziffern); das Skeleton übernimmt die Schrift. */
+export const BIG_NUMERAL = "type-display text-center tabular-nums text-numeral";
+
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="type-label text-center">{children}</p>;
+  return <p className={EYEBROW}>{children}</p>;
 }
 
 /** Die Zahl, nach der gefragt wird: das größte Element der Seite. */
@@ -11,14 +16,13 @@ function Big({ value, compact = false }: { value: string; compact?: boolean }) {
   const word = value.length > 3;
   return (
     <p
-      className={cn(
-        "type-display text-center tabular-nums",
+      className={
         word
-          ? "py-2 text-5xl leading-none"
+          ? "type-display text-center tabular-nums py-2 text-5xl leading-none"
           : compact
-            ? "text-numeral-compact"
-            : "text-numeral",
-      )}
+            ? "type-display text-center tabular-nums text-numeral-compact"
+            : BIG_NUMERAL
+      }
     >
       {value}
     </p>

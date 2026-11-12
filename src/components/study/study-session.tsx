@@ -1,6 +1,5 @@
 "use client";
 
-import { X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
@@ -11,6 +10,15 @@ import type { Rating } from "@/lib/srs/fsrs";
 import { cn } from "@/lib/utils";
 import type { CardView } from "./card-view";
 import { StudyCard } from "./study-card";
+import {
+  STUDY_CONTENT,
+  STUDY_COUNTER,
+  STUDY_FOOTER,
+  STUDY_HEADER,
+  STUDY_HEADER_ROW,
+  StudyCloseLink,
+  StudySurface as Surface,
+} from "./study-parts";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
 
 export type StudyItem = {
@@ -194,17 +202,10 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   return (
     <Surface>
-      <header className="flex flex-col gap-1 px-5 pt-inset-top">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/heute"
-            aria-label="Lernen beenden"
-            onClick={confirmClose}
-            className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "-ml-3")}
-          >
-            <X aria-hidden className="size-5" />
-          </Link>
-          <p className="text-sm font-semibold text-muted-foreground tabular-nums">
+      <header className={STUDY_HEADER}>
+        <div className={STUDY_HEADER_ROW}>
+          <StudyCloseLink onClick={confirmClose} />
+          <p className={STUDY_COUNTER}>
             {position} / {session.total}
           </p>
         </div>
@@ -219,7 +220,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       <div
         ref={contentRef}
         tabIndex={-1}
-        className="flex flex-1 flex-col overflow-y-auto px-5 py-6 outline-none"
+        className={STUDY_CONTENT}
       >
         {/* my-auto statt justify-center: mittig in der freien Fläche, bei Überlänge oben beginnend. */}
         <div className="my-auto">
@@ -227,7 +228,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         </div>
       </div>
 
-      <footer className="flex touch-manipulation flex-col gap-3 px-5 pt-3 pb-inset-bottom">
+      <footer className={STUDY_FOOTER}>
         {skippedHint}
         {failedHint}
         {session.revealed ? (
@@ -264,14 +265,5 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         )}
       </footer>
     </Surface>
-  );
-}
-
-/** Ganze Bildschirmfläche über dem App-Rahmen: diese Seite hat keine Navigation. */
-function Surface({ className, children }: { className?: string; children: React.ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-20 bg-background">
-      <div className={cn("mx-auto flex h-full w-full max-w-md flex-col", className)}>{children}</div>
-    </div>
   );
 }
