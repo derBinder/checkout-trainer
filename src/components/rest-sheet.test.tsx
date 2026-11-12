@@ -1,0 +1,72 @@
+// @vitest-environment jsdom
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it } from "vitest";
+import { restDetails } from "@/components/stats/rest-details";
+import { CARDS } from "@/lib/cards";
+import { MAX_REST, MIN_REST, type Level } from "@/lib/stats";
+import { RestGrid } from "./rest-grid";
+import { RestSheet } from "./rest-sheet";
+
+const details = restDetails(CARDS);
+const levels: Record<number, Level> = Object.fromEntries(
+  Array.from({ length: MAX_REST - MIN_REST + 1 }, (_, i) => [MIN_REST + i, "new"]),
+);
+levels[100] = "known";
+levels[170] = "learning";
+
+function setup() {
+  const user = userEvent.setup();
+  render(
+    <RestSheet details={details} levels={levels}>
+      <p>Tippe auf einen Rest.</p>
+      <RestGrid levels={levels} weak={new Set()} />
+    </RestSheet>,
+  );
+  return user;
+}
+
+describe("RestSheet", () => {
+  it("öffnet zu einem angetippten Rest Weg, Lernstand und Begründung", async () => {
+    const user = setup();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "100, sicher" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByRole("heading", { name: "Rest 100" })).toBeTruthy();
+    expect(dialog.textContent).toContain("Lernstand: sicher");
+    const darts = within(dialog).getByRole("list", { name: "Darts" });
+    expect(within(darts).getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+      "T20",
+      "D20",
+    ]);
+    expect(dialog.textContent).toContain("Bleibt bei Single 20 auf einem Finish.");
+    expect(dialog.textContent).not.toContain("Nicht checkbar");
+  });
+
+  it("zeigt bei einer Bogey-Zahl, dass sie nicht checkbar ist, und den Stellwurf", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "169, neu, nicht checkbar" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByRole("heading", { name: "Rest 169" })).toBeTruthy();
+    expect(dialog.textContent).toContain("Nicht checkbar");
+    expect(dialog.textContent).toContain("Stellen auf Rest 32.");
+    expect(dialog.textContent).toContain("Lernstand: neu");
+  });
+
+  it("öffnet nichts bei einem Klick neben die Reste", async () => {
+    const user = setup();
+    await user.click(screen.getByText("Tippe auf einen Rest."));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("schließt und gibt den Fokus an den angetippten Rest zurück", async () => {
+    const user = setup();
+    const cell = screen.getByRole("button", { name: "170, im Lernen" });
+    await user.click(cell);
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("Lernstand: im Lernen");
+    await user.click(within(dialog).getByRole("button", { name: "Schließen" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(document.activeElement).toBe(cell);
+  });
+});

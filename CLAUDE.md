@@ -20,6 +20,7 @@ Next.js 16 (App Router, TypeScript, `src/`), shadcn/ui, lucide-react, Better Aut
 ```bash
 npm run dev            # Entwicklungsserver
 npm test               # Vitest, einmaliger Lauf
+npm run test:coverage  # Vitest mit Coverage, bricht unter 80 % im Backend oder Frontend ab
 npm run typecheck
 npm run lint
 npm run build
@@ -68,6 +69,8 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - Git: nur lokal committen, nie pushen. Keine Attributionszeilen in Commit-Nachrichten.
 - `src/lib/db/schema.ts` von Hand pflegen und Migrationen mit `db:generate` erzeugen. Den Better-Auth-CLI-Generator nicht in diese Datei schreiben lassen, er überschreibt die Handänderungen.
 - Tests zuerst schreiben. Vor jedem Commit: `npm test`, `npm run typecheck`, `npm run lint`.
+- Testabdeckung mindestens 80 % (Zeilen, Anweisungen, Zweige, Funktionen), getrennt für Backend (`src/lib`, `src/proxy.ts`, `src/app/api`, `src/app/**/*.ts`) und Frontend (`src/components`, `src/app/**/*.tsx`). Die Schwellen stehen in `vitest.config.ts`; `npm run test:coverage` muss vor jedem Commit durchlaufen. Neuer Code bringt seine Tests mit, die Schwellen werden nicht gesenkt.
+- Komponententests als `*.test.tsx` mit `// @vitest-environment jsdom` in der ersten Zeile, Testing Library und user-event. Geprüft wird sichtbares Verhalten (Rollen, Beschriftungen, Texte), nicht der Aufbau.
 
 ## Pakete installieren
 

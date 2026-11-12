@@ -1,0 +1,93 @@
+// @vitest-environment jsdom
+import { render, screen } from "@testing-library/react";
+import { State } from "ts-fsrs";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { db } from "@/lib/db";
+
+const user = vi.hoisted(() => ({
+  id: "u1",
+  email: "spieler@beispiel.de",
+  name: "Spieler",
+  status: "active" as const,
+  role: "user",
+  newPerDay: 5,
+}));
+const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
+vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
+vi.mock("@/lib/review/queries", () => queries);
+vi.mock("@/app/(app)/heute/actions", () => ({ learnMoreCards: vi.fn() }));
+
+const { TodayOverview, TodayStreak } = await import("./today-data");
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function queue(dueCount: number, freshCount: number, unseenCount: number) {
+  queries.loadQueue.mockResolvedValue({ cardIds: [], dueCount, freshCount, unseenCount, reps: {}, states: {} });
+}
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  queries.loadStatsData.mockResolvedValue({
+    states: [
+      { cardId: "r-5", state: State.Review, scheduledDays: 30 },
+      { cardId: "r-7", state: State.Learning, scheduledDays: 0 },
+    ],
+    logs: [],
+  });
+});
+
+describe("TodayOverview", () => {
+  it("zeigt fällige und neue Karten, den Fortschritt und den Knopf zum Lernen", async () => {
+    queue(3, 2, 150);
+    render(await TodayOverview());
+
+    expect(queries.loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
+    expect(queries.loadStatsData).toHaveBeenCalledWith(db, "u1");
+    expect(screen.getByText("fällig").nextElementSibling?.textContent).toBe("3");
+    expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("2");
+    expect(screen.getByText("2 von 169 begonnen, 1 sicher").nextElementSibling?.textContent).toBe("1\u00a0%");
+    expect(screen.getByRole("link", { name: "Lernen" }).getAttribute("href")).toBe("/lernen");
+    expect(screen.queryByText("Für heute bist du fertig.")).toBeNull();
+  });
+
+  it("bietet weitere Karten an, wenn heute nichts mehr offen ist", async () => {
+    queue(0, 0, 150);
+    render(await TodayOverview());
+
+    expect(screen.getByText("Für heute bist du fertig.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Weitere 5 Karten lernen" })).toBeTruthy();
+    expect(screen.queryByText("Du hast alle Karten begonnen.")).toBeNull();
+    expect(screen.queryByRole("link", { name: "Lernen" })).toBeNull();
+  });
+
+  it("sagt, wenn alle Karten begonnen sind, und bietet keine weiteren an", async () => {
+    queue(0, 0, 0);
+    render(await TodayOverview());
+
+    expect(screen.getByText("Für heute bist du fertig.")).toBeTruthy();
+    expect(screen.getByText("Du hast alle Karten begonnen.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Weitere 5 Karten lernen" })).toBeNull();
+  });
+});
+
+describe("TodayStreak", () => {
+  it("zeigt die Serie der Lerntage", async () => {
+    queue(0, 0, 0);
+    const now = Date.now();
+    queries.loadStatsData.mockResolvedValue({
+      states: [],
+      logs: [
+        { cardId: "r-5", rating: 3, reviewedAt: new Date(now) },
+        { cardId: "r-5", rating: 3, reviewedAt: new Date(now - DAY_MS) },
+      ],
+    });
+    render(await TodayStreak());
+    expect(screen.getByText("2 Tage Serie")).toBeTruthy();
+  });
+
+  it("zeigt ohne Serie nichts", async () => {
+    queue(0, 0, 0);
+    const { container } = render(await TodayStreak());
+    expect(container.textContent).toBe("");
+  });
+});
