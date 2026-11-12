@@ -19,3 +19,17 @@ export function nextLoad<T>(
   if (active) return active;
   return used.has(incoming.loadId) ? null : incoming;
 }
+
+/**
+ * Welche Ladungen nach dem Anzeigen als verbraucht gelten: die, mit der die
+ * Sitzung läuft, und jede, die währenddessen ankommt (etwa nach einer Server
+ * Action). Sonst könnte später eine solche Ladung aus dem Zurück-Cache eine
+ * Sitzung mit Karten starten, die inzwischen schon bewertet sind.
+ */
+export function loadsToRecord<T>(active: StudyLoad<T> | null, incoming: StudyLoad<T>): string[] {
+  if (!active) return [];
+  return active.loadId === incoming.loadId ? [active.loadId] : [active.loadId, incoming.loadId];
+}
+
+/** So lange nach dem Anfordern frischer Karten erscheint statt des Skeletons ein Hinweis. */
+export const REFRESH_TIMEOUT_MS = 5000;
