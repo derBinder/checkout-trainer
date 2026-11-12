@@ -6,6 +6,9 @@ import { NewPerDayForm } from "@/components/settings/new-per-day-form";
 import { ThemeSwitch } from "@/components/theme/theme-switch";
 import { requireActiveUser } from "@/lib/auth/guard";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Einstellungen · Checkout-Trainer" };
 
 const SECTION_TITLE = "text-xl font-extrabold font-stretch-semi-expanded";

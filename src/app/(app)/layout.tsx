@@ -1,6 +1,9 @@
 import { AppNav } from "@/components/app-nav";
 import { requireActiveUser } from "@/lib/auth/guard";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 export default async function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

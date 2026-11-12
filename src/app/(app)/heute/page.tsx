@@ -9,6 +9,9 @@ import { progressView } from "@/lib/progress";
 import { summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 function Count({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col gap-2">

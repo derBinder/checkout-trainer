@@ -4,6 +4,9 @@ import { requireAdmin } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { listUsers } from "./admin-users";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Verwaltung · Checkout-Trainer" };
 
 const STATUS_LABEL: Record<string, string> = {

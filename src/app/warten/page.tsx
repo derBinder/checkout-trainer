@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { getSessionUser } from "@/lib/auth/guard";
 
+// Liest die Sitzung vor dem Rendern und bleibt beim Seitenwechsel blockierend.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Freischaltung · Checkout-Trainer" };
 
 export default async function WaitingPage() {

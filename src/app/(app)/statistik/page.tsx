@@ -11,6 +11,9 @@ import { loadStatsData } from "@/lib/review/queries";
 import { summarize, type Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 // Nur was das Sheet zeigt, ohne Fehlwurf-Karten und -Fälle: für alle Nutzer gleich.
 const DETAILS: Record<number, RestDetail> = Object.fromEntries(
   CARDS.flatMap((card): [number, RestDetail][] => {

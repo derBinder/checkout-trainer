@@ -7,6 +7,9 @@ import { db } from "@/lib/db";
 import { loadQueue } from "@/lib/review/queries";
 import { intervalLabelChain } from "@/lib/srs/fsrs";
 
+// Noch vom sofortigen Seitenwechsel ausgenommen, bis die Seite umgestellt ist.
+export const instant = false;
+
 export default async function StudyPage() {
   const user = await requireActiveUser();
   const now = new Date();
