@@ -37,7 +37,7 @@ export function UserActions({ userId, name, status }: Props) {
   const [open, setOpen] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
-  const [fieldKey, setFieldKey] = useState(0);
+  const [dialogKey, setDialogKey] = useState(0);
   const { errors, fieldProps, errorId, validateForm, reset } =
     useFieldErrors(FIELDS);
   const passwordId = `pw-${userId}`;
@@ -45,14 +45,14 @@ export function UserActions({ userId, name, status }: Props) {
 
   // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity). Ein
   // eingetipptes Passwort soll beim Zurückkehren weder im Feld stehen noch sichtbar
-  // geschaltet sein: Rückfrage schließen, Feld neu und verborgen, alte Hinweise weg.
+  // geschaltet sein: Rückfrage schließen und neu einhängen, alte Hinweise weg.
   useLayoutEffect(() => {
     return () => {
       setOpen(false);
       setDialogError(null);
       setPassword("");
       reset();
-      setFieldKey((key) => key + 1);
+      setDialogKey((key) => key + 1);
       setMessage(null);
     };
   }, [reset]);
@@ -115,7 +115,8 @@ export function UserActions({ userId, name, status }: Props) {
             Sperren
           </Button>
         ) : null}
-        <AlertDialog open={open} onOpenChange={handleOpenChange}>
+        {/* Neu eingehängt nach dem Verbergen: kommt geschlossen zurück, ohne Schließ-Animation. */}
+        <AlertDialog key={dialogKey} open={open} onOpenChange={handleOpenChange}>
           <AlertDialogTrigger render={<Button variant="outline" size="lg" disabled={pending} />}>
             Passwort setzen
           </AlertDialogTrigger>
@@ -136,7 +137,6 @@ export function UserActions({ userId, name, status }: Props) {
               <Field>
                 <FieldLabel htmlFor={passwordId}>Neues Passwort</FieldLabel>
                 <PasswordInput
-                  key={fieldKey}
                   id={passwordId}
                   name="password"
                   autoComplete="new-password"
