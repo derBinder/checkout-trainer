@@ -6,7 +6,8 @@ import { db } from "@/lib/db";
 import { loadQueue } from "@/lib/review/queries";
 import { intervalLabelChain } from "@/lib/srs/fsrs";
 import { cardView } from "./card-view";
-import { StudySession, type StudyItem } from "./study-session";
+import type { StudyItem } from "./study-session";
+import { StudySessionHost } from "./study-session-host";
 
 /**
  * Prüft zuerst den Zugriff, dann lädt sie die heutige Warteschlange. Die Tagesgrenze
@@ -36,8 +37,7 @@ export async function StudySessionData() {
   const { empty, items } = await loadStudy();
   if (empty) redirect("/heute");
 
-  // Neuer Schlüssel je Laden vom Server: Next.js hält eine verlassene Seite mit ihrem
-  // Zustand vor (Activity). Ohne ihn liefe beim Zurückkehren die alte, womöglich schon
-  // fertige Sitzung mit veralteten Karten weiter statt der frischen Warteschlange.
-  return <StudySession key={crypto.randomUUID()} items={items} />;
+  // Kennung dieser Ladung: StudySessionHost erkennt daran eine Ladung aus dem
+  // Zurück-Cache, mit der schon eine Sitzung lief.
+  return <StudySessionHost loadId={crypto.randomUUID()} items={items} />;
 }

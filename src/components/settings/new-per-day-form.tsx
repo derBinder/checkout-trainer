@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, use, useState, useTransition } from "react";
+import { createContext, use, useLayoutEffect, useState, useTransition } from "react";
 import { updateNewPerDay } from "@/app/(app)/einstellungen/actions";
 import { type FieldSpec } from "@/components/form/form-values";
 import { useFieldErrors } from "@/components/form/use-field-errors";
@@ -32,6 +32,11 @@ export function NewPerDayForm({ children }: { children: React.ReactNode }) {
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
+
+  // Next.js hält die Seite beim Verlassen mit ihrem Zustand vor (Activity): Die
+  // Rückmeldung zum letzten Speichern soll beim Zurückkehren nicht stehen bleiben.
+  // Eine noch nicht gespeicherte Eingabe bleibt.
+  useLayoutEffect(() => () => setMessage(null), []);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
