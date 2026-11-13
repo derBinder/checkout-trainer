@@ -14,10 +14,10 @@ describe("restDetails", () => {
   });
 
   it("gibt bei Rest-Karten nur Weg, Begründung, Zerlegung, Alternativen und zwei Darts weiter", () => {
-    expect(Object.keys(details[170]).sort()).toEqual(
-      ["alternatives", "best", "breakdown", "kind", "reason", "rest", "twoDarts"],
-    );
+    expect(Object.keys(details[170]).sort()).toEqual(["alternatives", "best", "breakdown", "kind", "rest"]);
     expect(details[170]).toMatchObject({ breakdown: { first: "T20", after: 110 } });
+    expect(Object.keys(details[42]).sort()).toEqual(["alternatives", "best", "kind", "reason", "rest"]);
+    expect(Object.keys(details[110]).sort()).toEqual(["alternatives", "best", "breakdown", "kind", "rest", "twoDarts"]);
   });
 
   it("gibt bei Bogey-Zahlen nur den Stellwurf weiter", () => {

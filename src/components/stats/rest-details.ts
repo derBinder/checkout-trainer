@@ -10,7 +10,9 @@ export function restDetails(cards: readonly Card[]): Record<number, RestDetail> 
     cards.flatMap((card): [number, RestDetail][] => {
       if (card.kind === "rest") {
         const { kind, rest, best, reason, breakdown, alternatives, twoDarts } = card;
-        return [[rest, { kind, rest, best, reason, breakdown, alternatives, twoDarts }]];
+        // Nur vorhandene Felder: Zerlegung oder Begründung, Weg mit 2 Darts nur, wo die Tabelle einen nennt.
+        const optional = { ...(breakdown && { breakdown }), ...(reason && { reason }), ...(twoDarts && { twoDarts }) };
+        return [[rest, { kind, rest, best, alternatives, ...optional }]];
       }
       if (card.kind === "bogey") {
         const { kind, rest, setup } = card;

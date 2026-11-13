@@ -24,14 +24,14 @@
 Der Entwurf überlässt diese Punkte dem Umsetzer; so wird entschieden:
 
 1. **Kartenart:** `kind: 'two'`, Kennung `t-<rest>`, Typ `TwoDartCard = { id; kind: 'two'; rest; follow: FollowText }`. `follow` ist `followAfterSingle(rest, 2)`.
-2. **Zerlegung liegt neben `reason`:** neues optionales Feld `breakdown` an `RestCard`. `reason` bleibt für alle Karten erhalten und wird nur angezeigt, wenn `breakdown` fehlt (geteilter erster Dart, Ein-Dart-Wege).
+2. **Zerlegung ersetzt `reason`:** neues optionales Feld `breakdown` an `RestCard`; jede Rest-Karte trägt genau eins von `breakdown` und `reason`. `reason` gibt es nur noch, wo keine Zerlegung steht (geteilter erster Dart, Ein-Dart-Wege), und nur noch mit den Fällen `only`, `direct`, `split`. Die Fälle `singleFinish`, `halving`, `chart` und ihre Sätze entfallen, weil sie nirgends mehr angezeigt würden.
    `Breakdown = { first: string; after: number; dartsLeft: 1 | 2; route?: string[] }` – `route` fehlt im verkürzten Fall.
 3. **Wortlaut Zerlegung:** Notiz mit Titel `Nach T20` / `After T20` (wie „Nur S20“ der Single-Fälle) und Text `110 mit 2 Darts: T20 · Bull` / `110 with 2 darts: T20 · Bull`; verkürzt `bleiben 50` / `50 left`. Darts als Text, keine Pillen. Passt der längste Fall (geteilter Folgeweg, etwa 108) im Browser nicht in eine Zeile, wird „mit 2 Darts“ im Text gekürzt; das wird im Browsertest geprüft.
 4. **Frage der Zwei-Dart-Karte:** Beschriftung „Rest“, große Zahl, darunter `noch 2 Darts` / `2 darts left`. Erstes Feld verbraucht: neutral `bg-muted`, Inhalt „–“ (aria-hidden) plus Screenreader-Text `verbraucht` / `used`. Kein Rot, kein Wert.
 5. **Auflösung Weg-Karte:** wie Rest-Karte (Beschriftung „Rest“, Zahl), Felder: verbraucht + Weg als „Bester Weg“, keine Notizen.
    **Auflösung Stellwurf-Karte:** Beschriftung `Rest 125 mit 2 Darts` / `125 with 2 darts`, große Zeile `Kein Finish` / `No finish` (so bleibt die große Zeile einzeilig; zusammen gelesen „Kein Finish mit 2 Darts“), Felder verbraucht + Stellwurf ohne Farbe, Notiz „Stellwurf: T20 · T11, Rest 32“ wie bei Fehlwurf-Karten.
 6. **Detailansicht in der Statistik:** zeigt den Zwei-Dart-Stellwurf **nicht** zusätzlich (unverändert, Seite bleibt knapp). Sie zeigt die Zerlegung statt des Satzes, wie die Rest-Karte.
-7. **Prognosezeile:** direkt unter den drei Zählern, `text-sm text-muted-foreground`. Datum `14. Januar` / `January 14`, mit Jahr nur, wenn es nicht das laufende Berliner Jahr ist. Ist das Datum heute: trotzdem Datum (keine Sonderform).
+7. **Prognosezeile:** direkt unter den drei Zählern, `text-sm text-muted-foreground`. Datum nach `INTL_LOCALE` (`de-DE` / `en-GB`): `14. Januar` / `14 January`, mit Jahr nur, wenn es nicht das laufende Berliner Jahr ist. Ist das Datum heute: trotzdem Datum (keine Sonderform).
 8. **Wake Lock:** eigener Hook `useWakeLock(active: boolean)` in `src/components/study/use-wake-lock.ts`; `active` ist „es gibt eine aktuelle Karte und nicht abgemeldet“.
 9. **Prognose-Daten:** `queueFromRows` liefert zusätzlich `newLeftToday`; der Stats-Lader ruft `loadQueue` zusätzlich zu `loadStatsData` (wie die Heute-Seite).
 
@@ -93,11 +93,11 @@ Der Entwurf überlässt diese Punkte dem Umsetzer; so wird entschieden:
 - Modify: `src/components/study/card-view.ts` (+test), `src/components/dart-slots.tsx` (+test), `src/components/study/study-question.tsx` (+test), `src/components/study/study-card.tsx` (+ `study-session.test.tsx`), `src/i18n/dictionaries/de.ts`, `en.ts`
 
 **Interfaces:**
-- Produces: `CardView.question.sub?: string` (Zeile unter der Zahl), `CardView.question.spent: number` und `CardView.answer.spent: number` (Anzahl verbrauchter Felder vorn, 0 oder 1); `DartSlots` Prop `spent?: number`.
+- Produces: `CardView.question.sub?: string` (Zeile unter der Zahl), `CardView.question.spent?: number` und `CardView.answer.spent?: number` (Anzahl verbrauchter Felder vorn, nur an Zwei-Dart-Karten gesetzt, sonst fehlt das Feld); `DartSlots` Prop `spent?: number`.
 - Texte: `study.card.twoDartsLeft` („noch 2 Darts“ / „2 darts left“), `study.card.twoDartsOf(rest)` („Rest 125 mit 2 Darts“ / „125 with 2 darts“), `study.card.noFinish` („Kein Finish“ / „No finish“), `study.slots.spent` („verbraucht“ / „used“).
 
 - [ ] **Step 1: Failing tests:**
-  - `card-view.test.ts`: `t-61` → question `{ label: 'Rest', big: '61', sub: 'noch 2 Darts', spent: 1 }`, answer `{ big: '61', slots: [null,'T11','D14'], slotTone: 'best', spent: 1, notes: [] }`; `t-125` → answer `{ label: 'Rest 125 mit 2 Darts', big: 'Kein Finish', slotTone: 'none', slots: [null,'T20','T11'], notes: [{ title: 'Stellwurf', text: 'T20 · T11, Rest 32' }] }`. Andere Karten haben `spent: 0`.
+  - `card-view.test.ts`: `t-61` → question `{ label: 'Rest', big: '61', sub: 'noch 2 Darts', spent: 1 }`, answer `{ big: '61', slots: [null,'T11','D14'], slotTone: 'best', spent: 1, notes: [] }`; `t-125` → answer `{ label: 'Rest 125 mit 2 Darts', big: 'Kein Finish', slotTone: 'none', slots: [null,'T20','T11'], notes: [{ title: 'Stellwurf', text: 'T20 · T11, Rest 32' }] }`. Andere Karten haben kein `spent`.
   - `dart-slots.test.tsx`: `spent={1}` → erstes Listenelement mit Text „verbraucht“ (sr-only), nicht „offen“, nicht „Fehlwurf“; in der Auflösung (`tone`) bleibt das verbrauchte Feld sichtbar.
   - `study-question.test.tsx`: Zwei-Dart-Frage zeigt „noch 2 Darts“, das verbrauchte Feld, keine Taste „Nicht checkbar“, nach drei Zifferntipps nur zwei Darts in den Feldern 2 und 3, Ziffern danach deaktiviert.
   - `study-session.test.tsx`: Zwei-Dart-Karte „Prüfen“ → Urteil „Richtiger Stellwurf“, „Dein Weg“ zeigt verbrauchtes Feld + zwei Darts; nach „Nochmal“ startet die Runde leer.
@@ -127,7 +127,7 @@ Der Entwurf überlässt diese Punkte dem Umsetzer; so wird entschieden:
 - Modify: `src/lib/review/queries.ts` (+ `review.test.ts`), `src/components/stats/stats-data.tsx` (+test), `stats-skeleton.tsx`, `stats-parts.tsx`, `src/components/skeletons.test.tsx`, `de.ts`, `en.ts`
 
 **Interfaces:**
-- Produces: `export type Forecast = { kind: 'done' } | { kind: 'date'; day: string } | { kind: 'none' }` (`day` = Berliner `YYYY-MM-DD`); `forecast(input: { unseen: number; newLeftToday: number; newPerDay: number; now: Date }): Forecast`; `queueFromRows(...).newLeftToday: number` (auch in `loadQueue`). Texte `stats.forecast.until(date: string)` („Alle Karten freigeschaltet voraussichtlich am 14. Januar“ / „All cards unlocked by January 14“), `stats.forecast.done` („Alle Karten freigeschaltet“ / „All cards unlocked“), `stats.forecast.none` („Keine neuen Karten eingestellt“ / „No new cards set“). Datum formatiert `formatDay(day: string, locale: Locale, now: Date): string` in `src/lib/forecast.ts`.
+- Produces: `export type Forecast = { kind: 'done' } | { kind: 'date'; day: string } | { kind: 'none' }` (`day` = Berliner `YYYY-MM-DD`); `forecast(input: { unseen: number; newLeftToday: number; newPerDay: number; now: Date }): Forecast`; `queueFromRows(...).newLeftToday: number` (auch in `loadQueue`). Texte `stats.forecast.until(date: string)` („Alle Karten freigeschaltet voraussichtlich am 14. Januar“ / „All cards unlocked by 14 January“), `stats.forecast.done` („Alle Karten freigeschaltet“ / „All cards unlocked“), `stats.forecast.none` („Keine neuen Karten eingestellt“ / „No new cards per day set“). Datum formatiert `formatDay(day: string, locale: Locale, now: Date): string` in `src/lib/forecast.ts`.
 
 - [ ] **Step 1: Failing tests (`forecast.test.ts`):**
   - `unseen 0` → `done`.
@@ -137,7 +137,7 @@ Der Entwurf überlässt diese Punkte dem Umsetzer; so wird entschieden:
   - Extrakarten nur heute: `unseen 30, newLeftToday 20 (10 + 10 Extra), newPerDay 10` → morgen.
   - Einstellung 0 mit genügend Extrakarten (`unseen 5, newLeftToday 5, newPerDay 0`) → heute; ohne (`unseen 6`) → `none`.
   - Zeitgrenze: `now = 2026-11-13T22:59:59Z` (23:59 Berlin) zählt als 13.11.; Sommerzeit: `now 2026-10-24T12:00Z, unseen 2, newLeftToday 0, newPerDay 1` → `2026-10-26`.
-  - `formatDay('2027-01-14','de', now 2026)` → `14. Januar 2027`; `formatDay('2026-12-22','de')` → `22. Dezember`; `en` → `December 22`.
+  - `formatDay('2027-01-14','de', now 2026)` → `14. Januar 2027`; `formatDay('2026-12-22','de')` → `22. Dezember`; `en` → `22 December`.
   - `review.test.ts`: `newLeftToday` = Limit inkl. Extrakarten minus heute eingeführte, nie negativ.
   - `stats-data.test.tsx`: Zeile erscheint mit Datum; bei allen gesehen „Alle Karten freigeschaltet“.
   - `skeletons.test.tsx`: Stats-Skeleton hat Platzhalter der Prognosezeile.
