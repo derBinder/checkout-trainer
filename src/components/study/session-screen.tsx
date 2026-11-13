@@ -1,21 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { useDictionary } from "@/i18n/client";
+import { useState } from "react";
 import { judge, type Answer, type Check } from "@/lib/darts/judge";
 import type { SessionState } from "@/lib/srs/session";
 import type { CardView } from "./card-view";
 import { initInput, inputReducer, type InputAction, type InputState } from "./route-input";
 import { StudyCard } from "./study-card";
-import {
-  STUDY_CONTENT,
-  STUDY_COUNTER,
-  STUDY_FOOTER,
-  STUDY_HEADER,
-  STUDY_HEADER_ROW,
-  StudySurface as Surface,
-} from "./study-parts";
+import { SessionHeader, useContentFocus } from "./session-header";
+import { STUDY_CONTENT, STUDY_FOOTER, StudySurface as Surface } from "./study-parts";
 import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { useWakeLock } from "./use-wake-lock";
 
@@ -50,8 +42,6 @@ export function SessionScreen({
   revealedFooter: React.ReactNode;
   onReveal: (answer?: Answer) => void;
 }) {
-  const t = useDictionary().study;
-
   // Am Board liegt das Handy oft eine Weile: Der Bildschirm bleibt an, solange Karten offen sind.
   useWakeLock(true);
 
@@ -67,35 +57,11 @@ export function SessionScreen({
   const onInput = (a: InputAction) => setInput((s) => inputReducer(s, a));
 
   // Fokus auf den neuen Inhalt, damit Tastatur und Screenreader folgen.
-  const contentRef = useRef<HTMLDivElement>(null);
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    contentRef.current?.focus({ preventScroll: true });
-    contentRef.current?.scrollTo({ top: 0 });
-  }, [current.id, session.revealed, session.total]);
-
-  const position = Math.min(session.done + 1, session.total);
+  const contentRef = useContentFocus(`${current.id}:${session.revealed}:${session.total}`);
 
   return (
     <Surface>
-      <header className={STUDY_HEADER}>
-        <div className={STUDY_HEADER_ROW}>
-          {close}
-          <p className={STUDY_COUNTER}>
-            {position} / {session.total}
-          </p>
-        </div>
-        <Progress
-          value={session.done}
-          max={session.total}
-          aria-label={t.session.progress}
-          getAriaValueText={() => progressText(session.done, session.total)}
-        />
-      </header>
+      <SessionHeader close={close} done={session.done} total={session.total} progressText={progressText} />
 
       <div ref={contentRef} tabIndex={-1} className={STUDY_CONTENT}>
         {/* my-auto statt justify-center: mittig in der freien Fläche, bei Überlänge oben beginnend. */}

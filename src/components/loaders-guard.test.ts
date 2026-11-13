@@ -8,6 +8,7 @@ const queries = vi.hoisted(() => ({
   loadStatsData: vi.fn(),
   listUsers: vi.fn(),
   cardView: vi.fn(),
+  loadExtraCards: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/guard", () => ({
@@ -20,13 +21,14 @@ vi.mock("@/lib/review/queries", () => ({
   loadStatsData: queries.loadStatsData,
 }));
 vi.mock("@/app/[lang]/(app)/admin/admin-users", () => ({ listUsers: queries.listUsers }));
+vi.mock("@/lib/extra-cards-db", () => ({ loadExtraCards: queries.loadExtraCards }));
 // Kartenansichten sind Lerninhalte: Ohne Zugriff entsteht keine.
 vi.mock("@/components/study/card-view", () => ({ cardView: queries.cardView }));
 
 const { TodayOverview, TodayStreak } = await import("./today/today-data");
 const { StatsOverview, StatsStreak } = await import("./stats/stats-data");
 const { StudySessionData } = await import("./study/study-data");
-const { NewPerDayField, DeleteAccountSection } = await import("./settings/settings-data");
+const { NewPerDayField, ExtraCardsField, DeleteAccountSection } = await import("./settings/settings-data");
 const { UserList } = await import("./admin/admin-data");
 const { PracticeData } = await import("./practice/practice-data");
 
@@ -40,6 +42,7 @@ async function expectRedirectWithoutQueries(load: () => Promise<unknown>) {
   expect(queries.loadStatsData).not.toHaveBeenCalled();
   expect(queries.listUsers).not.toHaveBeenCalled();
   expect(queries.cardView).not.toHaveBeenCalled();
+  expect(queries.loadExtraCards).not.toHaveBeenCalled();
 }
 
 beforeEach(() => {
@@ -63,6 +66,7 @@ describe("Datenbausteine ohne Zugriff", () => {
 
   it("settings-data", async () => {
     await expectRedirectWithoutQueries(NewPerDayField);
+    await expectRedirectWithoutQueries(ExtraCardsField);
     await expectRedirectWithoutQueries(DeleteAccountSection);
   });
 
