@@ -45,6 +45,25 @@
     "singleCases": []
   },
   {
+    "id": "d-2",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 4,
+    "thrown": [
+      "S2"
+    ],
+    "aimed": "D2",
+    "hit": "S2",
+    "newRest": 2,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D1"
+      ]
+    }
+  },
+  {
     "id": "r-5",
     "kind": "rest",
     "rest": 5,
@@ -80,6 +99,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-3",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 6,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "D3",
+    "hit": "S3",
+    "newRest": 3,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S1",
+        "D1"
+      ]
+    }
   },
   {
     "id": "r-7",
@@ -123,6 +162,25 @@
     "singleCases": []
   },
   {
+    "id": "d-4",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 8,
+    "thrown": [
+      "S4"
+    ],
+    "aimed": "D4",
+    "hit": "S4",
+    "newRest": 4,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D2"
+      ]
+    }
+  },
+  {
     "id": "r-9",
     "kind": "rest",
     "rest": 9,
@@ -162,6 +220,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-5",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 10,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "D5",
+    "hit": "S5",
+    "newRest": 5,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S1",
+        "D2"
+      ]
+    }
   },
   {
     "id": "r-11",
@@ -205,6 +283,25 @@
     "singleCases": []
   },
   {
+    "id": "d-6",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 12,
+    "thrown": [
+      "S6"
+    ],
+    "aimed": "D6",
+    "hit": "S6",
+    "newRest": 6,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D3"
+      ]
+    }
+  },
+  {
     "id": "r-13",
     "kind": "rest",
     "rest": 13,
@@ -244,6 +341,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-7",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 14,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "D7",
+    "hit": "S7",
+    "newRest": 7,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S3",
+        "D2"
+      ]
+    }
   },
   {
     "id": "r-15",
@@ -287,6 +404,25 @@
     "singleCases": []
   },
   {
+    "id": "d-8",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 16,
+    "thrown": [
+      "S8"
+    ],
+    "aimed": "D8",
+    "hit": "S8",
+    "newRest": 8,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D4"
+      ]
+    }
+  },
+  {
     "id": "r-17",
     "kind": "rest",
     "rest": 17,
@@ -326,6 +462,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-9",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 18,
+    "thrown": [
+      "S9"
+    ],
+    "aimed": "D9",
+    "hit": "S9",
+    "newRest": 9,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S1",
+        "D4"
+      ]
+    }
   },
   {
     "id": "r-19",
@@ -369,6 +525,25 @@
     "singleCases": []
   },
   {
+    "id": "d-10",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 20,
+    "thrown": [
+      "S10"
+    ],
+    "aimed": "D10",
+    "hit": "S10",
+    "newRest": 10,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D5"
+      ]
+    }
+  },
+  {
     "id": "r-21",
     "kind": "rest",
     "rest": 21,
@@ -408,6 +583,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-11",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 22,
+    "thrown": [
+      "S11"
+    ],
+    "aimed": "D11",
+    "hit": "S11",
+    "newRest": 11,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S3",
+        "D4"
+      ]
+    }
   },
   {
     "id": "r-23",
@@ -451,6 +646,25 @@
     "singleCases": []
   },
   {
+    "id": "d-12",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 24,
+    "thrown": [
+      "S12"
+    ],
+    "aimed": "D12",
+    "hit": "S12",
+    "newRest": 12,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D6"
+      ]
+    }
+  },
+  {
     "id": "r-25",
     "kind": "rest",
     "rest": 25,
@@ -490,6 +704,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-13",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 26,
+    "thrown": [
+      "S13"
+    ],
+    "aimed": "D13",
+    "hit": "S13",
+    "newRest": 13,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S5",
+        "D4"
+      ]
+    }
   },
   {
     "id": "r-27",
@@ -533,6 +767,25 @@
     "singleCases": []
   },
   {
+    "id": "d-14",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 28,
+    "thrown": [
+      "S14"
+    ],
+    "aimed": "D14",
+    "hit": "S14",
+    "newRest": 14,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D7"
+      ]
+    }
+  },
+  {
     "id": "r-29",
     "kind": "rest",
     "rest": 29,
@@ -572,6 +825,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-15",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 30,
+    "thrown": [
+      "S15"
+    ],
+    "aimed": "D15",
+    "hit": "S15",
+    "newRest": 15,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S7",
+        "D4"
+      ]
+    }
   },
   {
     "id": "r-31",
@@ -615,6 +888,25 @@
     "singleCases": []
   },
   {
+    "id": "d-16",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 32,
+    "thrown": [
+      "S16"
+    ],
+    "aimed": "D16",
+    "hit": "S16",
+    "newRest": 16,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D8"
+      ]
+    }
+  },
+  {
     "id": "r-33",
     "kind": "rest",
     "rest": 33,
@@ -654,6 +946,26 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-17",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 34,
+    "thrown": [
+      "S17"
+    ],
+    "aimed": "D17",
+    "hit": "S17",
+    "newRest": 17,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S1",
+        "D8"
+      ]
+    }
   },
   {
     "id": "r-35",
@@ -697,6 +1009,25 @@
     "singleCases": []
   },
   {
+    "id": "d-18",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 36,
+    "thrown": [
+      "S18"
+    ],
+    "aimed": "D18",
+    "hit": "S18",
+    "newRest": 18,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D9"
+      ]
+    }
+  },
+  {
     "id": "r-37",
     "kind": "rest",
     "rest": 37,
@@ -738,6 +1069,26 @@
     "singleCases": []
   },
   {
+    "id": "d-19",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 38,
+    "thrown": [
+      "S19"
+    ],
+    "aimed": "D19",
+    "hit": "S19",
+    "newRest": 19,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "S3",
+        "D8"
+      ]
+    }
+  },
+  {
     "id": "r-39",
     "kind": "rest",
     "rest": 39,
@@ -777,6 +1128,25 @@
     },
     "alternatives": [],
     "singleCases": []
+  },
+  {
+    "id": "d-20",
+    "kind": "miss",
+    "variant": "singleDouble",
+    "rest": 40,
+    "thrown": [
+      "S20"
+    ],
+    "aimed": "D20",
+    "hit": "S20",
+    "newRest": 20,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "D10"
+      ]
+    }
   },
   {
     "id": "r-41",
@@ -1787,6 +2157,46 @@
     }
   },
   {
+    "id": "n-68-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 68,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 67,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D8"
+      ]
+    }
+  },
+  {
+    "id": "n-68-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 68,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 63,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T13",
+        "D12"
+      ]
+    }
+  },
+  {
     "id": "t-68",
     "kind": "two",
     "rest": 68,
@@ -1852,6 +2262,46 @@
       "route": [
         "S10",
         "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-69-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 69,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 62,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T12",
+        "D13"
+      ]
+    }
+  },
+  {
+    "id": "n-69-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 69,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 66,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D9"
       ]
     }
   },
@@ -2101,6 +2551,46 @@
     }
   },
   {
+    "id": "n-73-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 73,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 66,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D9"
+      ]
+    }
+  },
+  {
+    "id": "n-73-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 73,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D5"
+      ]
+    }
+  },
+  {
     "id": "r-74",
     "kind": "rest",
     "rest": 74,
@@ -2265,6 +2755,46 @@
     }
   },
   {
+    "id": "n-76-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 76,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 75,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "n-76-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 76,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 71,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T13",
+        "D16"
+      ]
+    }
+  },
+  {
     "id": "r-77",
     "kind": "rest",
     "rest": 77,
@@ -2314,6 +2844,46 @@
       "route": [
         "S18",
         "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-77-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 77,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 70,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D5"
+      ]
+    }
+  },
+  {
+    "id": "n-77-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 77,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 74,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T14",
+        "D16"
       ]
     }
   },
@@ -2429,6 +2999,46 @@
     }
   },
   {
+    "id": "n-79-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 79,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 72,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D12"
+      ]
+    }
+  },
+  {
+    "id": "n-79-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 79,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 76,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D8"
+      ]
+    }
+  },
+  {
     "id": "r-80",
     "kind": "rest",
     "rest": 80,
@@ -2487,6 +3097,46 @@
     }
   },
   {
+    "id": "n-80-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 80,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 79,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D11"
+      ]
+    }
+  },
+  {
+    "id": "n-80-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 80,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 75,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D12"
+      ]
+    }
+  },
+  {
     "id": "r-81",
     "kind": "rest",
     "rest": 81,
@@ -2541,6 +3191,46 @@
       "route": [
         "T12",
         "D13"
+      ]
+    }
+  },
+  {
+    "id": "n-81-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 81,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 74,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T14",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-81-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 81,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 78,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D12"
       ]
     }
   },
@@ -2670,6 +3360,46 @@
       "kind": "finish",
       "route": [
         "T14",
+        "D11"
+      ]
+    }
+  },
+  {
+    "id": "n-84-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 84,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 83,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-84-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 84,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 79,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
         "D11"
       ]
     }
@@ -2892,6 +3622,46 @@
     }
   },
   {
+    "id": "n-88-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 88,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 87,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "n-88-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 88,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 83,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D16"
+      ]
+    }
+  },
+  {
     "id": "r-89",
     "kind": "rest",
     "rest": 89,
@@ -2941,6 +3711,46 @@
       "route": [
         "T20",
         "D5"
+      ]
+    }
+  },
+  {
+    "id": "n-89-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 89,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 82,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "Bull",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-89-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 89,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 86,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D16"
       ]
     }
   },
@@ -2998,6 +3808,46 @@
       "route": [
         "T20",
         "D5"
+      ]
+    }
+  },
+  {
+    "id": "n-90-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 90,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 89,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-90-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 90,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 85,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T15",
+        "D20"
       ]
     }
   },
@@ -3132,6 +3982,46 @@
     }
   },
   {
+    "id": "n-92-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 92,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 91,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-92-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 92,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 87,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D18"
+      ]
+    }
+  },
+  {
     "id": "r-93",
     "kind": "rest",
     "rest": 93,
@@ -3187,6 +4077,46 @@
       "route": [
         "T14",
         "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-93-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 93,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 86,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-93-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 93,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 90,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D18"
       ]
     }
   },
@@ -3309,6 +4239,46 @@
     }
   },
   {
+    "id": "n-95-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 95,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 88,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D14"
+      ]
+    }
+  },
+  {
+    "id": "n-95-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 95,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 92,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D16"
+      ]
+    }
+  },
+  {
     "id": "r-96",
     "kind": "rest",
     "rest": 96,
@@ -3358,6 +4328,46 @@
       "route": [
         "T20",
         "D8"
+      ]
+    }
+  },
+  {
+    "id": "n-96-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 96,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 95,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D19"
+      ]
+    }
+  },
+  {
+    "id": "n-96-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 96,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 91,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D20"
       ]
     }
   },
@@ -3415,6 +4425,46 @@
     }
   },
   {
+    "id": "n-97-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 97,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 90,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "n-97-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 97,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 94,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D20"
+      ]
+    }
+  },
+  {
     "id": "r-98",
     "kind": "rest",
     "rest": 98,
@@ -3464,6 +4514,46 @@
       "route": [
         "T18",
         "D12"
+      ]
+    }
+  },
+  {
+    "id": "n-98-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 98,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 97,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-98-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 98,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 93,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D18"
       ]
     }
   },
@@ -3519,6 +4609,46 @@
       "route": [
         "T20",
         "D10"
+      ]
+    }
+  },
+  {
+    "id": "n-99-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 99,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 92,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-99-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 99,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 96,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D18"
       ]
     }
   },
@@ -3589,6 +4719,47 @@
     }
   },
   {
+    "id": "n-100-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 100,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 99,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-100-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 100,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 95,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D19"
+      ]
+    }
+  },
+  {
     "id": "r-101",
     "kind": "rest",
     "rest": 101,
@@ -3644,6 +4815,46 @@
       "route": [
         "T19",
         "D12"
+      ]
+    }
+  },
+  {
+    "id": "n-101-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 101,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-101-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 101,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 96,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D18"
       ]
     }
   },
@@ -3711,6 +4922,46 @@
       "route": [
         "Bull",
         "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-102-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 102,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 101,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-102-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 102,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 97,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D20"
       ]
     }
   },
@@ -3783,6 +5034,46 @@
     }
   },
   {
+    "id": "n-103-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 103,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 96,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D18"
+      ]
+    }
+  },
+  {
+    "id": "n-103-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 103,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D20"
+      ]
+    }
+  },
+  {
     "id": "t-103",
     "kind": "two",
     "rest": 103,
@@ -3851,6 +5142,46 @@
     }
   },
   {
+    "id": "n-104-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 104,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 97,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-104-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 104,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 101,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "t-104",
     "kind": "two",
     "rest": 104,
@@ -3913,6 +5244,46 @@
       "kind": "finish",
       "route": [
         "T15",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-105-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 105,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-105-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 105,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
         "D20"
       ]
     }
@@ -4010,6 +5381,47 @@
       "kind": "finish",
       "route": [
         "D18"
+      ]
+    }
+  },
+  {
+    "id": "n-106-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 106,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 105,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-106-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 106,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 101,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "Bull"
       ]
     }
   },
@@ -4114,6 +5526,46 @@
     }
   },
   {
+    "id": "n-107-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 107,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 100,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-107-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 107,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "t-107",
     "kind": "two",
     "rest": 107,
@@ -4181,6 +5633,47 @@
     }
   },
   {
+    "id": "n-108-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 108,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-108-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 108,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 103,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-108",
     "kind": "two",
     "rest": 108,
@@ -4245,6 +5738,47 @@
       "route": [
         "T19",
         "D16"
+      ]
+    }
+  },
+  {
+    "id": "n-109-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 109,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 108,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-109-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 109,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
       ]
     }
   },
@@ -4349,6 +5883,48 @@
     }
   },
   {
+    "id": "n-110-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 110,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 109,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-110-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 110,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 105,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-110",
     "kind": "two",
     "rest": 110,
@@ -4419,6 +5995,47 @@
         "T20",
         "D16"
       ]
+    }
+  },
+  {
+    "id": "n-111-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 111,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 104,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-111-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 111,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 108,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S16"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -4518,6 +6135,47 @@
     }
   },
   {
+    "id": "n-112-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 112,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 111,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-112-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 112,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "t-112",
     "kind": "two",
     "rest": 112,
@@ -4578,6 +6236,47 @@
       "route": [
         "T18",
         "D20"
+      ]
+    }
+  },
+  {
+    "id": "n-113-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 113,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 106,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-113-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 113,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
       ]
     }
   },
@@ -4656,6 +6355,47 @@
     }
   },
   {
+    "id": "n-114-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 114,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 107,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-114-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 114,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 111,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-114",
     "kind": "two",
     "rest": 114,
@@ -4726,6 +6466,47 @@
       "route": [
         "T19",
         "D19"
+      ]
+    }
+  },
+  {
+    "id": "n-115-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 115,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 114,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-115-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 115,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
       ]
     }
   },
@@ -4804,6 +6585,48 @@
     }
   },
   {
+    "id": "n-116-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 116,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 109,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-116-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 116,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 113,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-116",
     "kind": "two",
     "rest": 116,
@@ -4878,6 +6701,47 @@
     }
   },
   {
+    "id": "n-117-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 117,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 110,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
+      ]
+    }
+  },
+  {
+    "id": "n-117-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 117,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 114,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-117",
     "kind": "two",
     "rest": 117,
@@ -4943,6 +6807,48 @@
         "T20",
         "D19"
       ]
+    }
+  },
+  {
+    "id": "n-118-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 118,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 117,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-118-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 118,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 113,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T7"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -5046,6 +6952,48 @@
     }
   },
   {
+    "id": "n-119-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 119,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 112,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-119-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 119,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 116,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-119",
     "kind": "two",
     "rest": 119,
@@ -5111,6 +7059,48 @@
         "T20",
         "D20"
       ]
+    }
+  },
+  {
+    "id": "n-120-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 120,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 119,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-120-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 120,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 115,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S15"
+      ],
+      "leaves": 40
     }
   },
   {
@@ -5217,6 +7207,48 @@
       "route": [
         "Bull"
       ]
+    }
+  },
+  {
+    "id": "n-121-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 121,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 120,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-121-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 121,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 116,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -5420,6 +7452,48 @@
     }
   },
   {
+    "id": "n-123-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 123,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 116,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-123-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 123,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 120,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-123",
     "kind": "two",
     "rest": 123,
@@ -5517,6 +7591,48 @@
       "route": [
         "Bull"
       ]
+    }
+  },
+  {
+    "id": "n-124-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 124,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 123,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-124-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 124,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 119,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -5624,6 +7740,48 @@
     }
   },
   {
+    "id": "n-125-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 125,
+    "thrown": [
+      "T18",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 64,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T8"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-125-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 125,
+    "thrown": [
+      "T18",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 68,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-125",
     "kind": "two",
     "rest": 125,
@@ -5724,6 +7882,90 @@
     }
   },
   {
+    "id": "n-126-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 126,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 119,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-126-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 126,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 123,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-126-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 126,
+    "thrown": [
+      "T19",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 62,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-126-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 126,
+    "thrown": [
+      "T19",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 66,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-126",
     "kind": "two",
     "rest": 126,
@@ -5821,6 +8063,48 @@
       "route": [
         "Bull"
       ]
+    }
+  },
+  {
+    "id": "n-127-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 127,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 126,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-127-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 127,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 122,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T10"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -6040,6 +8324,48 @@
     }
   },
   {
+    "id": "n-129-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 129,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 122,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-129-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 129,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 126,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-129",
     "kind": "two",
     "rest": 129,
@@ -6137,6 +8463,90 @@
       "route": [
         "Bull"
       ]
+    }
+  },
+  {
+    "id": "n-130-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 130,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 129,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-130-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 130,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 125,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-130-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 130,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 69,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T15"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-130-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 130,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 65,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T11"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -6250,6 +8660,48 @@
     }
   },
   {
+    "id": "n-131-0-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 131,
+    "thrown": [
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 124,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-131-0-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 131,
+    "thrown": [
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 128,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-131",
     "kind": "two",
     "rest": 131,
@@ -6360,6 +8812,48 @@
     }
   },
   {
+    "id": "n-132-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 132,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 131,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-132-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 132,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 127,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-132",
     "kind": "two",
     "rest": 132,
@@ -6464,6 +8958,90 @@
     }
   },
   {
+    "id": "n-133-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 133,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 132,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-133-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 133,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 128,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-133-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 133,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 66,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-133-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 133,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 70,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-133",
     "kind": "two",
     "rest": 133,
@@ -6561,6 +9139,48 @@
         "S18"
       ],
       "leaves": 40
+    }
+  },
+  {
+    "id": "n-134-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 134,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 133,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T11"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-134-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 134,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 129,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 24
     }
   },
   {
@@ -6674,6 +9294,48 @@
     }
   },
   {
+    "id": "n-135-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 135,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 134,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-135-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 135,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 130,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-135",
     "kind": "two",
     "rest": 135,
@@ -6773,6 +9435,90 @@
       "kind": "setup",
       "throws": [
         "T8"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-136-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 136,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 135,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-136-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 136,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 131,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-136-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 136,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 75,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-136-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 136,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 71,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T13"
       ],
       "leaves": 32
     }
@@ -6879,6 +9625,90 @@
         "S18"
       ],
       "leaves": 40
+    }
+  },
+  {
+    "id": "n-137-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 137,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 136,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-137-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 137,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 132,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-137-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 137,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 70,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-137-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 137,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 74,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -6992,6 +9822,48 @@
     }
   },
   {
+    "id": "n-138-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 138,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 137,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-138-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 138,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 133,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T11"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-138",
     "kind": "two",
     "rest": 138,
@@ -7095,6 +9967,48 @@
         "T14"
       ],
       "leaves": 24
+    }
+  },
+  {
+    "id": "n-139-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 139,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 138,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-139-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 139,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 134,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -7202,6 +10116,90 @@
     }
   },
   {
+    "id": "n-140-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 140,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 139,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-140-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 140,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 135,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-140-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 140,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 79,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-140-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 140,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 75,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-140",
     "kind": "two",
     "rest": 140,
@@ -7306,6 +10304,90 @@
     }
   },
   {
+    "id": "n-141-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 141,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 140,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-141-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 141,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 136,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-141-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 141,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 74,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-141-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 141,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 78,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-141",
     "kind": "two",
     "rest": 141,
@@ -7407,6 +10489,48 @@
       "kind": "setup",
       "throws": [
         "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-142-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 142,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 141,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-142-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 142,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 137,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
       ],
       "leaves": 32
     }
@@ -7522,6 +10646,48 @@
     }
   },
   {
+    "id": "n-143-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 143,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 142,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-143-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 143,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 138,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-143",
     "kind": "two",
     "rest": 143,
@@ -7626,6 +10792,90 @@
     }
   },
   {
+    "id": "n-144-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 144,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 143,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-144-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 144,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 139,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-144-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 144,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 83,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-144-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 144,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 79,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-144",
     "kind": "two",
     "rest": 144,
@@ -7723,6 +10973,90 @@
         "T14"
       ],
       "leaves": 24
+    }
+  },
+  {
+    "id": "n-145-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 145,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 144,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-145-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 145,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 140,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-145-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 145,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 78,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-145-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 145,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 82,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 40
     }
   },
   {
@@ -7836,6 +11170,48 @@
     }
   },
   {
+    "id": "n-146-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 146,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 145,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-146-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 146,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 141,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "t-146",
     "kind": "two",
     "rest": 146,
@@ -7941,6 +11317,48 @@
       "kind": "setup",
       "throws": [
         "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-147-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 147,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 146,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-147-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 147,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 142,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
       ],
       "leaves": 40
     }
@@ -8056,6 +11474,90 @@
     }
   },
   {
+    "id": "n-148-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 148,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 147,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-148-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 148,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 143,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-148-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 148,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 87,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-148-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 148,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 83,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-148",
     "kind": "two",
     "rest": 148,
@@ -8157,6 +11659,90 @@
         "T10"
       ],
       "leaves": 40
+    }
+  },
+  {
+    "id": "n-149-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 149,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 148,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-149-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 149,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 144,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "n-149-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 149,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 82,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-149-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 149,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 86,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -8270,6 +11856,48 @@
     }
   },
   {
+    "id": "n-150-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 150,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 149,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-150-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 150,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 145,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-150",
     "kind": "two",
     "rest": 150,
@@ -8380,6 +12008,48 @@
     }
   },
   {
+    "id": "n-151-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 151,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 150,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-151-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 151,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 146,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-151",
     "kind": "two",
     "rest": 151,
@@ -8481,6 +12151,90 @@
         "T16"
       ],
       "leaves": 24
+    }
+  },
+  {
+    "id": "n-152-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 152,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 151,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-152-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 152,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 147,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-152-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 152,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 91,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-152-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 152,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 87,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
+      ],
+      "leaves": 36
     }
   },
   {
@@ -8588,6 +12342,90 @@
     }
   },
   {
+    "id": "n-153-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 153,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 152,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-153-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 153,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 148,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-153-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 153,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 86,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-153-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 153,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 90,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
     "id": "t-153",
     "kind": "two",
     "rest": 153,
@@ -8689,6 +12527,48 @@
         "T12"
       ],
       "leaves": 40
+    }
+  },
+  {
+    "id": "n-154-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 154,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 153,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-154-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 154,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 149,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 32
     }
   },
   {
@@ -8796,6 +12676,90 @@
     }
   },
   {
+    "id": "n-155-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 155,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 154,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-155-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 155,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 150,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-155-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 155,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 88,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-155-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 155,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 92,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "t-155",
     "kind": "two",
     "rest": 155,
@@ -8895,6 +12859,90 @@
       "kind": "setup",
       "throws": [
         "T12"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-156-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 156,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 155,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
+    "id": "n-156-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 156,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 151,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-156-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 156,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 95,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
+    "id": "n-156-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 156,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 91,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T17"
       ],
       "leaves": 40
     }
@@ -9004,6 +13052,90 @@
     }
   },
   {
+    "id": "n-157-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 157,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 156,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-157-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 157,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 152,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "n-157-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 157,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 90,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-157-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 157,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 94,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "t-157",
     "kind": "two",
     "rest": 157,
@@ -9105,6 +13237,90 @@
         "T18"
       ],
       "leaves": 24
+    }
+  },
+  {
+    "id": "n-158-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 158,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 157,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-158-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 158,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 153,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "n-158-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 158,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 97,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-158-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 158,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 93,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19"
+      ],
+      "leaves": 36
     }
   },
   {
@@ -9238,6 +13454,90 @@
     }
   },
   {
+    "id": "n-160-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 160,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 159,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 39
+    }
+  },
+  {
+    "id": "n-160-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 160,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 155,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
+    "id": "n-160-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 160,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 99,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 39
+    }
+  },
+  {
+    "id": "n-160-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 160,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 95,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
     "id": "t-160",
     "kind": "two",
     "rest": 160,
@@ -9339,6 +13639,48 @@
         "T20"
       ],
       "leaves": 24
+    }
+  },
+  {
+    "id": "n-161-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 161,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 160,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-161-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 161,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 156,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 36
     }
   },
   {
@@ -9504,6 +13846,48 @@
     }
   },
   {
+    "id": "n-164-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 164,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 163,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 43
+    }
+  },
+  {
+    "id": "n-164-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 164,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 159,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 39
+    }
+  },
+  {
     "id": "t-164",
     "kind": "two",
     "rest": 164,
@@ -9657,6 +14041,90 @@
         "T16"
       ],
       "leaves": 40
+    }
+  },
+  {
+    "id": "n-167-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 167,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 166,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
+    "id": "n-167-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 167,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 162,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 42
+    }
+  },
+  {
+    "id": "n-167-1-S7",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 167,
+    "thrown": [
+      "T20",
+      "S7"
+    ],
+    "aimed": "T19",
+    "hit": "S7",
+    "newRest": 100,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "n-167-1-S3",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 167,
+    "thrown": [
+      "T20",
+      "S3"
+    ],
+    "aimed": "T19",
+    "hit": "S3",
+    "newRest": 104,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T18"
+      ],
+      "leaves": 50
     }
   },
   {
@@ -9816,12 +14284,876 @@
     }
   },
   {
+    "id": "n-170-0-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 170,
+    "thrown": [
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 169,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 49
+    }
+  },
+  {
+    "id": "n-170-0-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 170,
+    "thrown": [
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 165,
+    "dartsLeft": 2,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 45
+    }
+  },
+  {
+    "id": "n-170-1-S1",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 170,
+    "thrown": [
+      "T20",
+      "S1"
+    ],
+    "aimed": "T20",
+    "hit": "S1",
+    "newRest": 109,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 49
+    }
+  },
+  {
+    "id": "n-170-1-S5",
+    "kind": "miss",
+    "variant": "neighbour",
+    "rest": 170,
+    "thrown": [
+      "T20",
+      "S5"
+    ],
+    "aimed": "T20",
+    "hit": "S5",
+    "newRest": 105,
+    "dartsLeft": 1,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20"
+      ],
+      "leaves": 45
+    }
+  },
+  {
     "id": "t-170",
     "kind": "two",
     "rest": 170,
     "follow": {
       "kind": "setup",
       "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 50
+    }
+  },
+  {
+    "id": "o-171",
+    "kind": "over",
+    "rest": 171,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-172",
+    "kind": "over",
+    "rest": 172,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-173",
+    "kind": "over",
+    "rest": 173,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-174",
+    "kind": "over",
+    "rest": 174,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-175",
+    "kind": "over",
+    "rest": 175,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-176",
+    "kind": "over",
+    "rest": 176,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T8"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-177",
+    "kind": "over",
+    "rest": 177,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-178",
+    "kind": "over",
+    "rest": 178,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-179",
+    "kind": "over",
+    "rest": 179,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T9"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-180",
+    "kind": "over",
+    "rest": 180,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-181",
+    "kind": "over",
+    "rest": 181,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T7"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-182",
+    "kind": "over",
+    "rest": 182,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-183",
+    "kind": "over",
+    "rest": 183,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T13"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-184",
+    "kind": "over",
+    "rest": 184,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T8"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-185",
+    "kind": "over",
+    "rest": 185,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-186",
+    "kind": "over",
+    "rest": 186,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-187",
+    "kind": "over",
+    "rest": 187,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T9"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-188",
+    "kind": "over",
+    "rest": 188,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-189",
+    "kind": "over",
+    "rest": 189,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T15"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-190",
+    "kind": "over",
+    "rest": 190,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-191",
+    "kind": "over",
+    "rest": 191,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-192",
+    "kind": "over",
+    "rest": 192,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T16"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-193",
+    "kind": "over",
+    "rest": 193,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T11"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-194",
+    "kind": "over",
+    "rest": 194,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-195",
+    "kind": "over",
+    "rest": 195,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-196",
+    "kind": "over",
+    "rest": 196,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T12"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-197",
+    "kind": "over",
+    "rest": 197,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T15"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-198",
+    "kind": "over",
+    "rest": 198,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-199",
+    "kind": "over",
+    "rest": 199,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-200",
+    "kind": "over",
+    "rest": 200,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-201",
+    "kind": "over",
+    "rest": 201,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-202",
+    "kind": "over",
+    "rest": 202,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-203",
+    "kind": "over",
+    "rest": 203,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-204",
+    "kind": "over",
+    "rest": 204,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 24
+    }
+  },
+  {
+    "id": "o-205",
+    "kind": "over",
+    "rest": 205,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-206",
+    "kind": "over",
+    "rest": 206,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-207",
+    "kind": "over",
+    "rest": 207,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "o-208",
+    "kind": "over",
+    "rest": 208,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-209",
+    "kind": "over",
+    "rest": 209,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-210",
+    "kind": "over",
+    "rest": 210,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "o-211",
+    "kind": "over",
+    "rest": 211,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-212",
+    "kind": "over",
+    "rest": 212,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
+    "id": "o-213",
+    "kind": "over",
+    "rest": 213,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "o-214",
+    "kind": "over",
+    "rest": 214,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-215",
+    "kind": "over",
+    "rest": 215,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
+    "id": "o-216",
+    "kind": "over",
+    "rest": 216,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 36
+    }
+  },
+  {
+    "id": "o-217",
+    "kind": "over",
+    "rest": 217,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-218",
+    "kind": "over",
+    "rest": 218,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 38
+    }
+  },
+  {
+    "id": "o-219",
+    "kind": "over",
+    "rest": 219,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 39
+    }
+  },
+  {
+    "id": "o-220",
+    "kind": "over",
+    "rest": 220,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
+    "id": "o-221",
+    "kind": "over",
+    "rest": 221,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T17"
+      ],
+      "leaves": 50
+    }
+  },
+  {
+    "id": "o-222",
+    "kind": "over",
+    "rest": 222,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 42
+    }
+  },
+  {
+    "id": "o-223",
+    "kind": "over",
+    "rest": 223,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 43
+    }
+  },
+  {
+    "id": "o-224",
+    "kind": "over",
+    "rest": 224,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T18"
+      ],
+      "leaves": 50
+    }
+  },
+  {
+    "id": "o-225",
+    "kind": "over",
+    "rest": 225,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 45
+    }
+  },
+  {
+    "id": "o-226",
+    "kind": "over",
+    "rest": 226,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
+    "id": "o-227",
+    "kind": "over",
+    "rest": 227,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T19"
+      ],
+      "leaves": 50
+    }
+  },
+  {
+    "id": "o-228",
+    "kind": "over",
+    "rest": 228,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 48
+    }
+  },
+  {
+    "id": "o-229",
+    "kind": "over",
+    "rest": 229,
+    "setup": {
+      "throws": [
+        "T20",
+        "T20",
+        "T20"
+      ],
+      "leaves": 49
+    }
+  },
+  {
+    "id": "o-230",
+    "kind": "over",
+    "rest": 230,
+    "setup": {
+      "throws": [
+        "T20",
         "T20",
         "T20"
       ],

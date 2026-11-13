@@ -159,6 +159,11 @@ describe('setup that leaves a bogey number', () => {
 })
 
 describe('three-dart setups above 170', () => {
+  it('builds a three-dart setup check without Nicht checkbar', () => {
+    expect(check('o-199')).toEqual({ kind: 'setup', rest: 199, maxDarts: 3, throws: ['T20', 'T20', 'T13'] })
+    expect(offersNotCheckable(check('o-199'))).toBe(false)
+  })
+
   const setup: Check = { kind: 'setup', rest: 171, maxDarts: 3, throws: ['T20', 'T20', 'S19'] }
 
   it('counts the order of the darts', () => {

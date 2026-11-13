@@ -71,6 +71,8 @@ export function checkFor(card: Card): Check {
       return card.follow.kind === 'finish'
         ? { kind: 'follow', rest: card.rest, maxDarts: 2, best: expand(card.follow.route) }
         : { kind: 'setup', rest: card.rest, maxDarts: 2, throws: card.follow.throws }
+    case 'over':
+      return { kind: 'setup', rest: card.rest, maxDarts: 3, throws: card.setup.throws }
   }
 }
 

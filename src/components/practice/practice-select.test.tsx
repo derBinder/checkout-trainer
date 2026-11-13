@@ -4,12 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/client";
-import { CARDS } from "@/lib/cards";
+import { cardsFor } from "@/lib/cards";
+import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
 import { practiceGroups } from "@/lib/practice/filter";
 import { DEFAULT_SELECTION, type PracticeSelection } from "@/lib/practice/selection";
 import { PracticeSelect } from "./practice-select";
 
-const CARD_META = CARDS.map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
+const CARD_META = cardsFor(NO_EXTRA_CARDS).map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
 
 function Harness({
   initial = DEFAULT_SELECTION,

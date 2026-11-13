@@ -36,6 +36,7 @@ export function practiceGroups(card: Card): PracticeGroup[] {
     case "rest":
       return ["ways"];
     case "bogey":
+    case "over":
       return ["setups"];
     case "two":
       return card.follow.kind === "finish" ? ["ways"] : ["setups"];

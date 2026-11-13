@@ -4,6 +4,7 @@ import {
   formatDart,
   formatStep,
   isSplit,
+  parseDart,
   type Dart,
   type Steps,
 } from '@/lib/darts/model'
@@ -64,6 +65,11 @@ export type RestCard = {
 export type MissCard = {
   id: string
   kind: 'miss'
+  /**
+   * Zusatzkarten, die wie Fehlwurf-Karten gefragt werden: Nachbarfeld statt Triple
+   * (`neighbour`) oder Single statt Doppel (`singleDouble`). Ohne Angabe Single statt Triple.
+   */
+  variant?: 'neighbour' | 'singleDouble'
   rest: number
   thrown: string[]
   aimed: string
@@ -88,11 +94,25 @@ export type TwoDartCard = {
   follow: FollowText
 }
 
-export type Card = RestCard | MissCard | BogeyCard | TwoDartCard
+/** Rest über 170: der Stellwurf mit bis zu drei Darts. */
+export type OverCard = {
+  id: string
+  kind: 'over'
+  rest: number
+  setup: { throws: string[]; leaves: number }
+}
+
+export type Card = RestCard | MissCard | BogeyCard | TwoDartCard | OverCard
 
 const MIN_REST = 2
 const MAX_REST = 170
 const MAX_ALTERNATIVES = 2
+const MAX_OVER = 230
+const MIN_DOUBLE = 2
+const MAX_DOUBLE = 20
+
+/** Nachbarfelder der Triples, auf die Nachbarfeld-Karten zielen, in Lernreihenfolge. */
+const NEIGHBOURS: Record<number, [number, number]> = { 20: [1, 5], 19: [7, 3] }
 
 const fmt = (route: Steps): string[] => route.map(formatStep)
 
@@ -219,6 +239,56 @@ function missCards(rest: number, best: Steps, cases: SingleCase[]): MissCard[] {
   }))
 }
 
+/** Je Fehlwurf-Fall auf T20 oder T19 zwei Karten: statt des Singles fällt ein Nachbarfeld. */
+function neighbourCards(rest: number, best: Steps, cases: SingleCase[]): MissCard[] {
+  return cases.flatMap((c) => {
+    const aimed = parseDart(c.aimed)
+    const fields = NEIGHBOURS[aimed.n]
+    if (!fields) return []
+    return fields.flatMap((n): MissCard[] => {
+      const newRest = c.newRest + aimed.n - n
+      if (newRest < MIN_REST) return []
+      const hit = formatDart({ ring: 'S', n })
+      return [
+        {
+          id: `n-${rest}-${c.dartIndex}-${hit}`,
+          kind: 'miss',
+          variant: 'neighbour',
+          rest,
+          thrown: [...fmt(best.slice(0, c.dartIndex)), hit],
+          aimed: c.aimed,
+          hit,
+          newRest,
+          dartsLeft: c.dartsLeft,
+          follow: followAfterSingle(newRest, c.dartsLeft),
+        },
+      ]
+    })
+  })
+}
+
+/** Man steht auf dem Rest eines Doppels, zielt mit drei Darts darauf und trifft das Single. */
+function singleDoubleCard(n: number): MissCard {
+  const hit = formatDart({ ring: 'S', n })
+  return {
+    id: `d-${n}`,
+    kind: 'miss',
+    variant: 'singleDouble',
+    rest: 2 * n,
+    thrown: [hit],
+    aimed: formatDart({ ring: 'D', n }),
+    hit,
+    newRest: n,
+    dartsLeft: 2,
+    follow: followAfterSingle(n, 2),
+  }
+}
+
+function overCard(rest: number): OverCard {
+  const setup = bestSetup(rest, 3)
+  return { id: `o-${rest}`, kind: 'over', rest, setup: { throws: fmt(setup.throws), leaves: setup.leaves } }
+}
+
 /**
  * Zwei-Dart-Karte, wenn man mit zwei Darts etwas anderes tun muss, als die Rest-Karte lehrt:
  * die Tabelle nennt einen Weg „mit 2 Darts“, oder es bleibt nur ein Stellwurf.
@@ -237,18 +307,22 @@ function cardsOfRest(rest: number): Card[] {
   const best = referenceRoute(rest)
   if (!best) throw new Error(`Kein Referenzweg für Rest ${rest}`)
   const card = restCard(rest, best)
-  return [card, ...missCards(rest, best, card.singleCases)]
+  return [card, ...missCards(rest, best, card.singleCases), ...neighbourCards(rest, best, card.singleCases)]
 }
 
 /**
  * Alle Karten in Lernreihenfolge: aufsteigend nach Rest, je Rest erst die Rest- oder
- * Bogey-Karte, dann die Fehlwurf-Karten, dann die Zwei-Dart-Karte.
+ * Bogey-Karte, dann die Fehlwurf-, dann die Nachbarfeld-Karten, dann die Zwei-Dart-Karte,
+ * zuletzt „Single statt Doppel“ beim Rest des Doppels. Danach die Stellwürfe über 170.
  */
 export function buildCards(): Card[] {
   const cards: Card[] = []
   for (let rest = MIN_REST; rest <= MAX_REST; rest++) {
     const two = twoDartCard(rest)
-    cards.push(...cardsOfRest(rest), ...(two ? [two] : []))
+    const double = rest % 2 === 0 ? rest / 2 : 0
+    const singleDouble = double >= MIN_DOUBLE && double <= MAX_DOUBLE ? [singleDoubleCard(double)] : []
+    cards.push(...cardsOfRest(rest), ...(two ? [two] : []), ...singleDouble)
   }
+  for (let rest = MAX_REST + 1; rest <= MAX_OVER; rest++) cards.push(overCard(rest))
   return cards
 }

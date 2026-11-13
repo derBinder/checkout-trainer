@@ -1,8 +1,9 @@
 import { cardView } from "@/components/study/card-view";
 import { getDictionary } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
-import { CARDS } from "@/lib/cards";
+import { CARDS, cardsFor } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
+import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
 import { practiceGroups } from "@/lib/practice/filter";
 import { mathSolutions } from "@/lib/practice/math";
 import { PracticeHost, type PracticeCard } from "./practice-host";
@@ -15,7 +16,7 @@ import { PracticeHost, type PracticeCard } from "./practice-host";
 export async function PracticeData() {
   await requireActiveUser();
   const t = (await getDictionary()).study;
-  const cards: PracticeCard[] = CARDS.map((card) => ({
+  const cards: PracticeCard[] = cardsFor(NO_EXTRA_CARDS).map((card) => ({
     id: card.id,
     rest: card.rest,
     groups: practiceGroups(card),
