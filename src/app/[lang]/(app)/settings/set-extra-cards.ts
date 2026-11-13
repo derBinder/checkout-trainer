@@ -16,9 +16,11 @@ export async function setExtraCards(
   on: unknown,
 ): Promise<{ ok: true } | { ok: false }> {
   if (!isExtraKind(kind) || typeof on !== "boolean") return { ok: false };
-  await db
+  const updated = await db
     .update(user)
     .set({ [EXTRA_FIELDS[kind]]: on })
-    .where(eq(user.id, userId));
-  return { ok: true };
+    .where(eq(user.id, userId))
+    .returning({ id: user.id });
+  // Ohne Zeile (Konto inzwischen gelöscht) wurde nichts gespeichert.
+  return updated.length === 1 ? { ok: true } : { ok: false };
 }

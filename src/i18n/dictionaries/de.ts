@@ -360,7 +360,7 @@ export const de = {
         },
         neighbours: {
           label: "Nachbarfelder",
-          hint: (n: number) => `${n} Karten: Statt T20 oder T19 fällt S1, S5, S7 oder S3.`,
+          hint: (n: number) => `${n} Karten: S1 oder S5 statt T20, S7 oder S3 statt T19.`,
         },
         over170: {
           label: "Reste über 170",

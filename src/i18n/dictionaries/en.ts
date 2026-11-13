@@ -345,7 +345,7 @@ export const en: Dictionary = {
         },
         neighbours: {
           label: "Neighbouring fields",
-          hint: (n: number) => `${n} cards: S1, S5, S7 or S3 instead of T20 or T19.`,
+          hint: (n: number) => `${n} cards: S1 or S5 instead of T20, S7 or S3 instead of T19.`,
         },
         over170: {
           label: "Scores above 170",

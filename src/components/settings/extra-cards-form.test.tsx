@@ -41,7 +41,7 @@ describe("ExtraCardsSwitches", () => {
     expect(isOn("Reste über 170")).toBe(false);
     expect(toggle("Single statt Doppel").getAttribute("aria-describedby")).toBeTruthy();
     expect(screen.getByText("19 Karten: Doppel verfehlt, Single getroffen.")).toBeTruthy();
-    expect(screen.getByText("202 Karten: Statt T20 oder T19 fällt S1, S5, S7 oder S3.")).toBeTruthy();
+    expect(screen.getByText("202 Karten: S1 oder S5 statt T20, S7 oder S3 statt T19.")).toBeTruthy();
     expect(screen.getByText("60 Karten: Stellwurf mit drei Darts von 171 bis 230.")).toBeTruthy();
   });
 

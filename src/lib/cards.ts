@@ -13,31 +13,29 @@ export function cardById(id: string): Card | undefined {
 }
 
 /** Je Kombination der Schalter einmal gefiltert; es gibt nur acht. */
-const FILTERED = new Map<string, Card[]>()
-const ORDERS = new Map<string, string[]>()
+const FILTERED = new Map<string, { cards: Card[]; order: string[] }>()
 
 const keyOf = (extras: ExtraCards) => EXTRA_KINDS.map((kind) => (extras[kind] ? 1 : 0)).join('')
+
+function filtered(extras: ExtraCards) {
+  const key = keyOf(extras)
+  let entry = FILTERED.get(key)
+  if (!entry) {
+    const cards = CARDS.filter((c) => isCardOn(c, extras))
+    entry = { cards, order: cards.map((c) => c.id) }
+    FILTERED.set(key, entry)
+  }
+  return entry
+}
 
 /**
  * Die Karten eines Nutzers in Lernreihenfolge: alle Grundkarten und die Zusatzkarten
  * der eingeschalteten Schalter. Die eine Stelle, an der nach Schaltern gefiltert wird.
  */
 export function cardsFor(extras: ExtraCards): Card[] {
-  const key = keyOf(extras)
-  let cards = FILTERED.get(key)
-  if (!cards) {
-    cards = CARDS.filter((c) => isCardOn(c, extras))
-    FILTERED.set(key, cards)
-  }
-  return cards
+  return filtered(extras).cards
 }
 
 export function cardOrderFor(extras: ExtraCards): string[] {
-  const key = keyOf(extras)
-  let order = ORDERS.get(key)
-  if (!order) {
-    order = cardsFor(extras).map((c) => c.id)
-    ORDERS.set(key, order)
-  }
-  return order
+  return filtered(extras).order
 }

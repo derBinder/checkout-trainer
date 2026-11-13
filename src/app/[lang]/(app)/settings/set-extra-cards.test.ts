@@ -42,6 +42,10 @@ describe("setExtraCards", () => {
     expect(await loadExtraCards(db, "u1")).toEqual(NO_EXTRA_CARDS);
   });
 
+  it("reports a failure for an account that does not exist", async () => {
+    expect(await setExtraCards(db, "unbekannt", "over170", true)).toEqual({ ok: false });
+  });
+
   it("changes only the given account", async () => {
     await setExtraCards(db, "u1", "neighbours", true);
     expect(await loadExtraCards(db, "u2")).toEqual(NO_EXTRA_CARDS);
