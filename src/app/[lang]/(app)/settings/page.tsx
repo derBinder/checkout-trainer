@@ -3,10 +3,11 @@ import { Suspense } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
 import { NewPerDayForm } from "@/components/settings/new-per-day-form";
-import { DeleteAccountSection, NewPerDayField } from "@/components/settings/settings-data";
+import { DeleteAccountSection, ExtraCardsField, NewPerDayField } from "@/components/settings/settings-data";
 import { SETTINGS_BODY, SettingsSection } from "@/components/settings/settings-parts";
 import {
   DeleteAccountSectionSkeleton,
+  ExtraCardsSkeleton,
   NewPerDayFieldSkeleton,
 } from "@/components/settings/settings-skeleton";
 import { LanguageSwitch } from "@/components/language/language-switch";
@@ -39,6 +40,12 @@ export default async function SettingsPage() {
             <NewPerDayField />
           </Suspense>
         </NewPerDayForm>
+      </SettingsSection>
+
+      <SettingsSection title={t.settings.extraCards.title}>
+        <Suspense fallback={<ExtraCardsSkeleton />}>
+          <ExtraCardsField />
+        </Suspense>
       </SettingsSection>
 
       <SettingsSection title={t.settings.password.title}>

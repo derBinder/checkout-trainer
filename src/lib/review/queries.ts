@@ -1,7 +1,9 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
-import { CARD_ORDER, cardById } from "@/lib/cards";
+import { cardById, cardOrderFor } from "@/lib/cards";
+import { EXTRA_SELECT, extraCardsOf } from "@/lib/extra-cards-db";
+import { isCardOn, NO_EXTRA_CARDS, type ExtraCards } from "@/lib/extra-cards";
 import { rate, type Rating, type SrsState } from "@/lib/srs/fsrs";
 import { buildQueue, effectiveNewLimit, type NewCardAllowance } from "@/lib/srs/queue";
 import { dayEnd, dayStart } from "@/lib/time";
@@ -10,18 +12,23 @@ type QueueUser = { id: string; newPerDay: number };
 
 export type ReviewResult =
   | { ok: true }
-  | { ok: false; reason: "unknown-card" | "stale" | "limit" | "invalid" };
+  | { ok: false; reason: "unknown-card" | "off" | "stale" | "limit" | "invalid" };
 
 type StateRow = typeof cardState.$inferSelect;
 
-/** Heutige Warteschlange aus den Lernständen eines Nutzers und seinem Tageslimit. */
-export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now: Date) {
+/**
+ * Heutige Warteschlange aus den Lernständen eines Nutzers, seinem Tageslimit und seinen
+ * Zusatzkarten: Ausgeschaltete Karten werden weder neu eingeführt noch als fällig gezeigt,
+ * ihr Lernstand bleibt. Heute eingeführt zählt jede Karte, wie beim Tageslimit in applyReview.
+ */
+export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now: Date, extras: ExtraCards) {
+  const order = cardOrderFor(extras);
   const introducedToday = rows.filter(
     (r) => r.introducedAt >= dayStart(now) && r.introducedAt <= dayEnd(now),
   ).length;
   const limit = effectiveNewLimit(allowance, now);
   const { due, fresh } = buildQueue({
-    order: CARD_ORDER,
+    order,
     states: rows.map((r) => ({ cardId: r.cardId, due: r.due })),
     now,
     newPerDay: limit,
@@ -34,16 +41,16 @@ export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now
     introducedToday,
     /** Heute noch offene neue Karten, auch wenn keine ungesehene mehr übrig ist. */
     newLeftToday: Math.max(0, limit - introducedToday),
-    unseenCount: CARD_ORDER.filter((id) => !seen.has(id)).length,
+    unseenCount: order.filter((id) => !seen.has(id)).length,
   };
 }
 
 export async function loadQueue(db: Db, u: QueueUser, now: Date) {
   const [rows, [extra]] = await Promise.all([
     db.select().from(cardState).where(eq(cardState.userId, u.id)),
-    // Die Extrakarten stehen nicht in der Sitzung, sondern nur in der Datenbank.
+    // Extrakarten und Zusatzkarten stehen nicht in der Sitzung, sondern nur in der Datenbank.
     db
-      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount })
+      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount, ...EXTRA_SELECT })
       .from(user)
       .where(eq(user.id, u.id)),
   ]);
@@ -51,6 +58,7 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
     rows,
     { newPerDay: u.newPerDay, extraNewDay: extra?.extraNewDay ?? null, extraNewCount: extra?.extraNewCount ?? 0 },
     now,
+    extra ? extraCardsOf(extra) : NO_EXTRA_CARDS,
   );
   return {
     cardIds: [...due, ...fresh],
@@ -77,19 +85,21 @@ export async function applyReview(
   if (!isRating(rating) || !Number.isInteger(reps) || reps < 0) {
     return { ok: false, reason: "invalid" };
   }
-  if (typeof cardId !== "string" || !cardById(cardId)) {
-    return { ok: false, reason: "unknown-card" };
-  }
+  const card = typeof cardId === "string" ? cardById(cardId) : undefined;
+  if (!card) return { ok: false, reason: "unknown-card" };
 
   return db.transaction(async (tx): Promise<ReviewResult> => {
     // Serialises all reviews of one user, so the stale check, the daily limit
     // and both writes cannot interleave with a parallel request.
     // The extra allowance is read here, under the lock, never from the session.
     const [locked] = await tx
-      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount })
+      .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount, ...EXTRA_SELECT })
       .from(user)
       .where(eq(user.id, u.id))
       .for("update");
+    // Ausgeschaltete Zusatzkarten sind über keinen Weg zu bewerten, auch nicht aus
+    // einer Lernsitzung, die vor dem Ausschalten geladen wurde.
+    if (!isCardOn(card, locked ? extraCardsOf(locked) : NO_EXTRA_CARDS)) return { ok: false, reason: "off" };
 
     const [current] = await tx
       .select()

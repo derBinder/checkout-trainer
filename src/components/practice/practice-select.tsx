@@ -36,11 +36,14 @@ const FOCUS = "outline-ring transition select-none focus-visible:outline-2";
  */
 export function PracticeSelect({
   cards,
+  ranges,
   selection,
   onChange,
   onStart,
 }: {
   cards: readonly { rest: number; groups: readonly PracticeGroup[] }[];
+  /** Die wählbaren Bereiche, in der Reihenfolge von RANGES. */
+  ranges: readonly RangeId[];
   selection: PracticeSelection;
   onChange: (selection: PracticeSelection) => void;
   onStart: () => void;
@@ -59,10 +62,10 @@ export function PracticeSelect({
   const canStart = !routes || matching > 0;
 
   function toggleRange(range: RangeId) {
-    const ranges = selection.ranges.includes(range)
+    const chosen = selection.ranges.includes(range)
       ? selection.ranges.filter((r) => r !== range)
-      : RANGES.map((r) => r.id).filter((r) => r === range || selection.ranges.includes(r));
-    onChange({ ...selection, ranges });
+      : ranges.filter((r) => r === range || selection.ranges.includes(r));
+    onChange({ ...selection, ranges: chosen });
   }
 
   return (
@@ -94,7 +97,7 @@ export function PracticeSelect({
           <div className={PRACTICE_SECTION}>
             <SectionLabel id={`${id}-range`}>{t.range}</SectionLabel>
             <div role="group" aria-labelledby={`${id}-range`} className={CHIP_GRID}>
-              {RANGES.map((range) => {
+              {RANGES.filter((range) => ranges.includes(range.id)).map((range) => {
                 const on = selection.ranges.includes(range.id);
                 return (
                   <button

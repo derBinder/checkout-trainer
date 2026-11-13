@@ -1,4 +1,5 @@
 import type { Card } from '@/lib/darts/cards'
+import { isBogey } from '@/lib/darts/checkouts'
 import { dartValue, expandSteps, formatDart, parseDart, parseSteps } from '@/lib/darts/model'
 
 /**
@@ -11,8 +12,8 @@ export type Check =
   | { kind: 'bogey'; rest: number }
   /** Fehlwurf-Karte mit Finish (rest ist der neue Rest) oder Zwei-Dart-Karte mit Weg. */
   | { kind: 'follow'; rest: number; maxDarts: 1 | 2; best: string[][] }
-  /** Fehlwurf- oder Zwei-Dart-Karte ohne Finish: der empfohlene Stellwurf. */
-  | { kind: 'setup'; rest: number; maxDarts: 1 | 2; throws: string[] }
+  /** Fehlwurf- oder Zwei-Dart-Karte ohne Finish oder Rest über 170: der empfohlene Stellwurf. */
+  | { kind: 'setup'; rest: number; maxDarts: 1 | 2 | 3; throws: string[] }
 
 export type Answer = { kind: 'darts'; darts: string[] } | { kind: 'notCheckable' }
 
@@ -25,12 +26,14 @@ export type VerdictCode =
   | 'bogeyRight'
   | 'setupRight'
   | 'setupOther'
+  | 'setupBogey'
 
 /** Warum ein Weg nicht aufgeht, als Daten; den Text liefert das Wörterbuch (`study.verdict.detail`). */
 export type VerdictDetail =
   | { kind: 'total'; total: number; rest: number }
   | { kind: 'notDouble' }
   | { kind: 'notCheckable' }
+  | { kind: 'leavesBogey'; leaves: number }
 
 export type Verdict = { code: VerdictCode; detail?: VerdictDetail }
 
@@ -68,6 +71,8 @@ export function checkFor(card: Card): Check {
       return card.follow.kind === 'finish'
         ? { kind: 'follow', rest: card.rest, maxDarts: 2, best: expand(card.follow.route) }
         : { kind: 'setup', rest: card.rest, maxDarts: 2, throws: card.follow.throws }
+    case 'over':
+      return { kind: 'setup', rest: card.rest, maxDarts: 3, throws: card.setup.throws }
   }
 }
 
@@ -92,6 +97,14 @@ function judgeRoute(rest: number, best: string[][], good: string[][], darts: str
   return { code: 'notRecommended' }
 }
 
+/** Stellwurf: der der Karte, sonst einer, der eine Bogey-Zahl lässt, sonst ein anderer. */
+function judgeSetup(rest: number, throws: string[], darts: string[]): Verdict {
+  if (key(darts) === key(throws)) return { code: 'setupRight' }
+  const leaves = darts.reduce((left, d) => left - dartValue(parseDart(d)), rest)
+  if (isBogey(leaves)) return { code: 'setupBogey', detail: { kind: 'leavesBogey', leaves } }
+  return { code: 'setupOther' }
+}
+
 export function judge(check: Check, answer: Answer): Verdict {
   if (answer.kind === 'notCheckable') {
     if (check.kind === 'bogey') return { code: 'bogeyRight' }
@@ -107,6 +120,6 @@ export function judge(check: Check, answer: Answer): Verdict {
     case 'follow':
       return judgeRoute(check.rest, check.best, [], darts)
     case 'setup':
-      return key(darts) === key(check.throws) ? { code: 'setupRight' } : { code: 'setupOther' }
+      return judgeSetup(check.rest, check.throws, darts)
   }
 }

@@ -3,7 +3,11 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "@/lib/db/test-db";
 import type { Db } from "@/lib/db";
 import { cardState, user, type UserStatus } from "@/lib/db/schema";
-import { CARD_ORDER } from "@/lib/cards";
+import { cardOrderFor } from "@/lib/cards";
+import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
+
+/** Lernreihenfolge ohne Zusatzkarten, wie sie jedes Konto anfangs hat. */
+const CARD_ORDER = cardOrderFor(NO_EXTRA_CARDS);
 import { applyReview, loadQueue } from "@/lib/review/queries";
 import { EXTRA_NEW_MAX, EXTRA_NEW_STEP, grantExtraNewCards } from "./grant-extra-cards";
 
@@ -147,6 +151,16 @@ describe("grantExtraNewCards", () => {
     await addUser(0);
     expect(await grantExtraNewCards(db, id as never, now)).toEqual({ ok: false, reason: "inactive" });
     expect(await stored()).toEqual({ day: null, count: 0 });
+  });
+
+  it("grants more once extra cards are switched on after every core card was introduced", async () => {
+    const u = await addUser(2);
+    await seedStates(CARD_ORDER, new Date("2026-11-01T10:00:00Z"));
+    expect(await grantExtraNewCards(db, u.id, now)).toEqual({ ok: false, reason: "all-introduced" });
+    await db.update(user).set({ extraOver170: true }).where(eq(user.id, "u1"));
+    expect(await grantExtraNewCards(db, u.id, now)).toEqual({ ok: false, reason: "not-done" });
+    await finishToday(u, now);
+    expect(await grantExtraNewCards(db, u.id, now)).toEqual({ ok: true });
   });
 
   it("changes only the given user", async () => {

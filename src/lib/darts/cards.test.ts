@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { buildCards, type Card, type FollowText, type MissCard, type RestCard, type TwoDartCard } from '@/lib/darts/cards'
+import {
+  buildCards,
+  type Card,
+  type FollowText,
+  type MissCard,
+  type OverCard,
+  type RestCard,
+  type TwoDartCard,
+} from '@/lib/darts/cards'
 import { allCheckouts, isBogey } from '@/lib/darts/checkouts'
-import { expandSteps, parseStep, routeTotal } from '@/lib/darts/model'
+import { dartValue, expandSteps, parseDart, parseStep, routeTotal } from '@/lib/darts/model'
 import { CHART } from '@/lib/darts/reference'
 import { CARDS } from '@/lib/cards'
 
@@ -219,7 +227,7 @@ describe('Zwei-Dart-Karten', () => {
     expect(ways).toEqual([...range(61, 70), 90, 101, 104, 107, 110])
     expect(setups).toEqual([99, 102, 103, 105, 106, 108, 109, ...range(111, 170)])
     expect(twos.map((c) => c.id)).toEqual(twos.map((c) => `t-${c.rest}`))
-    expect(cards).toHaveLength(402)
+    expect(cards.filter((c) => c.kind !== 'over' && !(c.kind === 'miss' && c.variant))).toHaveLength(402)
   })
 
   it('nimmt für jede Weg-Karte die Tabellenspalte „mit 2 Darts" und checkt mit höchstens zwei Darts', () => {
@@ -261,8 +269,9 @@ describe('Zwei-Dart-Karten', () => {
     expect(compared).toBeGreaterThan(0)
   })
 
-  it('steht direkt nach den Fehlwurf-Karten ihres Rests', () => {
-    expect(indexOf('t-121')).toBe(indexOf('m-121-1') + 1)
+  it('steht direkt nach den Fehlwurf- und Nachbarfeld-Karten ihres Rests', () => {
+    expect(indexOf('t-121')).toBe(indexOf('n-121-0-S5') + 1)
+    expect(indexOf('n-121-0-S1')).toBe(indexOf('m-121-1') + 1)
     expect(indexOf('t-159')).toBe(indexOf('b-159') + 1)
     const lastOf61 = cards.map((c) => c.rest).lastIndexOf(61)
     expect(indexOf('t-61')).toBe(lastOf61)
@@ -310,5 +319,122 @@ describe('Zerlegung', () => {
       const taught = two?.follow.kind === 'finish' ? two.follow.route : (byId.get(`r-${b.after}`) as RestCard).best
       expect(b.route, c.id).toEqual(taught)
     }
+  })
+})
+
+describe('Zusatzkarten', () => {
+  const cards = buildCards()
+  const byId = new Map<string, Card>(cards.map((c) => [c.id, c]))
+  const indexOf = (id: string) => cards.findIndex((c) => c.id === id)
+  const misses = cards.filter((c): c is MissCard => c.kind === 'miss')
+  const plainMisses = misses.filter((c) => !c.variant)
+  const neighbours = misses.filter((c) => c.variant === 'neighbour')
+  const singleDoubles = misses.filter((c) => c.variant === 'singleDouble')
+  const overs = cards.filter((c): c is OverCard => c.kind === 'over')
+  const sum = (darts: string[]) => darts.reduce((total, d) => total + dartValue(parseDart(d)), 0)
+
+  it('erzeugt 683 Karten: 402 Grundkarten, 202 Nachbarfeld-, 19 Single-statt-Doppel- und 60 Stellwurf-Karten', () => {
+    expect(cards).toHaveLength(683)
+    expect(neighbours).toHaveLength(202)
+    expect(singleDoubles).toHaveLength(19)
+    expect(overs).toHaveLength(60)
+  })
+
+  it('trifft bei T20 S1 oder S5 und bei T19 S7 oder S3', () => {
+    expect(neighbours.filter((c) => c.aimed === 'T20')).toHaveLength(134)
+    expect(neighbours.filter((c) => c.aimed === 'T19')).toHaveLength(68)
+    for (const c of neighbours) {
+      expect(c.aimed === 'T20' ? ['S1', 'S5'] : ['S7', 'S3'], c.id).toContain(c.hit)
+    }
+  })
+
+  it('rechnet jede Nachbarfeld-Karte wie eine Fehlwurf-Karte', () => {
+    for (const c of neighbours) {
+      expect(c.thrown.at(-1), c.id).toBe(c.hit)
+      expect(c.newRest, c.id).toBe(c.rest - sum(c.thrown))
+      expect(c.newRest, c.id).toBeGreaterThanOrEqual(2)
+      expect(c.dartsLeft, c.id).toBe(3 - c.thrown.length)
+      expect(c.id, c.id).toBe(`n-${c.rest}-${c.thrown.length - 1}-${c.hit}`)
+      expectFollowFits(c.follow, c.newRest, c.dartsLeft, c.id)
+    }
+  })
+
+  it('gibt je Fehlwurf auf T20 oder T19 genau zwei Nachbarfeld-Karten mit denselben Darts davor', () => {
+    const onTwentyOrNineteen = plainMisses.filter((c) => c.aimed === 'T20' || c.aimed === 'T19')
+    expect(onTwentyOrNineteen).toHaveLength(101)
+    for (const m of onTwentyOrNineteen) {
+      const pair = neighbours.filter(
+        (n) => n.rest === m.rest && n.thrown.slice(0, -1).join(' ') === m.thrown.slice(0, -1).join(' '),
+      )
+      expect(pair, m.id).toHaveLength(2)
+    }
+  })
+
+  it('stellt nach S1 von 170 auf die 169 mit zwei Darts', () => {
+    expect(byId.get('n-170-0-S1')).toEqual({
+      id: 'n-170-0-S1',
+      kind: 'miss',
+      variant: 'neighbour',
+      rest: 170,
+      thrown: ['S1'],
+      aimed: 'T20',
+      hit: 'S1',
+      newRest: 169,
+      dartsLeft: 2,
+      follow: { kind: 'setup', throws: ['T20', 'T20'], leaves: 49 },
+    })
+  })
+
+  it('erzeugt eine Karte „Single statt Doppel“ je Doppel D2 bis D20', () => {
+    expect(singleDoubles.map((c) => c.id)).toEqual(Array.from({ length: 19 }, (_, i) => `d-${i + 2}`))
+    expect(byId.get('d-16')).toEqual({
+      id: 'd-16',
+      kind: 'miss',
+      variant: 'singleDouble',
+      rest: 32,
+      thrown: ['S16'],
+      aimed: 'D16',
+      hit: 'S16',
+      newRest: 16,
+      dartsLeft: 2,
+      follow: { kind: 'finish', route: ['D8'] },
+    })
+    expect((byId.get('d-15') as MissCard).follow).toEqual({ kind: 'finish', route: ['S7', 'D4'] })
+    for (const c of singleDoubles) expectFollowFits(c.follow, c.newRest, 2, c.id)
+  })
+
+  it('erzeugt Stellwurf-Karten für 171 bis 230 mit bis zu drei Darts', () => {
+    expect(overs.map((c) => c.id)).toEqual(Array.from({ length: 60 }, (_, i) => `o-${i + 171}`))
+    const setup = (id: string) => (byId.get(id) as OverCard).setup
+    expect(setup('o-171')).toEqual({ throws: ['T20', 'T20', 'S19'], leaves: 32 })
+    expect(setup('o-199')).toEqual({ throws: ['T20', 'T20', 'T13'], leaves: 40 })
+    expect(setup('o-221')).toEqual({ throws: ['T20', 'T20', 'T17'], leaves: 50 })
+    expect(setup('o-230')).toEqual({ throws: ['T20', 'T20', 'T20'], leaves: 50 })
+    for (const c of overs) {
+      expect(c.setup.throws.length, c.id).toBeLessThanOrEqual(3)
+      expect(c.rest - sum(c.setup.throws), c.id).toBe(c.setup.leaves)
+      expect(isBogey(c.setup.leaves), c.id).toBe(false)
+    }
+  })
+
+  it('reiht die Zusatzkarten nach Rest ein', () => {
+    // Je Rest: Rest-Karte, Fehlwurf-, Nachbarfeld-, Zwei-Dart-Karte.
+    expect(cards.slice(indexOf('r-170'), indexOf('t-170') + 1).map((c) => c.id)).toEqual([
+      'r-170',
+      'm-170-0',
+      'm-170-1',
+      'n-170-0-S1',
+      'n-170-0-S5',
+      'n-170-1-S1',
+      'n-170-1-S5',
+      't-170',
+    ])
+    // Single statt Doppel nach den übrigen Karten des Rests.
+    expect(indexOf('d-16')).toBe(indexOf('r-32') + 1)
+    expect(cards[indexOf('d-16') + 1].rest).toBe(33)
+    expect(indexOf('d-20')).toBe(cards.map((c) => c.rest).lastIndexOf(40))
+    // Über 170 nach allen Karten bis 170.
+    expect(indexOf('o-171')).toBe(indexOf('t-170') + 1)
+    expect(cards.at(-1)?.id).toBe('o-230')
   })
 })
