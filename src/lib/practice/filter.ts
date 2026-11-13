@@ -1,4 +1,5 @@
 import type { Card } from "@/lib/darts/cards";
+import type { ExtraCards } from "@/lib/extra-cards";
 
 /**
  * Auswahl der Übung „Wege“: feste Bereiche nach dem Rest, mit dem eine Karte
@@ -13,9 +14,18 @@ export const RANGES = [
   { id: "101-120", from: 101, to: 120 },
   { id: "121-140", from: 121, to: 140 },
   { id: "141-170", from: 141, to: 170 },
+  // Nur mit dem Schalter „Reste über 170“ (availableRanges).
+  { id: "171-230", from: 171, to: 230 },
 ] as const;
 
 export type RangeId = (typeof RANGES)[number]["id"];
+
+const OVER_170: RangeId = "171-230";
+
+/** Die Bereiche, die ein Nutzer wählen kann: 171–230 nur mit dem Schalter „Reste über 170“. */
+export function availableRanges(extras: ExtraCards): RangeId[] {
+  return RANGES.map((r) => r.id).filter((id) => id !== OVER_170 || extras.over170);
+}
 
 export const PRACTICE_KINDS = ["all", "ways", "misses", "setups"] as const;
 export type PracticeKind = (typeof PRACTICE_KINDS)[number];

@@ -4,27 +4,34 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/client";
-import { cardsFor } from "@/lib/cards";
+import { CARDS, cardsFor } from "@/lib/cards";
 import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
-import { practiceGroups } from "@/lib/practice/filter";
+import { practiceGroups, RANGES, type RangeId } from "@/lib/practice/filter";
 import { DEFAULT_SELECTION, type PracticeSelection } from "@/lib/practice/selection";
 import { PracticeSelect } from "./practice-select";
 
 const CARD_META = cardsFor(NO_EXTRA_CARDS).map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
+const ALL_META = CARDS.map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
+const CORE_RANGES = RANGES.map((r) => r.id).filter((id) => id !== "171-230");
 
 function Harness({
-  initial = DEFAULT_SELECTION,
+  initial = { ...DEFAULT_SELECTION, ranges: CORE_RANGES },
   onStart = () => {},
   onSave = () => {},
+  cards = CARD_META,
+  ranges = CORE_RANGES,
 }: {
   initial?: PracticeSelection;
   onStart?: () => void;
   onSave?: (s: PracticeSelection) => void;
+  cards?: { rest: number; groups: ReturnType<typeof practiceGroups> }[];
+  ranges?: RangeId[];
 }) {
   const [selection, setSelection] = useState(initial);
   return (
     <PracticeSelect
-      cards={CARD_META}
+      cards={cards}
+      ranges={ranges}
       selection={selection}
       onChange={(s) => {
         setSelection(s);
@@ -102,6 +109,18 @@ describe("PracticeSelect", () => {
     expect(screen.queryByRole("radiogroup", { name: "Kartenart" })).toBeNull();
     expect(screen.getByText(/Zehn kurze Rechnungen/)).toBeTruthy();
     expect(start().hasAttribute("disabled")).toBe(false);
+  });
+
+  it("zeigt den Bereich 171–230 nur, wenn er angeboten wird, und zählt dort die Stellwürfe", async () => {
+    const user = userEvent.setup();
+    renderSelect({ cards: ALL_META, ranges: RANGES.map((r) => r.id), initial: { ...DEFAULT_SELECTION, ranges: [] } });
+    const chips = within(screen.getByRole("group", { name: "Bereich" })).getAllByRole("button");
+    expect(chips.at(-1)?.textContent).toBe("171–230");
+    await user.click(range("171–230"));
+    await user.click(kind("Stellwürfe"));
+    expect(screen.getByText("60 Karten passen")).toBeTruthy();
+    await user.click(kind("Fehlwürfe"));
+    expect(screen.getByText("Zu dieser Auswahl gibt es keine Karten.")).toBeTruthy();
   });
 
   it("spricht Englisch", () => {
