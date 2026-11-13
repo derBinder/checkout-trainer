@@ -117,7 +117,7 @@ describe("MathRound", () => {
     type(1);
     tap("Prüfen");
     tap("Weiter");
-    expect(screen.getByRole("heading", { name: "Runde geschafft" })).toBeTruthy();
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Runde geschafft" }));
     expect(screen.getByText("1 von 2 richtig")).toBeTruthy();
     tap("Noch eine Runde");
     expect(onRestart).toHaveBeenCalledTimes(1);

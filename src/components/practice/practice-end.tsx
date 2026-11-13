@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { EndHeading } from "@/components/study/end-heading";
 import { StudySurface } from "@/components/study/study-parts";
 import { TAP_GUARD_MS } from "@/components/study/study-state";
 import { useDictionary } from "@/i18n/client";
@@ -32,7 +33,7 @@ export function PracticeEnd({
   return (
     <StudySurface className="px-page pt-screen-top pb-inset-bottom">
       <div className="flex flex-1 flex-col gap-5">
-        <h1 className="type-display text-hero">{title}</h1>
+        <EndHeading>{title}</EndHeading>
         <p className="text-lg font-medium text-muted-foreground">{result}</p>
       </div>
       <div className="flex flex-col gap-3">
