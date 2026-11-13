@@ -98,11 +98,11 @@ describe("StudySessionHost", () => {
   it("behält die laufende Sitzung, wenn der Server die Seite neu rendert", () => {
     const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
 
     const during = newLoadId();
     rerender(<StudySessionHost loadId={during} items={items("r-7")} />);
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
     expect(screen.getByText("1 / 1")).toBeTruthy();
     expect(router.refresh).not.toHaveBeenCalled();
 
@@ -115,11 +115,11 @@ describe("StudySessionHost", () => {
   it("beginnt nach einem neuen Seitenwechsel mit frischer Ladung von vorn", () => {
     const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
 
     router.bfcacheId = "neu";
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
-    expect(screen.queryByText("Warum")).toBeNull();
+    expect(screen.queryByText("Nach S1")).toBeNull();
     expect(screen.getByRole("button", { name: "Prüfen" })).toBeTruthy();
   });
 

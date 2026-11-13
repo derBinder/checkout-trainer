@@ -80,6 +80,12 @@ describe("Skeleton-Bausteine", () => {
     expect(blockInsideSpan(renderToStaticMarkup(render()))).toBeNull();
   });
 
+  it("Statistik: Zähler und Prognosezeile haben Platzhalter", () => {
+    const html = renderToStaticMarkup(inGerman(createElement(StatsOverviewSkeleton)));
+    // Drei Zähler und die Prognosezeile.
+    expect(skeletonTags(html)).toHaveLength(4);
+  });
+
   it("Statistik: das neutrale Raster ist für Screenreader versteckt", () => {
     const html = renderToStaticMarkup(inGerman(createElement(StatsOverviewSkeleton)));
     const grid = html.match(/<ol[^>]*>/)?.[0] ?? "";

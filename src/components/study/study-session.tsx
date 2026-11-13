@@ -25,6 +25,7 @@ import {
 import { StudyCloseLink } from "./study-close-link";
 import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
+import { useWakeLock } from "./use-wake-lock";
 
 export type StudyItem = {
   id: string;
@@ -100,6 +101,9 @@ export function StudySession({ items }: { items: StudyItem[] }) {
 
   const currentId = session.queue[0];
   const current = currentId ? byId.get(currentId) : undefined;
+
+  // Am Board liegt das Handy oft eine Weile: Der Bildschirm bleibt an, solange Karten offen sind.
+  useWakeLock(current !== undefined && !state.signedOut);
 
   // Eingabe der aktuellen Runde. Jede Runde einer Karte (auch nach „Nochmal“) beginnt leer:
   // Wechselt der Rundenschlüssel, wird der Zustand noch während des Renderns neu gesetzt.

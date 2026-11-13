@@ -29,11 +29,12 @@ export function StudyQuestion({
   onAction: (a: InputAction) => void;
 }) {
   const { question } = view;
+  const spent = question.spent ?? 0;
   const fixed = fixedDarts(view);
   const entered = [...fixed, ...input.darts];
-  const slots = Array.from({ length: SLOT_COUNT }, (_, i) => entered[i] ?? null);
-  const next = isFull(input) ? undefined : entered.length;
-  const dartSlots = <DartSlots slots={slots} missSlots={view.answer.missSlots} next={next} />;
+  const slots = Array.from({ length: SLOT_COUNT }, (_, i) => (i < spent ? null : (entered[i - spent] ?? null)));
+  const next = isFull(input) ? undefined : spent + entered.length;
+  const dartSlots = <DartSlots slots={slots} missSlots={view.answer.missSlots} next={next} spent={spent} />;
 
   return (
     <div className="flex flex-col gap-4">
@@ -49,6 +50,10 @@ export function StudyQuestion({
           <div className="flex flex-col gap-1">
             <p className={EYEBROW}>{question.label}</p>
             <p className={BIG_NUMERAL}>{question.big}</p>
+            {/* Klein und ohne Zeilenabstand: Mit dieser Zeile passt die Frage auf 375 × 667 noch ohne Scrollen. */}
+            {question.sub && (
+              <p className="text-center text-sm leading-none font-medium text-muted-foreground">{question.sub}</p>
+            )}
           </div>
           {dartSlots}
         </div>

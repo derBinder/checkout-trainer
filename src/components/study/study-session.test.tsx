@@ -106,11 +106,11 @@ describe("StudySession", () => {
     expect(screen.getByRole("radiogroup", { name: "Ring" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Prüfen" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "Nicht checkbar" })).toBeTruthy();
-    expect(screen.queryByText("Warum")).toBeNull();
+    expect(screen.queryByText("Nach S1")).toBeNull();
     expect(screen.queryByRole("button", { name: /^Gut/ })).toBeNull();
 
     tap("Ohne Eingabe aufdecken");
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
     expect(screen.getByText("S3 · D1")).toBeTruthy();
     // Ohne Eingabe: kein Ergebnis, kein „Dein Weg“, kein Tastenfeld mehr.
     expect(screen.queryByRole("status")).toBeNull();
@@ -135,7 +135,7 @@ describe("StudySession", () => {
     tap("Ohne Eingabe aufdecken");
     clock += 100;
     fireEvent.click(screen.getByRole("button", { name: /^Gut/ }));
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
     expect(submitReview).not.toHaveBeenCalled();
   });
 
@@ -177,6 +177,23 @@ describe("StudySession", () => {
     await act(async () => save.resolve({ ok: true }));
     expect(screen.queryByText("Speichere …")).toBeNull();
     expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
+  });
+
+  it("hält den Bildschirm an, solange Karten offen sind, und gibt ihn am Ende frei", async () => {
+    const release = vi.fn(async () => {});
+    const request = vi.fn(async () => ({ released: false, release }));
+    Object.defineProperty(navigator, "wakeLock", { configurable: true, value: { request } });
+    try {
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
+      await flush();
+      expect(request).toHaveBeenCalledWith("screen");
+      expect(release).not.toHaveBeenCalled();
+      await rateCurrent("Gut");
+      expect(screen.getByRole("heading", { name: "Geschafft" })).toBeTruthy();
+      expect(release).toHaveBeenCalledTimes(1);
+    } finally {
+      Reflect.deleteProperty(navigator, "wakeLock");
+    }
   });
 
   it("zählt mehrere gelernte Karten", async () => {
@@ -362,7 +379,7 @@ describe("StudySession", () => {
       expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
       expect(row("Dein Weg")).toEqual(["S1", "D2"]);
       expect(row("Bester Weg")).toEqual(["S1", "D2"]);
-      expect(screen.getByText("Warum")).toBeTruthy();
+      expect(screen.getByText("Nach S1")).toBeTruthy();
       expect(intervalOn("Gut")).toBe("3 Tage");
 
       // Die Bewertung bleibt Sache des Nutzers; die nächste Karte beginnt ohne Eingabe und Ergebnis.
@@ -403,7 +420,7 @@ describe("StudySession", () => {
       render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Ohne Eingabe aufdecken");
-      expect(screen.getByText("Warum")).toBeTruthy();
+      expect(screen.getByText("Nach S1")).toBeTruthy();
       expect(screen.queryByRole("status")).toBeNull();
       expect(screen.queryByText("Dein Weg")).toBeNull();
     });
@@ -419,6 +436,34 @@ describe("StudySession", () => {
       expect(row("Darts")).toEqual(["?offen", "?offen", "?offen"]);
       expect(checkedRing()).toBe("Single");
       expect(screen.getByRole("button", { name: "Prüfen" }).hasAttribute("disabled")).toBe(true);
+    });
+
+    it("prüft den Stellwurf einer Zwei-Dart-Karte und beginnt nach „Nochmal“ wieder mit verbrauchtem Feld", async () => {
+      render(<StudySession items={[item("t-125")]} />, { wrapper });
+      expect(row("Darts")).toEqual(["–verbraucht", "?offen", "?offen"]);
+      fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
+      press("Triple 20");
+      press("Triple 11");
+      tap("Prüfen");
+      expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
+      expect(screen.getByText("Rest 125 mit 2 Darts")).toBeTruthy();
+      expect(big("Kein Finish")).toBeTruthy();
+      expect(row("Dein Weg")).toEqual(["–verbraucht", "T20", "T11"]);
+      expect(row("Stellwurf")).toEqual(["–verbraucht", "T20", "T11"]);
+
+      tap("Nochmal");
+      await flush();
+      expect(row("Darts")).toEqual(["–verbraucht", "?offen", "?offen"]);
+    });
+
+    it("prüft den Weg einer Zwei-Dart-Karte", () => {
+      render(<StudySession items={[item("t-61")]} />, { wrapper });
+      fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
+      press("Triple 15");
+      press("Doppel 8");
+      tap("Prüfen");
+      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenFinish stimmt, Weg ist schlechter");
+      expect(row("Bester Weg")).toEqual(["–verbraucht", "T11", "D14"]);
     });
 
     it("füllt bei einem Fehlwurf nur die Felder nach den geworfenen Darts und prüft den Folgeweg", () => {

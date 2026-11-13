@@ -65,7 +65,7 @@ export function NoteList({ notes, compact = false }: { notes: Note[]; compact?: 
 export type StudyResult = { verdict: Verdict; answer: Answer; fixed: string[] };
 
 /** „Dein Weg“: die eingegebenen Darts in neutraler Farbe, oder „Nicht checkbar“. */
-function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: number[] }) {
+function YourRoute({ result, missSlots, spent }: { result: StudyResult; missSlots: number[]; spent: number }) {
   const t = useDictionary().study.result;
   return (
     <div className="flex flex-col gap-1.5">
@@ -76,9 +76,10 @@ function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: numb
         </p>
       ) : (
         <DartSlots
-          slots={[...result.fixed, ...result.answer.darts]}
+          slots={[...Array<null>(spent).fill(null), ...result.fixed, ...result.answer.darts]}
           tone="none"
           missSlots={missSlots}
+          spent={spent}
           size="sm"
           label={t.yourRoute}
         />
@@ -97,6 +98,7 @@ export function StudyCard({ view, result }: { view: CardView; result?: StudyResu
       slots={answer.slots}
       tone={answer.slotTone}
       missSlots={answer.missSlots}
+      spent={answer.spent}
       size={result ? "sm" : undefined}
       label={result ? rowLabel : undefined}
     />
@@ -110,7 +112,7 @@ export function StudyCard({ view, result }: { view: CardView; result?: StudyResu
       {result ? (
         <>
           <VerdictLine verdict={result.verdict} />
-          <YourRoute result={result} missSlots={answer.missSlots} />
+          <YourRoute result={result} missSlots={answer.missSlots} spent={answer.spent ?? 0} />
           <div className="flex flex-col gap-1.5">
             <p className={ROW_LABEL}>{rowLabel}</p>
             {slots}
