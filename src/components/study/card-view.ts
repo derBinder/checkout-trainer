@@ -55,7 +55,7 @@ const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];
 
 /** Was über einen Rest ohne Fehlwurf-Fälle zu wissen ist: Weg, Begründung, Alternativen, Weg mit 2 Darts oder der Stellwurf. */
 export type RestDetail =
-  | Pick<RestCard, "kind" | "rest" | "best" | "reason" | "alternatives" | "twoDarts">
+  | Pick<RestCard, "kind" | "rest" | "best" | "reason" | "breakdown" | "alternatives" | "twoDarts">
   | Pick<BogeyCard, "kind" | "rest" | "setup">;
 
 export type RestDetailView = { slots: Slots; slotTone: "best" | "none"; notes: Note[] };
@@ -74,7 +74,17 @@ export function restDetailView(detail: RestDetail, t: T): RestDetailView {
       ],
     };
   }
-  const notes: Note[] = [{ title: t.card.why, text: t.reason(detail.reason) }];
+  // Die Zerlegung ersetzt den Begründungssatz; ohne sie (Ein-Dart-Weg, geteilter erster Dart) steht er da.
+  const { breakdown, reason } = detail;
+  const notes: Note[] = [];
+  if (breakdown) {
+    notes.push({
+      title: t.card.after(breakdown.first),
+      text: t.card.breakdown(breakdown.after, breakdown.dartsLeft, breakdown.route && joinDarts(breakdown.route)),
+    });
+  } else if (reason) {
+    notes.push({ title: t.card.why, text: t.reason(reason) });
+  }
   if (detail.alternatives.length > 0) {
     notes.push({
       title: detail.alternatives.length === 1 ? t.card.alternative : t.card.alternatives,

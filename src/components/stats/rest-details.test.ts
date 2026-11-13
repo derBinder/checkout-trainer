@@ -13,11 +13,11 @@ describe("restDetails", () => {
     expect(Object.keys(details)).toHaveLength(MAX_REST - MIN_REST + 1);
   });
 
-  it("gibt bei Rest-Karten nur Weg, Begründung, Alternativen und zwei Darts weiter", () => {
-    const rest = CARDS.find((c) => c.kind === "rest")!;
-    expect(Object.keys(details[rest.rest]).sort()).toEqual(
-      ["alternatives", "best", "kind", "reason", "rest", "twoDarts"],
+  it("gibt bei Rest-Karten nur Weg, Begründung, Zerlegung, Alternativen und zwei Darts weiter", () => {
+    expect(Object.keys(details[170]).sort()).toEqual(
+      ["alternatives", "best", "breakdown", "kind", "reason", "rest", "twoDarts"],
     );
+    expect(details[170]).toMatchObject({ breakdown: { first: "T20", after: 110 } });
   });
 
   it("gibt bei Bogey-Zahlen nur den Stellwurf weiter", () => {

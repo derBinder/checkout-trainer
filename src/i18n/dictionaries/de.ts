@@ -121,14 +121,6 @@ export const de = {
           return "Direkt auf das Doppel.";
         case "split":
           return `Zwischen ${r.a} und ${r.b} gezielt lässt jedes der beiden Felder ein Doppel.`;
-        case "singleFinish":
-          return r.bull
-            ? `Bleibt bei Single ${r.field} auf Bull-Finish.`
-            : `Bleibt bei Single ${r.field} auf einem Finish.`;
-        case "halving":
-          return `Endet auf ${r.double}, das sich ${["", "einmal", "zweimal", "dreimal", "viermal"][r.times]} halbieren lässt.`;
-        case "chart":
-          return "Der übliche Weg nach Tabelle.";
       }
     },
     metaTitle: "Lernen",
@@ -155,6 +147,10 @@ export const de = {
       twoDartsLeft: "noch 2 Darts",
       twoDartsOf: (rest: number) => `Rest ${rest} mit 2 Darts`,
       noFinish: "Kein Finish",
+      // Zerlegung: Titel „Nach T20“, Text mit dem Rest und dem Weg, den er lehrt (ohne Weg: verkürzt).
+      after: (first: string) => `Nach ${first}`,
+      breakdown: (after: number, darts: 1 | 2, route?: string) =>
+        route ? `${after} mit ${darts} ${darts === 1 ? "Dart" : "Darts"}: ${route}` : `bleiben ${after}`,
     },
     // Eingegebener Weg in der Auflösung.
     result: {

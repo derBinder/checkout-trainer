@@ -112,14 +112,6 @@ export const en: Dictionary = {
           return "Straight at the double.";
         case "split":
           return `Aim between ${r.a} and ${r.b}: either one leaves a double.`;
-        case "singleFinish":
-          return r.bull
-            ? `A single ${r.field} still leaves the bull.`
-            : `A single ${r.field} still leaves a finish.`;
-        case "halving":
-          return `Ends on ${r.double}, which you can halve ${["", "once", "twice", "three times", "four times"][r.times]}.`;
-        case "chart":
-          return "The usual chart route.";
       }
     },
     metaTitle: "Study",
@@ -145,6 +137,10 @@ export const en: Dictionary = {
       twoDartsLeft: "2 darts left",
       twoDartsOf: (rest: number) => `${rest} with 2 darts`,
       noFinish: "No finish",
+      // Zerlegung: Titel „After T20“, text with the rest and the route it teaches (without route: short).
+      after: (first: string) => `After ${first}`,
+      breakdown: (after: number, darts: 1 | 2, route?: string) =>
+        route ? `${after} with ${darts} ${darts === 1 ? "dart" : "darts"}: ${route}` : `${after} left`,
     },
     result: {
       yourRoute: "Your route",

@@ -44,7 +44,8 @@ describe("StudyCard", () => {
     expect(screen.getByText("Rest")).toBeTruthy();
     expect(screen.getByText("5")).toBeTruthy();
     expect(darts()).toEqual(["S1", "D2"]);
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
+    expect(screen.getByText("4 mit 1 Dart: D2")).toBeTruthy();
     expect(screen.getByText("Alternative")).toBeTruthy();
     expect(screen.getByText("S3 · D1")).toBeTruthy();
   });
@@ -88,7 +89,7 @@ describe("StudyCard", () => {
       expect(row("Dein Weg")).toEqual(["T20", "T11", "D14"]);
       expect(row("Bester Weg")).toEqual(["T20", "T11", "D14"]);
       // Die Erklärungen bleiben.
-      expect(screen.getByText("Warum")).toBeTruthy();
+      expect(screen.getByText("Nach T20")).toBeTruthy();
       expect(screen.getByText("101: T17 · Bull")).toBeTruthy();
     });
 

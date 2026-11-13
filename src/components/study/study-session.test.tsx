@@ -106,11 +106,11 @@ describe("StudySession", () => {
     expect(screen.getByRole("radiogroup", { name: "Ring" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Prüfen" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "Nicht checkbar" })).toBeTruthy();
-    expect(screen.queryByText("Warum")).toBeNull();
+    expect(screen.queryByText("Nach S1")).toBeNull();
     expect(screen.queryByRole("button", { name: /^Gut/ })).toBeNull();
 
     tap("Ohne Eingabe aufdecken");
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
     expect(screen.getByText("S3 · D1")).toBeTruthy();
     // Ohne Eingabe: kein Ergebnis, kein „Dein Weg“, kein Tastenfeld mehr.
     expect(screen.queryByRole("status")).toBeNull();
@@ -135,7 +135,7 @@ describe("StudySession", () => {
     tap("Ohne Eingabe aufdecken");
     clock += 100;
     fireEvent.click(screen.getByRole("button", { name: /^Gut/ }));
-    expect(screen.getByText("Warum")).toBeTruthy();
+    expect(screen.getByText("Nach S1")).toBeTruthy();
     expect(submitReview).not.toHaveBeenCalled();
   });
 
@@ -362,7 +362,7 @@ describe("StudySession", () => {
       expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
       expect(row("Dein Weg")).toEqual(["S1", "D2"]);
       expect(row("Bester Weg")).toEqual(["S1", "D2"]);
-      expect(screen.getByText("Warum")).toBeTruthy();
+      expect(screen.getByText("Nach S1")).toBeTruthy();
       expect(intervalOn("Gut")).toBe("3 Tage");
 
       // Die Bewertung bleibt Sache des Nutzers; die nächste Karte beginnt ohne Eingabe und Ergebnis.
@@ -403,7 +403,7 @@ describe("StudySession", () => {
       render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Ohne Eingabe aufdecken");
-      expect(screen.getByText("Warum")).toBeTruthy();
+      expect(screen.getByText("Nach S1")).toBeTruthy();
       expect(screen.queryByRole("status")).toBeNull();
       expect(screen.queryByText("Dein Weg")).toBeNull();
     });

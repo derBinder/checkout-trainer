@@ -13,7 +13,7 @@ import {
   isChartRest,
   referenceRoute,
 } from '@/lib/darts/reference'
-import { bestSetup, halvings, rankCheckouts } from '@/lib/darts/scoring'
+import { bestSetup, rankCheckouts } from '@/lib/darts/scoring'
 
 /** Folgeweg; route kann ein geteilter Weg sein ("16/8", "D16/D20"). */
 export type FollowText =
@@ -29,21 +29,32 @@ export type SingleCase = {
   follow: FollowText
 }
 
-/** Warum dieser Weg: strukturierter Fall, den das Wörterbuch je Sprache in einen Satz fasst. */
-export type Reason =
-  | { kind: 'only' }
-  | { kind: 'direct' }
-  | { kind: 'split'; a: number; b: number }
-  | { kind: 'singleFinish'; field: number; bull: boolean }
-  | { kind: 'halving'; double: string; times: 1 | 2 | 3 | 4 }
-  | { kind: 'chart' }
+/**
+ * Warum dieser Weg, wo es keine Zerlegung gibt (Ein-Dart-Weg, geteilter erster Dart):
+ * strukturierter Fall, den das Wörterbuch je Sprache in einen Satz fasst.
+ */
+export type Reason = { kind: 'only' } | { kind: 'direct' } | { kind: 'split'; a: number; b: number }
+
+/**
+ * Der beste Weg als erster Dart plus der Rest, der dann bleibt, mit den übrigen Darts.
+ * `route` ist der Weg, den dieser Rest mit den übrigen Darts lehrt; er fehlt, wenn der
+ * beste Weg danach anders weitergeht (verkürzte Zerlegung).
+ */
+export type Breakdown = {
+  first: string
+  after: number
+  dartsLeft: 1 | 2
+  route?: string[]
+}
 
 export type RestCard = {
   id: string
   kind: 'rest'
   rest: number
   best: string[]
-  reason: Reason
+  /** Genau eins von beiden: die Zerlegung, sonst (Ein-Dart-Weg, geteilter erster Dart) die Begründung. */
+  breakdown?: Breakdown
+  reason?: Reason
   alternatives: string[][]
   /** Der Weg der Tabellenspalte „mit 2 Darts“, wenn sie einen nennt (nur 41 bis 170). */
   twoDarts?: string[]
@@ -139,23 +150,22 @@ function distinctRoutes(rest: number): number {
   return new Set(keys).size
 }
 
-function reasonFor(rest: number, best: Steps, cases: SingleCase[]): Reason {
+/** Begründung für Wege ohne Zerlegung: Ein-Dart-Weg oder geteilter erster Dart. */
+function reasonFor(rest: number, best: Steps): Reason {
   if (distinctRoutes(rest) === 1) return { kind: 'only' }
-  const split = best.find(isSplit)
-  if (split) {
-    const [a, b] = split.split
-    return { kind: 'split', a: a.n, b: b.n }
-  }
-  const first = cases[0]
-  if (first && first.follow.kind === 'finish') {
-    const last = first.follow.route[first.follow.route.length - 1]
-    return { kind: 'singleFinish', field: Number(first.hit.slice(1)), bull: last === 'Bull' }
-  }
-  if (best.length === 1) return { kind: 'direct' }
-  const last = best[best.length - 1] as Dart
-  const count = halvings(last)
-  if (count === 0) return { kind: 'chart' }
-  return { kind: 'halving', double: formatDart(last), times: count as 1 | 2 | 3 | 4 }
+  const [first] = best
+  if (isSplit(first)) return { kind: 'split', a: first.split[0].n, b: first.split[1].n }
+  return { kind: 'direct' }
+}
+
+function breakdownFor(rest: number, best: Steps): Breakdown | undefined {
+  const [first, ...tail] = best
+  if (tail.length === 0 || isSplit(first)) return undefined
+  const after = rest - dartValue(first)
+  const dartsLeft = tail.length as 1 | 2
+  const taught = followAfterSingle(after, dartsLeft)
+  const same = taught.kind === 'finish' && taught.route.join(' ') === fmt(tail).join(' ')
+  return { first: formatDart(first), after, dartsLeft, ...(same ? { route: taught.route } : {}) }
 }
 
 const isPlainSingle = (d: Dart) => d.ring === 'S' && d.n <= 20
@@ -182,12 +192,13 @@ function restCard(rest: number, best: Steps): RestCard {
   const alternatives = alternativesFor(rest, best).map(fmt)
   const two = chartTwoDarts(rest)
   const cases = singleCases(rest, best)
+  const breakdown = breakdownFor(rest, best)
   return {
     id: `r-${rest}`,
     kind: 'rest',
     rest,
     best: bestText,
-    reason: reasonFor(rest, best, cases),
+    ...(breakdown ? { breakdown } : { reason: reasonFor(rest, best) }),
     alternatives,
     ...(two ? { twoDarts: fmt(two) } : {}),
     singleCases: cases,

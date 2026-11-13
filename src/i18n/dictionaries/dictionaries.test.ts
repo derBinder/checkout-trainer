@@ -69,13 +69,6 @@ describe("Wörterbücher", () => {
     expect(r({ kind: "split", a: 16, b: 8 })).toBe(
       "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
     );
-    expect(r({ kind: "singleFinish", field: 19, bull: false })).toBe("Bleibt bei Single 19 auf einem Finish.");
-    expect(r({ kind: "singleFinish", field: 20, bull: true })).toBe("Bleibt bei Single 20 auf Bull-Finish.");
-    expect(r({ kind: "halving", double: "D16", times: 1 })).toBe("Endet auf D16, das sich einmal halbieren lässt.");
-    expect(r({ kind: "halving", double: "D16", times: 2 })).toBe("Endet auf D16, das sich zweimal halbieren lässt.");
-    expect(r({ kind: "halving", double: "D16", times: 3 })).toBe("Endet auf D16, das sich dreimal halbieren lässt.");
-    expect(r({ kind: "halving", double: "D16", times: 4 })).toBe("Endet auf D16, das sich viermal halbieren lässt.");
-    expect(r({ kind: "chart" })).toBe("Der übliche Weg nach Tabelle.");
   });
 
   it("formuliert jede Begründung auf Englisch", () => {
@@ -83,13 +76,6 @@ describe("Wörterbücher", () => {
     expect(r({ kind: "only" })).toBe("The only route.");
     expect(r({ kind: "direct" })).toBe("Straight at the double.");
     expect(r({ kind: "split", a: 16, b: 8 })).toBe("Aim between 16 and 8: either one leaves a double.");
-    expect(r({ kind: "singleFinish", field: 19, bull: false })).toBe("A single 19 still leaves a finish.");
-    expect(r({ kind: "singleFinish", field: 20, bull: true })).toBe("A single 20 still leaves the bull.");
-    expect(r({ kind: "halving", double: "D16", times: 1 })).toBe("Ends on D16, which you can halve once.");
-    expect(r({ kind: "halving", double: "D16", times: 2 })).toBe("Ends on D16, which you can halve twice.");
-    expect(r({ kind: "halving", double: "D16", times: 3 })).toBe("Ends on D16, which you can halve three times.");
-    expect(r({ kind: "halving", double: "D16", times: 4 })).toBe("Ends on D16, which you can halve four times.");
-    expect(r({ kind: "chart" })).toBe("The usual chart route.");
   });
 
   it("hat für jede Sprache ein Wörterbuch", () => {
