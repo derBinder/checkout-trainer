@@ -43,3 +43,13 @@ describe("VerdictLine", () => {
     expect(within(status).getByText("Letzter Dart ist kein Doppel")).toBeTruthy();
   });
 });
+
+describe("ResultLine", () => {
+  it("zeigt Titel und Hinweis als Status", async () => {
+    const { ResultLine } = await import("./verdict");
+    render(<ResultLine tone="bad" title="Falsch, es bleiben 89" note="nicht 98" />, { wrapper });
+    const status = screen.getByRole("status");
+    expect(within(status).getByText("Falsch, es bleiben 89")).toBeTruthy();
+    expect(within(status).getByText("nicht 98")).toBeTruthy();
+  });
+});

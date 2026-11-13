@@ -13,6 +13,8 @@ import { initSession, sessionReducer, type SessionState } from "@/lib/srs/sessio
  */
 export type StudyState = {
   session: SessionState;
+  /** Bewertungen speichern (Lernen); ohne Speichern (Üben) bleibt `session.unsynced` leer. */
+  save: boolean;
   confirmedReps: Record<string, number>;
   /** Der Kopf der Warteschlange ist unterwegs. */
   sending: boolean;
@@ -51,9 +53,14 @@ export type StudyAction =
 
 export type Outgoing = { cardId: string; rating: Rating; reps: number };
 
-export function initStudy(cardIds: string[], reps: Record<string, number>): StudyState {
+export function initStudy(
+  cardIds: string[],
+  reps: Record<string, number>,
+  { save = true }: { save?: boolean } = {},
+): StudyState {
   return {
     session: initSession(cardIds),
+    save,
     confirmedReps: { ...reps },
     sending: false,
     failed: false,
@@ -85,11 +92,13 @@ export function studyReducer(s: StudyState, a: StudyAction): StudyState {
       const cardId = s.session.queue[0];
       if (!cardId || !s.session.revealed || s.signedOut || tooSoon(s, a.at)) return s;
       // reps im Eintrag ist nur vorläufig; gesendet wird der Wert aus nextToSend.
-      const session = sessionReducer(s.session, {
+      const rated = sessionReducer(s.session, {
         type: "rate",
         rating: a.rating,
         reps: confirmed(s, cardId),
       });
+      // Üben: Reihenfolge und Zähler wie beim Lernen, aber nichts zum Senden.
+      const session = s.save ? rated : { ...rated, unsynced: [] };
       // Jede Bewertung ist auch ein Anlass für einen neuen Versuch.
       return { ...s, session, failed: false, lastFlipAt: a.at ?? null, answer: null };
     }
