@@ -47,6 +47,24 @@ describe("summarize", () => {
     expect(s.counts).toEqual({ new: 165, learning: 2, known: 2 });
   });
 
+  it("ignores two-dart cards for the level", () => {
+    const s = summarize({
+      states: [
+        { cardId: "r-125", state: State.Learning, scheduledDays: 0 },
+        review("t-125", 30),
+        review("t-130", 30),
+      ],
+      logs: [],
+      now,
+    });
+    expect(s.levels[125]).toBe("learning");
+    expect(s.levels[130]).toBe("new");
+  });
+
+  it("counts Again on a two-dart card towards its rest", () => {
+    expect(summarize({ states: [], logs: [again("t-125")], now }).hardest).toEqual([{ rest: 125, again: 1 }]);
+  });
+
   it("ignores state and log of an unknown card", () => {
     const s = summarize({
       states: [review("r-9999", 30)],

@@ -47,8 +47,8 @@ export function summarize({ states, logs, now }: StatsInput): Stats {
   for (let rest = MIN_REST; rest <= MAX_REST; rest++) levels[rest] = "new";
   for (const s of states) {
     const card = cardById(s.cardId);
-    // Nur die Rest- oder Bogey-Karte bestimmt die Stufe, nicht die Fehlwurf-Karten.
-    if (card && card.kind !== "miss") levels[card.rest] = levelOf(s.state, s.scheduledDays);
+    // Nur die Rest- oder Bogey-Karte bestimmt die Stufe, nicht Fehlwurf- oder Zwei-Dart-Karten.
+    if (card && (card.kind === "rest" || card.kind === "bogey")) levels[card.rest] = levelOf(s.state, s.scheduledDays);
   }
 
   const counts: Record<Level, number> = { new: 0, learning: 0, known: 0 };
