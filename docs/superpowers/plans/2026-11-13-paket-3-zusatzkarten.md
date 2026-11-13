@@ -198,3 +198,31 @@
 - [ ] `CLAUDE.md`/Plan: Entscheidungen aus Umsetzung und Review hier nachtragen.
 - [ ] Code-Review (Skill `code-review`, Stufe high, Diff gegen `develop`), Security-Review von Hand (Schalter je Konto, ausgeschaltete Karten über Actions/Abfragen, Eingabeprüfung, Gerüst ohne Nutzerdaten, Migration). Befunde beheben, Commit je Befundgruppe.
 - [ ] Browsertest 375 px de/en (und Desktop, hell/dunkel) mit kopierter `.data`, `db:migrate` auf bestehendem Lernstand, alle drei Schalter, neue Kartenarten, „Lässt Bogey-Zahl“, Prognose, Chip 171–230, ausgeschaltete Karten nicht in der Warteschlange. Dev-Server am Ende stoppen.
+
+## Ergebnis der Reviews und des Browsertests
+
+**Code-Review** (Skill `code-review`, Stufe high, Diff gegen `develop`), 5 Befunde:
+
+1. `setExtraCards` meldete Erfolg, auch wenn kein Konto getroffen wurde → behoben (`returning`, sonst `{ ok: false }`, Test).
+2. Satz zu „Nachbarfelder“ ließ offen, welcher Nachbar zu welchem Triple gehört → behoben: `S1 oder S5 statt T20, S7 oder S3 statt T19.` / `S1 or S5 instead of T20, S7 or S3 instead of T19.`
+3. Zwei gleich verschlüsselte Zwischenspeicher in `src/lib/cards.ts` → zu einem zusammengelegt.
+4. Rückmeldezeile und Text `Gespeichert.` doppelt zu „Neue Karten pro Tag“ → nicht geändert: zwei Zeilen Markup, ein gemeinsamer Baustein brächte mehr Kopplung als Nutzen.
+5. Commit 9b76969 enthielt einen roten Skeleton-Test → im Folgecommit af389ee behoben; die Historie bleibt unverändert.
+
+**Security-Review** (von Hand), keine Befunde:
+
+- Schalter je Konto: Lesen nur mit der Nutzer-ID aus der Sitzung (`requireActiveUser`/`getSessionUser`), Schreiben nur über `updateExtraCards` (aktive Nutzer). Der Kern `setExtraCards(db, userId, …)` liegt in einer Datei ohne `"use server"` und ist nicht vom Client aufrufbar.
+- Ausgeschaltete Karten: `applyReview` liest die Schalter unter der Zeilensperre und antwortet `off`; `loadQueue`, `grantExtraNewCards`, Prognose, Heute und Üben filtern über `cardOrderFor`/`cardsFor`. Die Übungsseite liefert dem Browser nur Karten eingeschalteter Arten. Keine weitere Server Action nimmt Kartenkennungen an.
+- Eingaben: nur bekannte Schalter (`isExtraKind` gegen feste Liste, auch `__proto__` abgelehnt), nur `true`/`false`; die Spalte kommt aus einer festen Zuordnung, nie aus der Eingabe. Better Auth kann die Spalten weder bei der Registrierung noch über `/update-user` setzen (Test).
+- Gerüst: Server-HTML der Einstellungen vor dem Datenstrom enthält Überschrift, Titel und Sätze, aber kein `role="switch"` und kein `aria-checked` (im Browsertest geprüft). Keine Client-Komponente importiert Kartendaten oder die Datenbank.
+- Migration `drizzle/0002_living_red_skull.sql`: drei `ALTER TABLE "user" ADD COLUMN … boolean DEFAULT false NOT NULL`, sonst nichts; in Postgres ab 11 ohne Umschreiben der Tabelle. Auf PGlite mit bestehenden Daten getestet (Unit-Test und Kopie der lokalen Datenbank).
+
+**Browsertest** (375 × 667 de/en, hell/dunkel, Desktop en; Kopie der lokalen `.data`):
+
+- `db:migrate` auf der Kopie: 3 Konten, 22 Lernstände und 11 Bewertungen vor und nach der Migration gleich (Inhalts-Hash), alle Schalter aus, Testkonto meldet sich an.
+- Einstellungen: alle drei Schalter per Tipp auf Schalter und auf Beschriftung, je ein Speichern, `Gespeichert.` / `Saved.`, Zustand nach Neuladen erhalten, keine waagrechte Rollleiste.
+- Lernsitzung mit drei fällig gesetzten Zusatzkarten: `d-16`, `n-170-0-S5` (S3 → „Lässt Bogey-Zahl“, „Lässt 162, nicht checkbar“), `o-199` (T20 · T20 · T13 → „Richtiger Stellwurf“). Als erste neue Karte kam `d-2` (Zusatzkarte eines schon durchlaufenen Rests).
+- „Single statt Doppel“ während der laufenden Sitzung ausgeschaltet: Bewertung von `d-2` „nicht gezählt“, Sitzung lief weiter; neue Sitzung ohne `d-`-Karten.
+- Prognose: mit Nachbarfeldern und Resten über 170 „17. Januar 2027“, alle aus „22. Dezember“ (262 Karten weniger bei 10 pro Tag).
+- Üben: Chip 171–230 nur mit Schalter, 171–230 + Stellwürfe = 60 Karten, „Lässt Bogey-Zahl“ bei 221 (T20 · S2) und englisch bei 171 (S12); gemerkte Auswahl nur 171–230 ohne Schalter → „Wähle mindestens einen Bereich.“
+- Hinweis: Im verborgenen Browser-Bereich hydrierten Seiten erst nach einem erzwungenen Bild (Screenshot); das betrifft die Testumgebung, nicht die App.
