@@ -126,7 +126,7 @@ describe("PracticeSelect", () => {
   it("spricht Englisch", () => {
     renderSelect({}, "en");
     expect(screen.getByRole("radiogroup", { name: "Exercise" })).toBeTruthy();
-    expect(screen.getByRole("radio", { name: "Set-ups" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Setups" })).toBeTruthy();
     expect(screen.getByText("402 cards match")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Start" })).toBeTruthy();
   });
