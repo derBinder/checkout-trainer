@@ -280,6 +280,11 @@ export const en: Dictionary = {
     hardest: "Hardest",
     againCount: (n: number) => `${n}× “Again”`,
     levelOf: (level: string) => `Level: ${level}`,
+    forecast: {
+      until: (date: string) => `All cards unlocked by ${date}`,
+      done: "All cards unlocked",
+      none: "No new cards per day set",
+    },
   },
   settings: {
     appearance: "Appearance",

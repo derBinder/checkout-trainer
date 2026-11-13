@@ -19,11 +19,12 @@ export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now
   const introducedToday = rows.filter(
     (r) => r.introducedAt >= dayStart(now) && r.introducedAt <= dayEnd(now),
   ).length;
+  const limit = effectiveNewLimit(allowance, now);
   const { due, fresh } = buildQueue({
     order: CARD_ORDER,
     states: rows.map((r) => ({ cardId: r.cardId, due: r.due })),
     now,
-    newPerDay: effectiveNewLimit(allowance, now),
+    newPerDay: limit,
     introducedToday,
   });
   const seen = new Set(rows.map((r) => r.cardId));
@@ -31,6 +32,8 @@ export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now
     due,
     fresh,
     introducedToday,
+    /** Heute noch offene neue Karten, auch wenn keine ungesehene mehr übrig ist. */
+    newLeftToday: Math.max(0, limit - introducedToday),
     unseenCount: CARD_ORDER.filter((id) => !seen.has(id)).length,
   };
 }
@@ -44,7 +47,7 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
       .from(user)
       .where(eq(user.id, u.id)),
   ]);
-  const { due, fresh, unseenCount } = queueFromRows(
+  const { due, fresh, unseenCount, newLeftToday } = queueFromRows(
     rows,
     { newPerDay: u.newPerDay, extraNewDay: extra?.extraNewDay ?? null, extraNewCount: extra?.extraNewCount ?? 0 },
     now,
@@ -54,6 +57,7 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
     dueCount: due.length,
     freshCount: fresh.length,
     unseenCount,
+    newLeftToday,
     reps: Object.fromEntries(rows.map((r) => [r.cardId, r.reps])),
     states: Object.fromEntries(rows.map((r) => [r.cardId, r])),
   };

@@ -294,6 +294,11 @@ export const de = {
     hardest: "Am schwierigsten",
     againCount: (n: number) => `${n}× „Nochmal“`,
     levelOf: (level: string) => `Lernstand: ${level}`,
+    forecast: {
+      until: (date: string) => `Alle Karten freigeschaltet voraussichtlich am ${date}`,
+      done: "Alle Karten freigeschaltet",
+      none: "Keine neuen Karten eingestellt",
+    },
   },
   settings: {
     appearance: "Darstellung",
