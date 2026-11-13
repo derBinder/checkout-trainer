@@ -192,6 +192,20 @@ describe("loadQueue with an extra allowance", () => {
   });
 });
 
+describe("loadQueue newLeftToday", () => {
+  it("counts the limit with today's extra cards minus the cards introduced today, never below zero", async () => {
+    const u = await addUser("u1", 2);
+    await db.update(user).set({ extraNewDay: "2026-11-11", extraNewCount: 3 }).where(eq(user.id, "u1"));
+    expect((await loadQueue(db, u, now)).newLeftToday).toBe(5);
+    await introduce(u, CARD_ORDER.slice(0, 4), now);
+    expect((await loadQueue(db, u, now)).newLeftToday).toBe(1);
+    // Die Einstellung wurde nach dem Einführen gesenkt: nie negativ.
+    expect((await loadQueue(db, { ...u, newPerDay: 0 }, now)).newLeftToday).toBe(0);
+    const tomorrow = new Date(now.getTime() + 24 * 3600_000);
+    expect((await loadQueue(db, u, tomorrow)).newLeftToday).toBe(2);
+  });
+});
+
 describe("submitReview", () => {
   const input = { cardId: "r-2", rating: 3, reps: 0 };
   const sessionUser = (status: SessionUser["status"]): SessionUser => ({

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, within } from "@testing-library/react";
 import { State } from "ts-fsrs";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/client";
 import { db } from "@/lib/db";
 
@@ -10,25 +10,34 @@ function wrapper({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale="de">{children}</I18nProvider>;
 }
 
-const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
-vi.mock("@/lib/auth/guard", () => ({
-  requireActiveUser: async () => ({
-    id: "u1",
-    email: "spieler@beispiel.de",
-    name: "Spieler",
-    status: "active",
-    role: "user",
-    newPerDay: 5,
-  }),
+const user = vi.hoisted(() => ({
+  id: "u1",
+  email: "spieler@beispiel.de",
+  name: "Spieler",
+  status: "active" as const,
+  role: "user",
+  newPerDay: 5,
 }));
+const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
+vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
 
 const { StatsOverview, StatsStreak } = await import("./stats-data");
 
 const again = (cardId: string) => ({ cardId, rating: 1, reviewedAt: new Date() });
 
+function queue(unseenCount: number, newLeftToday: number) {
+  queries.loadQueue.mockResolvedValue({ cardIds: [], dueCount: 0, freshCount: 0, unseenCount, newLeftToday, reps: {}, states: {} });
+}
+
 beforeEach(() => {
   vi.clearAllMocks();
+  user.newPerDay = 5;
+  queue(402, 5);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe("StatsOverview", () => {
@@ -64,6 +73,37 @@ describe("StatsOverview", () => {
     render(await StatsOverview(), { wrapper });
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("169");
     expect(screen.queryByRole("heading", { name: "Am schwierigsten" })).toBeNull();
+  });
+});
+
+describe("Prognose", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-13T10:00:00Z"));
+    queries.loadStatsData.mockResolvedValue({ states: [], logs: [] });
+  });
+
+  it("nennt den Tag, an dem alle Karten freigeschaltet sind", async () => {
+    // 30 ungesehen, heute 0 offen, 5 pro Tag: sechs Tage nach heute.
+    queue(30, 0);
+    render(await StatsOverview(), { wrapper });
+    expect(queries.loadQueue).toHaveBeenCalledWith(db, user, new Date("2026-11-13T10:00:00Z"));
+    const line = screen.getByText("Voraussichtlich alle Karten frei am 19. November");
+    // Tag und Monat brechen nicht auseinander.
+    expect(line.textContent).toContain("19.\u00a0November");
+  });
+
+  it("meldet, wenn alle Karten freigeschaltet sind", async () => {
+    queue(0, 5);
+    render(await StatsOverview(), { wrapper });
+    expect(screen.getByText("Alle Karten freigeschaltet")).toBeTruthy();
+  });
+
+  it("nennt kein Datum, wenn keine neuen Karten eingestellt sind", async () => {
+    user.newPerDay = 0;
+    queue(30, 0);
+    render(await StatsOverview(), { wrapper });
+    expect(screen.getByText("Keine neuen Karten eingestellt")).toBeTruthy();
   });
 });
 

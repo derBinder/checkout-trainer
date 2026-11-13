@@ -185,6 +185,20 @@ describe("QuestionFooter", () => {
     expect(checkedRing()).toBe("Single");
   });
 
+  it("fragt eine Zwei-Dart-Karte mit verbrauchtem erstem Feld und höchstens zwei Darts", async () => {
+    const { press } = setup("t-125");
+    expect(screen.getByText("125", { selector: "p" })).toBeTruthy();
+    expect(screen.getByText("noch 2 Darts")).toBeTruthy();
+    expect(darts()).toEqual(["–verbraucht", "?offen", "?offen"]);
+    expect(nextSlot()).toBe(1);
+    expect(screen.queryByRole("button", { name: "Nicht checkbar" })).toBeNull();
+    await press("Single 1");
+    await press("Single 3");
+    expect(darts()).toEqual(["–verbraucht", "S1", "S3"]);
+    expect(nextSlot()).toBe(-1);
+    expect(isDisabled("Single 5")).toBe(true);
+  });
+
   it("bietet auf Fehlwurf-Karten kein „Nicht checkbar“ an", () => {
     setup("m-125-1");
     expect(screen.queryByRole("button", { name: "Nicht checkbar" })).toBeNull();

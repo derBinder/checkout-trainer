@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/client";
 
@@ -137,5 +138,47 @@ describe("RegisterForm", () => {
       screen.getByRole("button", { name: "Passwort anzeigen" }),
     );
     expect(screen.getByLabelText("Passwort").getAttribute("aria-invalid")).toBe("false");
+  });
+
+  it("leert beim Verbergen der Seite Felder, Sichtbarkeit, Stärke und Sperre", async () => {
+    // Nach erfolgreicher Registrierung bleibt die Seite versteckt im DOM (Activity).
+    signUp.mockResolvedValue({ error: null });
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Activity mode="visible">
+        <RegisterForm />
+      </Activity>,
+      { wrapper },
+    );
+    await user.type(screen.getByLabelText("Name"), "Felix");
+    await user.type(screen.getByLabelText("E-Mail"), "name@beispiel.de");
+    await user.type(screen.getByLabelText("Passwort"), STRONG);
+    await user.click(screen.getByRole("button", { name: "Passwort anzeigen" }));
+    await user.click(screen.getByRole("button", { name: "Registrieren" }));
+    expect(router.replace).toHaveBeenCalledWith("/de/pending");
+
+    rerender(
+      <Activity mode="hidden">
+        <RegisterForm />
+      </Activity>,
+    );
+    const hidden = document.querySelector<HTMLInputElement>('input[name="password"]');
+    expect(hidden?.value).toBe("");
+
+    rerender(
+      <Activity mode="visible">
+        <RegisterForm />
+      </Activity>,
+    );
+    const password = screen.getByLabelText("Passwort") as HTMLInputElement;
+    expect(password.value).toBe("");
+    expect(password.type).toBe("password");
+    expect((screen.getByLabelText("Name") as HTMLInputElement).value).toBe("");
+    expect((screen.getByLabelText("E-Mail") as HTMLInputElement).value).toBe("");
+    expect(screen.getByText("Mindestens 10 Zeichen.")).toBeTruthy();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Registrieren" }).hasAttribute("disabled"),
+    ).toBe(false);
   });
 });

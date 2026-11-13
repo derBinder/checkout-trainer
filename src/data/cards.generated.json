@@ -20,8 +20,13 @@
       "S1",
       "D1"
     ],
-    "reason": {
-      "kind": "only"
+    "breakdown": {
+      "first": "S1",
+      "after": 2,
+      "dartsLeft": 1,
+      "route": [
+        "D1"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -47,10 +52,13 @@
       "S1",
       "D2"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D2",
-      "times": 1
+    "breakdown": {
+      "first": "S1",
+      "after": 4,
+      "dartsLeft": 1,
+      "route": [
+        "D2"
+      ]
     },
     "alternatives": [
       [
@@ -81,10 +89,13 @@
       "S3",
       "D2"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D2",
-      "times": 1
+    "breakdown": {
+      "first": "S3",
+      "after": 4,
+      "dartsLeft": 1,
+      "route": [
+        "D2"
+      ]
     },
     "alternatives": [
       [
@@ -119,10 +130,13 @@
       "S1",
       "D4"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D4",
-      "times": 2
+    "breakdown": {
+      "first": "S1",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [
       [
@@ -157,10 +171,13 @@
       "S3",
       "D4"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D4",
-      "times": 2
+    "breakdown": {
+      "first": "S3",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [
       [
@@ -195,10 +212,13 @@
       "S5",
       "D4"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D4",
-      "times": 2
+    "breakdown": {
+      "first": "S5",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [
       [
@@ -233,10 +253,13 @@
       "S7",
       "D4"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D4",
-      "times": 2
+    "breakdown": {
+      "first": "S7",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [
       [
@@ -271,10 +294,13 @@
       "S1",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S1",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -309,10 +335,13 @@
       "S3",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S3",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -347,10 +376,13 @@
       "S5",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S5",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -385,10 +417,13 @@
       "S7",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S7",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -423,10 +458,13 @@
       "S9",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S9",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -461,10 +499,13 @@
       "S11",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S11",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -499,10 +540,13 @@
       "S13",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S13",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -537,10 +581,13 @@
       "S15",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "S15",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -575,10 +622,13 @@
       "S1",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S1",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -613,10 +663,13 @@
       "S3",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S3",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -651,10 +704,13 @@
       "S5",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S5",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -689,10 +745,13 @@
       "S7",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S7",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -727,10 +786,13 @@
       "S9",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S9",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -759,10 +821,13 @@
       "S3",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S3",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -780,10 +845,13 @@
       "S12",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S12",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -801,10 +869,13 @@
       "S13",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "S13",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -838,10 +909,13 @@
       "S7",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S7",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -875,10 +949,13 @@
       "S9",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S9",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -896,10 +973,13 @@
       "S10",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S10",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -917,10 +997,13 @@
       "S11",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S11",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -938,10 +1021,13 @@
       "S12",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S12",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -959,10 +1045,13 @@
       "S13",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S13",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -975,10 +1064,13 @@
       "S14",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S14",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -991,10 +1083,13 @@
       "S15",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S15",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -1007,10 +1102,13 @@
       "T16",
       "D4"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 16,
-      "bull": false
+    "breakdown": {
+      "first": "T16",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -1055,10 +1153,13 @@
       "S17",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S17",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -1071,10 +1172,13 @@
       "S18",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S18",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -1087,10 +1191,13 @@
       "S19",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S19",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -1103,10 +1210,13 @@
       "S20",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "S20",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": []
@@ -1119,10 +1229,13 @@
       "T15",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 15,
-      "bull": false
+    "breakdown": {
+      "first": "T15",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -1171,6 +1284,18 @@
     }
   },
   {
+    "id": "t-61",
+    "kind": "two",
+    "rest": 61,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T11",
+        "D14"
+      ]
+    }
+  },
+  {
     "id": "r-62",
     "kind": "rest",
     "rest": 62,
@@ -1178,10 +1303,13 @@
       "T10",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 10,
-      "bull": false
+    "breakdown": {
+      "first": "T10",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -1225,6 +1353,18 @@
     }
   },
   {
+    "id": "t-62",
+    "kind": "two",
+    "rest": 62,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T12",
+        "D13"
+      ]
+    }
+  },
+  {
     "id": "r-63",
     "kind": "rest",
     "rest": 63,
@@ -1232,10 +1372,13 @@
       "T13",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 13,
-      "bull": false
+    "breakdown": {
+      "first": "T13",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -1284,6 +1427,18 @@
     }
   },
   {
+    "id": "t-63",
+    "kind": "two",
+    "rest": 63,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T13",
+        "D12"
+      ]
+    }
+  },
+  {
     "id": "r-64",
     "kind": "rest",
     "rest": 64,
@@ -1291,10 +1446,13 @@
       "T16",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 16,
-      "bull": false
+    "breakdown": {
+      "first": "T16",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -1338,6 +1496,18 @@
     }
   },
   {
+    "id": "t-64",
+    "kind": "two",
+    "rest": 64,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T14",
+        "D11"
+      ]
+    }
+  },
+  {
     "id": "r-65",
     "kind": "rest",
     "rest": 65,
@@ -1345,10 +1515,13 @@
       "T11",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 11,
-      "bull": false
+    "breakdown": {
+      "first": "T11",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -1397,6 +1570,18 @@
     }
   },
   {
+    "id": "t-65",
+    "kind": "two",
+    "rest": 65,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T15",
+        "D10"
+      ]
+    }
+  },
+  {
     "id": "r-66",
     "kind": "rest",
     "rest": 66,
@@ -1404,10 +1589,13 @@
       "T10",
       "D18"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 10,
-      "bull": false
+    "breakdown": {
+      "first": "T10",
+      "after": 36,
+      "dartsLeft": 1,
+      "route": [
+        "D18"
+      ]
     },
     "alternatives": [
       [
@@ -1456,6 +1644,18 @@
     }
   },
   {
+    "id": "t-66",
+    "kind": "two",
+    "rest": 66,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T16",
+        "D9"
+      ]
+    }
+  },
+  {
     "id": "r-67",
     "kind": "rest",
     "rest": 67,
@@ -1463,10 +1663,13 @@
       "T9",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 9,
-      "bull": false
+    "breakdown": {
+      "first": "T9",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -1510,6 +1713,18 @@
     }
   },
   {
+    "id": "t-67",
+    "kind": "two",
+    "rest": 67,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "D8"
+      ]
+    }
+  },
+  {
     "id": "r-68",
     "kind": "rest",
     "rest": 68,
@@ -1517,10 +1732,13 @@
       "T20",
       "D4"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 8,
+      "dartsLeft": 1,
+      "route": [
+        "D4"
+      ]
     },
     "alternatives": [
       [
@@ -1569,6 +1787,18 @@
     }
   },
   {
+    "id": "t-68",
+    "kind": "two",
+    "rest": 68,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D7"
+      ]
+    }
+  },
+  {
     "id": "r-69",
     "kind": "rest",
     "rest": 69,
@@ -1576,10 +1806,13 @@
       "T19",
       "D6"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 12,
+      "dartsLeft": 1,
+      "route": [
+        "D6"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -1623,6 +1856,18 @@
     }
   },
   {
+    "id": "t-69",
+    "kind": "two",
+    "rest": 69,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "D6"
+      ]
+    }
+  },
+  {
     "id": "r-70",
     "kind": "rest",
     "rest": 70,
@@ -1630,10 +1875,13 @@
       "T18",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": false
+    "breakdown": {
+      "first": "T18",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -1677,6 +1925,18 @@
     }
   },
   {
+    "id": "t-70",
+    "kind": "two",
+    "rest": 70,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "D5"
+      ]
+    }
+  },
+  {
     "id": "r-71",
     "kind": "rest",
     "rest": 71,
@@ -1684,10 +1944,13 @@
       "T13",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 13,
-      "bull": false
+    "breakdown": {
+      "first": "T13",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -1734,10 +1997,13 @@
       "T16",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 16,
-      "bull": false
+    "breakdown": {
+      "first": "T16",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -1789,10 +2055,13 @@
       "T19",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -1839,10 +2108,13 @@
       "T14",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 14,
-      "bull": false
+    "breakdown": {
+      "first": "T14",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -1889,10 +2161,13 @@
       "T17",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 17,
-      "bull": false
+    "breakdown": {
+      "first": "T17",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -1939,10 +2214,13 @@
       "T20",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 16,
+      "dartsLeft": 1,
+      "route": [
+        "D8"
+      ]
     },
     "alternatives": [
       [
@@ -1994,10 +2272,13 @@
       "T19",
       "D10"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 20,
+      "dartsLeft": 1,
+      "route": [
+        "D10"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2044,10 +2325,13 @@
       "T18",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": false
+    "breakdown": {
+      "first": "T18",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2094,10 +2378,13 @@
       "T19",
       "D11"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 22,
+      "dartsLeft": 1,
+      "route": [
+        "D11"
+      ]
     },
     "alternatives": [
       [
@@ -2149,10 +2436,13 @@
       "T20",
       "D10"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 20,
+      "dartsLeft": 1,
+      "route": [
+        "D10"
+      ]
     },
     "alternatives": [
       [
@@ -2204,10 +2494,13 @@
       "T19",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -2259,10 +2552,13 @@
       "Bull",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "Bull",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -2280,10 +2576,13 @@
       "T17",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 17,
-      "bull": false
+    "breakdown": {
+      "first": "T17",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2330,10 +2629,13 @@
       "T20",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 24,
+      "dartsLeft": 1,
+      "route": [
+        "D12"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2380,10 +2682,13 @@
       "T15",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 15,
-      "bull": false
+    "breakdown": {
+      "first": "T15",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -2435,10 +2740,13 @@
       "T18",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": false
+    "breakdown": {
+      "first": "T18",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2485,10 +2793,13 @@
       "T17",
       "D18"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 17,
-      "bull": false
+    "breakdown": {
+      "first": "T17",
+      "after": 36,
+      "dartsLeft": 1,
+      "route": [
+        "D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2535,10 +2846,13 @@
       "T20",
       "D14"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 28,
+      "dartsLeft": 1,
+      "route": [
+        "D14"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2585,10 +2899,13 @@
       "T19",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -2635,10 +2952,13 @@
       "T20",
       "D15"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 30,
+      "dartsLeft": 1,
+      "route": [
+        "D15"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -2682,6 +3002,18 @@
     }
   },
   {
+    "id": "t-90",
+    "kind": "two",
+    "rest": 90,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "D18"
+      ]
+    }
+  },
+  {
     "id": "r-91",
     "kind": "rest",
     "rest": 91,
@@ -2689,10 +3021,13 @@
       "T17",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 17,
-      "bull": false
+    "breakdown": {
+      "first": "T17",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -2745,10 +3080,13 @@
       "T20",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 32,
+      "dartsLeft": 1,
+      "route": [
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -2801,10 +3139,13 @@
       "T19",
       "D18"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 36,
+      "dartsLeft": 1,
+      "route": [
+        "D18"
+      ]
     },
     "alternatives": [
       [
@@ -2857,10 +3198,13 @@
       "T18",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": false
+    "breakdown": {
+      "first": "T18",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -2913,10 +3257,13 @@
       "T19",
       "D19"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 38,
+      "dartsLeft": 1,
+      "route": [
+        "D19"
+      ]
     },
     "alternatives": [
       [
@@ -2969,10 +3316,13 @@
       "T20",
       "D18"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 36,
+      "dartsLeft": 1,
+      "route": [
+        "D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3019,10 +3369,13 @@
       "T19",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3069,10 +3422,13 @@
       "T20",
       "D19"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 38,
+      "dartsLeft": 1,
+      "route": [
+        "D19"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3120,10 +3476,14 @@
       "10/6",
       "D16/D18"
     ],
-    "reason": {
-      "kind": "split",
-      "a": 10,
-      "b": 6
+    "breakdown": {
+      "first": "T19",
+      "after": 42,
+      "dartsLeft": 2,
+      "route": [
+        "10/6",
+        "D16/D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3163,6 +3523,19 @@
     }
   },
   {
+    "id": "t-99",
+    "kind": "two",
+    "rest": 99,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-100",
     "kind": "rest",
     "rest": 100,
@@ -3170,10 +3543,13 @@
       "T20",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 40,
+      "dartsLeft": 1,
+      "route": [
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3221,10 +3597,14 @@
       "S9",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 41,
+      "dartsLeft": 2,
+      "route": [
+        "S9",
+        "D16"
+      ]
     },
     "alternatives": [],
     "twoDarts": [
@@ -3268,6 +3648,18 @@
     }
   },
   {
+    "id": "t-101",
+    "kind": "two",
+    "rest": 101,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T17",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "r-102",
     "kind": "rest",
     "rest": 102,
@@ -3276,10 +3668,14 @@
       "10/6",
       "D16/D18"
     ],
-    "reason": {
-      "kind": "split",
-      "a": 10,
-      "b": 6
+    "breakdown": {
+      "first": "T20",
+      "after": 42,
+      "dartsLeft": 2,
+      "route": [
+        "10/6",
+        "D16/D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3319,6 +3715,19 @@
     }
   },
   {
+    "id": "t-102",
+    "kind": "two",
+    "rest": 102,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-103",
     "kind": "rest",
     "rest": 103,
@@ -3327,10 +3736,14 @@
       "6/10",
       "D20/D18"
     ],
-    "reason": {
-      "kind": "split",
-      "a": 6,
-      "b": 10
+    "breakdown": {
+      "first": "T19",
+      "after": 46,
+      "dartsLeft": 2,
+      "route": [
+        "6/10",
+        "D20/D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3370,6 +3783,19 @@
     }
   },
   {
+    "id": "t-103",
+    "kind": "two",
+    "rest": 103,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-104",
     "kind": "rest",
     "rest": 104,
@@ -3378,10 +3804,10 @@
       "S15",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 47,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "twoDarts": [
@@ -3425,6 +3851,18 @@
     }
   },
   {
+    "id": "t-104",
+    "kind": "two",
+    "rest": 104,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T18",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "r-105",
     "kind": "rest",
     "rest": 105,
@@ -3433,10 +3871,14 @@
       "S13",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 45,
+      "dartsLeft": 2,
+      "route": [
+        "S13",
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3476,6 +3918,19 @@
     }
   },
   {
+    "id": "t-105",
+    "kind": "two",
+    "rest": 105,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-106",
     "kind": "rest",
     "rest": 106,
@@ -3484,10 +3939,10 @@
       "T10",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 46,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "singleCases": [
@@ -3559,6 +4014,19 @@
     }
   },
   {
+    "id": "t-106",
+    "kind": "two",
+    "rest": 106,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-107",
     "kind": "rest",
     "rest": 107,
@@ -3567,10 +4035,10 @@
       "T10",
       "D10"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 50,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "twoDarts": [
@@ -3646,6 +4114,18 @@
     }
   },
   {
+    "id": "t-107",
+    "kind": "two",
+    "rest": 107,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T19",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "r-108",
     "kind": "rest",
     "rest": 108,
@@ -3654,10 +4134,14 @@
       "16/8",
       "D16/D20"
     ],
-    "reason": {
-      "kind": "split",
-      "a": 16,
-      "b": 8
+    "breakdown": {
+      "first": "T20",
+      "after": 48,
+      "dartsLeft": 2,
+      "route": [
+        "16/8",
+        "D16/D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3697,6 +4181,19 @@
     }
   },
   {
+    "id": "t-108",
+    "kind": "two",
+    "rest": 108,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-109",
     "kind": "rest",
     "rest": 109,
@@ -3705,10 +4202,14 @@
       "S9",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 49,
+      "dartsLeft": 2,
+      "route": [
+        "S9",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -3748,6 +4249,19 @@
     }
   },
   {
+    "id": "t-109",
+    "kind": "two",
+    "rest": 109,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-110",
     "kind": "rest",
     "rest": 110,
@@ -3756,10 +4270,10 @@
       "T10",
       "D10"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 50,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "twoDarts": [
@@ -3835,6 +4349,18 @@
     }
   },
   {
+    "id": "t-110",
+    "kind": "two",
+    "rest": 110,
+    "follow": {
+      "kind": "finish",
+      "route": [
+        "T20",
+        "Bull"
+      ]
+    }
+  },
+  {
     "id": "r-111",
     "kind": "rest",
     "rest": 111,
@@ -3843,10 +4369,14 @@
       "S14",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 54,
+      "dartsLeft": 2,
+      "route": [
+        "S14",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -3892,6 +4422,19 @@
     }
   },
   {
+    "id": "t-111",
+    "kind": "two",
+    "rest": 111,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-112",
     "kind": "rest",
     "rest": 112,
@@ -3900,10 +4443,10 @@
       "T12",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 52,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "singleCases": [
@@ -3975,6 +4518,19 @@
     }
   },
   {
+    "id": "t-112",
+    "kind": "two",
+    "rest": 112,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-113",
     "kind": "rest",
     "rest": 113,
@@ -3983,10 +4539,10 @@
       "S16",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 56,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "singleCases": [
@@ -4026,6 +4582,19 @@
     }
   },
   {
+    "id": "t-113",
+    "kind": "two",
+    "rest": 113,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T7"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-114",
     "kind": "rest",
     "rest": 114,
@@ -4034,10 +4603,14 @@
       "S17",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 57,
+      "dartsLeft": 2,
+      "route": [
+        "S17",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -4083,6 +4656,19 @@
     }
   },
   {
+    "id": "t-114",
+    "kind": "two",
+    "rest": 114,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-115",
     "kind": "rest",
     "rest": 115,
@@ -4091,10 +4677,14 @@
       "S15",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 55,
+      "dartsLeft": 2,
+      "route": [
+        "S15",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -4140,6 +4730,19 @@
     }
   },
   {
+    "id": "t-115",
+    "kind": "two",
+    "rest": 115,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-116",
     "kind": "rest",
     "rest": 116,
@@ -4148,10 +4751,14 @@
       "S19",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 59,
+      "dartsLeft": 2,
+      "route": [
+        "S19",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -4197,6 +4804,19 @@
     }
   },
   {
+    "id": "t-116",
+    "kind": "two",
+    "rest": 116,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-117",
     "kind": "rest",
     "rest": 117,
@@ -4205,10 +4825,14 @@
       "S20",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 60,
+      "dartsLeft": 2,
+      "route": [
+        "S20",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -4254,6 +4878,19 @@
     }
   },
   {
+    "id": "t-117",
+    "kind": "two",
+    "rest": 117,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-118",
     "kind": "rest",
     "rest": 118,
@@ -4262,10 +4899,14 @@
       "S18",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 58,
+      "dartsLeft": 2,
+      "route": [
+        "S18",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4305,6 +4946,19 @@
     }
   },
   {
+    "id": "t-118",
+    "kind": "two",
+    "rest": 118,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-119",
     "kind": "rest",
     "rest": 119,
@@ -4313,10 +4967,14 @@
       "T12",
       "D13"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": false
+    "breakdown": {
+      "first": "T19",
+      "after": 62,
+      "dartsLeft": 2,
+      "route": [
+        "T12",
+        "D13"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4388,6 +5046,19 @@
     }
   },
   {
+    "id": "t-119",
+    "kind": "two",
+    "rest": 119,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-120",
     "kind": "rest",
     "rest": 120,
@@ -4396,10 +5067,14 @@
       "S20",
       "D20"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": false
+    "breakdown": {
+      "first": "T20",
+      "after": 60,
+      "dartsLeft": 2,
+      "route": [
+        "S20",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4439,6 +5114,19 @@
     }
   },
   {
+    "id": "t-120",
+    "kind": "two",
+    "rest": 120,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "S20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-121",
     "kind": "rest",
     "rest": 121,
@@ -4447,10 +5135,14 @@
       "T11",
       "D14"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": true
+    "breakdown": {
+      "first": "T20",
+      "after": 61,
+      "dartsLeft": 2,
+      "route": [
+        "T11",
+        "D14"
+      ]
     },
     "alternatives": [
       [
@@ -4528,6 +5220,19 @@
     }
   },
   {
+    "id": "t-121",
+    "kind": "two",
+    "rest": 121,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T7"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-122",
     "kind": "rest",
     "rest": 122,
@@ -4536,10 +5241,14 @@
       "T18",
       "D7"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": true
+    "breakdown": {
+      "first": "T18",
+      "after": 68,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "D7"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4611,6 +5320,19 @@
     }
   },
   {
+    "id": "t-122",
+    "kind": "two",
+    "rest": 122,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T10"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-123",
     "kind": "rest",
     "rest": 123,
@@ -4619,10 +5341,14 @@
       "T16",
       "D9"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": true
+    "breakdown": {
+      "first": "T19",
+      "after": 66,
+      "dartsLeft": 2,
+      "route": [
+        "T16",
+        "D9"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4694,6 +5420,19 @@
     }
   },
   {
+    "id": "t-123",
+    "kind": "two",
+    "rest": 123,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-124",
     "kind": "rest",
     "rest": 124,
@@ -4702,10 +5441,14 @@
       "T14",
       "D11"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": true
+    "breakdown": {
+      "first": "T20",
+      "after": 64,
+      "dartsLeft": 2,
+      "route": [
+        "T14",
+        "D11"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4777,6 +5520,19 @@
     }
   },
   {
+    "id": "t-124",
+    "kind": "two",
+    "rest": 124,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T8"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-125",
     "kind": "rest",
     "rest": 125,
@@ -4785,10 +5541,10 @@
       "T19",
       "D7"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": true
+    "breakdown": {
+      "first": "T18",
+      "after": 71,
+      "dartsLeft": 2
     },
     "alternatives": [
       [
@@ -4868,6 +5624,19 @@
     }
   },
   {
+    "id": "t-125",
+    "kind": "two",
+    "rest": 125,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T11"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-126",
     "kind": "rest",
     "rest": 126,
@@ -4876,10 +5645,14 @@
       "T19",
       "D6"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": true
+    "breakdown": {
+      "first": "T19",
+      "after": 69,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D6"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -4951,6 +5724,19 @@
     }
   },
   {
+    "id": "t-126",
+    "kind": "two",
+    "rest": 126,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-127",
     "kind": "rest",
     "rest": 127,
@@ -4959,10 +5745,14 @@
       "T17",
       "D8"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": true
+    "breakdown": {
+      "first": "T20",
+      "after": 67,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "D8"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -5034,6 +5824,19 @@
     }
   },
   {
+    "id": "t-127",
+    "kind": "two",
+    "rest": 127,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T9"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-128",
     "kind": "rest",
     "rest": 128,
@@ -5042,10 +5845,14 @@
       "T14",
       "D16"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 18,
-      "bull": true
+    "breakdown": {
+      "first": "T18",
+      "after": 74,
+      "dartsLeft": 2,
+      "route": [
+        "T14",
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -5125,6 +5932,19 @@
     }
   },
   {
+    "id": "t-128",
+    "kind": "two",
+    "rest": 128,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-129",
     "kind": "rest",
     "rest": 129,
@@ -5133,10 +5953,14 @@
       "T16",
       "D12"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 19,
-      "bull": true
+    "breakdown": {
+      "first": "T19",
+      "after": 72,
+      "dartsLeft": 2,
+      "route": [
+        "T16",
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -5216,6 +6040,19 @@
     }
   },
   {
+    "id": "t-129",
+    "kind": "two",
+    "rest": 129,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-130",
     "kind": "rest",
     "rest": 130,
@@ -5224,10 +6061,14 @@
       "T20",
       "D5"
     ],
-    "reason": {
-      "kind": "singleFinish",
-      "field": 20,
-      "bull": true
+    "breakdown": {
+      "first": "T20",
+      "after": 70,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D5"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -5299,6 +6140,19 @@
     }
   },
   {
+    "id": "t-130",
+    "kind": "two",
+    "rest": 130,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T10"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-131",
     "kind": "rest",
     "rest": 131,
@@ -5307,10 +6161,14 @@
       "T14",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "T19",
+      "after": 74,
+      "dartsLeft": 2,
+      "route": [
+        "T14",
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -5392,6 +6250,19 @@
     }
   },
   {
+    "id": "t-131",
+    "kind": "two",
+    "rest": 131,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-132",
     "kind": "rest",
     "rest": 132,
@@ -5400,10 +6271,14 @@
       "T16",
       "D12"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D12",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 72,
+      "dartsLeft": 2,
+      "route": [
+        "T16",
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -5485,6 +6360,19 @@
     }
   },
   {
+    "id": "t-132",
+    "kind": "two",
+    "rest": 132,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-133",
     "kind": "rest",
     "rest": 133,
@@ -5493,10 +6381,14 @@
       "T19",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "T20",
+      "after": 73,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D8"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -5572,6 +6464,19 @@
     }
   },
   {
+    "id": "t-133",
+    "kind": "two",
+    "rest": 133,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T11"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-134",
     "kind": "rest",
     "rest": 134,
@@ -5580,8 +6485,10 @@
       "T16",
       "D13"
     ],
-    "reason": {
-      "kind": "chart"
+    "breakdown": {
+      "first": "T20",
+      "after": 74,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "singleCases": [
@@ -5657,6 +6564,19 @@
     }
   },
   {
+    "id": "t-134",
+    "kind": "two",
+    "rest": 134,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-135",
     "kind": "rest",
     "rest": 135,
@@ -5665,10 +6585,14 @@
       "T17",
       "D12"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D12",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 75,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -5750,6 +6674,19 @@
     }
   },
   {
+    "id": "t-135",
+    "kind": "two",
+    "rest": 135,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-136",
     "kind": "rest",
     "rest": 136,
@@ -5758,10 +6695,14 @@
       "T20",
       "D8"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D8",
-      "times": 3
+    "breakdown": {
+      "first": "T20",
+      "after": 76,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D8"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -5837,6 +6778,19 @@
     }
   },
   {
+    "id": "t-136",
+    "kind": "two",
+    "rest": 136,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T12"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-137",
     "kind": "rest",
     "rest": 137,
@@ -5845,10 +6799,14 @@
       "T19",
       "D10"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D10",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 77,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D10"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -5924,6 +6882,19 @@
     }
   },
   {
+    "id": "t-137",
+    "kind": "two",
+    "rest": 137,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-138",
     "kind": "rest",
     "rest": 138,
@@ -5932,10 +6903,14 @@
       "T18",
       "D12"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D12",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 78,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "D12"
+      ]
     },
     "alternatives": [
       [
@@ -6017,6 +6992,19 @@
     }
   },
   {
+    "id": "t-138",
+    "kind": "two",
+    "rest": 138,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-139",
     "kind": "rest",
     "rest": 139,
@@ -6025,10 +7013,10 @@
       "T13",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 79,
+      "dartsLeft": 2
     },
     "alternatives": [
       [
@@ -6110,6 +7098,19 @@
     }
   },
   {
+    "id": "t-139",
+    "kind": "two",
+    "rest": 139,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T13"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-140",
     "kind": "rest",
     "rest": 140,
@@ -6118,10 +7119,14 @@
       "T20",
       "D10"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D10",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 80,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D10"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -6197,6 +7202,19 @@
     }
   },
   {
+    "id": "t-140",
+    "kind": "two",
+    "rest": 140,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-141",
     "kind": "rest",
     "rest": 141,
@@ -6205,10 +7223,14 @@
       "T19",
       "D12"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D12",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 81,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D12"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -6284,6 +7306,19 @@
     }
   },
   {
+    "id": "t-141",
+    "kind": "two",
+    "rest": 141,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-142",
     "kind": "rest",
     "rest": 142,
@@ -6292,10 +7327,10 @@
       "T14",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 82,
+      "dartsLeft": 2
     },
     "alternatives": [
       [
@@ -6377,6 +7412,19 @@
     }
   },
   {
+    "id": "t-142",
+    "kind": "two",
+    "rest": 142,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T14"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-143",
     "kind": "rest",
     "rest": 143,
@@ -6385,10 +7433,14 @@
       "T17",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "T20",
+      "after": 83,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -6470,6 +7522,19 @@
     }
   },
   {
+    "id": "t-143",
+    "kind": "two",
+    "rest": 143,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-144",
     "kind": "rest",
     "rest": 144,
@@ -6478,10 +7543,14 @@
       "T20",
       "D12"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D12",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 84,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D12"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -6557,6 +7626,19 @@
     }
   },
   {
+    "id": "t-144",
+    "kind": "two",
+    "rest": 144,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 24
+    }
+  },
+  {
     "id": "r-145",
     "kind": "rest",
     "rest": 145,
@@ -6565,10 +7647,10 @@
       "T19",
       "D14"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D14",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 85,
+      "dartsLeft": 2
     },
     "alternatives": [],
     "singleCases": [
@@ -6644,6 +7726,19 @@
     }
   },
   {
+    "id": "t-145",
+    "kind": "two",
+    "rest": 145,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T15"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-146",
     "kind": "rest",
     "rest": 146,
@@ -6652,10 +7747,14 @@
       "T18",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "T20",
+      "after": 86,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "D16"
+      ]
     },
     "alternatives": [
       [
@@ -6737,6 +7836,19 @@
     }
   },
   {
+    "id": "t-146",
+    "kind": "two",
+    "rest": 146,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-147",
     "kind": "rest",
     "rest": 147,
@@ -6745,10 +7857,14 @@
       "T17",
       "D18"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D18",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 87,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "D18"
+      ]
     },
     "alternatives": [
       [
@@ -6830,6 +7946,19 @@
     }
   },
   {
+    "id": "t-147",
+    "kind": "two",
+    "rest": 147,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 36
+    }
+  },
+  {
     "id": "r-148",
     "kind": "rest",
     "rest": 148,
@@ -6838,10 +7967,14 @@
       "T20",
       "D14"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D14",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 88,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D14"
+      ]
     },
     "alternatives": [
       [
@@ -6923,6 +8056,19 @@
     }
   },
   {
+    "id": "t-148",
+    "kind": "two",
+    "rest": 148,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T16"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-149",
     "kind": "rest",
     "rest": 149,
@@ -6931,10 +8077,14 @@
       "T19",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "T20",
+      "after": 89,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7010,6 +8160,19 @@
     }
   },
   {
+    "id": "t-149",
+    "kind": "two",
+    "rest": 149,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-150",
     "kind": "rest",
     "rest": 150,
@@ -7018,10 +8181,14 @@
       "T18",
       "D18"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D18",
-      "times": 1
+    "breakdown": {
+      "first": "T20",
+      "after": 90,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "D18"
+      ]
     },
     "alternatives": [
       [
@@ -7103,6 +8270,19 @@
     }
   },
   {
+    "id": "t-150",
+    "kind": "two",
+    "rest": 150,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 36
+    }
+  },
+  {
     "id": "r-151",
     "kind": "rest",
     "rest": 151,
@@ -7111,10 +8291,14 @@
       "T17",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 91,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "D20"
+      ]
     },
     "alternatives": [
       [
@@ -7196,6 +8380,19 @@
     }
   },
   {
+    "id": "t-151",
+    "kind": "two",
+    "rest": 151,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-152",
     "kind": "rest",
     "rest": 152,
@@ -7204,10 +8401,14 @@
       "T20",
       "D16"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D16",
-      "times": 4
+    "breakdown": {
+      "first": "T20",
+      "after": 92,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D16"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7283,6 +8484,19 @@
     }
   },
   {
+    "id": "t-152",
+    "kind": "two",
+    "rest": 152,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 32
+    }
+  },
+  {
     "id": "r-153",
     "kind": "rest",
     "rest": 153,
@@ -7291,8 +8505,14 @@
       "T19",
       "D18"
     ],
-    "reason": {
-      "kind": "only"
+    "breakdown": {
+      "first": "T20",
+      "after": 93,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7368,6 +8588,19 @@
     }
   },
   {
+    "id": "t-153",
+    "kind": "two",
+    "rest": 153,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 36
+    }
+  },
+  {
     "id": "r-154",
     "kind": "rest",
     "rest": 154,
@@ -7376,10 +8609,14 @@
       "T18",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 94,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7455,6 +8692,19 @@
     }
   },
   {
+    "id": "t-154",
+    "kind": "two",
+    "rest": 154,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-155",
     "kind": "rest",
     "rest": 155,
@@ -7463,8 +8713,14 @@
       "T19",
       "D19"
     ],
-    "reason": {
-      "kind": "chart"
+    "breakdown": {
+      "first": "T20",
+      "after": 95,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D19"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7540,6 +8796,19 @@
     }
   },
   {
+    "id": "t-155",
+    "kind": "two",
+    "rest": 155,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 38
+    }
+  },
+  {
     "id": "r-156",
     "kind": "rest",
     "rest": 156,
@@ -7548,8 +8817,14 @@
       "T20",
       "D18"
     ],
-    "reason": {
-      "kind": "only"
+    "breakdown": {
+      "first": "T20",
+      "after": 96,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D18"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7625,6 +8900,19 @@
     }
   },
   {
+    "id": "t-156",
+    "kind": "two",
+    "rest": 156,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 36
+    }
+  },
+  {
     "id": "r-157",
     "kind": "rest",
     "rest": 157,
@@ -7633,10 +8921,14 @@
       "T19",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 97,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7712,6 +9004,19 @@
     }
   },
   {
+    "id": "t-157",
+    "kind": "two",
+    "rest": 157,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-158",
     "kind": "rest",
     "rest": 158,
@@ -7720,8 +9025,14 @@
       "T20",
       "D19"
     ],
-    "reason": {
-      "kind": "chart"
+    "breakdown": {
+      "first": "T20",
+      "after": 98,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D19"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7797,6 +9108,19 @@
     }
   },
   {
+    "id": "t-158",
+    "kind": "two",
+    "rest": 158,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 38
+    }
+  },
+  {
     "id": "b-159",
     "kind": "bogey",
     "rest": 159,
@@ -7810,6 +9134,19 @@
     }
   },
   {
+    "id": "t-159",
+    "kind": "two",
+    "rest": 159,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 39
+    }
+  },
+  {
     "id": "r-160",
     "kind": "rest",
     "rest": 160,
@@ -7818,10 +9155,14 @@
       "T20",
       "D20"
     ],
-    "reason": {
-      "kind": "halving",
-      "double": "D20",
-      "times": 2
+    "breakdown": {
+      "first": "T20",
+      "after": 100,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "D20"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7897,6 +9238,19 @@
     }
   },
   {
+    "id": "t-160",
+    "kind": "two",
+    "rest": 160,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 40
+    }
+  },
+  {
     "id": "r-161",
     "kind": "rest",
     "rest": 161,
@@ -7905,8 +9259,14 @@
       "T17",
       "Bull"
     ],
-    "reason": {
-      "kind": "chart"
+    "breakdown": {
+      "first": "T20",
+      "after": 101,
+      "dartsLeft": 2,
+      "route": [
+        "T17",
+        "Bull"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -7982,6 +9342,19 @@
     }
   },
   {
+    "id": "t-161",
+    "kind": "two",
+    "rest": 161,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T17"
+      ],
+      "leaves": 50
+    }
+  },
+  {
     "id": "b-162",
     "kind": "bogey",
     "rest": 162,
@@ -7992,6 +9365,19 @@
         "S10"
       ],
       "leaves": 32
+    }
+  },
+  {
+    "id": "t-162",
+    "kind": "two",
+    "rest": 162,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 42
     }
   },
   {
@@ -8008,6 +9394,19 @@
     }
   },
   {
+    "id": "t-163",
+    "kind": "two",
+    "rest": 163,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 43
+    }
+  },
+  {
     "id": "r-164",
     "kind": "rest",
     "rest": 164,
@@ -8016,8 +9415,14 @@
       "T18",
       "Bull"
     ],
-    "reason": {
-      "kind": "chart"
+    "breakdown": {
+      "first": "T20",
+      "after": 104,
+      "dartsLeft": 2,
+      "route": [
+        "T18",
+        "Bull"
+      ]
     },
     "alternatives": [
       [
@@ -8099,6 +9504,19 @@
     }
   },
   {
+    "id": "t-164",
+    "kind": "two",
+    "rest": 164,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T18"
+      ],
+      "leaves": 50
+    }
+  },
+  {
     "id": "b-165",
     "kind": "bogey",
     "rest": 165,
@@ -8109,6 +9527,19 @@
         "S13"
       ],
       "leaves": 32
+    }
+  },
+  {
+    "id": "t-165",
+    "kind": "two",
+    "rest": 165,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 45
     }
   },
   {
@@ -8125,6 +9556,19 @@
     }
   },
   {
+    "id": "t-166",
+    "kind": "two",
+    "rest": 166,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 46
+    }
+  },
+  {
     "id": "r-167",
     "kind": "rest",
     "rest": 167,
@@ -8133,8 +9577,14 @@
       "T19",
       "Bull"
     ],
-    "reason": {
-      "kind": "only"
+    "breakdown": {
+      "first": "T20",
+      "after": 107,
+      "dartsLeft": 2,
+      "route": [
+        "T19",
+        "Bull"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -8210,6 +9660,19 @@
     }
   },
   {
+    "id": "t-167",
+    "kind": "two",
+    "rest": 167,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T19"
+      ],
+      "leaves": 50
+    }
+  },
+  {
     "id": "b-168",
     "kind": "bogey",
     "rest": 168,
@@ -8220,6 +9683,19 @@
         "S16"
       ],
       "leaves": 32
+    }
+  },
+  {
+    "id": "t-168",
+    "kind": "two",
+    "rest": 168,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 48
     }
   },
   {
@@ -8236,6 +9712,19 @@
     }
   },
   {
+    "id": "t-169",
+    "kind": "two",
+    "rest": 169,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 49
+    }
+  },
+  {
     "id": "r-170",
     "kind": "rest",
     "rest": 170,
@@ -8244,8 +9733,14 @@
       "T20",
       "Bull"
     ],
-    "reason": {
-      "kind": "only"
+    "breakdown": {
+      "first": "T20",
+      "after": 110,
+      "dartsLeft": 2,
+      "route": [
+        "T20",
+        "Bull"
+      ]
     },
     "alternatives": [],
     "singleCases": [
@@ -8318,6 +9813,19 @@
         "T18"
       ],
       "leaves": 36
+    }
+  },
+  {
+    "id": "t-170",
+    "kind": "two",
+    "rest": 170,
+    "follow": {
+      "kind": "setup",
+      "throws": [
+        "T20",
+        "T20"
+      ],
+      "leaves": 50
     }
   }
 ]

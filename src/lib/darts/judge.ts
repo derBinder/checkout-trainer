@@ -9,9 +9,9 @@ import { dartValue, expandSteps, formatDart, parseDart, parseSteps } from '@/lib
 export type Check =
   | { kind: 'rest'; rest: number; best: string[][]; good: string[][] }
   | { kind: 'bogey'; rest: number }
-  /** Fehlwurf-Karte mit Finish: rest ist der neue Rest. */
+  /** Fehlwurf-Karte mit Finish (rest ist der neue Rest) oder Zwei-Dart-Karte mit Weg. */
   | { kind: 'follow'; rest: number; maxDarts: 1 | 2; best: string[][] }
-  /** Fehlwurf-Karte ohne Finish: der empfohlene Stellwurf. */
+  /** Fehlwurf- oder Zwei-Dart-Karte ohne Finish: der empfohlene Stellwurf. */
   | { kind: 'setup'; rest: number; maxDarts: 1 | 2; throws: string[] }
 
 export type Answer = { kind: 'darts'; darts: string[] } | { kind: 'notCheckable' }
@@ -64,6 +64,10 @@ export function checkFor(card: Card): Check {
       return card.follow.kind === 'finish'
         ? { kind: 'follow', rest: card.newRest, maxDarts: card.dartsLeft, best: expand(card.follow.route) }
         : { kind: 'setup', rest: card.newRest, maxDarts: card.dartsLeft, throws: card.follow.throws }
+    case 'two':
+      return card.follow.kind === 'finish'
+        ? { kind: 'follow', rest: card.rest, maxDarts: 2, best: expand(card.follow.route) }
+        : { kind: 'setup', rest: card.rest, maxDarts: 2, throws: card.follow.throws }
   }
 }
 
@@ -92,7 +96,7 @@ export function judge(check: Check, answer: Answer): Verdict {
   if (answer.kind === 'notCheckable') {
     if (check.kind === 'bogey') return { code: 'bogeyRight' }
     if (check.kind === 'rest') return { code: 'checkable' }
-    throw new Error('„Nicht checkbar“ gibt es auf Fehlwurf-Karten nicht')
+    throw new Error('„Nicht checkbar“ gibt es nur auf Rest- und Bogey-Karten')
   }
   const { darts } = answer
   switch (check.kind) {

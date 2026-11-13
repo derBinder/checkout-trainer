@@ -33,7 +33,7 @@ function setup(locale: Locale = "de") {
 }
 
 describe("RestSheet", () => {
-  it("öffnet zu einem angetippten Rest Weg, Lernstand und Begründung", async () => {
+  it("öffnet zu einem angetippten Rest Weg, Lernstand und Zerlegung", async () => {
     const user = setup();
     expect(screen.queryByRole("dialog")).toBeNull();
     await user.click(screen.getByRole("button", { name: "100, sicher" }));
@@ -45,7 +45,7 @@ describe("RestSheet", () => {
       "T20",
       "D20",
     ]);
-    expect(dialog.textContent).toContain("Bleibt bei Single 20 auf einem Finish.");
+    expect(dialog.textContent).toContain("Nach T2040 mit 1 Dart: D20");
     expect(dialog.textContent).not.toContain("Nicht checkbar");
   });
 

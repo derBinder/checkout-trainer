@@ -112,14 +112,6 @@ export const en: Dictionary = {
           return "Straight at the double.";
         case "split":
           return `Aim between ${r.a} and ${r.b}: either one leaves a double.`;
-        case "singleFinish":
-          return r.bull
-            ? `A single ${r.field} still leaves the bull.`
-            : `A single ${r.field} still leaves a finish.`;
-        case "halving":
-          return `Ends on ${r.double}, which you can halve ${["", "once", "twice", "three times", "four times"][r.times]}.`;
-        case "chart":
-          return "The usual chart route.";
       }
     },
     metaTitle: "Study",
@@ -142,6 +134,13 @@ export const en: Dictionary = {
       setupShort: (throws: string, leaves: number) => `${throws}, ${leaves} left`,
       afterwards: (leaves: number) => `Then ${leaves} left`,
       bogeySetup: (leaves: number) => `No checkout. Set up ${leaves}.`,
+      twoDartsLeft: "2 darts left",
+      twoDartsOf: (rest: number) => `${rest} with 2 darts`,
+      noFinish: "No finish",
+      // Zerlegung: Titel „After T20“, text with the rest and the route it teaches (without route: short).
+      after: (first: string) => `After ${first}`,
+      breakdown: (after: number, darts: 1 | 2, route?: string) =>
+        route ? `${after} with ${darts} ${darts === 1 ? "dart" : "darts"}: ${route}` : `${after} left`,
     },
     result: {
       yourRoute: "Your route",
@@ -171,7 +170,7 @@ export const en: Dictionary = {
         }
       },
     },
-    slots: { darts: "Darts", open: "empty", miss: "miss" },
+    slots: { darts: "Darts", open: "empty", miss: "miss", spent: "used" },
     pad: {
       ring: "Ring",
       rings: { S: "Single", D: "Double", T: "Treble" },
@@ -281,6 +280,11 @@ export const en: Dictionary = {
     hardest: "Hardest",
     againCount: (n: number) => `${n}× “Again”`,
     levelOf: (level: string) => `Level: ${level}`,
+    forecast: {
+      until: (date: string) => `All cards unlocked by ${date}`,
+      done: "All cards unlocked",
+      none: "No new cards per day set",
+    },
   },
   settings: {
     appearance: "Appearance",

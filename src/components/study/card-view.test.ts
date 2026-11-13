@@ -13,7 +13,7 @@ describe("cardView", () => {
     expect(rest.question).toEqual({ label: "Rest", big: "121", slots: [null, null, null] });
     expect(rest.answer.slots).toEqual(["T20", "T11", "D14"]);
     expect(rest.answer.notes.map((n) => n.title)).toEqual(
-      expect.arrayContaining(["Warum", "Alternative", "Nur S20"]),
+      expect.arrayContaining(["Nach T20", "Alternative", "Nur S20"]),
     );
   });
 
@@ -31,6 +31,44 @@ describe("cardView", () => {
       slots: ["S20", "T17", "Bull"],
       missSlots: [0],
     });
+  });
+
+  it("asks a two-dart card for the rest with a spent first slot, way and setup alike", () => {
+    for (const [id, rest] of [["t-61", "61"], ["t-125", "125"]]) {
+      expect(view(id).question).toEqual({
+        label: "Rest",
+        big: rest,
+        sub: "noch 2 Darts",
+        slots: [null, null, null],
+        spent: 1,
+      });
+    }
+    expect(viewEn("t-61").question.sub).toBe("2 darts left");
+  });
+
+  it("answers a two-dart way card with the route as best route", () => {
+    expect(view("t-61").answer).toEqual({
+      label: "Rest",
+      big: "61",
+      slots: [null, "T11", "D14"],
+      slotTone: "best",
+      missSlots: [],
+      spent: 1,
+      notes: [],
+    });
+  });
+
+  it("answers a two-dart setup card with no finish and the setup shot", () => {
+    expect(view("t-125").answer).toEqual({
+      label: "Rest 125 mit 2 Darts",
+      big: "Kein Finish",
+      slots: [null, "T20", "T11"],
+      slotTone: "none",
+      missSlots: [],
+      spent: 1,
+      notes: [{ title: "Stellwurf", text: "T20 · T11, Rest 32" }],
+    });
+    expect(viewEn("t-125").answer).toMatchObject({ label: "125 with 2 darts", big: "No finish" });
   });
 
   it("asks a bogey card exactly like a rest card", () => {
@@ -58,7 +96,25 @@ describe("cardView", () => {
       title: "Nur S11",
       text: "50: Bull",
     });
-    expect(rest.answer.notes[0]).toEqual({ title: "Warum", text: "Bleibt bei Single 20 auf Bull-Finish." });
+    expect(rest.answer.notes[0]).toEqual({ title: "Nach T20", text: "61 mit 2 Darts: T11 · D14" });
+  });
+
+  it("replaces the reason with the breakdown into first dart and known rest", () => {
+    expect(view("r-170").answer.notes[0]).toEqual({ title: "Nach T20", text: "110 mit 2 Darts: T20 · Bull" });
+    expect(view("r-60").answer.notes[0]).toEqual({ title: "Nach S20", text: "40 mit 1 Dart: D20" });
+    expect(view("r-170").answer.notes.map((n) => n.title)).not.toContain("Warum");
+    expect(viewEn("r-170").answer.notes[0]).toEqual({ title: "After T20", text: "110 with 2 darts: T20 · Bull" });
+    expect(viewEn("r-60").answer.notes[0]).toEqual({ title: "After S20", text: "40 with 1 dart: D20" });
+  });
+
+  it("shortens the breakdown where the chart goes on differently", () => {
+    expect(view("r-110").answer.notes[0]).toEqual({ title: "Nach T20", text: "bleiben 50" });
+    expect(viewEn("r-110").answer.notes[0]).toEqual({ title: "After T20", text: "50 left" });
+  });
+
+  it("keeps the reason without a breakdown", () => {
+    expect(view("r-32").answer.notes[0]).toEqual({ title: "Warum", text: "Direkt auf das Doppel." });
+    expect(view("r-42").answer.notes[0].title).toBe("Warum");
   });
 
   it("joins several alternatives into one note", () => {
@@ -83,7 +139,7 @@ describe("cardView", () => {
     expect(rest.answer.slots).toEqual(["T20", "T10", "D10"]);
     expect(rest.answer.notes).toContainEqual({ title: "Mit 2 Darts", text: "T20 · Bull" });
     expect(rest.answer.notes.map((n) => n.title)).toEqual([
-      "Warum",
+      "Nach T20",
       "Mit 2 Darts",
       "Nur S20",
       "Nur S10",
@@ -111,17 +167,17 @@ describe("cardView", () => {
 });
 
 describe("restDetailView", () => {
-  it("shows route, reason and alternatives of a rest without the single cases", () => {
+  it("shows route, breakdown and alternatives of a rest without the single cases", () => {
     const detail = restDetailView(cardById("r-121") as RestDetail, de.study);
     expect(detail.slots).toEqual(["T20", "T11", "D14"]);
     expect(detail.slotTone).toBe("best");
-    expect(detail.notes.map((n) => n.title)).toEqual(["Warum", "Alternative"]);
+    expect(detail.notes.map((n) => n.title)).toEqual(["Nach T20", "Alternative"]);
   });
 
   it("shows the two-dart route of a rest", () => {
     const detail = restDetailView(cardById("r-110") as RestDetail, de.study);
     expect(detail.notes).toEqual([
-      { title: "Warum", text: de.study.reason((cardById("r-110") as Extract<RestDetail, { kind: "rest" }>).reason) },
+      { title: "Nach T20", text: "bleiben 50" },
       { title: "Mit 2 Darts", text: "T20 · Bull" },
     ]);
   });
@@ -140,7 +196,7 @@ describe("cardView auf Englisch", () => {
   it("fragt und löst eine Rest-Karte auf", () => {
     const rest = viewEn("r-121");
     expect(rest.question).toEqual({ label: "Score", big: "121", slots: [null, null, null] });
-    expect(rest.answer.notes[0]).toEqual({ title: "Why", text: "A single 20 still leaves the bull." });
+    expect(rest.answer.notes[0]).toEqual({ title: "After T20", text: "61 with 2 darts: T11 · D14" });
     expect(rest.answer.notes).toContainEqual({ title: "Alternative", text: expect.any(String) });
     expect(rest.answer.notes).toContainEqual({ title: "Only S20", text: "101: T17 · Bull" });
   });
