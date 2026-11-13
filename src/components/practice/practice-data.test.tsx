@@ -13,7 +13,7 @@ const user = vi.hoisted(() => ({
 }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ bfcacheId: "seite" }) }));
-const host = vi.hoisted(() => vi.fn((_props: unknown) => <p>Übungsseite</p>));
+const host = vi.hoisted(() => vi.fn<(props: unknown) => React.JSX.Element>(() => <p>Übungsseite</p>));
 vi.mock("./practice-host", () => ({ PracticeHost: host }));
 
 const { PracticeData } = await import("./practice-data");
