@@ -40,6 +40,11 @@
 11. **Üben:** neuer Bereich `{ id: "171-230", from: 171, to: 230 }` am Ende von `RANGES`. Der Server gibt dem Client nur Karten eingeschalteter Arten und die verfügbaren Bereiche (`availableRanges(extras)`); die Ansicht filtert die gemerkte Auswahl auf diese Bereiche (ein gemerktes `171-230` ohne Schalter fällt still weg und wird beim nächsten Speichern nicht mehr geschrieben). `practiceGroups` für `over` → `["setups"]`.
 12. **Statistik:** `hardest` nur für Reste bis 170. „Nochmal“ auf Zusatzkarten zählt über `card.rest` (Nachbarfeld: ursprünglicher Rest; Single statt Doppel: Rest des Doppels).
 13. **Umschalten wirkt:** Die Server Action ruft `revalidatePath("/[lang]/(app)", "layout")`, damit Heute, Statistik und Üben beim nächsten Besuch neu laden.
+14. **Nachträge aus der Umsetzung:**
+    - Eine heute eingeführte Zusatzkarte zählt auch nach dem Ausschalten zu den heute eingeführten Karten. So rechnen Warteschlange und Tageslimit in `applyReview` gleich (sonst böte die Warteschlange eine Karte an, deren Bewertung dann an `limit` scheitert).
+    - Das Skeleton der Übungsseite zeigt die sieben Bereiche eines Kontos ohne Zusatzkarten (das Gerüst kennt die Schalter nicht); mit Schalter kommt der achte Chip in derselben zweiten Zeile dazu.
+    - Ein Tipp auf die ganze Zeile (Titel oder Satz) legt den Schalter um (`<label>` um die Zeile); der Schalter selbst ist über `aria-labelledby` nur mit dem Titel benannt, der Satz hängt über `aria-describedby` an.
+    - Die Schalterzustände lädt ein eigener Lader (`loadExtraCards` nach `requireActiveUser`), nicht der gemeinsame der Einstellungen, damit „Neue Karten pro Tag“ und „Konto löschen“ nicht auf diese Abfrage warten.
 
 ## Review Focus
 
