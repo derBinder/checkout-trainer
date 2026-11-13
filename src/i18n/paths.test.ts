@@ -5,6 +5,7 @@ describe("localePath", () => {
   it("setzt die Sprache als erstes Segment davor", () => {
     expect(localePath("de", ROUTES.home)).toBe("/de");
     expect(localePath("en", ROUTES.today)).toBe("/en/today");
+    expect(localePath("en", ROUTES.practice)).toBe("/en/practice");
   });
 });
 

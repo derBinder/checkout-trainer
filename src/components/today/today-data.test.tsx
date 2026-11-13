@@ -22,6 +22,8 @@ const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
 vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards: vi.fn() }));
+const rootParams = vi.hoisted(() => ({ lang: "de" }));
+vi.mock("next/root-params", () => ({ lang: async () => rootParams.lang }));
 
 const { TodayOverview, TodayStreak } = await import("./today-data");
 
@@ -77,6 +79,40 @@ describe("TodayOverview", () => {
     expect(screen.getByText("Für heute bist du fertig.")).toBeTruthy();
     expect(screen.getByText("Du hast alle Karten begonnen.")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Weitere 5 Karten lernen" })).toBeNull();
+  });
+});
+
+describe("TodayOverview: Einstieg „Üben“", () => {
+  const links = () => screen.getAllByRole("link").map((a) => [a.textContent, a.getAttribute("href")]);
+
+  it("steht als ruhiger Knopf unter „Lernen“", async () => {
+    queue(3, 2, 150);
+    render(await TodayOverview(), { wrapper });
+    expect(links()).toEqual([
+      ["Lernen", "/de/study"],
+      ["Üben", "/de/practice"],
+    ]);
+    expect(screen.getByRole("link", { name: "Üben" }).className).toContain("bg-secondary");
+  });
+
+  it("bleibt da, wenn heute nichts mehr fällig ist, und wird nicht zur Hauptaktion", async () => {
+    queue(0, 0, 0);
+    render(await TodayOverview(), { wrapper });
+    expect(links()).toEqual([["Üben", "/de/practice"]]);
+    expect(screen.getByRole("link", { name: "Üben" }).className).toContain("bg-secondary");
+  });
+
+  it("spricht Englisch", async () => {
+    queue(3, 2, 150);
+    rootParams.lang = "en";
+    try {
+      render(await TodayOverview(), {
+        wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
+      });
+      expect(screen.getByRole("link", { name: "Practice" }).getAttribute("href")).toBe("/en/practice");
+    } finally {
+      rootParams.lang = "de";
+    }
   });
 });
 

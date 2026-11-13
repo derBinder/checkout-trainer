@@ -195,3 +195,24 @@ describe("typed answer", () => {
     expect(tooSoon.answer).toBeNull();
   });
 });
+
+describe("studyReducer ohne Speichern (Übung)", () => {
+  it("legt keine Bewertung zum Senden ab und ist am Ende fertig", () => {
+    const s = run(initStudy(["a", "b"], {}, { save: false }), reveal, rate(3), reveal, rate(3));
+    expect(s.session.unsynced).toEqual([]);
+    expect(nextToSend(s)).toBeNull();
+    expect(s.session.done).toBe(2);
+    expect(isFinished(s)).toBe(true);
+  });
+
+  it("stellt eine Karte nach „Nochmal“ trotzdem nach hinten", () => {
+    const s = run(initStudy(["a", "b", "c", "d", "e"], {}, { save: false }), reveal, rate(1));
+    expect(s.session.queue).toEqual(["b", "c", "d", "a", "e"]);
+    expect(s.session.total).toBe(6);
+    expect(s.session.unsynced).toEqual([]);
+  });
+
+  it("speichert ohne Angabe wie bisher", () => {
+    expect(initStudy(["a"], {}).save).toBe(true);
+  });
+});

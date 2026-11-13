@@ -10,8 +10,14 @@ describe("isProtectedPath (Pfad ohne Sprache)", () => {
     expect(isProtectedPath("/todayx")).toBe(false);
   });
 
-  it("deckt genau die sechs Bereiche ab", () => {
-    expect([...PROTECTED_ROUTES]).toEqual(["/today", "/study", "/stats", "/settings", "/admin", "/pending"]);
+  it("deckt genau die sieben Bereiche ab", () => {
+    expect([...PROTECTED_ROUTES]).toEqual(["/today", "/study", "/practice", "/stats", "/settings", "/admin", "/pending"]);
+  });
+
+  it("schützt die Übungsseite samt Unterpfaden", () => {
+    expect(isProtectedPath("/practice")).toBe(true);
+    expect(isProtectedPath("/practice/x")).toBe(true);
+    expect(isProtectedPath("/practicex")).toBe(false);
   });
 });
 
@@ -37,6 +43,7 @@ describe("proxyDecision", () => {
   it("leitet geschützte Pfade ohne Sitzungs-Cookie zur Anmeldung in derselben Sprache", () => {
     expect(proxyDecision({ ...base, pathname: "/en/today" })).toEqual({ type: "redirect", location: "/en/sign-in" });
     expect(proxyDecision({ ...base, method: "HEAD", pathname: "/de/admin" })).toEqual({ type: "redirect", location: "/de/sign-in" });
+    expect(proxyDecision({ ...base, pathname: "/de/practice" })).toEqual({ type: "redirect", location: "/de/sign-in" });
   });
 
   it("lässt durch, was keine Umleitung braucht", () => {

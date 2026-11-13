@@ -46,6 +46,9 @@ vi.mock("@/components/stats/stats-data", async () => ({
 vi.mock("@/components/study/study-data", async () => ({
   StudySessionData: await dataStub("Lernsitzung"),
 }));
+vi.mock("@/components/practice/practice-data", async () => ({
+  PracticeData: await dataStub("Übungsauswahl"),
+}));
 vi.mock("@/components/admin/admin-data", async () => ({
   UserList: await dataStub("Nutzerliste"),
 }));
@@ -81,6 +84,7 @@ const { default: TodayPage, generateMetadata: todayMetadata } = await import("./
 const { default: StatsPage, generateMetadata: statsMetadata } = await import("./stats/page");
 const { default: StudyPage, generateMetadata: studyMetadata } = await import("./study/page");
 const { default: AdminPage, generateMetadata: adminMetadata } = await import("./admin/page");
+const { default: PracticePage, generateMetadata: practiceMetadata } = await import("./practice/page");
 const { default: SettingsPage, generateMetadata: settingsMetadata } = await import("./settings/page");
 const { default: AppLayout } = await import("./layout");
 const { default: AppError } = await import("./error");
@@ -146,6 +150,24 @@ describe("Lernen", () => {
     const { container } = render(<StudyPage />, { wrapper });
     expect(screen.getByRole("link", { name: "Lernen beenden" })).toBeTruthy();
     expect(busy(container)).toBe(1);
+  });
+});
+
+describe("Üben", () => {
+  it("zeigt Überschrift und Auswahl", async () => {
+    render(await PracticePage(), { wrapper });
+    expect(screen.getByRole("heading", { level: 1, name: "Üben" })).toBeTruthy();
+    expect(screen.getByText("Übungsauswahl")).toBeTruthy();
+    expect((await practiceMetadata()).title).toBe("Üben · Checkout-Trainer");
+  });
+
+  it("zeigt ein Skeleton ohne Karteninhalte, solange die Karten laden", async () => {
+    loading.value = true;
+    const { container } = render(await PracticePage(), { wrapper });
+    expect(screen.getByRole("heading", { level: 1, name: "Üben" })).toBeTruthy();
+    expect(screen.queryByText("Übungsauswahl")).toBeNull();
+    expect(busy(container)).toBe(1);
+    expect(screen.queryByRole("button", { name: "Los" })).toBeNull();
   });
 });
 

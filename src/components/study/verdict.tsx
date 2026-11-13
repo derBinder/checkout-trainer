@@ -33,7 +33,11 @@ const TONE: Record<VerdictTone, string> = {
 
 /** Ergebnis der eingegebenen Antwort, oben in der Auflösung. */
 export function VerdictLine({ verdict }: { verdict: Verdict }) {
-  const { tone, title, note } = verdictCopy(verdict, useDictionary().study);
+  return <ResultLine {...verdictCopy(verdict, useDictionary().study)} />;
+}
+
+/** Ergebniszeile in einem der drei Töne: links der Titel, rechts der Hinweis. */
+export function ResultLine({ tone, title, note }: { tone: VerdictTone; title: string; note: string }) {
   return (
     <p
       role="status"

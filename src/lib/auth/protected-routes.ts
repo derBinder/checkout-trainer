@@ -7,6 +7,7 @@ import { localePath, ROUTES, splitLocale } from "@/i18n/paths";
 export const PROTECTED_ROUTES = [
   ROUTES.today,
   ROUTES.study,
+  ROUTES.practice,
   ROUTES.stats,
   ROUTES.settings,
   ROUTES.admin,

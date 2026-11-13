@@ -13,6 +13,7 @@ import { useDictionary, useLocalePath } from "@/i18n/client";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { ROUTES, splitLocale, type Route } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
+import { useRoundActive } from "./practice/practice-round-store";
 
 type NavItem = { route: Route; key: Exclude<keyof Dictionary["nav"], "label">; icon: LucideIcon };
 
@@ -41,8 +42,9 @@ function useRoutePath(): string {
 export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
   const path = useRoutePath();
   const t = useDictionary().nav;
-  // Die Lernseite hat nur eine Aufgabe und keine Navigation.
-  if (path === ROUTES.study) return null;
+  const roundActive = useRoundActive();
+  // Die Lernseite und eine laufende Übungsrunde haben nur eine Aufgabe und keine Navigation.
+  if (path === ROUTES.study || (path === ROUTES.practice && roundActive)) return null;
 
   return (
     <nav
@@ -69,7 +71,9 @@ function NavLink({ item: { route, key, icon: Icon } }: { item: NavItem }) {
   const path = useRoutePath();
   const localePath = useLocalePath();
   const t = useDictionary().nav;
-  const active = path === route || path.startsWith(`${route}/`);
+  // Die Übungsseite erreicht man über „Heute“; dort bleibt dieser Eintrag markiert.
+  const active =
+    path === route || path.startsWith(`${route}/`) || (route === ROUTES.today && path === ROUTES.practice);
   return (
     <Link
       href={localePath(route)}
