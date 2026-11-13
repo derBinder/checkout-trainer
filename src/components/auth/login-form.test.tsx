@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { I18nProvider } from "@/i18n/client";
 
@@ -79,6 +80,75 @@ describe("LoginForm", () => {
     await user.clear(email);
     await user.type(email, "name@beispiel.de");
     expect(email.getAttribute("aria-invalid")).toBe("false");
+  });
+
+  it("leert beim Verbergen der Seite Felder, Sichtbarkeit, Hinweise und Sperre", async () => {
+    // Nach erfolgreicher Anmeldung bleibt die Seite versteckt im DOM (Activity).
+    signIn.mockResolvedValue({ error: null });
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Activity mode="visible">
+        <LoginForm />
+      </Activity>,
+      { wrapper },
+    );
+    await user.type(screen.getByLabelText("E-Mail"), "name@beispiel.de");
+    await user.type(screen.getByLabelText("Passwort"), "geheim-geheim");
+    await user.click(screen.getByRole("button", { name: "Passwort anzeigen" }));
+    expect((screen.getByLabelText("Passwort") as HTMLInputElement).type).toBe("text");
+    await user.click(screen.getByRole("button", { name: "Anmelden" }));
+    expect(router.replace).toHaveBeenCalledWith("/de/today");
+
+    rerender(
+      <Activity mode="hidden">
+        <LoginForm />
+      </Activity>,
+    );
+    const hidden = document.querySelector<HTMLInputElement>('input[name="password"]');
+    expect(hidden?.value).toBe("");
+
+    rerender(
+      <Activity mode="visible">
+        <LoginForm />
+      </Activity>,
+    );
+    const password = screen.getByLabelText("Passwort") as HTMLInputElement;
+    expect(password.value).toBe("");
+    expect(password.type).toBe("password");
+    expect((screen.getByLabelText("E-Mail") as HTMLInputElement).value).toBe("");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByRole("button", { name: "Anmelden" }).hasAttribute("disabled")).toBe(false);
+  });
+
+  it("entfernt beim Verbergen Fehlermeldung und Feldhinweise", async () => {
+    signIn.mockResolvedValue({ error: { status: 401, code: "INVALID_EMAIL_OR_PASSWORD" } });
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Activity mode="visible">
+        <LoginForm />
+      </Activity>,
+      { wrapper },
+    );
+    await user.type(screen.getByLabelText("E-Mail"), "name@beispiel.de");
+    await user.type(screen.getByLabelText("Passwort"), "falsch");
+    await user.click(screen.getByRole("button", { name: "Anmelden" }));
+    await screen.findByRole("alert");
+    await user.clear(screen.getByLabelText("Passwort"));
+    expect(screen.getByText("Bitte gib ein Passwort ein.")).toBeTruthy();
+
+    rerender(
+      <Activity mode="hidden">
+        <LoginForm />
+      </Activity>,
+    );
+    rerender(
+      <Activity mode="visible">
+        <LoginForm />
+      </Activity>,
+    );
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
+    expect(screen.queryByText("Bitte gib ein Passwort ein.")).toBeNull();
+    expect(screen.getByLabelText("Passwort").getAttribute("aria-invalid")).toBe("false");
   });
 });
 
