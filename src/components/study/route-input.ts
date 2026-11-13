@@ -3,10 +3,9 @@ import { dartValue, parseDart, type Ring } from "@/lib/darts/model";
 
 /**
  * Eingabe eines Wegs über das Tastenfeld, ohne React, damit testbar.
- * Der Ring startet auf S und bleibt gewählt, bis der Nutzer ihn wechselt. Bleibt
- * nach einem Dart ein Rest, der mit einem Doppel direkt zu checken ist, springt
- * er auf D. Löschen stellt den Ring wieder her, der vor dem gelöschten Dart
- * gewählt war.
+ * Der Ring startet auf S und steht nach jedem Dart wieder auf S, damit das
+ * Tastenfeld keinen Hinweis auf den Weg gibt. Löschen stellt den Ring wieder
+ * her, der vor dem gelöschten Dart gewählt war.
  */
 export type InputState = {
   ring: Ring;
@@ -27,14 +26,6 @@ export type InputAction =
   | { type: "bull" }
   | { type: "undo" };
 
-/**
- * Rest, für den der Ring auf D springt: gerade 2 bis 40. Nicht 50, denn Bull
- * hat eine eigene Taste; sonst würde etwa auf 110 nach T20 aus T10 ein D10.
- */
-export function isDoubleRest(rest: number): boolean {
-  return rest % 2 === 0 && rest >= 2 && rest <= 40;
-}
-
 export function initInput(check: Check): InputState {
   // Jede Karte beginnt auf Single, auch wenn der Rest ein direktes Doppel ist.
   return { ring: "S", darts: [], ringsBefore: [], rest: check.rest, max: maxDarts(check) };
@@ -50,8 +41,7 @@ export function isFull(s: InputState): boolean {
 
 function add(s: InputState, dart: string): InputState {
   if (isFull(s)) return s;
-  const next = { ...s, darts: [...s.darts, dart], ringsBefore: [...s.ringsBefore, s.ring] };
-  return isDoubleRest(remaining(next)) ? { ...next, ring: "D" } : next;
+  return { ...s, ring: "S", darts: [...s.darts, dart], ringsBefore: [...s.ringsBefore, s.ring] };
 }
 
 export function inputReducer(s: InputState, a: InputAction): InputState {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, type Check } from "@/lib/darts/judge";
-import { initInput, inputReducer, isDoubleRest, isFull, remaining, type InputAction, type InputState } from "./route-input";
+import { initInput, inputReducer, isFull, remaining, type InputAction, type InputState } from "./route-input";
 
 const check = (id: string) => checkFor(cardById(id)!);
 const restCheck = (rest: number): Check => ({ kind: "rest", rest, best: [], good: [] });
@@ -21,21 +21,24 @@ describe("initInput", () => {
 });
 
 describe("inputReducer", () => {
-  it("keeps the ring for the next dart", () => {
-    expect(run(initInput(restCheck(121)), T, num(20), num(11)).darts).toEqual(["T20", "T11"]);
-  });
-
-  it("switches to D once the rest is a direct double-out", () => {
-    const s = run(initInput(restCheck(121)), T, num(20), num(11));
-    expect(remaining(s)).toBe(28);
-    expect(s.ring).toBe("D");
-    expect(run(initInput(restCheck(100)), T, num(20)).ring).toBe("D");
-  });
-
-  it("only ever switches to D, never away from the chosen ring", () => {
-    const s = run(initInput(restCheck(121)), { type: "ring", ring: "S" }, num(1));
-    expect(remaining(s)).toBe(120);
+  it("returns to S after every dart", () => {
+    const s = run(initInput(restCheck(121)), T, num(20));
     expect(s.ring).toBe("S");
+    expect(run(s, num(11)).darts).toEqual(["T20", "S11"]);
+  });
+
+  it("stays on S when the rest is a direct double-out", () => {
+    // 33: S1 lässt 32, 100: T20 lässt 40, 110: T20 lässt 50
+    expect(run(initInput(restCheck(33)), num(1)).ring).toBe("S");
+    expect(run(initInput(restCheck(100)), T, num(20)).ring).toBe("S");
+    const s = run(initInput(restCheck(110)), T, num(20));
+    expect(remaining(s)).toBe(50);
+    expect(s.ring).toBe("S");
+  });
+
+  it("returns to S after 25 and Bull too", () => {
+    expect(run(initInput(restCheck(121)), T, { type: "outer" }).ring).toBe("S");
+    expect(run(initInput(restCheck(121)), { type: "ring", ring: "D" }, { type: "bull" }).ring).toBe("S");
   });
 
   it("enters 25 and Bull regardless of the ring", () => {
@@ -62,33 +65,20 @@ describe("inputReducer", () => {
     expect(run(empty, T, num(20), num(11), { type: "undo" }).darts).toEqual(["T20"]);
   });
 
-  it("does not switch to D when 50 is left", () => {
-    // 110: T20 lässt 50, der Ring bleibt T für T10 · D10
-    const s = run(initInput(restCheck(110)), T, num(20));
-    expect(remaining(s)).toBe(50);
-    expect(s.ring).toBe("T");
-  });
-
   it("undo restores the ring that was set before the removed dart", () => {
-    // 121: T20, versehentlich T19 → Rest 4, Ring springt auf D; Löschen → wieder T
-    const s = run(initInput(restCheck(121)), T, num(20), num(19));
-    expect(s.ring).toBe("D");
+    // 121: T20, versehentlich T19 → Ring steht auf S; Löschen → wieder T
+    const s = run(initInput(restCheck(121)), T, num(20), T, num(19));
+    expect(s.darts).toEqual(["T20", "T19"]);
+    expect(s.ring).toBe("S");
     expect(run(s, { type: "undo" }).ring).toBe("T");
-    // 60: S20 → D; Nutzer wählt S, Löschen → Ring vor S20 war S
-    const t = run(initInput(restCheck(60)), num(20), { type: "ring", ring: "S" }, { type: "undo" });
+    // 60: S20, Nutzer wählt T, Löschen → Ring vor S20 war S
+    const t = run(initInput(restCheck(60)), num(20), T, { type: "undo" });
     expect(t.ring).toBe("S");
     // 40: Nutzer wählt T, T5, Löschen → T (vor T5 gewählt)
-    const u = run(initInput(restCheck(40)), { type: "ring", ring: "T" }, num(5), { type: "undo" });
+    const u = run(initInput(restCheck(40)), T, num(5), { type: "undo" });
     expect(u.ring).toBe("T");
-  });
-});
-
-describe("isDoubleRest", () => {
-  it("is true for even rests from 2 to 40", () => {
-    expect([2, 32, 40].map(isDoubleRest)).toEqual([true, true, true]);
-  });
-
-  it("is false otherwise, also for 50", () => {
-    expect([1, 33, 42, 0, 25, 50].map(isDoubleRest)).toEqual([false, false, false, false, false, false]);
+    // Bull mit gewähltem D, Löschen → D
+    const v = run(initInput(restCheck(121)), { type: "ring", ring: "D" }, { type: "bull" }, { type: "undo" });
+    expect(v.ring).toBe("D");
   });
 });
