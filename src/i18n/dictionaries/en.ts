@@ -158,6 +158,7 @@ export const en: Dictionary = {
         bogeyRight: { title: "Correct", note: "No checkout from this score" },
         setupRight: { title: "Correct setup shot", note: "spot on" },
         setupOther: { title: "Different setup shot", note: "recommended one below" },
+        setupBogey: { title: "Leaves a bogey", note: "no checkout" },
       },
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
@@ -167,6 +168,8 @@ export const en: Dictionary = {
             return "The last dart is not a double";
           case "notCheckable":
             return "No checkout from this score";
+          case "leavesBogey":
+            return `Leaves ${d.leaves}, no checkout`;
         }
       },
     },

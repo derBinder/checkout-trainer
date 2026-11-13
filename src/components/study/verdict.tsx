@@ -14,6 +14,7 @@ const TONES: Record<VerdictCode, VerdictTone> = {
   bogeyRight: "strong",
   setupRight: "strong",
   setupOther: "soft",
+  setupBogey: "bad",
 };
 
 /** Ton, Titel und Hinweis eines Ergebnisses; ein Grund (`detail`) ersetzt den Hinweis. */

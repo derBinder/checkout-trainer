@@ -169,6 +169,7 @@ export const de = {
         bogeyRight: { title: "Richtig", note: "Rest ist nicht checkbar" },
         setupRight: { title: "Richtiger Stellwurf", note: "genau richtig" },
         setupOther: { title: "Anderer Stellwurf", note: "empfohlen siehe unten" },
+        setupBogey: { title: "Lässt Bogey-Zahl", note: "nicht checkbar" },
       } satisfies Record<VerdictCode, { title: string; note: string }>,
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
@@ -178,6 +179,8 @@ export const de = {
             return "Letzter Dart ist kein Doppel";
           case "notCheckable":
             return "Rest ist nicht checkbar";
+          case "leavesBogey":
+            return `Lässt ${d.leaves}, nicht checkbar`;
         }
       },
     },
