@@ -131,6 +131,12 @@ describe("Skeleton-Bausteine", () => {
     expect(html).not.toContain("@");
   });
 
+  it("Heute: Platzhalter für „Lernen“ und „Üben“", () => {
+    const html = renderToStaticMarkup(inGerman(createElement(TodayOverviewSkeleton)));
+    const buttons = skeletonTags(html).filter((tag) => classesOf(tag).includes("h-13"));
+    expect(buttons).toHaveLength(2);
+  });
+
   it("Üben: Umschalter, sieben Bereiche, vier Kartenarten, Statuszeile und Knopf als Platzhalter, ohne Kartenzahlen", () => {
     const html = renderToStaticMarkup(inGerman(createElement(PracticeSkeleton)));
     expect(html).toMatch(/^<div aria-busy="true"/);

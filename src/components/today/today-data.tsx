@@ -11,7 +11,7 @@ import { progressView } from "@/lib/progress";
 import { loadQueue, loadStatsData } from "@/lib/review/queries";
 import { summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-import { Count, Counts, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
+import { Count, Counts, LEARN_ACTIONS, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
 
 /**
  * Prüft zuerst den Zugriff, dann lädt sie die Daten der Heute-Seite. cache():
@@ -64,11 +64,20 @@ export async function TodayOverview() {
         <div className="h-full bg-level-learning" style={{ width: `${progress.learningWidth}%` }} />
       </ProgressLine>
 
-      {nothingToDo ? null : (
-        <Link href={localePath(locale, ROUTES.study)} className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
-          {t.today.learn}
+      {/* „Üben“ ist immer da, aber nie die Hauptaktion: Ohne „Lernen“ steht es ruhig an dessen Stelle. */}
+      <div className={LEARN_ACTIONS}>
+        {nothingToDo ? null : (
+          <Link href={localePath(locale, ROUTES.study)} className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
+            {t.today.learn}
+          </Link>
+        )}
+        <Link
+          href={localePath(locale, ROUTES.practice)}
+          className={cn(buttonVariants({ variant: "secondary", size: "xl" }), LEARN_BUTTON_LAYOUT)}
+        >
+          {t.today.practice}
         </Link>
-      )}
+      </div>
     </div>
   );
 }

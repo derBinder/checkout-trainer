@@ -5,11 +5,11 @@ import { buttonShape } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDictionary } from "@/i18n/client";
 import { cn } from "@/lib/utils";
-import { Count, Counts, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
+import { Count, Counts, LEARN_ACTIONS, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
 
 /**
  * Normalzustand der Heute-Seite, solange TodayOverview lädt: echte Beschriftungen,
- * leerer Balken, Skeletons für die Zahlen, den Fortschrittstext und den Knopf.
+ * leerer Balken, Skeletons für die Zahlen, den Fortschrittstext und die Knöpfe.
  * Die unsichtbaren Mustertexte (nur Nullen, keine Nutzerdaten) geben den Skeletons
  * Höhe und Breite der Schrift im häufigsten Fall (zweistellige Zahlen).
  */
@@ -31,9 +31,14 @@ export function TodayOverviewSkeleton() {
         percent={<Skeleton className="rounded-cell text-transparent">{t.common.percent("00")}</Skeleton>}
       />
 
-      <Skeleton className={cn(buttonShape("xl"), "text-transparent", LEARN_BUTTON_LAYOUT)}>
-        {t.today.learn}
-      </Skeleton>
+      <div className={LEARN_ACTIONS}>
+        <Skeleton className={cn(buttonShape("xl"), "text-transparent", LEARN_BUTTON_LAYOUT)}>
+          {t.today.learn}
+        </Skeleton>
+        <Skeleton className={cn(buttonShape("xl"), "text-transparent", LEARN_BUTTON_LAYOUT)}>
+          {t.today.practice}
+        </Skeleton>
+      </div>
     </LoadingRegion>
   );
 }
