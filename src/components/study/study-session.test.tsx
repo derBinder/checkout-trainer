@@ -179,6 +179,23 @@ describe("StudySession", () => {
     expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
   });
 
+  it("hält den Bildschirm an, solange Karten offen sind, und gibt ihn am Ende frei", async () => {
+    const release = vi.fn(async () => {});
+    const request = vi.fn(async () => ({ released: false, release }));
+    Object.defineProperty(navigator, "wakeLock", { configurable: true, value: { request } });
+    try {
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
+      await flush();
+      expect(request).toHaveBeenCalledWith("screen");
+      expect(release).not.toHaveBeenCalled();
+      await rateCurrent("Gut");
+      expect(screen.getByRole("heading", { name: "Geschafft" })).toBeTruthy();
+      expect(release).toHaveBeenCalledTimes(1);
+    } finally {
+      Reflect.deleteProperty(navigator, "wakeLock");
+    }
+  });
+
   it("zählt mehrere gelernte Karten", async () => {
     render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
