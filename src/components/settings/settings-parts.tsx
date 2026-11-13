@@ -27,3 +27,10 @@ export function SettingsSection({
     </section>
   );
 }
+
+/** Zeilen der Zusatzkarten: je Schalter Titel und Satz links, der Schalter rechts. */
+export const EXTRA_LIST = "flex flex-col gap-5";
+export const EXTRA_ROW = "flex items-center justify-between gap-4";
+export const EXTRA_TEXT = "flex flex-col gap-1";
+export const EXTRA_LABEL = "text-base font-semibold";
+export const EXTRA_HINT = "text-sm text-muted-foreground";

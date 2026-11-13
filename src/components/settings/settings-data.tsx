@@ -1,7 +1,10 @@
 import { cache } from "react";
 import { getDictionary } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
+import { db } from "@/lib/db";
+import { loadExtraCards } from "@/lib/extra-cards-db";
 import { DeleteAccount } from "./delete-account";
+import { ExtraCardsSwitches } from "./extra-cards-form";
 import { NewPerDayInput } from "./new-per-day-form";
 import { SettingsSection } from "./settings-parts";
 
@@ -18,6 +21,17 @@ const loadSettings = cache(async () => {
 export async function NewPerDayField() {
   const { newPerDay } = await loadSettings();
   return <NewPerDayInput initial={newPerDay} />;
+}
+
+/** Die Schalter stehen nicht in der Sitzung: zuerst der Zugriff, dann die Datenbank. */
+const loadExtraCardSettings = cache(async () => {
+  const user = await requireActiveUser();
+  return loadExtraCards(db, user.id);
+});
+
+/** Die Schalter der Zusatzkarten mit dem gespeicherten Zustand. */
+export async function ExtraCardsField() {
+  return <ExtraCardsSwitches initial={await loadExtraCardSettings()} />;
 }
 
 /** „Konto löschen"; entfällt für das Betreiberkonto. */

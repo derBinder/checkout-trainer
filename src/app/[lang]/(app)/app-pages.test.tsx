@@ -54,6 +54,7 @@ vi.mock("@/components/admin/admin-data", async () => ({
 }));
 vi.mock("@/components/settings/settings-data", async () => ({
   NewPerDayField: await dataStub("Feld Neue Karten"),
+  ExtraCardsField: await dataStub("Schalter Zusatzkarten"),
   DeleteAccountSection: await dataStub("Abschnitt Konto löschen"),
 }));
 vi.mock("@/components/admin-nav-item", async () => ({
@@ -192,7 +193,8 @@ describe("Einstellungen", () => {
     render(await SettingsPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Einstellungen" })).toBeTruthy();
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Passwort ändern", "Abmelden"]);
+    expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Zusatzkarten", "Passwort ändern", "Abmelden"]);
+    expect(screen.getByText("Schalter Zusatzkarten")).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "Darstellung" })).toBeTruthy();
     expect(screen.getByText("Feld Neue Karten")).toBeTruthy();
     expect(screen.getByText("Formular Passwort")).toBeTruthy();
@@ -206,8 +208,9 @@ describe("Einstellungen", () => {
     const { container } = render(await SettingsPage(), { wrapper });
     expect(screen.queryByText("Feld Neue Karten")).toBeNull();
     expect(screen.queryByText("Abschnitt Konto löschen")).toBeNull();
+    expect(screen.queryByText("Schalter Zusatzkarten")).toBeNull();
     expect(screen.getByText("Formular Passwort")).toBeTruthy();
-    expect(busy(container)).toBeGreaterThanOrEqual(2);
+    expect(busy(container)).toBeGreaterThanOrEqual(3);
   });
 });
 
@@ -276,7 +279,7 @@ describe("Angemeldete Seiten auf Englisch", () => {
     rootParams.lang = "en";
     render(await SettingsPage(), { wrapper: wrapperEn });
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Appearance", "Language", "Study amount", "Change password", "Sign out"]);
+    expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
   });
 

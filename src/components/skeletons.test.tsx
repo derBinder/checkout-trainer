@@ -6,6 +6,7 @@ import { UserListSkeleton } from "@/components/admin/admin-skeleton";
 import { NewPerDayForm, NewPerDayInput } from "@/components/settings/new-per-day-form";
 import {
   DeleteAccountSectionSkeleton,
+  ExtraCardsSkeleton,
   NewPerDayFieldSkeleton,
 } from "@/components/settings/settings-skeleton";
 import { StatsOverviewSkeleton } from "@/components/stats/stats-skeleton";
@@ -32,6 +33,7 @@ const SKELETONS: [string, () => ReactElement][] = [
   ["Lernen", studySkeleton],
   ["Neue Karten pro Tag", () => inGerman(createElement(NewPerDayFieldSkeleton))],
   ["Konto löschen", () => inGerman(createElement(DeleteAccountSectionSkeleton))],
+  ["Zusatzkarten", () => inGerman(createElement(ExtraCardsSkeleton))],
   ["Verwaltung", () => inGerman(createElement(UserListSkeleton))],
   ["Üben", () => inGerman(createElement(PracticeSkeleton))],
 ];
@@ -117,6 +119,15 @@ describe("Skeleton-Bausteine", () => {
     expect(input).toContain('aria-describedby="newPerDay-hint"');
   });
 
+  it("Zusatzkarten: drei Zeilen mit Titel und Satz, die Schalter als Platzhalter ohne Zustand", () => {
+    const html = renderToStaticMarkup(inGerman(createElement(ExtraCardsSkeleton)));
+    expect(html).toMatch(/^<div aria-busy="true"/);
+    for (const label of ["Single statt Doppel", "Nachbarfelder", "Reste über 170"]) expect(html).toContain(label);
+    expect(skeletonTags(html)).toHaveLength(3);
+    expect(html).not.toContain('role="switch"');
+    expect(html).not.toContain("aria-checked");
+  });
+
   it("Verwaltung: drei Zeilen aus dem Zeilenaufbau der Nutzerliste, ohne Adressen, als ladend markiert", () => {
     const html = renderToStaticMarkup(inGerman(createElement(UserListSkeleton)));
     expect(html).toMatch(/^<div aria-busy="true"/);
@@ -154,6 +165,7 @@ describe("Skeleton-Bausteine", () => {
     expect(english(createElement(StatsOverviewSkeleton))).toContain("All scores from 2 to 170");
     expect(english(createElement(UserListSkeleton))).toContain("Set password");
     expect(english(createElement(DeleteAccountSectionSkeleton))).toContain("Delete account");
+    expect(english(createElement(ExtraCardsSkeleton))).toContain("Neighbouring fields");
     expect(english(createElement(StreakChipSkeleton))).toContain("00-day streak");
   });
 });

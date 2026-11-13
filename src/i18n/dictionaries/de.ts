@@ -13,6 +13,7 @@ import {
   MIN_PASSWORD_LENGTH,
   type AuthErrorKey,
 } from "@/lib/auth/constants";
+import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
@@ -348,6 +349,24 @@ export const de = {
       hint: (max: number) => `Von 0 bis ${max}. Fällige Wiederholungen kommen immer dazu.`,
       save: "Speichern",
       saved: "Gespeichert.",
+    },
+    extraCards: {
+      title: "Zusatzkarten",
+      saved: "Gespeichert.",
+      kinds: {
+        singleDouble: {
+          label: "Single statt Doppel",
+          hint: (n: number) => `${n} Karten: Doppel verfehlt, Single getroffen.`,
+        },
+        neighbours: {
+          label: "Nachbarfelder",
+          hint: (n: number) => `${n} Karten: Statt T20 oder T19 fällt S1, S5, S7 oder S3.`,
+        },
+        over170: {
+          label: "Reste über 170",
+          hint: (n: number) => `${n} Karten: Stellwurf mit drei Darts von 171 bis 230.`,
+        },
+      } satisfies Record<ExtraKind, { label: string; hint: (n: number) => string }>,
     },
     password: {
       title: "Passwort ändern",

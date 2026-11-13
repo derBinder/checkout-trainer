@@ -335,6 +335,24 @@ export const en: Dictionary = {
       save: "Save",
       saved: "Saved.",
     },
+    extraCards: {
+      title: "Extra cards",
+      saved: "Saved.",
+      kinds: {
+        singleDouble: {
+          label: "Single instead of double",
+          hint: (n: number) => `${n} cards: double missed, single hit.`,
+        },
+        neighbours: {
+          label: "Neighbouring fields",
+          hint: (n: number) => `${n} cards: S1, S5, S7 or S3 instead of T20 or T19.`,
+        },
+        over170: {
+          label: "Scores above 170",
+          hint: (n: number) => `${n} cards: setup shot with three darts from 171 to 230.`,
+        },
+      },
+    },
     password: {
       title: "Change password",
       current: "Current password",
