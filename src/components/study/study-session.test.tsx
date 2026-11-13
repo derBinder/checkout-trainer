@@ -168,7 +168,8 @@ describe("StudySession", () => {
     render(<StudySession items={[item("r-5")]} />, { wrapper });
     await rateCurrent("Gut");
 
-    expect(screen.getByRole("heading", { name: "Geschafft" })).toBeTruthy();
+    // Der gedrückte Knopf ist weg: Der Fokus liegt auf dem Ergebnis, damit Tastatur und Screenreader folgen.
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Geschafft" }));
     expect(screen.getByText("1 Karte gelernt.")).toBeTruthy();
     expect(screen.getByText("Speichere …")).toBeTruthy();
     const waiting = screen.getByRole("button", { name: "Zur Übersicht" });

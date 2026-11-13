@@ -283,7 +283,7 @@ export const en: Dictionary = {
     exercises: { routes: "Routes", math: "Maths" },
     range: "Range",
     kind: "Card type",
-    kinds: { all: "All", ways: "Routes", misses: "Misses", setups: "Set-ups" },
+    kinds: { all: "All", ways: "Routes", misses: "Misses", setups: "Setups" },
     matching: (n: number) => (n === 1 ? "1 card matches" : `${n} cards match`),
     noRange: "Choose at least one range.",
     noCards: "No cards match this selection.",

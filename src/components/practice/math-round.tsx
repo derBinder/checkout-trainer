@@ -1,21 +1,14 @@
 "use client";
 
-import { useEffect, useReducer, useRef } from "react";
+import { useReducer } from "react";
 import { DartSlots } from "@/components/dart-slots";
 import { BIG_NUMERAL, EYEBROW, NoteList } from "@/components/study/study-card";
 import { StudyCloseButton } from "@/components/study/study-close-link";
-import {
-  STUDY_CONTENT,
-  STUDY_COUNTER,
-  STUDY_FOOTER,
-  STUDY_HEADER,
-  STUDY_HEADER_ROW,
-  StudySurface,
-} from "@/components/study/study-parts";
+import { SessionHeader, useContentFocus } from "@/components/study/session-header";
+import { STUDY_CONTENT, STUDY_FOOTER, StudySurface } from "@/components/study/study-parts";
 import { useWakeLock } from "@/components/study/use-wake-lock";
 import { ResultLine } from "@/components/study/verdict";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useDictionary } from "@/i18n/client";
 import type { MathSolution, MathTask } from "@/lib/practice/math";
 import { initMath, mathReducer } from "./math-state";
@@ -49,16 +42,7 @@ export function MathRound({
   useWakeLock(task !== undefined);
 
   // Fokus auf den neuen Inhalt, wie im Lernbildschirm: Der gedrückte Knopf verschwindet.
-  const contentRef = useRef<HTMLDivElement>(null);
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    contentRef.current?.focus({ preventScroll: true });
-    contentRef.current?.scrollTo({ top: 0 });
-  }, [state.index, state.revealed]);
+  const contentRef = useContentFocus(`${state.index}:${state.revealed}`);
 
   if (!task) {
     return (
@@ -75,20 +59,12 @@ export function MathRound({
 
   return (
     <StudySurface>
-      <header className={STUDY_HEADER}>
-        <div className={STUDY_HEADER_ROW}>
-          <StudyCloseButton label={t.practice.closeLabel} onClick={onClose} />
-          <p className={STUDY_COUNTER}>
-            {state.index + 1} / {tasks.length}
-          </p>
-        </div>
-        <Progress
-          value={state.index}
-          max={tasks.length}
-          aria-label={t.study.session.progress}
-          getAriaValueText={() => t.practice.progressText(state.index, tasks.length)}
-        />
-      </header>
+      <SessionHeader
+        close={<StudyCloseButton label={t.practice.closeLabel} onClick={onClose} />}
+        done={state.index}
+        total={tasks.length}
+        progressText={t.practice.progressText}
+      />
 
       <div ref={contentRef} tabIndex={-1} className={STUDY_CONTENT}>
         <div className="my-auto flex flex-col gap-4">

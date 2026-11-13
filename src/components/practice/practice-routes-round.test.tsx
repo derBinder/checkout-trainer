@@ -81,7 +81,8 @@ describe("PracticeRoutesRound", () => {
     tap("Ohne Eingabe aufdecken");
     tap("Weiter");
     await flush();
-    expect(screen.getByRole("heading", { name: "Runde geschafft" })).toBeTruthy();
+    // Der gedrückte Knopf ist weg: Der Fokus liegt auf dem Ergebnis, damit Tastatur und Screenreader folgen.
+    expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Runde geschafft" }));
     expect(screen.getByText("2 Karten geübt.")).toBeTruthy();
     tap("Noch eine Runde");
     expect(onRestart).toHaveBeenCalledTimes(1);

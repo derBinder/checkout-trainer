@@ -10,6 +10,7 @@ import type { Answer } from "@/lib/darts/judge";
 import { submitReview } from "@/lib/review/actions";
 import type { IntervalLabel, Rating } from "@/lib/srs/fsrs";
 import { cn } from "@/lib/utils";
+import { EndHeading } from "./end-heading";
 import { SessionScreen, type SessionCard } from "./session-screen";
 import { StudySurface as Surface } from "./study-parts";
 import { StudyCloseLink } from "./study-close-link";
@@ -127,7 +128,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     return (
       <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
-          <h1 className="type-display text-hero">{t.session.finished}</h1>
+          <EndHeading>{t.session.finished}</EndHeading>
           <p className="text-lg font-medium text-muted-foreground">
             {t.session.cardsStudied(session.done)}
           </p>
