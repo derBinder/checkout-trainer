@@ -65,6 +65,21 @@ describe("summarize", () => {
     expect(summarize({ states: [], logs: [again("t-125")], now }).hardest).toEqual([{ rest: 125, again: 1 }]);
   });
 
+  it("counts Again on extra cards towards the rest the card starts from", () => {
+    const logs = [again("n-170-0-S1"), again("d-16")];
+    expect(summarize({ states: [], logs, now }).hardest).toEqual([
+      { rest: 32, again: 1 },
+      { rest: 170, again: 1 },
+    ]);
+  });
+
+  it("leaves rests above 170 out of the hardest rests and the grid", () => {
+    const s = summarize({ states: [review("o-199", 40)], logs: [again("o-199")], now });
+    expect(s.hardest).toEqual([]);
+    expect(Object.keys(s.levels)).toHaveLength(169);
+    expect(s.streak).toBe(1);
+  });
+
   it("ignores state and log of an unknown card", () => {
     const s = summarize({
       states: [review("r-9999", 30)],

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CARDS, cardById } from '@/lib/cards'
-import { checkFor, judge, maxDarts, offersNotCheckable, type Answer } from './judge'
+import { BOGEYS } from './checkouts'
+import { checkFor, judge, maxDarts, offersNotCheckable, type Answer, type Check } from './judge'
 
 const check = (id: string) => checkFor(cardById(id)!)
 const darts = (...d: string[]): Answer => ({ kind: 'darts', darts: d })
@@ -135,5 +136,47 @@ describe('two-dart cards', () => {
       expect(maxDarts(check(id))).toBe(2)
       expect(offersNotCheckable(check(id))).toBe(false)
     }
+  })
+})
+
+describe('setup that leaves a bogey number', () => {
+  it.each(BOGEYS)('says the setup leaves %i', (b) => {
+    const setup: Check = { kind: 'setup', rest: b + 60, maxDarts: 2, throws: ['T20', 'S1'] }
+    expect(judge(setup, darts('T20'))).toEqual({ code: 'setupBogey', detail: { kind: 'leavesBogey', leaves: b } })
+  })
+
+  it('keeps the card setup right even if it would leave a bogey number', () => {
+    const setup: Check = { kind: 'setup', rest: 219, maxDarts: 3, throws: ['T20'] }
+    expect(judge(setup, darts('T20'))).toEqual({ code: 'setupRight' })
+  })
+
+  it('applies with a single dart in hand', () => {
+    expect(judge({ kind: 'setup', rest: 166 + 3, maxDarts: 1, throws: ['S1'] }, darts('S3'))).toEqual({
+      code: 'setupBogey',
+      detail: { kind: 'leavesBogey', leaves: 166 },
+    })
+  })
+})
+
+describe('three-dart setups above 170', () => {
+  it('builds a three-dart setup check without Nicht checkbar', () => {
+    expect(check('o-199')).toEqual({ kind: 'setup', rest: 199, maxDarts: 3, throws: ['T20', 'T20', 'T13'] })
+    expect(offersNotCheckable(check('o-199'))).toBe(false)
+  })
+
+  const setup: Check = { kind: 'setup', rest: 171, maxDarts: 3, throws: ['T20', 'T20', 'S19'] }
+
+  it('counts the order of the darts', () => {
+    expect(judge(setup, darts('T20', 'T20', 'S19'))).toEqual({ code: 'setupRight' })
+    expect(judge(setup, darts('S19', 'T20', 'T20'))).toEqual({ code: 'setupOther' })
+  })
+
+  it('calls an overshoot or a short setup a different setup', () => {
+    expect(judge(setup, darts('T20', 'T20', 'T20'))).toEqual({ code: 'setupOther' })
+    expect(judge(setup, darts('T20', 'T20'))).toEqual({ code: 'setupOther' })
+  })
+
+  it('allows three darts', () => {
+    expect(maxDarts(setup)).toBe(3)
   })
 })

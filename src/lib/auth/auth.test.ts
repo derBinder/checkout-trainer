@@ -151,6 +151,24 @@ describe("Selbstbedienung durch angemeldete Nutzer", () => {
     expect(row.extraNewCount).toBe(0);
   });
 
+  it("kann die Zusatzkarten weder bei der Registrierung noch über updateUser einschalten", async () => {
+    const extra = {
+      extraSingleDouble: true,
+      extraNeighbours: true,
+      extraOver170: true,
+      extra_single_double: true,
+      extra_neighbours: true,
+      extra_over_170: true,
+    };
+    const off = { extraSingleDouble: false, extraNeighbours: false, extraOver170: false };
+    await signUp("z@example.test", extra).catch(() => undefined);
+    expect(await userRow("z@example.test")).toMatchObject(off);
+
+    const headers = await sessionHeaders("z@example.test");
+    await auth.api.updateUser({ body: extra as never, headers }).catch(() => undefined);
+    expect(await userRow("z@example.test")).toMatchObject(off);
+  });
+
   it("kann keine Rollen oder Fremdpasswörter setzen", async () => {
     const { user: victim } = await signUp("h@example.test");
     await signUp("i@example.test");

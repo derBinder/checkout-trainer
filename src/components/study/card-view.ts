@@ -188,5 +188,18 @@ export function cardView(card: Card, t: T): CardView {
       };
     case "two":
       return twoDartView(card, t);
+    case "over":
+      // Über 170 ist nichts checkbar: gefragt ist nur der Stellwurf mit drei Darts.
+      return {
+        question: { label: t.card.score, big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
+        answer: {
+          label: t.card.score,
+          big: String(card.rest),
+          slots: toSlots(card.setup.throws),
+          slotTone: "none",
+          missSlots: [],
+          notes: [{ title: t.card.setupShot, text: t.card.afterwards(card.setup.leaves) }],
+        },
+      };
   }
 }

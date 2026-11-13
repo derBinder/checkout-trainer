@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { CARDS, cardById } from "@/lib/cards";
+import { CARDS, cardById, cardsFor } from "@/lib/cards";
 import type { Card } from "@/lib/darts/cards";
+import { ALL_EXTRA_CARDS, NO_EXTRA_CARDS } from "@/lib/extra-cards";
 import {
+  availableRanges,
   drawRound,
   matchesFilter,
   practiceGroups,
@@ -28,7 +30,9 @@ function card(id: string): Card {
   return c;
 }
 
-const META = CARDS.map((c) => ({ id: c.id, rest: c.rest, groups: practiceGroups(c) }));
+/** Die Grundkarten, wie sie jeder Nutzer ohne Zusatzkarten übt. */
+const CORE = cardsFor(NO_EXTRA_CARDS);
+const META = CORE.map((c) => ({ id: c.id, rest: c.rest, groups: practiceGroups(c) }));
 const ALL_RANGES = RANGES.map((r) => r.id);
 
 function count(ranges: RangeId[], kind: PracticeKind): number {
@@ -36,7 +40,7 @@ function count(ranges: RangeId[], kind: PracticeKind): number {
 }
 
 describe("RANGES", () => {
-  it("sind die sieben festen Bereiche ohne Lücke von 2 bis 170", () => {
+  it("sind die acht festen Bereiche ohne Lücke von 2 bis 230", () => {
     expect(RANGES.map((r) => [r.id, r.from, r.to])).toEqual([
       ["2-40", 2, 40],
       ["41-60", 41, 60],
@@ -45,7 +49,16 @@ describe("RANGES", () => {
       ["101-120", 101, 120],
       ["121-140", 121, 140],
       ["141-170", 141, 170],
+      ["171-230", 171, 230],
     ]);
+  });
+});
+
+describe("availableRanges", () => {
+  it("bietet 171–230 nur mit dem Schalter „Reste über 170“ an", () => {
+    expect(availableRanges(NO_EXTRA_CARDS)).toEqual(RANGES.map((r) => r.id).filter((id) => id !== "171-230"));
+    expect(availableRanges({ ...ALL_EXTRA_CARDS, over170: false })).not.toContain("171-230");
+    expect(availableRanges({ ...NO_EXTRA_CARDS, over170: true })).toEqual(RANGES.map((r) => r.id));
   });
 });
 
@@ -66,6 +79,15 @@ describe("practiceGroups", () => {
     expect(practiceGroups(withSetup)).toEqual(["misses", "setups"]);
     expect(practiceGroups(withFinish)).toEqual(["misses"]);
   });
+
+  it("ordnet Nachbarfeld- und Single-statt-Doppel-Karten den Fehlwürfen zu", () => {
+    expect(practiceGroups(card("n-170-0-S1"))).toEqual(["misses", "setups"]);
+    expect(practiceGroups(card("d-16"))).toEqual(["misses"]);
+  });
+
+  it("ordnet Stellwurf-Karten über 170 den Stellwürfen zu", () => {
+    expect(practiceGroups(card("o-199"))).toEqual(["setups"]);
+  });
 });
 
 describe("matchesFilter", () => {
@@ -85,7 +107,15 @@ describe("matchesFilter", () => {
   });
 
   it("liefert mit allen Bereichen alle Karten", () => {
-    expect(count(ALL_RANGES, "all")).toBe(CARDS.length);
+    expect(count(ALL_RANGES, "all")).toBe(CORE.length);
+    const all = CARDS.map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
+    expect(all.filter((m) => matchesFilter(m, { ranges: ALL_RANGES, kind: "all" }))).toHaveLength(CARDS.length);
+  });
+
+  it("findet die 60 Stellwürfe über 170 nur im Bereich 171–230", () => {
+    const all = CARDS.map((c) => ({ rest: c.rest, groups: practiceGroups(c) }));
+    expect(all.filter((m) => matchesFilter(m, { ranges: ["171-230"], kind: "setups" }))).toHaveLength(60);
+    expect(all.filter((m) => matchesFilter(m, { ranges: ["171-230"], kind: "all" }))).toHaveLength(60);
   });
 
   it("richtet den Bereich nach dem Rest, mit dem die Karte beginnt", () => {

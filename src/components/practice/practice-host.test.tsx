@@ -7,9 +7,9 @@ import { I18nProvider } from "@/i18n/client";
 import { de } from "@/i18n/dictionaries/de";
 import { CARDS } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
-import { practiceGroups } from "@/lib/practice/filter";
+import { practiceGroups, RANGES } from "@/lib/practice/filter";
 import { mathSolutions } from "@/lib/practice/math";
-import { DEFAULT_SELECTION } from "@/lib/practice/selection";
+import { DEFAULT_SELECTION, PRACTICE_STORAGE_KEY } from "@/lib/practice/selection";
 
 const router = vi.hoisted(() => ({ bfcacheId: "a" }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -27,11 +27,13 @@ const CARDS_DATA = CARDS.map((c) => ({
   check: checkFor(c),
 }));
 const SOLUTIONS = mathSolutions(CARDS);
+const ALL_RANGES = RANGES.map((r) => r.id);
+const CORE_RANGES = ALL_RANGES.filter((id) => id !== "171-230");
 
-function renderHost() {
+function renderHost(ranges = ALL_RANGES) {
   return render(
     <I18nProvider locale="de">
-      <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} />
+      <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} ranges={ranges} />
     </I18nProvider>,
   );
 }
@@ -49,7 +51,7 @@ describe("PracticeHost im Server-Rendering", () => {
     const { renderToString } = await import("react-dom/server");
     const html = renderToString(
       <I18nProvider locale="de">
-        <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} />
+        <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} ranges={ALL_RANGES} />
       </I18nProvider>,
     );
     expect(html).toContain('aria-busy="true"');
@@ -81,6 +83,20 @@ describe("PracticeHost", () => {
     expect(submitReview).not.toHaveBeenCalled();
   });
 
+  it("verwirft eine gemerkte Auswahl von 171–230 still, wenn der Bereich nicht angeboten wird", async () => {
+    const user = userEvent.setup();
+    savePracticeSelection({ exercise: "routes", ranges: ["171-230"], kind: "all" });
+    renderHost(CORE_RANGES);
+    expect(screen.queryByRole("button", { name: "171–230" })).toBeNull();
+    expect(screen.getByText("Wähle mindestens einen Bereich.")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "2–40" }));
+    expect(JSON.parse(localStorage.getItem(PRACTICE_STORAGE_KEY)!)).toEqual({
+      exercise: "routes",
+      ranges: ["2-40"],
+      kind: "all",
+    });
+  });
+
   it("zieht höchstens 20 Karten je Runde", async () => {
     const user = userEvent.setup();
     renderHost();
@@ -107,7 +123,7 @@ describe("PracticeHost", () => {
     router.bfcacheId = "b";
     rerender(
       <I18nProvider locale="de">
-        <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} />
+        <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} ranges={ALL_RANGES} />
       </I18nProvider>,
     );
     expect(screen.getByRole("button", { name: "Los" })).toBeTruthy();

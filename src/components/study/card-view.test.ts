@@ -238,3 +238,34 @@ describe("cardView auf Englisch", () => {
     expect(detail.notes).toEqual([{ title: "Setup shot", text: "No checkout. Set up 32." }]);
   });
 });
+
+describe("cardView for extra cards", () => {
+  it("asks a setup above 170 with three open slots and shows the setup", () => {
+    const over = view("o-199");
+    expect(over.question).toEqual({ label: "Rest", big: "199", slots: [null, null, null] });
+    expect(over.answer).toEqual({
+      label: "Rest",
+      big: "199",
+      slots: ["T20", "T20", "T13"],
+      slotTone: "none",
+      missSlots: [],
+      notes: [{ title: "Stellwurf", text: "Danach Rest 40" }],
+    });
+    expect(viewEn("o-199").answer.notes).toEqual([{ title: "Setup shot", text: "Then 40 left" }]);
+  });
+
+  it("asks a single instead of a double like a miss card", () => {
+    const single = view("d-16");
+    expect(single.question).toEqual({
+      label: "Rest war 32",
+      slots: ["S16", null, null],
+      hint: "Ziel war D16, getroffen: Single 16",
+    });
+    expect(single.answer).toMatchObject({ big: "16", slots: ["S16", "D8", null], missSlots: [0] });
+  });
+
+  it("names the neighbouring field that was hit", () => {
+    expect(view("n-170-0-S5").question.hint).toBe("Ziel war T20, getroffen: Single 5");
+    expect(viewEn("n-170-0-S5").question.hint).toBe("Aimed at T20, hit: single 5");
+  });
+});

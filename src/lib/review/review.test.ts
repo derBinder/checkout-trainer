@@ -3,7 +3,11 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "@/lib/db/test-db";
 import type { Db } from "@/lib/db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
-import { CARD_ORDER } from "@/lib/cards";
+import { CARDS, cardOrderFor } from "@/lib/cards";
+import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
+
+/** Lernreihenfolge ohne Zusatzkarten, wie sie jedes Konto anfangs hat. */
+const CARD_ORDER = cardOrderFor(NO_EXTRA_CARDS);
 import type { SessionUser } from "@/lib/auth/guard";
 
 const getSessionUser = vi.fn<() => Promise<SessionUser | null>>();
@@ -189,6 +193,102 @@ describe("loadQueue with an extra allowance", () => {
     expect((await loadQueue(db, u, now)).unseenCount).toBe(CARD_ORDER.length);
     await introduce(u, CARD_ORDER.slice(0, 2), now);
     expect((await loadQueue(db, u, now)).unseenCount).toBe(CARD_ORDER.length - 2);
+  });
+});
+
+describe("extra cards", () => {
+  const isExtra = (id: string) => /^[ndo]-/.test(id);
+  const yesterday = new Date(now.getTime() - 24 * 3600_000);
+
+  async function switchOn(id: string, extras: Partial<typeof user.$inferInsert>) {
+    await db.update(user).set(extras).where(eq(user.id, id));
+  }
+
+  /** Stores the given cards as seen, due far in the future (or at `due`). */
+  async function seen(userId: string, ids: string[], due = new Date("2030-01-01T00:00:00Z")) {
+    await db.insert(cardState).values(
+      ids.map((cardId) => ({
+        userId,
+        cardId,
+        due,
+        stability: 10,
+        difficulty: 5,
+        elapsedDays: 0,
+        scheduledDays: 10,
+        learningSteps: 0,
+        reps: 1,
+        lapses: 0,
+        state: 2,
+        introducedAt: yesterday,
+      })),
+    );
+  }
+
+  it("leaves every extra card out while the switches are off", async () => {
+    const u = await addUser("u1", 50);
+    const q = await loadQueue(db, u, now);
+    expect(q.cardIds.filter(isExtra)).toEqual([]);
+    expect(q.unseenCount).toBe(402);
+  });
+
+  it("brings the cards above 170 after the core cards once switched on", async () => {
+    const u = await addUser("u1", 3);
+    await seen("u1", CARD_ORDER);
+    await switchOn("u1", { extraOver170: true });
+    const q = await loadQueue(db, u, now);
+    expect(q.cardIds).toEqual(["o-171", "o-172", "o-173"]);
+    expect(q.unseenCount).toBe(60);
+  });
+
+  it("brings the extra cards of rests already learned first, in order of the rest", async () => {
+    const u = await addUser("u1", 3);
+    await seen("u1", CARD_ORDER.filter((id) => (CARDS.find((c) => c.id === id)?.rest ?? 0) <= 40));
+    await switchOn("u1", { extraSingleDouble: true, extraNeighbours: true });
+    expect((await loadQueue(db, u, now)).cardIds).toEqual(["d-2", "d-3", "d-4"]);
+  });
+
+  it("hides a due extra card while switched off and keeps its state for later", async () => {
+    const u = await addUser("u1", 0);
+    await seen("u1", ["n-170-0-S1"], yesterday);
+    await switchOn("u1", { extraNeighbours: true });
+    expect((await loadQueue(db, u, now)).cardIds).toEqual(["n-170-0-S1"]);
+
+    await switchOn("u1", { extraNeighbours: false });
+    const off = await loadQueue(db, u, now);
+    expect(off.cardIds).toEqual([]);
+    expect(off.dueCount).toBe(0);
+    expect(await db.select().from(cardState)).toHaveLength(1);
+
+    await switchOn("u1", { extraNeighbours: true });
+    const on = await loadQueue(db, u, now);
+    expect(on.cardIds).toEqual(["n-170-0-S1"]);
+    expect(on.reps["n-170-0-S1"]).toBe(1);
+  });
+
+  it("still counts an extra card introduced today after switching it off, like the daily limit does", async () => {
+    const u = await addUser("u1", 1);
+    await switchOn("u1", { extraOver170: true });
+    expect(await applyReview(db, u, { cardId: "o-171", rating: 3, reps: 0 }, now)).toEqual({ ok: true });
+    await switchOn("u1", { extraOver170: false });
+    const q = await loadQueue(db, u, now);
+    expect(q.freshCount).toBe(0);
+    expect(q.newLeftToday).toBe(0);
+  });
+
+  it("refuses to rate a switched-off extra card and writes nothing", async () => {
+    const u = await addUser("u1");
+    expect(await applyReview(db, u, { cardId: "o-171", rating: 3, reps: 0 }, now)).toEqual({
+      ok: false,
+      reason: "off",
+    });
+    expect(await db.select().from(cardState)).toEqual([]);
+    expect(await db.select().from(reviewLog)).toEqual([]);
+  });
+
+  it("rates a switched-on extra card", async () => {
+    const u = await addUser("u1");
+    await switchOn("u1", { extraSingleDouble: true });
+    expect(await applyReview(db, u, { cardId: "d-16", rating: 3, reps: 0 }, now)).toEqual({ ok: true });
   });
 });
 

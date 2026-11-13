@@ -37,6 +37,7 @@ const CODES: VerdictCode[] = [
   "bogeyRight",
   "setupRight",
   "setupOther",
+  "setupBogey",
 ];
 
 describe("verdictCopy in beiden Sprachen", () => {
@@ -68,6 +69,22 @@ describe("verdictCopy in beiden Sprachen", () => {
     expect(verdictCopy({ code: "noCheckout", detail: { kind: "notCheckable" } }, de.study).note).toBe(
       "Rest ist nicht checkbar",
     );
+  });
+});
+
+describe("setup that leaves a bogey number", () => {
+  it("is light red and names the number", () => {
+    const verdict = { code: "setupBogey", detail: { kind: "leavesBogey", leaves: 159 } } as const;
+    expect(verdictCopy(verdict, de.study)).toEqual({
+      tone: "bad",
+      title: "Lässt Bogey-Zahl",
+      note: "Lässt 159, nicht checkbar",
+    });
+    expect(verdictCopy(verdict, en.study)).toEqual({
+      tone: "bad",
+      title: "Leaves a bogey",
+      note: "Leaves 159, no checkout",
+    });
   });
 });
 

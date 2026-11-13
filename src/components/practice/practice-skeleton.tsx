@@ -4,7 +4,8 @@ import { LoadingRegion } from "@/components/loading-region";
 import { buttonShape } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDictionary } from "@/i18n/client";
-import { RANGES } from "@/lib/practice/filter";
+import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
+import { availableRanges } from "@/lib/practice/filter";
 import { cn } from "@/lib/utils";
 import {
   CHIP,
@@ -18,6 +19,9 @@ import {
   START_BUTTON_LAYOUT,
   STATUS_LINE,
 } from "./practice-parts";
+
+/** Das Gerüst kennt die Schalter nicht: die Bereiche ohne Zusatzkarten, wie bei neuen Konten. */
+const SKELETON_RANGES = availableRanges(NO_EXTRA_CARDS);
 
 /**
  * Übungsseite, solange die Karten laden: echte Beschriftungen, Skeletons in den
@@ -34,8 +38,8 @@ export function PracticeSkeleton() {
       <div className={PRACTICE_SECTION}>
         <SectionLabel>{t.range}</SectionLabel>
         <div className={CHIP_GRID}>
-          {RANGES.map((range) => (
-            <Skeleton key={range.id} className={CHIP} />
+          {SKELETON_RANGES.map((range) => (
+            <Skeleton key={range} className={CHIP} />
           ))}
         </div>
       </div>

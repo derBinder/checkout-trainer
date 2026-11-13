@@ -57,7 +57,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
           return;
         }
         // "stale": schon gespeichert (doppelt gesendet), zählt als bestätigt.
-        // "limit", "invalid", "unknown-card": nicht gezählt, die Sitzung läuft weiter.
+        // "limit", "invalid", "unknown-card", "off" (Zusatzkarte inzwischen ausgeschaltet): nicht gezählt, die Sitzung läuft weiter.
         const outcome = result.ok ? "ok" : result.reason === "stale" ? "stale" : "skipped";
         dispatch({ type: "result", outcome });
       },

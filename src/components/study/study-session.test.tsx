@@ -287,6 +287,14 @@ describe("StudySession", () => {
     expect(screen.getByText("2 / 2")).toBeTruthy();
   });
 
+  it("zählt die Bewertung einer inzwischen ausgeschalteten Zusatzkarte nicht und lernt weiter", async () => {
+    submitReview.mockResolvedValueOnce({ ok: false, reason: "off" });
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
+    await rateCurrent("Gut");
+    expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
+    expect(screen.getByText("2 / 2")).toBeTruthy();
+  });
+
   it("zählt mehrere nicht gezählte Bewertungen zusammen, eine schon gespeicherte zählt als gespeichert", async () => {
     submitReview
       .mockResolvedValueOnce({ ok: false, reason: "invalid" })

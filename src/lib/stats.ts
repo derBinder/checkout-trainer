@@ -59,7 +59,8 @@ export function summarize({ states, logs, now }: StatsInput): Stats {
   const againByRest = new Map<number, number>();
   for (const l of validLogs) {
     const card = cardById(l.cardId);
-    if (!card || l.rating !== AGAIN) continue;
+    // Reste über 170 zeigt das Raster nicht, die Detailansicht kann sie nicht öffnen.
+    if (!card || l.rating !== AGAIN || card.rest > MAX_REST) continue;
     againByRest.set(card.rest, (againByRest.get(card.rest) ?? 0) + 1);
   }
   const hardest = [...againByRest]

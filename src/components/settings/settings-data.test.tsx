@@ -17,21 +17,39 @@ const user = vi.hoisted(() => ({
   newPerDay: 7,
 }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
-vi.mock("@/app/[lang]/(app)/settings/actions", () => ({ updateNewPerDay: vi.fn() }));
+vi.mock("@/app/[lang]/(app)/settings/actions", () => ({ updateNewPerDay: vi.fn(), updateExtraCards: vi.fn() }));
+const calls = vi.hoisted(() => [] as string[]);
+vi.mock("@/lib/db", () => ({ db: {} }));
+vi.mock("@/lib/extra-cards-db", () => ({
+  loadExtraCards: async (_db: unknown, userId: string) => {
+    calls.push(`load ${userId}`);
+    return { singleDouble: false, neighbours: true, over170: false };
+  },
+}));
 vi.mock("@/lib/auth/client", () => ({ authClient: {} }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }) }));
 
-const { DeleteAccountSection, NewPerDayField } = await import("./settings-data");
+const { DeleteAccountSection, ExtraCardsField, NewPerDayField } = await import("./settings-data");
 const { NewPerDayForm } = await import("./new-per-day-form");
 
 beforeEach(() => {
   user.role = "user";
+  calls.length = 0;
 });
 
 describe("NewPerDayField", () => {
   it("füllt das Feld mit dem gespeicherten Wert", async () => {
     render(<NewPerDayForm>{await NewPerDayField()}</NewPerDayForm>, { wrapper });
     expect((screen.getByLabelText("Neue Karten pro Tag") as HTMLInputElement).value).toBe("7");
+  });
+});
+
+describe("ExtraCardsField", () => {
+  it("zeigt die gespeicherten Schalter des angemeldeten Kontos", async () => {
+    render(await ExtraCardsField(), { wrapper });
+    expect(calls).toEqual(["load u1"]);
+    expect(screen.getByRole("switch", { name: "Nachbarfelder" }).getAttribute("aria-checked")).toBe("true");
+    expect(screen.getByRole("switch", { name: "Reste über 170" }).getAttribute("aria-checked")).toBe("false");
   });
 });
 
