@@ -22,3 +22,17 @@ export function StudyCloseLink({ onClick }: { onClick?: (event: React.MouseEvent
     </Link>
   );
 }
+
+/** Schließen-Kreuz als Knopf, wenn das Schließen auf derselben Seite bleibt (Üben). */
+export function StudyCloseButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className={cn(buttonVariants({ variant: "ghost", size: "icon-lg" }), "-ml-3")}
+    >
+      <X aria-hidden className="size-5" />
+    </button>
+  );
+}

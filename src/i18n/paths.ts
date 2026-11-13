@@ -12,6 +12,7 @@ export const ROUTES = {
   pending: "/pending",
   today: "/today",
   study: "/study",
+  practice: "/practice",
   stats: "/stats",
   settings: "/settings",
   admin: "/admin",

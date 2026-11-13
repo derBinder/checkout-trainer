@@ -4,34 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useDictionary, useLocalePath } from "@/i18n/client";
 import { ROUTES } from "@/i18n/paths";
-import { judge, type Answer, type Check } from "@/lib/darts/judge";
+import type { Answer } from "@/lib/darts/judge";
 import { submitReview } from "@/lib/review/actions";
 import type { IntervalLabel, Rating } from "@/lib/srs/fsrs";
 import { cn } from "@/lib/utils";
-import type { CardView } from "./card-view";
-import { initInput, inputReducer, type InputAction, type InputState } from "./route-input";
-import { StudyCard } from "./study-card";
-import {
-  STUDY_CONTENT,
-  STUDY_COUNTER,
-  STUDY_FOOTER,
-  STUDY_HEADER,
-  STUDY_HEADER_ROW,
-  StudySurface as Surface,
-} from "./study-parts";
+import { SessionScreen, type SessionCard } from "./session-screen";
+import { StudySurface as Surface } from "./study-parts";
 import { StudyCloseLink } from "./study-close-link";
-import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
-import { useWakeLock } from "./use-wake-lock";
 
-export type StudyItem = {
-  id: string;
-  view: CardView;
-  /** Wogegen eine eingegebene Antwort geprüft wird. */
-  check: Check;
+export type StudyItem = SessionCard & {
   /** Gespeicherte Wiederholungen beim Laden der Seite. */
   reps: number;
   /** Abstände unter den Knöpfen, je weiterem „Nochmal“ ein Eintrag (siehe intervalLabelChain). */
@@ -99,35 +83,8 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     return () => window.removeEventListener("beforeunload", warn);
   }, [unsyncedCount]);
 
-  const currentId = session.queue[0];
-  const current = currentId ? byId.get(currentId) : undefined;
-
-  // Am Board liegt das Handy oft eine Weile: Der Bildschirm bleibt an, solange Karten offen sind.
-  useWakeLock(current !== undefined && !state.signedOut);
-
-  // Eingabe der aktuellen Runde. Jede Runde einer Karte (auch nach „Nochmal“) beginnt leer:
-  // Wechselt der Rundenschlüssel, wird der Zustand noch während des Renderns neu gesetzt.
-  const round = `${currentId}:${session.done}:${session.total}`;
-  const [inputRound, setInputRound] = useState(round);
-  const [input, setInput] = useState<InputState | null>(() => (current ? initInput(current.check) : null));
-  if (inputRound !== round) {
-    setInputRound(round);
-    setInput(current ? initInput(current.check) : null);
-  }
-  const onInput = (a: InputAction) => setInput((s) => (s ? inputReducer(s, a) : s));
+  const current = session.queue[0] ? byId.get(session.queue[0]) : undefined;
   const reveal = (answer?: Answer) => dispatch({ type: "reveal", at: performance.now(), answer });
-
-  // Fokus auf den neuen Inhalt, damit Tastatur und Screenreader folgen.
-  const contentRef = useRef<HTMLDivElement>(null);
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    contentRef.current?.focus({ preventScroll: true });
-    contentRef.current?.scrollTo({ top: 0 });
-  }, [currentId, session.revealed, session.total]);
 
   function confirmClose(event: React.MouseEvent) {
     if (unsyncedCount > 0 && !window.confirm(t.session.confirmClose)) {
@@ -208,85 +165,47 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     current.reps +
     session.unsynced.filter((u) => u.cardId === current.id).length;
   const labels = current.labels[Math.min(ratedHere, current.labels.length - 1)];
-  const position = Math.min(session.done + 1, session.total);
 
   return (
-    <Surface>
-      <header className={STUDY_HEADER}>
-        <div className={STUDY_HEADER_ROW}>
-          <StudyCloseLink onClick={confirmClose} />
-          <p className={STUDY_COUNTER}>
-            {position} / {session.total}
-          </p>
-        </div>
-        <Progress
-          value={session.done}
-          max={session.total}
-          aria-label={t.session.progress}
-          getAriaValueText={() => t.session.progressText(session.done, session.total)}
-        />
-      </header>
-
-      <div
-        ref={contentRef}
-        tabIndex={-1}
-        className={STUDY_CONTENT}
-      >
-        {/* my-auto statt justify-center: mittig in der freien Fläche, bei Überlänge oben beginnend. */}
-        <div className="my-auto">
-          {session.revealed ? (
-            <StudyCard
-              view={current.view}
-              result={
-                state.answer
-                  ? {
-                      verdict: judge(current.check, state.answer),
-                      answer: state.answer,
-                      fixed: fixedDarts(current.view),
-                    }
-                  : undefined
-              }
-            />
-          ) : (
-            input && <StudyQuestion view={current.view} input={input} onAction={onInput} />
-          )}
-        </div>
-      </div>
-
-      <footer className={STUDY_FOOTER}>
-        {skippedHint}
-        {failedHint}
-        {session.revealed ? (
-          // Eine durchgehende Leiste; „Gut“ ist als Normalfall gelb hervorgehoben.
-          <div className="grid grid-cols-4 rounded-panel bg-muted p-1">
-            {RATINGS.map((rating) => (
-              <button
-                key={rating}
-                type="button"
+    <SessionScreen
+      current={current}
+      session={session}
+      answer={state.answer}
+      close={<StudyCloseLink onClick={confirmClose} />}
+      progressText={t.session.progressText}
+      hints={
+        <>
+          {skippedHint}
+          {failedHint}
+        </>
+      }
+      onReveal={reveal}
+      revealedFooter={
+        // Eine durchgehende Leiste; „Gut“ ist als Normalfall gelb hervorgehoben.
+        <div className="grid grid-cols-4 rounded-panel bg-muted p-1">
+          {RATINGS.map((rating) => (
+            <button
+              key={rating}
+              type="button"
+              className={cn(
+                "group flex h-15 flex-col items-center justify-center gap-0.5 rounded-field px-1 outline-ring transition select-none focus-visible:outline-2 active:scale-97",
+                rating === GOOD ? "bg-accent text-accent-foreground" : "hover:bg-secondary-hover",
+              )}
+              onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
+            >
+              <span className="text-sm font-semibold">{t.session.ratings[rating]}</span>
+              <span
                 className={cn(
-                  "group flex h-15 flex-col items-center justify-center gap-0.5 rounded-field px-1 outline-ring transition select-none focus-visible:outline-2 active:scale-97",
-                  rating === GOOD
-                    ? "bg-accent text-accent-foreground"
-                    : "hover:bg-secondary-hover",
+                  "text-xs tabular-nums",
+                  rating === GOOD ? "text-accent-muted" : "text-muted-foreground",
                 )}
-                onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
               >
-                <span className="text-sm font-semibold">{t.session.ratings[rating]}</span>
-                <span
-                  className={cn(
-                    "text-xs tabular-nums",
-                    rating === GOOD ? "text-accent-muted" : "text-muted-foreground",
-                  )}
-                >
-                  {t.interval(labels[rating])}
-                </span>
-              </button>
-            ))}
-          </div>
-        ) : (
-          input && <QuestionFooter check={current.check} input={input} onReveal={reveal} />
-        )}
-      </footer>
-    </Surface>
+                {t.interval(labels[rating])}
+              </span>
+            </button>
+          ))}
+        </div>
+      }
+    />
   );
 }

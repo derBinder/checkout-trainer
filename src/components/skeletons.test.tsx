@@ -10,6 +10,7 @@ import {
 } from "@/components/settings/settings-skeleton";
 import { StatsOverviewSkeleton } from "@/components/stats/stats-skeleton";
 import { StreakChipSkeleton } from "@/components/streak-chip";
+import { PracticeSkeleton } from "@/components/practice/practice-skeleton";
 import { StudySkeleton } from "@/components/study/study-skeleton";
 import { TodayOverviewSkeleton } from "@/components/today/today-skeleton";
 import { buttonShape, buttonVariants } from "@/components/ui/button";
@@ -32,6 +33,7 @@ const SKELETONS: [string, () => ReactElement][] = [
   ["Neue Karten pro Tag", () => inGerman(createElement(NewPerDayFieldSkeleton))],
   ["Konto löschen", () => inGerman(createElement(DeleteAccountSectionSkeleton))],
   ["Verwaltung", () => inGerman(createElement(UserListSkeleton))],
+  ["Üben", () => inGerman(createElement(PracticeSkeleton))],
 ];
 
 function classesOf(tag: string): string[] {
@@ -127,6 +129,21 @@ describe("Skeleton-Bausteine", () => {
       expect(classes).toContain("*:invisible");
     }
     expect(html).not.toContain("@");
+  });
+
+  it("Heute: Platzhalter für „Lernen“ und „Üben“", () => {
+    const html = renderToStaticMarkup(inGerman(createElement(TodayOverviewSkeleton)));
+    const buttons = skeletonTags(html).filter((tag) => classesOf(tag).includes("h-13"));
+    expect(buttons).toHaveLength(2);
+  });
+
+  it("Üben: Umschalter, sieben Bereiche, vier Kartenarten, Statuszeile und Knopf als Platzhalter, ohne Kartenzahlen", () => {
+    const html = renderToStaticMarkup(inGerman(createElement(PracticeSkeleton)));
+    expect(html).toMatch(/^<div aria-busy="true"/);
+    expect(html).toContain("Bereich");
+    expect(html).toContain("Kartenart");
+    expect(skeletonTags(html)).toHaveLength(1 + 7 + 4 + 1 + 1);
+    expect(html).not.toMatch(/\d+ Karten/);
   });
 
   it("beschriftet Platzhalter in der Sprache der Seite", () => {

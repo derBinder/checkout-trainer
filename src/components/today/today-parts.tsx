@@ -6,8 +6,10 @@
 /** Spalte unter dem Titel: Zahlen, Fortschritt, Knopf. */
 export const TODAY_BODY = "flex flex-col gap-8";
 
-/** Lage des Knopfs „Lernen" (Höhe und Form kommen von buttonVariants size xl). */
-export const LEARN_BUTTON_LAYOUT = "mt-4 w-full sm:w-auto sm:self-start sm:px-10";
+/** Knöpfe „Lernen" und „Üben": untereinander, ab sm nebeneinander. */
+export const LEARN_ACTIONS = "mt-4 flex flex-col gap-3 sm:flex-row";
+/** Breite eines Knopfs darin (Höhe und Form kommen von buttonVariants size xl). */
+export const LEARN_BUTTON_LAYOUT = "w-full sm:w-auto sm:px-10";
 
 export function Counts({ children }: { children: React.ReactNode }) {
   return <dl className="flex gap-10">{children}</dl>;
