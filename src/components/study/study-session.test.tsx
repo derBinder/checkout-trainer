@@ -379,8 +379,9 @@ describe("StudySession", () => {
       render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
       expect(checkedRing()).toBe("Single");
       press("Single 1");
-      // Rest 4 ist ein direktes Doppel: der Ring springt auf D.
-      expect(checkedRing()).toBe("Doppel");
+      // Rest 4 ist ein direktes Doppel: der Ring bleibt trotzdem auf S und verrät nichts.
+      expect(checkedRing()).toBe("Single");
+      fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
       press("Doppel 2");
       expect(row("Darts")).toEqual(["S1", "D2", "?offen"]);
 
@@ -452,6 +453,7 @@ describe("StudySession", () => {
       expect(row("Darts")).toEqual(["–verbraucht", "?offen", "?offen"]);
       fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
       press("Triple 20");
+      fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
       press("Triple 11");
       tap("Prüfen");
       expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
@@ -469,6 +471,7 @@ describe("StudySession", () => {
       render(<StudySession items={[item("t-61")]} />, { wrapper });
       fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
       press("Triple 15");
+      fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
       press("Doppel 8");
       tap("Prüfen");
       expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenFinish stimmt, Weg ist schlechter");

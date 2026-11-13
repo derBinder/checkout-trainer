@@ -58,20 +58,21 @@ describe("StudyQuestion", () => {
     expect(checkedRing()).toBe("Single");
   });
 
-  it("füllt die Felder Dart für Dart und springt auf D, sobald ein direktes Doppel bleibt", async () => {
+  it("füllt die Felder Dart für Dart und stellt den Ring nach jedem Dart auf S", async () => {
     const { press, ring } = setup("r-121");
     await ring("Triple");
     await press("Triple 20");
     expect(darts()).toEqual(["T20", "?offen", "?offen"]);
     expect(nextSlot()).toBe(1);
-    // Rest 61: kein Doppel, der Ring bleibt.
-    expect(checkedRing()).toBe("Triple");
+    expect(checkedRing()).toBe("Single");
 
+    await ring("Triple");
     await press("Triple 11");
     expect(nextSlot()).toBe(2);
-    // Rest 28: direktes Doppel.
-    expect(checkedRing()).toBe("Doppel");
+    // Rest 28 ist ein direktes Doppel: der Ring bleibt trotzdem auf S und verrät nichts.
+    expect(checkedRing()).toBe("Single");
 
+    await ring("Doppel");
     await press("Doppel 14");
     expect(darts()).toEqual(["T20", "T11", "D14"]);
     expect(nextSlot()).toBe(-1);
@@ -83,8 +84,7 @@ describe("StudyQuestion", () => {
     await press("Single 20");
     await ring("Triple");
     await press("Triple 17");
-    // Rest 50: kein automatischer Wechsel, Bull hat eine eigene Taste.
-    expect(checkedRing()).toBe("Triple");
+    expect(checkedRing()).toBe("Single");
     await ring("Doppel");
 
     await press("Letzten Dart löschen");
@@ -106,10 +106,11 @@ describe("StudyQuestion", () => {
 
   it("sperrt nach drei Darts die Feldtasten, Löschen bleibt", async () => {
     const { press, ring } = setup("r-121");
+    for (let i = 0; i < 3; i++) {
+      await ring("Triple");
+      await press("Triple 20");
+    }
     await ring("Triple");
-    await press("Triple 20");
-    await press("Triple 20");
-    await press("Triple 20");
     expect(isDisabled("Triple 1")).toBe(true);
     expect(isDisabled("Single Bull 25")).toBe(true);
     expect(isDisabled("Bull")).toBe(true);
@@ -142,9 +143,9 @@ describe("StudyQuestion", () => {
     await press("Single 20");
     expect(darts()).toEqual(["T18", "S19 (Fehlwurf)", "S20"]);
     expect(nextSlot()).toBe(-1);
-    // Rest 32 bleibt: der Ring springt auf D, die Tasten sind aber gesperrt.
-    expect(checkedRing()).toBe("Doppel");
-    expect(isDisabled("Doppel 1")).toBe(true);
+    // Rest 32 bleibt: der Ring steht auf S, die Tasten sind gesperrt.
+    expect(checkedRing()).toBe("Single");
+    expect(isDisabled("Single 1")).toBe(true);
     expect(isDisabled("Bull")).toBe(true);
   });
 });
@@ -158,6 +159,7 @@ describe("QuestionFooter", () => {
 
     await ring("Triple");
     await press("Triple 20");
+    await ring("Doppel");
     await press("Doppel 20");
     await press("Prüfen");
     expect(onReveal).toHaveBeenCalledWith({ kind: "darts", darts: ["T20", "D20"] });

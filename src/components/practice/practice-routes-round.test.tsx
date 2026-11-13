@@ -128,6 +128,7 @@ describe("PracticeRoutesRound", () => {
     renderRound("t-125");
     fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
     fireEvent.click(screen.getByRole("button", { name: "Triple 20" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
     fireEvent.click(screen.getByRole("button", { name: "Triple 11" }));
     tap("Prüfen");
     expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
