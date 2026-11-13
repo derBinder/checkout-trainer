@@ -69,7 +69,15 @@ export type BogeyCard = {
   setup: { throws: string[]; leaves: number }
 }
 
-export type Card = RestCard | MissCard | BogeyCard
+/** Rest mit noch zwei Darts in der Hand: der Weg der Spalte „mit 2 Darts“ oder der Stellwurf. */
+export type TwoDartCard = {
+  id: string
+  kind: 'two'
+  rest: number
+  follow: FollowText
+}
+
+export type Card = RestCard | MissCard | BogeyCard | TwoDartCard
 
 const MIN_REST = 2
 const MAX_REST = 170
@@ -200,24 +208,36 @@ function missCards(rest: number, best: Steps, cases: SingleCase[]): MissCard[] {
   }))
 }
 
-/** Alle Karten in Lernreihenfolge: aufsteigend nach Rest, je Rest erst die Rest- oder Bogey-Karte, dann die Fehlwurf-Karten. */
+/**
+ * Zwei-Dart-Karte, wenn man mit zwei Darts etwas anderes tun muss, als die Rest-Karte lehrt:
+ * die Tabelle nennt einen Weg „mit 2 Darts“, oder es bleibt nur ein Stellwurf.
+ */
+function twoDartCard(rest: number): TwoDartCard | null {
+  const follow = followAfterSingle(rest, 2)
+  if (!chartTwoDarts(rest) && follow.kind !== 'setup') return null
+  return { id: `t-${rest}`, kind: 'two', rest, follow }
+}
+
+function cardsOfRest(rest: number): Card[] {
+  if (isBogey(rest)) {
+    const setup = bestSetup(rest, 3)
+    return [{ id: `b-${rest}`, kind: 'bogey', rest, setup: { throws: fmt(setup.throws), leaves: setup.leaves } }]
+  }
+  const best = referenceRoute(rest)
+  if (!best) throw new Error(`Kein Referenzweg für Rest ${rest}`)
+  const card = restCard(rest, best)
+  return [card, ...missCards(rest, best, card.singleCases)]
+}
+
+/**
+ * Alle Karten in Lernreihenfolge: aufsteigend nach Rest, je Rest erst die Rest- oder
+ * Bogey-Karte, dann die Fehlwurf-Karten, dann die Zwei-Dart-Karte.
+ */
 export function buildCards(): Card[] {
   const cards: Card[] = []
   for (let rest = MIN_REST; rest <= MAX_REST; rest++) {
-    if (isBogey(rest)) {
-      const setup = bestSetup(rest, 3)
-      cards.push({
-        id: `b-${rest}`,
-        kind: 'bogey',
-        rest,
-        setup: { throws: fmt(setup.throws), leaves: setup.leaves },
-      })
-      continue
-    }
-    const best = referenceRoute(rest)
-    if (!best) throw new Error(`Kein Referenzweg für Rest ${rest}`)
-    const card = restCard(rest, best)
-    cards.push(card, ...missCards(rest, best, card.singleCases))
+    const two = twoDartCard(rest)
+    cards.push(...cardsOfRest(rest), ...(two ? [two] : []))
   }
   return cards
 }

@@ -421,6 +421,34 @@ describe("StudySession", () => {
       expect(screen.getByRole("button", { name: "Prüfen" }).hasAttribute("disabled")).toBe(true);
     });
 
+    it("prüft den Stellwurf einer Zwei-Dart-Karte und beginnt nach „Nochmal“ wieder mit verbrauchtem Feld", async () => {
+      render(<StudySession items={[item("t-125")]} />, { wrapper });
+      expect(row("Darts")).toEqual(["–verbraucht", "?offen", "?offen"]);
+      fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
+      press("Triple 20");
+      press("Triple 11");
+      tap("Prüfen");
+      expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
+      expect(screen.getByText("Rest 125 mit 2 Darts")).toBeTruthy();
+      expect(big("Kein Finish")).toBeTruthy();
+      expect(row("Dein Weg")).toEqual(["–verbraucht", "T20", "T11"]);
+      expect(row("Stellwurf")).toEqual(["–verbraucht", "T20", "T11"]);
+
+      tap("Nochmal");
+      await flush();
+      expect(row("Darts")).toEqual(["–verbraucht", "?offen", "?offen"]);
+    });
+
+    it("prüft den Weg einer Zwei-Dart-Karte", () => {
+      render(<StudySession items={[item("t-61")]} />, { wrapper });
+      fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
+      press("Triple 15");
+      press("Doppel 8");
+      tap("Prüfen");
+      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenFinish stimmt, Weg ist schlechter");
+      expect(row("Bester Weg")).toEqual(["–verbraucht", "T11", "D14"]);
+    });
+
     it("füllt bei einem Fehlwurf nur die Felder nach den geworfenen Darts und prüft den Folgeweg", () => {
       render(<StudySession items={[item("m-56-0")]} />, { wrapper });
       // Auch bei einem direkten Doppel (neuer Rest 40) beginnt der Ring auf Single.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { cardById } from '@/lib/cards'
-import { checkFor, judge, offersNotCheckable, type Answer } from './judge'
+import { CARDS, cardById } from '@/lib/cards'
+import { checkFor, judge, maxDarts, offersNotCheckable, type Answer } from './judge'
 
 const check = (id: string) => checkFor(cardById(id)!)
 const darts = (...d: string[]): Answer => ({ kind: 'darts', darts: d })
@@ -105,5 +105,35 @@ describe('judge', () => {
     expect(judge(check('m-125-1'), darts('S20'))).toEqual({ code: 'setupRight' })
     expect(judge(check('m-125-1'), darts('S12'))).toEqual({ code: 'setupOther' })
     expect(judge(check('m-125-1'), darts('T20'))).toEqual({ code: 'setupOther' })
+  })
+})
+
+describe('two-dart cards', () => {
+  it('checks a way card like a follow-up with two darts', () => {
+    expect(check('t-61')).toEqual({ kind: 'follow', rest: 61, maxDarts: 2, best: [['T11', 'D14']] })
+    expect(judge(check('t-61'), darts('T11', 'D14'))).toEqual({ code: 'best' })
+    expect(judge(check('t-61'), darts('T15', 'D8'))).toEqual({ code: 'notRecommended' })
+    expect(judge(check('t-61'), darts('T20', 'S1')).code).toBe('noCheckout')
+  })
+
+  it('has no split way, so no expanded routes are needed', () => {
+    for (const card of CARDS) {
+      if (card.kind !== 'two' || card.follow.kind !== 'finish') continue
+      expect(card.follow.route.join(' '), card.id).not.toContain('/')
+    }
+  })
+
+  it('checks a setup card like a miss setup and never says noCheckout', () => {
+    expect(check('t-125')).toEqual({ kind: 'setup', rest: 125, maxDarts: 2, throws: ['T20', 'T11'] })
+    expect(judge(check('t-125'), darts('T20', 'T11'))).toEqual({ code: 'setupRight' })
+    expect(judge(check('t-125'), darts('T20', 'T15'))).toEqual({ code: 'setupOther' })
+    expect(judge(check('t-125'), darts('T20', 'Bull'))).toEqual({ code: 'setupOther' })
+  })
+
+  it('allows two darts and no Nicht checkbar on both kinds', () => {
+    for (const id of ['t-61', 't-125']) {
+      expect(maxDarts(check(id))).toBe(2)
+      expect(offersNotCheckable(check(id))).toBe(false)
+    }
   })
 })

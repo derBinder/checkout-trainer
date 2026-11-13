@@ -1,17 +1,18 @@
 import type { Dictionary } from "@/i18n/dictionaries";
-import type { BogeyCard, Card, FollowText, RestCard, SingleCase } from "@/lib/darts/cards";
+import type { BogeyCard, Card, FollowText, RestCard, SingleCase, TwoDartCard } from "@/lib/darts/cards";
 
 type T = Dictionary["study"];
 type Slots = (string | null)[];
 export type Note = { title: string; text: string };
 
 /**
- * Frage einer Karte: Rest- und Bogey-Karten zeigen den Rest als große Zahl,
- * Fehlwurf-Karten stattdessen einen Hinweis zum Wurf.
+ * Frage einer Karte: Rest-, Bogey- und Zwei-Dart-Karten zeigen den Rest als große Zahl,
+ * Fehlwurf-Karten stattdessen einen Hinweis zum Wurf. Zwei-Dart-Karten tragen
+ * darunter einen Hinweis (`sub`) und ein verbrauchtes erstes Feld (`spent`).
  */
 type QuestionView =
-  | { label: string; big: string; slots: Slots; hint?: undefined }
-  | { label: string; hint: string; slots: Slots; big?: undefined };
+  | { label: string; big: string; slots: Slots; hint?: undefined; sub?: string; spent?: number }
+  | { label: string; hint: string; slots: Slots; big?: undefined; sub?: undefined; spent?: undefined };
 
 export type CardView = {
   question: QuestionView;
@@ -21,6 +22,8 @@ export type CardView = {
     slots: Slots;
     slotTone: "best" | "none";
     missSlots: number[];
+    /** Verbrauchte Felder vorn (Zwei-Dart-Karte), ohne Angabe keine. */
+    spent?: number;
     notes: Note[];
   };
 };
@@ -28,7 +31,7 @@ export type CardView = {
 const SLOT_COUNT = 3;
 
 /** Würfe in drei Felder; fehlende Felder bleiben leer (null). */
-function toSlots(darts: string[]): Slots {
+function toSlots(darts: (string | null)[]): Slots {
   return Array.from({ length: SLOT_COUNT }, (_, i) => darts[i] ?? null);
 }
 
@@ -85,6 +88,45 @@ export function restDetailView(detail: RestDetail, t: T): RestDetailView {
   return { slots: toSlots(detail.best), slotTone: "best", notes };
 }
 
+/** Zwei-Dart-Karte: wie eine Rest-Karte gefragt, das erste Feld ist schon verbraucht. */
+function twoDartView(card: TwoDartCard, t: T): CardView {
+  const { follow } = card;
+  const spent = 1;
+  const question = {
+    label: t.card.score,
+    big: String(card.rest),
+    sub: t.card.twoDartsLeft,
+    slots: EMPTY_QUESTION_SLOTS,
+    spent,
+  };
+  if (follow.kind === "finish") {
+    return {
+      question,
+      answer: {
+        label: t.card.score,
+        big: String(card.rest),
+        slots: toSlots([null, ...follow.route]),
+        slotTone: "best",
+        missSlots: [],
+        spent,
+        notes: [],
+      },
+    };
+  }
+  return {
+    question,
+    answer: {
+      label: t.card.twoDartsOf(card.rest),
+      big: t.card.noFinish,
+      slots: toSlots([null, ...follow.throws]),
+      slotTone: "none",
+      missSlots: [],
+      spent,
+      notes: [{ title: t.card.setupShot, text: setupText(follow, t) }],
+    },
+  };
+}
+
 /** Reine Abbildung Karte → Anzeige (Frage und Auflösung). */
 export function cardView(card: Card, t: T): CardView {
   switch (card.kind) {
@@ -134,5 +176,7 @@ export function cardView(card: Card, t: T): CardView {
           missSlots: [],
         },
       };
+    case "two":
+      return twoDartView(card, t);
   }
 }

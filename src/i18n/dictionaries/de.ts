@@ -152,6 +152,9 @@ export const de = {
       setupShort: (throws: string, leaves: number) => `${throws}, Rest ${leaves}`,
       afterwards: (leaves: number) => `Danach Rest ${leaves}`,
       bogeySetup: (leaves: number) => `Kein Finish möglich. Stellen auf Rest ${leaves}.`,
+      twoDartsLeft: "noch 2 Darts",
+      twoDartsOf: (rest: number) => `Rest ${rest} mit 2 Darts`,
+      noFinish: "Kein Finish",
     },
     // Eingegebener Weg in der Auflösung.
     result: {
@@ -183,7 +186,7 @@ export const de = {
       },
     },
     // Felder und Tastenfeld.
-    slots: { darts: "Darts", open: "offen", miss: "Fehlwurf" },
+    slots: { darts: "Darts", open: "offen", miss: "Fehlwurf", spent: "verbraucht" },
     pad: {
       ring: "Ring",
       rings: { S: "Single", D: "Doppel", T: "Triple" },

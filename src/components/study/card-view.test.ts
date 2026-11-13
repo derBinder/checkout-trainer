@@ -33,6 +33,44 @@ describe("cardView", () => {
     });
   });
 
+  it("asks a two-dart card for the rest with a spent first slot, way and setup alike", () => {
+    for (const [id, rest] of [["t-61", "61"], ["t-125", "125"]]) {
+      expect(view(id).question).toEqual({
+        label: "Rest",
+        big: rest,
+        sub: "noch 2 Darts",
+        slots: [null, null, null],
+        spent: 1,
+      });
+    }
+    expect(viewEn("t-61").question.sub).toBe("2 darts left");
+  });
+
+  it("answers a two-dart way card with the route as best route", () => {
+    expect(view("t-61").answer).toEqual({
+      label: "Rest",
+      big: "61",
+      slots: [null, "T11", "D14"],
+      slotTone: "best",
+      missSlots: [],
+      spent: 1,
+      notes: [],
+    });
+  });
+
+  it("answers a two-dart setup card with no finish and the setup shot", () => {
+    expect(view("t-125").answer).toEqual({
+      label: "Rest 125 mit 2 Darts",
+      big: "Kein Finish",
+      slots: [null, "T20", "T11"],
+      slotTone: "none",
+      missSlots: [],
+      spent: 1,
+      notes: [{ title: "Stellwurf", text: "T20 · T11, Rest 32" }],
+    });
+    expect(viewEn("t-125").answer).toMatchObject({ label: "125 with 2 darts", big: "No finish" });
+  });
+
   it("asks a bogey card exactly like a rest card", () => {
     const bogey = view("b-169");
     expect(bogey.question).toEqual({ label: "Rest", big: "169", slots: [null, null, null] });

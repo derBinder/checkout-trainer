@@ -36,6 +36,13 @@ describe("DartSlots", () => {
       expect(current()).toEqual([null, null, null]);
     });
 
+    it("zeigt ein verbrauchtes erstes Feld neutral, ohne Wert und nicht als Fehlwurf", () => {
+      render(<DartSlots slots={[null, null, null]} spent={1} next={1} missSlots={[0]} />, { wrapper });
+      expect(texts()).toEqual(["–verbraucht", "?offen", "?offen"]);
+      expect(current()).toEqual([null, "step", null]);
+      expect(within(items()[0]).getByText("–").getAttribute("aria-hidden")).toBe("true");
+    });
+
     it("markiert ein offenes Feld nie als Fehlwurf", () => {
       render(<DartSlots slots={[null, null, null]} missSlots={[0]} />, { wrapper });
       expect(texts()).toEqual(["?offen", "?offen", "?offen"]);
@@ -46,6 +53,11 @@ describe("DartSlots", () => {
     it("zeigt nur die geworfenen Darts", () => {
       render(<DartSlots slots={["S1", "D2", null]} tone="best" />, { wrapper });
       expect(texts()).toEqual(["S1", "D2"]);
+    });
+
+    it("zeigt ein verbrauchtes Feld auch in der Auflösung", () => {
+      render(<DartSlots slots={[null, "T20", "T11"]} spent={1} tone="none" />, { wrapper });
+      expect(texts()).toEqual(["–verbraucht", "T20", "T11"]);
     });
 
     it("markiert Fehlwürfe auch in neutraler Farbe", () => {

@@ -142,6 +142,9 @@ export const en: Dictionary = {
       setupShort: (throws: string, leaves: number) => `${throws}, ${leaves} left`,
       afterwards: (leaves: number) => `Then ${leaves} left`,
       bogeySetup: (leaves: number) => `No checkout. Set up ${leaves}.`,
+      twoDartsLeft: "2 darts left",
+      twoDartsOf: (rest: number) => `${rest} with 2 darts`,
+      noFinish: "No finish",
     },
     result: {
       yourRoute: "Your route",
@@ -171,7 +174,7 @@ export const en: Dictionary = {
         }
       },
     },
-    slots: { darts: "Darts", open: "empty", miss: "miss" },
+    slots: { darts: "Darts", open: "empty", miss: "miss", spent: "used" },
     pad: {
       ring: "Ring",
       rings: { S: "Single", D: "Double", T: "Treble" },
