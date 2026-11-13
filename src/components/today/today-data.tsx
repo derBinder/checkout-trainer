@@ -3,6 +3,8 @@ import { cache } from "react";
 import { StreakChip } from "@/components/streak-chip";
 import { MoreCardsButton } from "@/components/today/more-cards-button";
 import { buttonVariants } from "@/components/ui/button";
+import { localePath, ROUTES } from "@/i18n/paths";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { progressView } from "@/lib/progress";
@@ -34,6 +36,7 @@ export async function TodayStreak() {
 
 export async function TodayOverview() {
   const { dueCount, freshCount, unseenCount, progress } = await loadToday();
+  const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   const nothingToDo = dueCount + freshCount === 0;
 
   return (
@@ -41,28 +44,29 @@ export async function TodayOverview() {
       {nothingToDo ? (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <p className="text-lg font-medium text-muted-foreground">Für heute bist du fertig.</p>
+            <p className="text-lg font-medium text-muted-foreground">{t.today.done}</p>
             {unseenCount === 0 ? (
-              <p className="text-sm text-muted-foreground">Du hast alle Karten begonnen.</p>
+              <p className="text-sm text-muted-foreground">{t.today.allStarted}</p>
             ) : null}
           </div>
           {unseenCount > 0 ? <MoreCardsButton /> : null}
         </div>
       ) : (
         <Counts>
-          <Count label="fällig">{dueCount}</Count>
-          <Count label="neu">{freshCount}</Count>
+          <Count label={t.today.due}>{dueCount}</Count>
+          <Count label={t.today.new}>{freshCount}</Count>
         </Counts>
       )}
 
-      <ProgressLine label={progress.label} percent={<>{progress.percent}&nbsp;%</>}>
+      <ProgressLine label={t.today.progress(progress.started, progress.total, progress.known)}
+        percent={t.common.percent(progress.percent)}>
         <div className="h-full bg-level-known" style={{ width: `${progress.knownWidth}%` }} />
         <div className="h-full bg-level-learning" style={{ width: `${progress.learningWidth}%` }} />
       </ProgressLine>
 
       {nothingToDo ? null : (
-        <Link href="/lernen" className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
-          Lernen
+        <Link href={localePath(locale, ROUTES.study)} className={cn(buttonVariants({ size: "xl" }), LEARN_BUTTON_LAYOUT)}>
+          {t.today.learn}
         </Link>
       )}
     </div>

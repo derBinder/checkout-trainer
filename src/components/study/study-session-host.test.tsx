@@ -3,8 +3,15 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { REFRESH_TIMEOUT_MS } from "./study-load";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const router = vi.hoisted(() => ({ bfcacheId: "a", replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -16,10 +23,17 @@ type StudyItem = Parameters<typeof StudySessionHost>[0]["items"][number];
 function items(...ids: string[]): StudyItem[] {
   return ids.map((id) => ({
     id,
-    view: cardView(cardById(id)!),
+    view: cardView(cardById(id)!, de.study),
     check: checkFor(cardById(id)!),
     reps: 0,
-    labels: [{ 1: "1 Min", 2: "2 T", 3: "3 T", 4: "8 T" }],
+    labels: [
+      {
+        1: { unit: "minutes", value: 1 },
+        2: { unit: "days", value: 2 },
+        3: { unit: "days", value: 3 },
+        4: { unit: "days", value: 8 },
+      },
+    ],
   }));
 }
 
@@ -41,7 +55,7 @@ afterEach(() => {
 
 describe("StudySessionHost", () => {
   it("startet mit einer frischen Ladung die Sitzung, ohne neu zu laden", () => {
-    render(<StudySessionHost loadId={newLoadId()} items={items("r-5", "r-7")} />);
+    render(<StudySessionHost loadId={newLoadId()} items={items("r-5", "r-7")} />, { wrapper });
     expect(screen.getByText("1 / 2")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Prüfen" })).toBeTruthy();
     expect(router.refresh).not.toHaveBeenCalled();
@@ -49,12 +63,12 @@ describe("StudySessionHost", () => {
 
   it("holt für eine schon verbrauchte Ladung frische Karten und meldet, wenn keine kommen", async () => {
     const loadId = newLoadId();
-    const first = render(<StudySessionHost loadId={loadId} items={items("r-5")} />);
+    const first = render(<StudySessionHost loadId={loadId} items={items("r-5")} />, { wrapper });
     first.unmount();
 
     // Zurück zur Seite: dieselbe Ladung kommt aus dem Zurück-Cache.
     router.bfcacheId = "zurueck";
-    const { container } = render(<StudySessionHost loadId={loadId} items={items("r-5")} />);
+    const { container } = render(<StudySessionHost loadId={loadId} items={items("r-5")} />, { wrapper });
     expect(router.refresh).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
     expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
@@ -62,15 +76,15 @@ describe("StudySessionHost", () => {
 
     await act(async () => vi.advanceTimersByTime(REFRESH_TIMEOUT_MS));
     expect(screen.getByRole("alert").textContent).toBe(ERROR_TEXT);
-    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/heute");
+    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
   });
 
   it("startet mit der frischen Ladung nach dem Neuladen und zeigt dann keinen Fehler", async () => {
     const loadId = newLoadId();
-    render(<StudySessionHost loadId={loadId} items={items("r-5")} />).unmount();
+    render(<StudySessionHost loadId={loadId} items={items("r-5")} />, { wrapper }).unmount();
 
     router.bfcacheId = "zurueck";
-    const { rerender } = render(<StudySessionHost loadId={loadId} items={items("r-5")} />);
+    const { rerender } = render(<StudySessionHost loadId={loadId} items={items("r-5")} />, { wrapper });
     expect(router.refresh).toHaveBeenCalledTimes(1);
 
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-7", "r-4")} />);
@@ -82,7 +96,7 @@ describe("StudySessionHost", () => {
   });
 
   it("behält die laufende Sitzung, wenn der Server die Seite neu rendert", () => {
-    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
+    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
     expect(screen.getByText("Warum")).toBeTruthy();
 
@@ -99,7 +113,7 @@ describe("StudySessionHost", () => {
   });
 
   it("beginnt nach einem neuen Seitenwechsel mit frischer Ladung von vorn", () => {
-    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
+    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: "Ohne Eingabe aufdecken" }));
     expect(screen.getByText("Warum")).toBeTruthy();
 
@@ -110,7 +124,7 @@ describe("StudySessionHost", () => {
   });
 
   it("behält einen halb eingegebenen Weg, wenn der Server die Seite neu rendert", () => {
-    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
+    const { rerender } = render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: "Single 1" }));
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-7")} />);
     const darts = within(screen.getByRole("list", { name: "Darts" })).getAllByRole("listitem");

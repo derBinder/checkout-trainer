@@ -3,27 +3,32 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, judge, type Answer } from "@/lib/darts/judge";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { StudyCard } from "./study-card";
 import { fixedDarts } from "./study-question";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 function viewOf(id: string) {
   const card = cardById(id);
   if (!card) throw new Error(`Karte ${id} fehlt`);
-  return { card, view: cardView(card) };
+  return { card, view: cardView(card, de.study) };
 }
 
 /** Auflösung ohne Eingabe („Ohne Eingabe aufdecken“). */
 function show(id: string) {
-  return render(<StudyCard view={viewOf(id).view} />);
+  return render(<StudyCard view={viewOf(id).view} />, { wrapper });
 }
 
 /** Auflösung mit eingegebener Antwort, so geprüft wie in der Lernsitzung. */
 function showWith(id: string, answer: Answer) {
   const { card, view } = viewOf(id);
   return render(
-    <StudyCard view={view} result={{ verdict: judge(checkFor(card), answer), answer, fixed: fixedDarts(view) }} />,
-  );
+    <StudyCard view={view} result={{ verdict: judge(checkFor(card), answer), answer, fixed: fixedDarts(view) }} />, { wrapper });
 }
 
 const row = (name: string) =>

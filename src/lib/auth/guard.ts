@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { ROUTES } from "@/i18n/paths";
+import { localeRedirectPath } from "@/i18n/server";
 import { auth } from "./index";
 
 export type SessionUser = {
@@ -36,18 +38,18 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
 
 export async function requireActiveUser(): Promise<SessionUser> {
   const u = await getSessionUser();
-  if (!u) redirect("/anmelden");
-  if (u.status !== "active") redirect("/warten");
+  if (!u) redirect(await localeRedirectPath(ROUTES.signIn));
+  if (u.status !== "active") redirect(await localeRedirectPath(ROUTES.pending));
   return u;
 }
 
 /**
- * Nur das aktive Betreiberkonto. Ein aktiver Nicht-Betreiber landet auf /heute:
+ * Nur das aktive Betreiberkonto. Ein aktiver Nicht-Betreiber landet auf /today:
  * Mit Cache Components steht der Status 200 schon fest, bevor diese Prüfung
  * läuft, eine echte 404 gibt es nicht mehr (Entscheidung des Auftraggebers).
  */
 export async function requireAdmin(): Promise<SessionUser> {
   const u = await requireActiveUser();
-  if (u.role !== "admin") redirect("/heute");
+  if (u.role !== "admin") redirect(await localeRedirectPath(ROUTES.today));
   return u;
 }

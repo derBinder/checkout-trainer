@@ -1,6 +1,9 @@
+"use client";
+
 import { LoadingRegion } from "@/components/loading-region";
 import { buttonShape } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDictionary } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { Count, Counts, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
 
@@ -11,24 +14,25 @@ import { Count, Counts, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./
  * Höhe und Breite der Schrift im häufigsten Fall (zweistellige Zahlen).
  */
 export function TodayOverviewSkeleton() {
+  const t = useDictionary();
   return (
     <LoadingRegion className={TODAY_BODY}>
       <Counts>
-        <Count label="fällig">
+        <Count label={t.today.due}>
           <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>
         </Count>
-        <Count label="neu">
+        <Count label={t.today.new}>
           <Skeleton className="w-fit rounded-cell text-transparent">00</Skeleton>
         </Count>
       </Counts>
 
       <ProgressLine
-        label={<Skeleton className="rounded-cell text-transparent">00 von 169 begonnen, 00 sicher</Skeleton>}
-        percent={<Skeleton className="rounded-cell text-transparent">00&nbsp;%</Skeleton>}
+        label={<Skeleton className="rounded-cell text-transparent">{t.today.progressSample}</Skeleton>}
+        percent={<Skeleton className="rounded-cell text-transparent">{t.common.percent("00")}</Skeleton>}
       />
 
       <Skeleton className={cn(buttonShape("xl"), "text-transparent", LEARN_BUTTON_LAYOUT)}>
-        Lernen
+        {t.today.learn}
       </Skeleton>
     </LoadingRegion>
   );

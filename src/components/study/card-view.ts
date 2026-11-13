@@ -1,5 +1,7 @@
+import type { Dictionary } from "@/i18n/dictionaries";
 import type { BogeyCard, Card, FollowText, RestCard, SingleCase } from "@/lib/darts/cards";
 
+type T = Dictionary["study"];
 type Slots = (string | null)[];
 export type Note = { title: string; text: string };
 
@@ -32,21 +34,18 @@ function toSlots(darts: string[]): Slots {
 
 const joinDarts = (darts: string[]) => darts.join(" · ");
 
-/** "S20" → "Single 20" */
-const singleName = (hit: string) => `Single ${hit.slice(1)}`;
-
-/** Stellwurf in Kurzform: "S20, Rest 32". */
-function setupText(follow: Extract<FollowText, { kind: "setup" }>): string {
-  return `${joinDarts(follow.throws)}, Rest ${follow.leaves}`;
+/** Stellwurf in Kurzform: "S20, Rest 32" bzw. "S20, 32 left". */
+function setupText(follow: Extract<FollowText, { kind: "setup" }>, t: T): string {
+  return t.card.setupShort(joinDarts(follow.throws), follow.leaves);
 }
 
 /** Ein Fall „Nur Single getroffen“ in Kurzform: „Nur S20“ / „101: T17 · Bull“. */
-function singleCaseNote(c: SingleCase): Note {
+function singleCaseNote(c: SingleCase, t: T): Note {
   const text =
     c.follow.kind === "finish"
       ? `${c.newRest}: ${joinDarts(c.follow.route)}`
-      : `Stellen: ${setupText(c.follow)}`;
-  return { title: `Nur ${c.hit}`, text };
+      : t.card.setUp(setupText(c.follow, t));
+  return { title: t.card.only(c.hit), text };
 }
 
 const EMPTY_QUESTION_SLOTS: Slots = [null, null, null];
@@ -59,46 +58,46 @@ export type RestDetail =
 export type RestDetailView = { slots: Slots; slotTone: "best" | "none"; notes: Note[] };
 
 /** Auflösung eines Rests ohne die Fälle „Nur Single getroffen“ (Statistik, Kern der Rest-Karte). */
-export function restDetailView(detail: RestDetail): RestDetailView {
+export function restDetailView(detail: RestDetail, t: T): RestDetailView {
   if (detail.kind === "bogey") {
     return {
       slots: toSlots(detail.setup.throws),
       slotTone: "none",
       notes: [
         {
-          title: "Stellwurf",
-          text: `Kein Finish möglich. Stellen auf Rest ${detail.setup.leaves}.`,
+          title: t.card.setupShot,
+          text: t.card.bogeySetup(detail.setup.leaves),
         },
       ],
     };
   }
-  const notes: Note[] = [{ title: "Warum", text: detail.reason }];
+  const notes: Note[] = [{ title: t.card.why, text: t.reason(detail.reason) }];
   if (detail.alternatives.length > 0) {
     notes.push({
-      title: detail.alternatives.length === 1 ? "Alternative" : "Alternativen",
-      text: detail.alternatives.map(joinDarts).join(" oder "),
+      title: detail.alternatives.length === 1 ? t.card.alternative : t.card.alternatives,
+      text: detail.alternatives.map(joinDarts).join(` ${t.card.or} `),
     });
   }
   // Nennt die Tabelle für zwei Darts denselben Weg wie für drei, wäre der Hinweis eine Wiederholung.
   if (detail.twoDarts && joinDarts(detail.twoDarts) !== joinDarts(detail.best)) {
-    notes.push({ title: "Mit 2 Darts", text: joinDarts(detail.twoDarts) });
+    notes.push({ title: t.card.twoDarts, text: joinDarts(detail.twoDarts) });
   }
   return { slots: toSlots(detail.best), slotTone: "best", notes };
 }
 
 /** Reine Abbildung Karte → Anzeige (Frage und Auflösung). */
-export function cardView(card: Card): CardView {
+export function cardView(card: Card, t: T): CardView {
   switch (card.kind) {
     case "rest": {
-      const detail = restDetailView(card);
+      const detail = restDetailView(card, t);
       return {
-        question: { label: "Rest", big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
+        question: { label: t.card.score, big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
         answer: {
-          label: "Rest",
+          label: t.card.score,
           big: String(card.rest),
           ...detail,
           missSlots: [],
-          notes: [...detail.notes, ...card.singleCases.map(singleCaseNote)],
+          notes: [...detail.notes, ...card.singleCases.map((c) => singleCaseNote(c, t))],
         },
       };
     }
@@ -109,29 +108,29 @@ export function cardView(card: Card): CardView {
       const followDarts = follow.kind === "finish" ? follow.route : follow.throws;
       return {
         question: {
-          label: `Rest war ${card.rest}`,
+          label: t.card.scoreWas(card.rest),
           slots: toSlots(card.thrown),
-          hint: `Ziel war ${card.aimed}, getroffen: ${singleName(card.hit)}`,
+          hint: t.card.missHint(card.aimed, card.hit.slice(1)),
         },
         answer: {
-          label: "Neuer Rest",
+          label: t.card.newScore,
           big: String(card.newRest),
           slots: toSlots([...card.thrown, ...followDarts]),
           slotTone: finish ? "best" : "none",
           missSlots: [missIndex],
-          notes: follow.kind === "setup" ? [{ title: "Stellwurf", text: setupText(follow) }] : [],
+          notes: follow.kind === "setup" ? [{ title: t.card.setupShot, text: setupText(follow, t) }] : [],
         },
       };
     }
     case "bogey":
       return {
-        question: { label: "Rest", big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
+        question: { label: t.card.score, big: String(card.rest), slots: EMPTY_QUESTION_SLOTS },
         answer: {
-          label: `Rest ${card.rest}`,
-          big: "Nicht checkbar",
-          ...restDetailView(card),
+          label: t.card.scoreOf(card.rest),
+          big: t.card.notCheckable,
+          ...restDetailView(card, t),
           // Kurzform: „Nicht checkbar“ und die Stellwürfe stehen schon darüber.
-          notes: [{ title: "Stellwurf", text: `Danach Rest ${card.setup.leaves}` }],
+          notes: [{ title: t.card.setupShot, text: t.card.afterwards(card.setup.leaves) }],
           missSlots: [],
         },
       };

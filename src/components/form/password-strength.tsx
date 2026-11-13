@@ -1,3 +1,4 @@
+import { useDictionary } from "@/i18n/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
   passwordStrength,
@@ -21,11 +22,17 @@ export function PasswordStrength({
   value: string;
   id?: string;
 }) {
+  const t = useDictionary().form.strength;
   const strength = passwordStrength(value);
+  const hintData = strengthHint(value);
   const hint =
     value === ""
-      ? `Mindestens ${MIN_PASSWORD_LENGTH} Zeichen.`
-      : strengthHint(value);
+      ? t.minimum(MIN_PASSWORD_LENGTH)
+      : hintData === null
+        ? ""
+        : hintData.kind === "remaining"
+          ? t.remaining(hintData.count)
+          : t.stronger;
 
   return (
     <div className="@container flex flex-col gap-2">
@@ -48,8 +55,8 @@ export function PasswordStrength({
         <span aria-live="polite" aria-atomic="true" className="font-bold">
           {strength ? (
             <>
-              <span className="sr-only">Stärke: </span>
-              {strength.label}
+              <span className="sr-only">{t.prefix}</span>
+              {t.levels[strength.level]}
             </>
           ) : null}
         </span>

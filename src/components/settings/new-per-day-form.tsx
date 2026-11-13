@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, use, useLayoutEffect, useState, useTransition } from "react";
-import { updateNewPerDay } from "@/app/(app)/einstellungen/actions";
+import { updateNewPerDay } from "@/app/[lang]/(app)/settings/actions";
 import { type FieldSpec } from "@/components/form/form-values";
 import { useFieldErrors } from "@/components/form/use-field-errors";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useDictionary } from "@/i18n/client";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import { newPerDaySchema } from "@/lib/validation/schemas";
 
@@ -29,6 +30,7 @@ const NewPerDayFieldProps = createContext<FieldProps | null>(null);
  * (NewPerDayInput), das mit dem gespeicherten Wert nachlädt.
  */
 export function NewPerDayForm({ children }: { children: React.ReactNode }) {
+  const t = useDictionary();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
@@ -52,11 +54,11 @@ export function NewPerDayForm({ children }: { children: React.ReactNode }) {
         const result = await updateNewPerDay(value);
         setMessage(
           result.ok
-            ? { text: "Gespeichert.", ok: true }
-            : { text: "Das hat nicht geklappt. Versuche es erneut.", ok: false },
+            ? { text: t.settings.newPerDay.saved, ok: true }
+            : { text: t.auth.fallback, ok: false },
         );
       } catch {
-        setMessage({ text: "Keine Verbindung. Versuche es erneut.", ok: false });
+        setMessage({ text: t.auth.noConnection, ok: false });
       }
     });
   }
@@ -70,19 +72,19 @@ export function NewPerDayForm({ children }: { children: React.ReactNode }) {
     >
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="newPerDay">Neue Karten pro Tag</FieldLabel>
+          <FieldLabel htmlFor="newPerDay">{t.settings.newPerDay.label}</FieldLabel>
           <NewPerDayFieldProps value={fieldProps("newPerDay", "newPerDay-hint")}>
             {children}
           </NewPerDayFieldProps>
           <FieldDescription id="newPerDay-hint">
-            Von 0 bis {MAX_NEW_PER_DAY}. Fällige Wiederholungen kommen immer dazu.
+            {t.settings.newPerDay.hint(MAX_NEW_PER_DAY)}
           </FieldDescription>
           <FieldError id={errorId("newPerDay")}>{errors.newPerDay}</FieldError>
         </Field>
       </FieldGroup>
       <div className="flex flex-col gap-3">
         <Button type="submit" variant="secondary" size="xl" disabled={pending}>
-          Speichern
+          {t.settings.newPerDay.save}
         </Button>
         {message ? (
           <p

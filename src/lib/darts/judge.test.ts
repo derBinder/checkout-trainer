@@ -64,14 +64,14 @@ describe('judge', () => {
   it('a wrong total does not check out', () => {
     expect(judge(check('r-121'), darts('T20', 'T20', 'D14'))).toEqual({
       code: 'noCheckout',
-      detail: 'Ergibt 148 statt 121',
+      detail: { kind: 'total', total: 148, rest: 121 },
     })
   })
 
   it('a last dart that is no double does not check out', () => {
     expect(judge(check('r-100'), darts('T20', 'S20', 'S20'))).toEqual({
       code: 'noCheckout',
-      detail: 'Letzter Dart ist kein Doppel',
+      detail: { kind: 'notDouble' },
     })
   })
 
@@ -90,7 +90,7 @@ describe('judge', () => {
   it('any route on a bogey does not check out', () => {
     expect(judge(check('b-169'), darts('T20', 'T19', 'Bull'))).toEqual({
       code: 'noCheckout',
-      detail: 'Rest ist nicht checkbar',
+      detail: { kind: 'notCheckable' },
     })
   })
 

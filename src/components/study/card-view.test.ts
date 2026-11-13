@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { de } from "@/i18n/dictionaries/de";
+import { en } from "@/i18n/dictionaries/en";
 import { cardById } from "@/lib/cards";
 import { cardView, restDetailView, type RestDetail } from "./card-view";
 
-const view = (id: string) => cardView(cardById(id)!);
+const view = (id: string) => cardView(cardById(id)!, de.study);
+const viewEn = (id: string) => cardView(cardById(id)!, en.study);
 
 describe("cardView", () => {
   it("shows a rest card as the rest with three empty slots, the answer with notes", () => {
@@ -109,26 +112,73 @@ describe("cardView", () => {
 
 describe("restDetailView", () => {
   it("shows route, reason and alternatives of a rest without the single cases", () => {
-    const detail = restDetailView(cardById("r-121") as RestDetail);
+    const detail = restDetailView(cardById("r-121") as RestDetail, de.study);
     expect(detail.slots).toEqual(["T20", "T11", "D14"]);
     expect(detail.slotTone).toBe("best");
     expect(detail.notes.map((n) => n.title)).toEqual(["Warum", "Alternative"]);
   });
 
   it("shows the two-dart route of a rest", () => {
-    const detail = restDetailView(cardById("r-110") as RestDetail);
+    const detail = restDetailView(cardById("r-110") as RestDetail, de.study);
     expect(detail.notes).toEqual([
-      { title: "Warum", text: (cardById("r-110") as RestDetail & { reason: string }).reason },
+      { title: "Warum", text: de.study.reason((cardById("r-110") as Extract<RestDetail, { kind: "rest" }>).reason) },
       { title: "Mit 2 Darts", text: "T20 · Bull" },
     ]);
   });
 
   it("shows the setup shot of a bogey number", () => {
-    const detail = restDetailView({ kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } });
+    const detail = restDetailView({ kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } }, de.study);
     expect(detail).toEqual({
       slots: ["T20", "T19", "S20"],
       slotTone: "none",
       notes: [{ title: "Stellwurf", text: "Kein Finish möglich. Stellen auf Rest 32." }],
     });
+  });
+});
+
+describe("cardView auf Englisch", () => {
+  it("fragt und löst eine Rest-Karte auf", () => {
+    const rest = viewEn("r-121");
+    expect(rest.question).toEqual({ label: "Score", big: "121", slots: [null, null, null] });
+    expect(rest.answer.notes[0]).toEqual({ title: "Why", text: "A single 20 still leaves the bull." });
+    expect(rest.answer.notes).toContainEqual({ title: "Alternative", text: expect.any(String) });
+    expect(rest.answer.notes).toContainEqual({ title: "Only S20", text: "101: T17 · Bull" });
+  });
+
+  it("nennt Alternativen und die Tabellenvariante mit 2 Darts", () => {
+    expect(viewEn("r-25").answer.notes).toContainEqual({ title: "Alternatives", text: "S1 · D12 or S17 · D4" });
+    expect(viewEn("r-110").answer.notes).toContainEqual({ title: "With 2 darts", text: "T20 · Bull" });
+  });
+
+  it("schreibt einen Stellwurf in Kurzform", () => {
+    expect(viewEn("r-125").answer.notes.find((n) => n.text.startsWith("Set up"))?.text).toMatch(
+      /^Set up: .+, \d+ left$/,
+    );
+    expect(viewEn("m-125-1").answer.notes).toEqual([{ title: "Setup shot", text: "S20, 32 left" }]);
+  });
+
+  it("fragt eine Fehlwurf-Karte nach dem neuen Rest", () => {
+    const miss = viewEn("m-121-0");
+    expect(miss.question).toEqual({
+      label: "Score was 121",
+      slots: ["S20", null, null],
+      hint: "Aimed at T20, hit: single 20",
+    });
+    expect(miss.answer).toMatchObject({ label: "New score", big: "101" });
+  });
+
+  it("zeigt eine Bogey-Karte wie eine Rest-Karte", () => {
+    const bogey = viewEn("b-169");
+    expect(bogey.question).toEqual({ label: "Score", big: "169", slots: [null, null, null] });
+    expect(bogey.answer).toMatchObject({ label: "Score 169", big: "No checkout" });
+    expect(bogey.answer.notes).toEqual([{ title: "Setup shot", text: "Then 32 left" }]);
+  });
+
+  it("zeigt den Stellwurf einer Bogey-Zahl ohne Fälle", () => {
+    const detail = restDetailView(
+      { kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } },
+      en.study,
+    );
+    expect(detail.notes).toEqual([{ title: "Setup shot", text: "No checkout. Set up 32." }]);
   });
 });

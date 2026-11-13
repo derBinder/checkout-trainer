@@ -3,8 +3,15 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
-import type { Rating } from "@/lib/srs/fsrs";
+import type { IntervalLabel, Rating } from "@/lib/srs/fsrs";
+import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const router = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -15,13 +22,15 @@ vi.mock("@/lib/review/actions", () => ({ submitReview }));
 const { StudySession } = await import("./study-session");
 type StudyItem = Parameters<typeof StudySession>[0]["items"][number];
 
-const FIRST_LABELS: Record<Rating, string> = { 1: "1 Min", 2: "2 T", 3: "3 T", 4: "8 T" };
-const AFTER_AGAIN: Record<Rating, string> = { 1: "5 Min", 2: "1 T", 3: "2 T", 4: "4 T" };
+const minutes = (value: number): IntervalLabel => ({ unit: "minutes", value });
+const days = (value: number): IntervalLabel => ({ unit: "days", value });
+const FIRST_LABELS: Record<Rating, IntervalLabel> = { 1: minutes(1), 2: days(2), 3: days(3), 4: days(8) };
+const AFTER_AGAIN: Record<Rating, IntervalLabel> = { 1: minutes(5), 2: days(1), 3: days(2), 4: days(4) };
 
 function item(id: string, reps = 0): StudyItem {
   const card = cardById(id);
   if (!card) throw new Error(`Karte ${id} fehlt`);
-  return { id, view: cardView(card), check: checkFor(card), reps, labels: [FIRST_LABELS, AFTER_AGAIN] };
+  return { id, view: cardView(card, de.study), check: checkFor(card), reps, labels: [FIRST_LABELS, AFTER_AGAIN] };
 }
 
 type Result = { ok: true } | { ok: false; reason: string };
@@ -90,7 +99,7 @@ afterEach(() => {
 
 describe("StudySession", () => {
   it("zeigt erst die Frage mit Tastenfeld, nach „Ohne Eingabe aufdecken“ die Auflösung und die vier Bewertungen", () => {
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     expect(screen.getByText("1 / 2")).toBeTruthy();
     expect(big("5")).toBeTruthy();
     expect(row("Darts")).toEqual(["?offen", "?offen", "?offen"]);
@@ -111,9 +120,9 @@ describe("StudySession", () => {
     expect(screen.queryByRole("button", { name: "Ohne Eingabe aufdecken" })).toBeNull();
     for (const [name, label] of [
       ["Nochmal", "1 Min"],
-      ["Schwer", "2 T"],
-      ["Gut", "3 T"],
-      ["Leicht", "8 T"],
+      ["Schwer", "2 Tage"],
+      ["Gut", "3 Tage"],
+      ["Leicht", "8 Tage"],
     ]) {
       expect(intervalOn(name)).toBe(label);
     }
@@ -122,7 +131,7 @@ describe("StudySession", () => {
   });
 
   it("ignoriert einen Tipp auf eine Bewertung direkt nach dem Aufdecken", () => {
-    render(<StudySession items={[item("r-5")]} />);
+    render(<StudySession items={[item("r-5")]} />, { wrapper });
     tap("Ohne Eingabe aufdecken");
     clock += 100;
     fireEvent.click(screen.getByRole("button", { name: /^Gut/ }));
@@ -135,7 +144,7 @@ describe("StudySession", () => {
     ["Gut", 3],
     ["Leicht", 4],
   ] as const)("„%s“ speichert die Bewertung und geht zur nächsten Karte", async (name, rating) => {
-    render(<StudySession items={[item("r-5", 4), item("r-7")]} />);
+    render(<StudySession items={[item("r-5", 4), item("r-7")]} />, { wrapper });
     await rateCurrent(name);
     expect(submitReview).toHaveBeenCalledWith({ cardId: "r-5", rating, reps: 4 });
     expect(screen.getByText("2 / 2")).toBeTruthy();
@@ -144,19 +153,19 @@ describe("StudySession", () => {
   });
 
   it("„Nochmal“ legt die Karte wieder vor, mit den Abständen nach einem weiteren Nochmal", async () => {
-    render(<StudySession items={[item("r-5")]} />);
+    render(<StudySession items={[item("r-5")]} />, { wrapper });
     await rateCurrent("Nochmal");
     expect(submitReview).toHaveBeenCalledWith({ cardId: "r-5", rating: 1, reps: 0 });
     expect(screen.getByText("1 / 2")).toBeTruthy();
     tap("Ohne Eingabe aufdecken");
-    expect(intervalOn("Gut")).toBe("2 T");
+    expect(intervalOn("Gut")).toBe("2 Tage");
     expect(intervalOn("Nochmal")).toBe("5 Min");
   });
 
   it("zeigt am Ende „Geschafft“, wartet aufs Speichern und bietet dann die Übersicht an", async () => {
     const save = deferred();
     submitReview.mockReturnValueOnce(save.promise);
-    render(<StudySession items={[item("r-5")]} />);
+    render(<StudySession items={[item("r-5")]} />, { wrapper });
     await rateCurrent("Gut");
 
     expect(screen.getByRole("heading", { name: "Geschafft" })).toBeTruthy();
@@ -167,11 +176,11 @@ describe("StudySession", () => {
 
     await act(async () => save.resolve({ ok: true }));
     expect(screen.queryByText("Speichere …")).toBeNull();
-    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/heute");
+    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
   });
 
   it("zählt mehrere gelernte Karten", async () => {
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
     await rateCurrent("Leicht");
     expect(screen.getByText("2 Karten gelernt.")).toBeTruthy();
@@ -180,7 +189,7 @@ describe("StudySession", () => {
 
   it("meldet einen Speicherfehler und speichert mit „Erneut versuchen“ nach", async () => {
     submitReview.mockRejectedValueOnce(new Error("offline"));
-    render(<StudySession items={[item("r-5")]} />);
+    render(<StudySession items={[item("r-5")]} />, { wrapper });
     await rateCurrent("Gut");
 
     expect(screen.getByText("Nicht gespeichert, wird erneut versucht")).toBeTruthy();
@@ -198,7 +207,7 @@ describe("StudySession", () => {
   it("versucht es nach einem Fehler mitten in der Sitzung automatisch erneut", async () => {
     vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     submitReview.mockRejectedValueOnce(new Error("offline"));
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
 
     expect(screen.getByText("Nicht gespeichert, wird erneut versucht")).toBeTruthy();
@@ -215,7 +224,7 @@ describe("StudySession", () => {
 
   it("schickt nach einem Fehler mit der nächsten Bewertung gleich wieder", async () => {
     submitReview.mockRejectedValueOnce(new Error("offline"));
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
     expect(submitReview).toHaveBeenCalledTimes(1);
     await rateCurrent("Gut");
@@ -225,7 +234,7 @@ describe("StudySession", () => {
 
   it("zeigt nach einer abgelaufenen Anmeldung die offenen Bewertungen und führt zur Anmeldung", async () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "auth" });
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
 
     expect(screen.getByRole("alert").textContent).toBe(
@@ -236,13 +245,13 @@ describe("StudySession", () => {
     expect(router.replace).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole("button", { name: "Zur Anmeldung" }));
-    expect(router.replace).toHaveBeenCalledWith("/anmelden");
+    expect(router.replace).toHaveBeenCalledWith("/de/sign-in");
   });
 
   it("nennt mehrere nicht gespeicherte Bewertungen nach dem Abmelden", async () => {
     const save = deferred();
     submitReview.mockReturnValueOnce(save.promise);
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
     await rateCurrent("Gut");
     await act(async () => save.resolve({ ok: false, reason: "auth" }));
@@ -255,7 +264,7 @@ describe("StudySession", () => {
 
   it("weist auf eine nicht gezählte Bewertung hin und lernt weiter", async () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "limit" });
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
     expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
     expect(screen.getByText("2 / 2")).toBeTruthy();
@@ -266,7 +275,7 @@ describe("StudySession", () => {
       .mockResolvedValueOnce({ ok: false, reason: "invalid" })
       .mockResolvedValueOnce({ ok: false, reason: "stale" })
       .mockResolvedValueOnce({ ok: false, reason: "unknown-card" });
-    render(<StudySession items={[item("r-5"), item("r-7"), item("r-4")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7"), item("r-4")]} />, { wrapper });
     await rateCurrent("Gut");
     await rateCurrent("Gut");
     await rateCurrent("Gut");
@@ -279,7 +288,7 @@ describe("StudySession", () => {
     const save = deferred();
     submitReview.mockReturnValueOnce(save.promise);
     const confirm = vi.spyOn(window, "confirm");
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
 
     // Mitschreiben, ob der Klick abgebrochen wurde; danach nie wirklich navigieren (jsdom).
     let prevented: boolean | null = null;
@@ -289,7 +298,7 @@ describe("StudySession", () => {
     };
     document.addEventListener("click", record);
     const close = screen.getByRole("link", { name: "Lernen beenden" });
-    expect(close.getAttribute("href")).toBe("/heute");
+    expect(close.getAttribute("href")).toBe("/de/today");
 
     fireEvent.click(close);
     expect(confirm).not.toHaveBeenCalled();
@@ -315,7 +324,7 @@ describe("StudySession", () => {
   it("warnt beim Verlassen der Seite nur, solange etwas nicht gespeichert ist", async () => {
     const save = deferred();
     submitReview.mockReturnValueOnce(save.promise);
-    render(<StudySession items={[item("r-5"), item("r-7")]} />);
+    render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     const leave = () => {
       const event = new Event("beforeunload", { cancelable: true });
       window.dispatchEvent(event);
@@ -330,7 +339,7 @@ describe("StudySession", () => {
   });
 
   it("zeigt eine Fehlwurf-Karte mit Hinweis und markiertem Fehlwurf", () => {
-    render(<StudySession items={[item("m-56-0")]} />);
+    render(<StudySession items={[item("m-56-0")]} />, { wrapper });
     expect(screen.getByText("Rest war 56")).toBeTruthy();
     expect(screen.getByText("Ziel war T16, getroffen: Single 16")).toBeTruthy();
     const darts = within(screen.getByRole("list", { name: "Darts" }));
@@ -341,7 +350,7 @@ describe("StudySession", () => {
 
   describe("Weg eingeben", () => {
     it("prüft den eingegebenen Weg und zeigt Ergebnis und eigenen Weg über der Auflösung", async () => {
-      render(<StudySession items={[item("r-5"), item("r-7")]} />);
+      render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
       expect(checkedRing()).toBe("Single");
       press("Single 1");
       // Rest 4 ist ein direktes Doppel: der Ring springt auf D.
@@ -354,7 +363,7 @@ describe("StudySession", () => {
       expect(row("Dein Weg")).toEqual(["S1", "D2"]);
       expect(row("Bester Weg")).toEqual(["S1", "D2"]);
       expect(screen.getByText("Warum")).toBeTruthy();
-      expect(intervalOn("Gut")).toBe("3 T");
+      expect(intervalOn("Gut")).toBe("3 Tage");
 
       // Die Bewertung bleibt Sache des Nutzers; die nächste Karte beginnt ohne Eingabe und Ergebnis.
       tap("Schwer");
@@ -366,7 +375,7 @@ describe("StudySession", () => {
     });
 
     it("meldet einen Weg, der nicht aufgeht", () => {
-      render(<StudySession items={[item("r-5")]} />);
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 3");
       tap("Prüfen");
       expect(screen.getByRole("status").textContent).toBe("Geht nicht aufErgibt 3 statt 5");
@@ -374,7 +383,7 @@ describe("StudySession", () => {
     });
 
     it("„Nicht checkbar“ prüft sofort und verwirft eingegebene Darts", () => {
-      render(<StudySession items={[item("r-5")]} />);
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Nicht checkbar");
       expect(screen.getByRole("status").textContent).toBe("Ist checkbarEs gibt einen Weg");
@@ -383,7 +392,7 @@ describe("StudySession", () => {
     });
 
     it("bestätigt „Nicht checkbar“ auf einer Bogey-Karte", () => {
-      render(<StudySession items={[item("b-159")]} />);
+      render(<StudySession items={[item("b-159")]} />, { wrapper });
       expect(big("159")).toBeTruthy();
       tap("Nicht checkbar");
       expect(screen.getByRole("status").textContent).toBe("RichtigRest ist nicht checkbar");
@@ -391,7 +400,7 @@ describe("StudySession", () => {
     });
 
     it("deckt mit „Ohne Eingabe aufdecken“ ohne Ergebnis auf, auch wenn schon Darts eingegeben sind", () => {
-      render(<StudySession items={[item("r-5")]} />);
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Ohne Eingabe aufdecken");
       expect(screen.getByText("Warum")).toBeTruthy();
@@ -400,7 +409,7 @@ describe("StudySession", () => {
     });
 
     it("beginnt nach „Nochmal“ dieselbe Karte mit leerer Eingabe", async () => {
-      render(<StudySession items={[item("r-5")]} />);
+      render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Prüfen");
       tap("Nochmal");
@@ -413,7 +422,7 @@ describe("StudySession", () => {
     });
 
     it("füllt bei einem Fehlwurf nur die Felder nach den geworfenen Darts und prüft den Folgeweg", () => {
-      render(<StudySession items={[item("m-56-0")]} />);
+      render(<StudySession items={[item("m-56-0")]} />, { wrapper });
       // Auch bei einem direkten Doppel (neuer Rest 40) beginnt der Ring auf Single.
       expect(checkedRing()).toBe("Single");
       fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
@@ -425,5 +434,24 @@ describe("StudySession", () => {
       expect(row("Dein Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
       expect(big("40")).toBeTruthy();
     });
+  });
+});
+
+describe("StudySession auf Englisch", () => {
+  it("beschriftet Tastenfeld, Knöpfe und Bewertungsleiste auf Englisch", () => {
+    render(<StudySession items={[item("r-5")]} />, {
+      wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
+    });
+    expect(screen.getByRole("link", { name: "End studying" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Treble" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Delete last dart" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Check" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "No checkout" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Reveal without answering" }));
+    for (const name of ["Again", "Hard", "Good", "Easy"]) {
+      expect(screen.getByRole("button", { name: new RegExp(`^${name}`) })).toBeTruthy();
+    }
+    expect(intervalOn("Again")).toBe("1 min");
+    expect(intervalOn("Hard")).toBe("2 days");
   });
 });

@@ -9,21 +9,29 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDictionary, useLocalePath } from "@/i18n/client";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { ROUTES, splitLocale, type Route } from "@/i18n/paths";
 import { cn } from "@/lib/utils";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = { route: Route; key: Exclude<keyof Dictionary["nav"], "label">; icon: LucideIcon };
 
 const ITEMS: NavItem[] = [
-  { href: "/heute", label: "Heute", icon: Target },
-  { href: "/statistik", label: "Statistik", icon: ChartColumn },
-  { href: "/einstellungen", label: "Einstellungen", icon: Settings },
+  { route: ROUTES.today, key: "today", icon: Target },
+  { route: ROUTES.stats, key: "stats", icon: ChartColumn },
+  { route: ROUTES.settings, key: "settings", icon: Settings },
 ];
 
 const ADMIN_ITEM: NavItem = {
-  href: "/verwaltung",
-  label: "Verwaltung",
+  route: ROUTES.admin,
+  key: "admin",
   icon: Users,
 };
+
+/** Aktueller Pfad ohne Sprache (`/today` für `/de/today`). */
+function useRoutePath(): string {
+  return splitLocale(usePathname()).rest;
+}
 
 /**
  * Am Smartphone unten fixiert (Symbol und Wort), ab md oben als Textleiste.
@@ -31,19 +39,20 @@ const ADMIN_ITEM: NavItem = {
  * reicht das Layout als adminItem herein, er lädt hinter einer eigenen Suspense-Grenze.
  */
 export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
-  const pathname = usePathname();
+  const path = useRoutePath();
+  const t = useDictionary().nav;
   // Die Lernseite hat nur eine Aufgabe und keine Navigation.
-  if (pathname === "/lernen") return null;
+  if (path === ROUTES.study) return null;
 
   return (
     <nav
-      aria-label="Hauptnavigation"
+      aria-label={t.label}
       className="fixed inset-x-0 bottom-0 z-10 border-t bg-background/95 pb-home-indicator backdrop-blur md:sticky md:top-0 md:bottom-auto md:border-t-0 md:border-b md:pb-0"
     >
       <div className="mx-auto flex max-w-2xl items-stretch md:h-16 md:items-center md:gap-2 md:px-5">
         <span className="type-display hidden flex-1 text-lg md:block">Checkout-Trainer</span>
         {ITEMS.map((item) => (
-          <NavLink key={item.href} item={item} />
+          <NavLink key={item.route} item={item} />
         ))}
         {adminItem}
       </div>
@@ -51,17 +60,19 @@ export function AppNav({ adminItem }: { adminItem: React.ReactNode }) {
   );
 }
 
-/** Der Eintrag „Verwaltung"; nur für das Betreiberkonto gerendert (siehe AdminNavItem). */
+/** Der Eintrag „Verwaltung“; nur für das Betreiberkonto gerendert (siehe AdminNavItem). */
 export function AdminNavLink() {
   return <NavLink item={ADMIN_ITEM} />;
 }
 
-function NavLink({ item: { href, label, icon: Icon } }: { item: NavItem }) {
-  const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(`${href}/`);
+function NavLink({ item: { route, key, icon: Icon } }: { item: NavItem }) {
+  const path = useRoutePath();
+  const localePath = useLocalePath();
+  const t = useDictionary().nav;
+  const active = path === route || path.startsWith(`${route}/`);
   return (
     <Link
-      href={href}
+      href={localePath(route)}
       aria-current={active ? "page" : undefined}
       className={cn(
         "group flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground -outline-offset-4 hover:text-foreground focus-visible:outline-2 md:min-h-0 md:flex-none md:rounded-pill md:px-4 md:py-2 md:text-sm md:outline-offset-2",
@@ -77,7 +88,7 @@ function NavLink({ item: { href, label, icon: Icon } }: { item: NavItem }) {
       >
         <Icon aria-hidden className="size-5" strokeWidth={active ? 2.25 : 1.75} />
       </span>
-      {label}
+      {t[key]}
     </Link>
   );
 }

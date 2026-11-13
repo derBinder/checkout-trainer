@@ -1,11 +1,5 @@
 import type { Level } from "@/lib/stats";
 
-export const LEVEL_LABEL: Record<Level, string> = {
-  known: "sicher",
-  learning: "im Lernen",
-  new: "neu",
-};
-
 /**
  * Lernstand eines Rests, nicht nur über die Farbe unterscheidbar:
  *   neu        umrandet, ohne Füllung, Zahl in normaler Stärke

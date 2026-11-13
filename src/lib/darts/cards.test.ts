@@ -78,19 +78,19 @@ describe('buildCards', () => {
     expect(cards.some((c) => c.kind === 'miss' && isBogey(c.rest))).toBe(false)
   })
 
-  it('begründet jede Rest-Karte ohne Emojis', () => {
+  it('begründet jede Rest-Karte mit einem bekannten Fall', () => {
     for (const c of cards) {
       if (c.kind !== 'rest') continue
-      expect(c.reason.length).toBeGreaterThan(5)
-      expect(c.reason).not.toMatch(/\p{Extended_Pictographic}/u)
+      expect(['only', 'direct', 'split', 'singleFinish', 'halving', 'chart']).toContain(c.reason.kind)
     }
   })
 
   it('wählt die Begründung nach der festgelegten Reihenfolge', () => {
-    const reason = (id: string) => (byId.get(id) as { reason: string }).reason
-    expect(reason('r-121')).toBe('Bleibt bei Single 20 auf Bull-Finish.')
-    expect(reason('r-32')).toBe('Direkt auf das Doppel.')
-    expect(reason('r-100')).toMatch(/^(Bleibt|Endet|Der übliche)/)
+    const reason = (id: string) => (byId.get(id) as RestCard).reason
+    expect(reason('r-121')).toEqual({ kind: 'singleFinish', field: 20, bull: true })
+    expect(reason('r-81')).toEqual({ kind: 'singleFinish', field: 19, bull: false })
+    expect(reason('r-32')).toEqual({ kind: 'direct' })
+    expect(['singleFinish', 'halving', 'chart']).toContain(reason('r-100').kind)
   })
 
   it('hält Alternativen kurz und verschieden vom besten Weg', () => {
@@ -184,12 +184,8 @@ describe('buildCards', () => {
   })
 
   it('begründet geteilte Wege mit dem Ziel zwischen den Feldern', () => {
-    expect((byId.get('r-48') as RestCard).reason).toBe(
-      'Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.',
-    )
-    expect((byId.get('r-42') as RestCard).reason).toBe(
-      'Zwischen 10 und 6 gezielt lässt jedes der beiden Felder ein Doppel.',
-    )
+    expect((byId.get('r-48') as RestCard).reason).toEqual({ kind: 'split', a: 16, b: 8 })
+    expect((byId.get('r-42') as RestCard).reason).toEqual({ kind: 'split', a: 10, b: 6 })
   })
 
   it('nimmt nach einem Single mit zwei Darts sonst Variante 1, wenn sie in zwei Darts passt', () => {
@@ -207,17 +203,22 @@ describe('buildCards', () => {
   })
 
   it('nennt bei genau einem möglichen Weg den einzigen Weg', () => {
-    expect((byId.get('r-170') as RestCard).reason).toBe('Der einzige Weg.')
+    expect((byId.get('r-170') as RestCard).reason).toEqual({ kind: 'only' })
+    expect((byId.get('r-2') as RestCard).reason).toEqual({ kind: 'only' })
   })
 
   it('zählt Vertauschungen derselben Darts als einen Weg', () => {
     // T20 T19 Bull und T19 T20 Bull sind derselbe Weg.
-    expect((byId.get('r-167') as RestCard).reason).toBe('Der einzige Weg.')
+    expect((byId.get('r-167') as RestCard).reason).toEqual({ kind: 'only' })
   })
 
   it('nennt ohne andere Begründung den Tabellenweg', () => {
-    expect((byId.get('r-134') as RestCard).reason).toBe('Der übliche Weg nach Tabelle.')
-    expect(cards.some((c) => c.kind === 'rest' && c.reason === 'Kürzester Weg.')).toBe(false)
+    expect((byId.get('r-134') as RestCard).reason).toEqual({ kind: 'chart' })
+  })
+
+  it('nennt Enden auf einem mehrfach halbierbaren Doppel', () => {
+    expect((byId.get('r-33') as RestCard).reason).toEqual({ kind: 'halving', double: 'D16', times: 4 })
+    expect((byId.get('r-4') as RestCard).reason).toEqual({ kind: 'direct' })
   })
 
   it('stimmt mit der generierten Datei überein', () => {

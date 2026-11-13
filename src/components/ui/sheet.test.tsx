@@ -17,7 +17,7 @@ function Example({ showCloseButton }: { showCloseButton?: boolean }) {
   return (
     <Sheet>
       <SheetTrigger>Details</SheetTrigger>
-      <SheetContent showCloseButton={showCloseButton}>
+      <SheetContent showCloseButton={showCloseButton} closeLabel="Schließen">
         <SheetHeader>
           <SheetTitle>Rest 40</SheetTitle>
           <SheetDescription>Direkt auf das Doppel.</SheetDescription>

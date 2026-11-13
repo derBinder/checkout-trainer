@@ -4,12 +4,17 @@ import userEvent from "@testing-library/user-event";
 import { redirect } from "next/navigation";
 import { Activity, Component, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const actions = vi.hoisted(() => ({
   changeUserStatus: vi.fn(),
   changeUserPassword: vi.fn(),
 }));
-vi.mock("@/app/(app)/verwaltung/actions", () => actions);
+vi.mock("@/app/[lang]/(app)/admin/actions", () => actions);
 
 const { UserActions } = await import("./user-actions");
 
@@ -32,6 +37,7 @@ function setup(status = "active") {
     <Boundary>
       <UserActions userId="u1" name="Erika" status={status} />
     </Boundary>,
+    { wrapper },
   );
   return { user, ...view };
 }
@@ -129,7 +135,7 @@ describe("UserActions: Status", () => {
 
   it("reicht eine Weiterleitung weiter statt einen Fehler zu zeigen", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    actions.changeUserStatus.mockImplementation(async () => redirect("/anmelden"));
+    actions.changeUserStatus.mockImplementation(async () => redirect("/de/sign-in"));
     const { user } = setup("active");
     await user.click(screen.getByRole("button", { name: "Sperren" }));
     expect(await screen.findByText("Abgefangen")).toBeTruthy();
@@ -201,7 +207,7 @@ describe("UserActions: Passwort setzen", () => {
 
   it("reicht eine Weiterleitung beim Passwort weiter", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    actions.changeUserPassword.mockImplementation(async () => redirect("/anmelden"));
+    actions.changeUserPassword.mockImplementation(async () => redirect("/de/sign-in"));
     const { user } = setup();
     await openDialog(user);
     await user.type(screen.getByLabelText("Neues Passwort"), GOOD_PASSWORD);
@@ -249,7 +255,7 @@ describe("UserActions: Passwort setzen", () => {
         <UserActions userId="u1" name="Erika" status="active" />
       </Activity>
     );
-    const { rerender } = render(page("visible"));
+    const { rerender } = render(page("visible"), { wrapper });
     await user.click(screen.getByRole("button", { name: "Sperren" }));
     await screen.findByRole("alert");
     await openDialog(user);

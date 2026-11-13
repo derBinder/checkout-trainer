@@ -11,14 +11,14 @@ const queries = vi.hoisted(() => ({
 
 vi.mock("@/lib/auth/guard", () => ({
   getSessionUser: async () => null,
-  requireActiveUser: async () => redirect("/anmelden"),
-  requireAdmin: async () => redirect("/anmelden"),
+  requireActiveUser: async () => redirect("/de/sign-in"),
+  requireAdmin: async () => redirect("/de/sign-in"),
 }));
 vi.mock("@/lib/review/queries", () => ({
   loadQueue: queries.loadQueue,
   loadStatsData: queries.loadStatsData,
 }));
-vi.mock("@/app/(app)/verwaltung/admin-users", () => ({ listUsers: queries.listUsers }));
+vi.mock("@/app/[lang]/(app)/admin/admin-users", () => ({ listUsers: queries.listUsers }));
 
 const { TodayOverview, TodayStreak } = await import("./today/today-data");
 const { StatsOverview, StatsStreak } = await import("./stats/stats-data");

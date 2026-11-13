@@ -5,6 +5,7 @@ import { useId, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useDictionary } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { PASSWORD_TOGGLE_ATTRIBUTE } from "./form-values";
 
@@ -13,6 +14,7 @@ export function PasswordInput({
   className,
   ...props
 }: React.ComponentProps<typeof Input>) {
+  const t = useDictionary().form;
   const [visible, setVisible] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
   const fallbackId = useId();
@@ -48,7 +50,7 @@ export function PasswordInput({
         variant="ghost"
         size="icon-lg"
         className="absolute top-0.5 right-0.5 text-muted-foreground hover:text-foreground"
-        aria-label={visible ? "Passwort verbergen" : "Passwort anzeigen"}
+        aria-label={visible ? t.hidePassword : t.showPassword}
         aria-pressed={visible}
         {...{ [PASSWORD_TOGGLE_ATTRIBUTE]: inputId }}
         // Fokus bleibt beim Tippen mit Maus oder Finger im Feld.

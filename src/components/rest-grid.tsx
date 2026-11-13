@@ -1,7 +1,8 @@
+import type { Dictionary } from "@/i18n/dictionaries";
 import { isBogey } from "@/lib/darts/checkouts";
 import { MAX_REST, MIN_REST, type Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-import { LEVEL_CELL, LEVEL_LABEL, WEAK_RING } from "./level-style";
+import { LEVEL_CELL, WEAK_RING } from "./level-style";
 
 const RESTS = Array.from({ length: MAX_REST - MIN_REST + 1 }, (_, i) => MIN_REST + i);
 
@@ -13,18 +14,21 @@ const CELL_SIZE = "h-11 w-full text-sm md:text-base";
 
 /**
  * Zehnerreihen (2 bis 9, 10 bis 19, …); cell rendert den Inhalt je Rest.
- * placeholder: Platzhalter, für Screenreader versteckt.
+ * placeholder: Platzhalter, für Screenreader versteckt. Die Texte kommen von außen:
+ * Server und Client reichen ihr Wörterbuch herein, dieses Modul bleibt ohne Hook.
  */
 function RestCells({
+  t,
   cell,
   placeholder = false,
 }: {
+  t: Dictionary["stats"];
   cell: (rest: number) => React.ReactNode;
   placeholder?: boolean;
 }) {
   return (
     <ol
-      aria-label="Alle Reste von 2 bis 170"
+      aria-label={t.gridLabel}
       aria-hidden={placeholder || undefined}
       className="grid grid-cols-10 gap-1"
     >
@@ -42,17 +46,26 @@ function RestCells({
  * Alle Reste von 2 bis 170, eingefärbt nach Lernstand. Jede Zelle trägt data-rest;
  * das Öffnen übernimmt RestSheet.
  */
-export function RestGrid({ levels, weak }: { levels: Record<number, Level>; weak: Set<number> }) {
+export function RestGrid({
+  levels,
+  weak,
+  t,
+}: {
+  levels: Record<number, Level>;
+  weak: Set<number>;
+  t: Dictionary["stats"];
+}) {
   return (
     <RestCells
+      t={t}
       cell={(rest) => {
         const level = levels[rest];
         const hard = weak.has(rest);
         const label = [
           rest,
-          LEVEL_LABEL[level],
-          isBogey(rest) && "nicht checkbar",
-          hard && "schwierig",
+          t.levels[level],
+          isBogey(rest) && t.bogey,
+          hard && t.weak,
         ]
           .filter(Boolean)
           .join(", ");
@@ -76,9 +89,10 @@ export function RestGrid({ levels, weak }: { levels: Record<number, Level>; weak
  * „neu", ohne Antipp-Funktion und ohne Nutzerdaten. Für Screenreader versteckt, damit
  * die 169 Zahlen nicht vor dem echten Raster ein zweites Mal vorgelesen werden.
  */
-export function NeutralRestGrid() {
+export function NeutralRestGrid({ t }: { t: Dictionary["stats"] }) {
   return (
     <RestCells
+      t={t}
       placeholder
       cell={(rest) => <span className={cn(CELL_BASE, CELL_SIZE, LEVEL_CELL.new)}>{rest}</span>}
     />

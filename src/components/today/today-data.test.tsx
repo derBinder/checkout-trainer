@@ -3,6 +3,12 @@ import { render, screen } from "@testing-library/react";
 import { State } from "ts-fsrs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const user = vi.hoisted(() => ({
   id: "u1",
@@ -15,7 +21,7 @@ const user = vi.hoisted(() => ({
 const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
-vi.mock("@/app/(app)/heute/actions", () => ({ learnMoreCards: vi.fn() }));
+vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards: vi.fn() }));
 
 const { TodayOverview, TodayStreak } = await import("./today-data");
 
@@ -43,20 +49,20 @@ beforeEach(() => {
 describe("TodayOverview", () => {
   it("zeigt fällige und neue Karten, den Fortschritt und den Knopf zum Lernen", async () => {
     queue(3, 2, 150);
-    render(await TodayOverview());
+    render(await TodayOverview(), { wrapper });
 
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
     expect(queries.loadStatsData).toHaveBeenCalledWith(db, "u1");
     expect(screen.getByText("fällig").nextElementSibling?.textContent).toBe("3");
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("2");
     expect(screen.getByText("2 von 169 begonnen, 1 sicher").nextElementSibling?.textContent).toBe("1\u00a0%");
-    expect(screen.getByRole("link", { name: "Lernen" }).getAttribute("href")).toBe("/lernen");
+    expect(screen.getByRole("link", { name: "Lernen" }).getAttribute("href")).toBe("/de/study");
     expect(screen.queryByText("Für heute bist du fertig.")).toBeNull();
   });
 
   it("bietet weitere Karten an, wenn heute nichts mehr offen ist", async () => {
     queue(0, 0, 150);
-    render(await TodayOverview());
+    render(await TodayOverview(), { wrapper });
 
     expect(screen.getByText("Für heute bist du fertig.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Weitere 5 Karten lernen" })).toBeTruthy();
@@ -66,7 +72,7 @@ describe("TodayOverview", () => {
 
   it("sagt, wenn alle Karten begonnen sind, und bietet keine weiteren an", async () => {
     queue(0, 0, 0);
-    render(await TodayOverview());
+    render(await TodayOverview(), { wrapper });
 
     expect(screen.getByText("Für heute bist du fertig.")).toBeTruthy();
     expect(screen.getByText("Du hast alle Karten begonnen.")).toBeTruthy();
@@ -89,13 +95,13 @@ describe("TodayStreak", () => {
         { cardId: "r-5", rating: 3, reviewedAt: new Date(now - DAY_MS) },
       ],
     });
-    render(await TodayStreak());
+    render(await TodayStreak(), { wrapper });
     expect(screen.getByText("2 Tage Serie")).toBeTruthy();
   });
 
   it("zeigt ohne Serie nichts", async () => {
     queue(0, 0, 0);
-    const { container } = render(await TodayStreak());
+    const { container } = render(await TodayStreak(), { wrapper });
     expect(container.textContent).toBe("");
   });
 });
