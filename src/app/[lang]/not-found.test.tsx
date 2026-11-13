@@ -7,7 +7,7 @@ const rootParams = vi.hoisted(() => ({ lang: "de" }));
 vi.mock("next/root-params", () => ({ lang: async () => rootParams.lang }));
 
 const { default: NotFound } = await import("./not-found");
-const { default: MissingPage } = await import("./[...missing]/page");
+const { default: MissingPage, instant } = await import("./[...missing]/page");
 
 beforeEach(() => {
   rootParams.lang = "de";
@@ -27,6 +27,10 @@ describe("Unbekannte Adresse unter einer Sprache", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeTruthy();
     expect(screen.getByText("There is no page at this address.")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Back to the home page" }).getAttribute("href")).toBe("/en");
+  });
+
+  it("nimmt die Sammelroute von der instant-Prüfung aus, weil sie nie rendert", () => {
+    expect(instant).toBe(false);
   });
 
   it("löst über die Sammelroute die Fehlerseite aus", () => {
