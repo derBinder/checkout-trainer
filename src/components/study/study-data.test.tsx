@@ -50,6 +50,7 @@ describe("StudySessionData", () => {
 
     // Die Karten bringen mit, wogegen ein eingegebener Weg geprüft wird.
     fireEvent.click(screen.getByRole("button", { name: "Single 1" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
     fireEvent.click(screen.getByRole("button", { name: "Doppel 2" }));
     fireEvent.click(screen.getByRole("button", { name: "Prüfen" }));
     expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
