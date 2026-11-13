@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { DartSlots } from "@/components/dart-slots";
 import { BIG_NUMERAL, EYEBROW, NoteList } from "@/components/study/study-card";
 import { StudyCloseButton } from "@/components/study/study-close-link";
@@ -48,6 +48,18 @@ export function MathRound({
   // Wie beim Lernen: Der Bildschirm bleibt an, solange Aufgaben offen sind.
   useWakeLock(task !== undefined);
 
+  // Fokus auf den neuen Inhalt, wie im Lernbildschirm: Der gedrückte Knopf verschwindet.
+  const contentRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    contentRef.current?.focus({ preventScroll: true });
+    contentRef.current?.scrollTo({ top: 0 });
+  }, [state.index, state.revealed]);
+
   if (!task) {
     return (
       <PracticeEnd
@@ -59,7 +71,6 @@ export function MathRound({
     );
   }
 
-  const given = Number(state.input);
   const solution = solutions[task.rest];
 
   return (
@@ -79,7 +90,7 @@ export function MathRound({
         />
       </header>
 
-      <div className={STUDY_CONTENT}>
+      <div ref={contentRef} tabIndex={-1} className={STUDY_CONTENT}>
         <div className="my-auto flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
@@ -91,10 +102,10 @@ export function MathRound({
 
           {state.revealed ? (
             <div className="flex flex-col gap-3">
-              {given === task.rest ? (
+              {state.right ? (
                 <ResultLine tone="strong" title={tm.right} note={tm.rightNote(task.rest)} />
               ) : (
-                <ResultLine tone="bad" title={tm.wrong(task.rest)} note={tm.wrongNote(given)} />
+                <ResultLine tone="bad" title={tm.wrong(task.rest)} note={tm.wrongNote(Number(state.input))} />
               )}
               {solution?.kind === "finish" && (
                 <div className="flex flex-col gap-1.5">

@@ -89,6 +89,20 @@ describe("PracticeRoutesRound", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("verwirft einen Doppeltipp, der vom letzten „Weiter“ auf das Ende fällt", async () => {
+    renderRound("r-5");
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    await flush();
+    // Zweiter Tipp im selben Augenblick: Er gilt noch dem „Weiter“.
+    fireEvent.click(screen.getByRole("button", { name: "Fertig" }));
+    fireEvent.click(screen.getByRole("button", { name: "Noch eine Runde" }));
+    expect(onClose).not.toHaveBeenCalled();
+    expect(onRestart).not.toHaveBeenCalled();
+    tap("Fertig");
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("schließt über das Kreuz ohne Rückfrage", () => {
     const confirm = vi.spyOn(window, "confirm");
     renderRound("r-5", "r-7");

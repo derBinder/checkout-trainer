@@ -9,6 +9,8 @@ export type MathState = {
   /** Eingegebene Ziffern, höchstens drei, ohne führende Null. */
   input: string;
   revealed: boolean;
+  /** Ob die geprüfte Antwort der aktuellen Aufgabe stimmt; null vor dem Prüfen. */
+  right: boolean | null;
   correct: number;
   /** Zeitpunkt des letzten Prüfens oder Weitergehens, für den Doppeltipp-Schutz. */
   lastFlipAt: number | null;
@@ -24,7 +26,7 @@ export type MathAction =
 const MAX_DIGITS = 3;
 
 export function initMath(tasks: MathTask[]): MathState {
-  return { tasks, index: 0, input: "", revealed: false, correct: 0, lastFlipAt: null };
+  return { tasks, index: 0, input: "", revealed: false, right: null, correct: 0, lastFlipAt: null };
 }
 
 /** „Prüfen“ und „Weiter“ liegen an derselben Stelle: Ein Tipp kurz nach dem Wechsel zählt nicht. */
@@ -43,10 +45,10 @@ export function mathReducer(s: MathState, a: MathAction): MathState {
     case "check": {
       if (!open || s.input === "" || tooSoon(s, a.at)) return s;
       const right = Number(s.input) === s.tasks[s.index].rest;
-      return { ...s, revealed: true, correct: s.correct + (right ? 1 : 0), lastFlipAt: a.at ?? null };
+      return { ...s, revealed: true, right, correct: s.correct + (right ? 1 : 0), lastFlipAt: a.at ?? null };
     }
     case "next":
       if (!s.revealed || tooSoon(s, a.at)) return s;
-      return { ...s, index: s.index + 1, input: "", revealed: false, lastFlipAt: a.at ?? null };
+      return { ...s, index: s.index + 1, input: "", revealed: false, right: null, lastFlipAt: a.at ?? null };
   }
 }

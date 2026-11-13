@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PracticeData } from "@/components/practice/practice-data";
 import { PracticeSkeleton } from "@/components/practice/practice-skeleton";
+import { PracticeTitle } from "@/components/practice/practice-title";
 import { getDictionary } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,7 +15,7 @@ export default async function PracticePage() {
   const t = await getDictionary();
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="type-display text-3xl">{t.practice.title}</h1>
+      <PracticeTitle>{t.practice.title}</PracticeTitle>
       <Suspense fallback={<PracticeSkeleton />}>
         <PracticeData />
       </Suspense>

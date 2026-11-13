@@ -44,6 +44,19 @@ beforeEach(() => {
   router.bfcacheId = "a";
 });
 
+describe("PracticeHost im Server-Rendering", () => {
+  it("zeigt bis zum Lesen der gespeicherten Auswahl das Skeleton statt der Vorauswahl", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const html = renderToString(
+      <I18nProvider locale="de">
+        <PracticeHost cards={CARDS_DATA} solutions={SOLUTIONS} />
+      </I18nProvider>,
+    );
+    expect(html).toContain('aria-busy="true"');
+    expect(html).not.toContain("Karten passen");
+  });
+});
+
 describe("PracticeHost", () => {
   it("startet eine Runde „Wege“ mit den Karten der Auswahl und kehrt danach zur Auswahl zurück", async () => {
     const user = userEvent.setup();
@@ -58,6 +71,8 @@ describe("PracticeHost", () => {
     await user.click(screen.getByRole("button", { name: "Weiter" }));
     expect(screen.getByRole("heading", { name: "Runde geschafft" })).toBeTruthy();
 
+    // Tippschutz des Endes: Ein Tipp gleich nach „Weiter“ zählt nicht.
+    await new Promise((r) => setTimeout(r, 400));
     await user.click(screen.getByRole("button", { name: "Noch eine Runde" }));
     expect(screen.getByText("1 / 1")).toBeTruthy();
 

@@ -125,6 +125,28 @@ describe("MathRound", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("verwirft einen Doppeltipp auf das Ergebnis und behält es", () => {
+    renderRound([T89]);
+    type(8, 9);
+    tap("Prüfen");
+    tap("Weiter");
+    fireEvent.click(screen.getByRole("button", { name: "Fertig" }));
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByText("1 von 1 richtig")).toBeTruthy();
+  });
+
+  it("führt den Fokus zur Auflösung und zur nächsten Aufgabe", () => {
+    renderRound([T89, T159]);
+    type(8, 9);
+    tap("Prüfen");
+    const content = document.activeElement as HTMLElement;
+    expect(content).not.toBe(document.body);
+    expect(within(content).getByText("Richtig")).toBeTruthy();
+    tap("Weiter");
+    expect(document.activeElement).not.toBe(document.body);
+    expect(within(document.activeElement as HTMLElement).getByText("Was bleibt?")).toBeTruthy();
+  });
+
   it("schließt über das Kreuz", () => {
     renderRound([T89]);
     tap("Übung beenden");

@@ -8,6 +8,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => pathname.value }));
 
 const { AppNav } = await import("./app-nav");
 const { useMarkRoundActive } = await import("./practice/practice-round-store");
+const { PracticeTitle } = await import("./practice/practice-title");
 
 function Round({ active }: { active: boolean }) {
   useMarkRoundActive(active);
@@ -47,5 +48,24 @@ describe("AppNav während einer Übungsrunde", () => {
   it("bleibt auf anderen Seiten sichtbar", () => {
     renderNav("/de/today", <Round active />);
     expect(nav()).toBeTruthy();
+  });
+});
+
+describe("PracticeTitle", () => {
+  it("steht auf der Auswahlseite und verschwindet während einer Runde", () => {
+    const { rerender } = render(
+      <>
+        <PracticeTitle>Üben</PracticeTitle>
+        <Round active={false} />
+      </>,
+    );
+    expect(screen.getByRole("heading", { level: 1, name: "Üben" })).toBeTruthy();
+    rerender(
+      <>
+        <PracticeTitle>Üben</PracticeTitle>
+        <Round active />
+      </>,
+    );
+    expect(screen.queryByRole("heading", { level: 1, name: "Üben" })).toBeNull();
   });
 });

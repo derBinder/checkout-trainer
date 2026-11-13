@@ -28,7 +28,7 @@ export function PracticeSkeleton() {
   const t = useDictionary().practice;
   return (
     <LoadingRegion className={PRACTICE_BODY}>
-      <Skeleton className={cn(SEGMENT_BAR, "bg-muted")}>
+      <Skeleton className={SEGMENT_BAR}>
         <div className={SEGMENT_HEIGHT} />
       </Skeleton>
       <div className={PRACTICE_SECTION}>

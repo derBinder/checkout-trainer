@@ -32,8 +32,8 @@ describe("mathReducer", () => {
   });
 
   it("zählt eine richtige Antwort und keine falsche", () => {
-    expect(run(initMath(TASKS), digit(8), digit(9), { type: "check" })).toMatchObject({ revealed: true, correct: 1 });
-    expect(run(initMath(TASKS), digit(9), digit(8), { type: "check" })).toMatchObject({ revealed: true, correct: 0 });
+    expect(run(initMath(TASKS), digit(8), digit(9), { type: "check" })).toMatchObject({ revealed: true, correct: 1, right: true });
+    expect(run(initMath(TASKS), digit(9), digit(8), { type: "check" })).toMatchObject({ revealed: true, correct: 0, right: false });
   });
 
   it("nimmt nach dem Prüfen keine Ziffern mehr an und prüft nicht doppelt", () => {

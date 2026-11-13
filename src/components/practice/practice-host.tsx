@@ -5,11 +5,11 @@ import { useState, useSyncExternalStore } from "react";
 import type { SessionCard } from "@/components/study/session-screen";
 import { drawRound, matchesFilter, type PracticeGroup } from "@/lib/practice/filter";
 import { mathRound, type MathSolution, type MathTask } from "@/lib/practice/math";
-import { DEFAULT_SELECTION } from "@/lib/practice/selection";
 import { MathRound } from "./math-round";
 import { PracticeRoutesRound } from "./practice-routes-round";
 import { useMarkRoundActive } from "./practice-round-store";
 import { PracticeSelect } from "./practice-select";
+import { PracticeSkeleton } from "./practice-skeleton";
 import { readPracticeSelection, savePracticeSelection, subscribePracticeSelection } from "./selection-store";
 
 /** Eine Karte für die Übung: Anzeige und Prüfung wie beim Lernen, dazu Rest und Gruppen für den Filter. */
@@ -20,7 +20,9 @@ type Phase =
   | { kind: "routes"; items: SessionCard[]; round: number }
   | { kind: "math"; tasks: MathTask[]; round: number };
 
-const serverSelection = () => DEFAULT_SELECTION;
+// Die gespeicherte Auswahl kennt erst der Browser; bis dahin bleibt das Skeleton stehen,
+// statt kurz die Vorauswahl zu zeigen und dann umzuspringen.
+const serverSelection = () => null;
 
 /**
  * Übungsseite im Browser. Wie die Lernsitzung beginnt jeder Aufruf über die App
@@ -38,6 +40,7 @@ function PracticeView({ cards, solutions }: { cards: PracticeCard[]; solutions: 
 
   // Jede Runde zieht neu; der Zähler gibt ihr einen eigenen Schlüssel, damit sie frisch beginnt.
   function start() {
+    if (!selection) return;
     const round = phase.kind === "select" ? 1 : phase.round + 1;
     if (selection.exercise === "math") {
       setPhase({ kind: "math", tasks: mathRound(Math.random), round });
@@ -53,6 +56,7 @@ function PracticeView({ cards, solutions }: { cards: PracticeCard[]; solutions: 
 
   switch (phase.kind) {
     case "select":
+      if (!selection) return <PracticeSkeleton />;
       return <PracticeSelect cards={cards} selection={selection} onChange={savePracticeSelection} onStart={start} />;
     case "routes":
       return <PracticeRoutesRound key={phase.round} items={phase.items} onClose={close} onRestart={start} />;
