@@ -1,0 +1,36 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { StudySurface } from "@/components/study/study-parts";
+import { useDictionary } from "@/i18n/client";
+
+/** Ende einer Übungsrunde, wie das Ende der Lernsitzung: Ergebnis, neue Runde oder fertig. */
+export function PracticeEnd({
+  title,
+  result,
+  onClose,
+  onRestart,
+}: {
+  title: string;
+  result: string;
+  onClose: () => void;
+  onRestart: () => void;
+}) {
+  const t = useDictionary().practice;
+  return (
+    <StudySurface className="px-page pt-screen-top pb-inset-bottom">
+      <div className="flex flex-1 flex-col gap-5">
+        <h1 className="type-display text-hero">{title}</h1>
+        <p className="text-lg font-medium text-muted-foreground">{result}</p>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Button size="xl" className="w-full" onClick={onRestart}>
+          {t.anotherRound}
+        </Button>
+        <Button variant="secondary" size="xl" className="w-full" onClick={onClose}>
+          {t.finish}
+        </Button>
+      </div>
+    </StudySurface>
+  );
+}
