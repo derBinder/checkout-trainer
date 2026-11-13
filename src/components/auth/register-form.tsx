@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { type FieldSpec } from "@/components/form/form-values";
 import { PasswordInput } from "@/components/form/password-input";
 import { PasswordStrength } from "@/components/form/password-strength";
@@ -39,8 +39,25 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [password, setPassword] = useState("");
-  const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
+  const { errors, fieldProps, errorId, validateForm, reset } = useFieldErrors(FIELDS);
   const passwordProps = fieldProps("password", "password-hint");
+  // Neuer Schlüssel beim Verbergen: Das Passwort startet wieder verborgen.
+  const [fieldsKey, setFieldsKey] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Next.js hält die Seite nach der Registrierung versteckt vor (Activity). Das
+  // Passwort soll dort nicht stehen bleiben: Beim Verbergen alles zurücksetzen.
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    return () => {
+      form?.reset();
+      reset();
+      setPassword("");
+      setFieldsKey((key) => key + 1);
+      setError(null);
+      setPending(false);
+    };
+  }, [reset]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +85,7 @@ export function RegisterForm() {
 
   return (
     <form
+      ref={formRef}
       method="post"
       noValidate
       onSubmit={handleSubmit}
@@ -101,6 +119,7 @@ export function RegisterForm() {
         <Field>
           <FieldLabel htmlFor="password">{t.signUp.password}</FieldLabel>
           <PasswordInput
+            key={fieldsKey}
             id="password"
             name="password"
             autoComplete="new-password"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { type FieldSpec } from "@/components/form/form-values";
 import { PasswordInput } from "@/components/form/password-input";
 import { useFieldErrors } from "@/components/form/use-field-errors";
@@ -34,7 +34,23 @@ export function LoginForm() {
   const t = useDictionary();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
+  const { errors, fieldProps, errorId, validateForm, reset } = useFieldErrors(FIELDS);
+  // Neuer Schlüssel beim Verbergen: Das Passwort startet wieder verborgen.
+  const [fieldsKey, setFieldsKey] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Next.js hält die Seite nach der Anmeldung versteckt vor (Activity). Das
+  // Passwort soll dort nicht stehen bleiben: Beim Verbergen alles zurücksetzen.
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    return () => {
+      form?.reset();
+      reset();
+      setFieldsKey((key) => key + 1);
+      setError(null);
+      setPending(false);
+    };
+  }, [reset]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,6 +78,7 @@ export function LoginForm() {
 
   return (
     <form
+      ref={formRef}
       method="post"
       noValidate
       onSubmit={handleSubmit}
@@ -84,6 +101,7 @@ export function LoginForm() {
         <Field>
           <FieldLabel htmlFor="password">{t.signIn.password}</FieldLabel>
           <PasswordInput
+            key={fieldsKey}
             id="password"
             name="password"
             autoComplete="current-password"

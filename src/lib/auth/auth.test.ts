@@ -43,6 +43,25 @@ async function sessionHeaders(email: string, password = PASSWORD) {
   return new Headers({ cookie });
 }
 
+describe("Start", () => {
+  // `next dev` lädt Seiten zum Ermitteln der Pfade in einem eigenen
+  // Kurzzeitprozess. Öffnet schon der Import die lokale PGlite-Datenbank,
+  // laufen zwei Prozesse auf demselben Verzeichnis und PGlite bricht ab.
+  it("greift beim Erzeugen und Initialisieren nicht auf die Datenbank zu", async () => {
+    const accessed: PropertyKey[] = [];
+    const untouched = new Proxy({} as Db, {
+      get(_target, prop) {
+        accessed.push(prop);
+        return undefined;
+      },
+    });
+    const lazyAuth = createAuth(untouched);
+    await lazyAuth.$context;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(accessed).toEqual([]);
+  });
+});
+
 describe("Registrierung", () => {
   it("legt Nutzer als pending, ohne Adminrolle, mit 10 neuen Karten pro Tag an", async () => {
     await signUp("a@example.test");
