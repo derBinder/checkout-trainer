@@ -3,6 +3,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { rate } from "@/lib/srs/fsrs";
+import { I18nProvider } from "@/i18n/client";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const user = vi.hoisted(() => ({
   id: "u1",
@@ -35,7 +41,7 @@ describe("StudySessionData", () => {
       reps: { "r-5": 1 },
       states: { "r-5": rate(null, 3, now) },
     });
-    render(await StudySessionData());
+    render(await StudySessionData(), { wrapper });
 
     expect(loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
     expect(screen.getByText("1 / 2")).toBeTruthy();
@@ -53,7 +59,7 @@ describe("StudySessionData", () => {
     loadQueue.mockResolvedValue({ cardIds: [], reps: {}, states: {} });
     await expect(StudySessionData()).rejects.toHaveProperty(
       "digest",
-      expect.stringMatching(/^NEXT_REDIRECT;.*;\/heute;/),
+      expect.stringMatching(/^NEXT_REDIRECT;.*;\/de\/today;/),
     );
   });
 });

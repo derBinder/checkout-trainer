@@ -1,3 +1,4 @@
+import { useDictionary } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 type DartSlotsProps = {
@@ -10,7 +11,7 @@ type DartSlotsProps = {
   next?: number;
   /** Kleiner für zwei Reihen untereinander (Auflösung mit „Dein Weg“). */
   size?: "sm";
-  /** Name der Reihe für Screenreader, wenn mehrere untereinander stehen. */
+  /** Name der Reihe für Screenreader, wenn mehrere untereinander stehen; ohne Angabe „Darts“. */
   label?: string;
 };
 
@@ -27,13 +28,14 @@ export const SLOT_BOX =
  * Auflösung nur die geworfenen Darts. Jedes Feld ist ein Drittel breit, auch
  * wenn weniger als drei zu sehen sind.
  */
-export function DartSlots({ slots, tone, missSlots = [], next, size, label = "Darts" }: DartSlotsProps) {
+export function DartSlots({ slots, tone, missSlots = [], next, size, label }: DartSlotsProps) {
+  const t = useDictionary().study.slots;
   const answer = tone !== undefined;
   const shown = Array.from({ length: SLOT_COUNT }, (_, i) => ({ i, dart: slots[i] ?? null })).filter(
     ({ dart }) => !answer || dart !== null,
   );
   return (
-    <ol aria-label={label} className={SLOTS_ROW}>
+    <ol aria-label={label ?? t.darts} className={SLOTS_ROW}>
       {shown.map(({ i, dart }) => {
         const miss = dart !== null && missSlots.includes(i);
         const isNext = dart === null && i === next;
@@ -54,12 +56,12 @@ export function DartSlots({ slots, tone, missSlots = [], next, size, label = "Da
             {dart === null ? (
               <>
                 <span aria-hidden>?</span>
-                <span className="sr-only">offen</span>
+                <span className="sr-only">{t.open}</span>
               </>
             ) : (
               <>
                 {dart}
-                {miss && <span className="sr-only"> (Fehlwurf)</span>}
+                {miss && <span className="sr-only"> ({t.miss})</span>}
               </>
             )}
           </li>

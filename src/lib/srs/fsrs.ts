@@ -71,44 +71,49 @@ export function rate(prev: SrsState | null, rating: Rating, now: Date): SrsState
   return next;
 }
 
-export function formatInterval(ms: number): string {
-  if (ms < MINUTE_MS) return "< 1 Min";
-  if (ms < HOUR_MS) return `${Math.round(ms / MINUTE_MS)} Min`;
-  if (ms < DAY_MS) return `${Math.round(ms / HOUR_MS)} Std`;
+/**
+ * Abstand bis zur nächsten Wiederholung als Daten; den Text („3 Tage“, „3 days“)
+ * liefert das Wörterbuch (`study.interval`). `value` ist bei „now“ und „underMinute“ 0.
+ */
+export type IntervalLabel = {
+  unit: "now" | "underMinute" | "minutes" | "hours" | "days" | "months" | "years";
+  value: number;
+};
+
+export function describeInterval(ms: number): IntervalLabel {
+  if (ms < MINUTE_MS) return { unit: "underMinute", value: 0 };
+  if (ms < HOUR_MS) return { unit: "minutes", value: Math.round(ms / MINUTE_MS) };
+  if (ms < DAY_MS) return { unit: "hours", value: Math.round(ms / HOUR_MS) };
   const days = Math.round(ms / DAY_MS);
-  if (days < 30) return days === 1 ? "1 Tag" : `${days} Tage`;
-  if (days < 365) {
-    const months = Math.round(days / 30);
-    return months === 1 ? "1 Monat" : `${months} Monate`;
-  }
-  const years = Math.round((days / 365) * 10) / 10;
-  return years === 1 ? "1 Jahr" : `${String(years).replace(".", ",")} Jahre`;
+  if (days < 30) return { unit: "days", value: days };
+  if (days < 365) return { unit: "months", value: Math.round(days / 30) };
+  return { unit: "years", value: Math.round((days / 365) * 10) / 10 };
 }
 
-export function previewIntervals(prev: SrsState | null, now: Date): Record<Rating, string> {
+export function previewIntervals(prev: SrsState | null, now: Date): Record<Rating, IntervalLabel> {
   const preview = scheduler.repeat(toCard(prev, now), now);
-  const out = {} as Record<Rating, string>;
+  const out = {} as Record<Rating, IntervalLabel>;
   for (const r of RATINGS) {
     if (r === 1) {
-      out[r] = "gleich";
+      out[r] = { unit: "now", value: 0 };
       continue;
     }
-    out[r] = formatInterval(preview[r as Grade].card.due.getTime() - now.getTime());
+    out[r] = describeInterval(preview[r as Grade].card.due.getTime() - now.getTime());
   }
   return out;
 }
 
 const MAX_LABEL_CHAIN = 5;
 
-const sameLabels = (a: Record<Rating, string>, b: Record<Rating, string>) =>
-  RATINGS.every((r) => a[r] === b[r]);
+const sameLabels = (a: Record<Rating, IntervalLabel>, b: Record<Rating, IntervalLabel>) =>
+  RATINGS.every((r) => a[r].unit === b[r].unit && a[r].value === b[r].value);
 
 /**
  * Button labels for the stored state, then for the state after each further
  * "Nochmal" in the same session, until they stop changing (at most five).
  * The client picks entry min(againCount, length - 1), so it needs no scheduler.
  */
-export function intervalLabelChain(prev: SrsState | null, now: Date): Record<Rating, string>[] {
+export function intervalLabelChain(prev: SrsState | null, now: Date): Record<Rating, IntervalLabel>[] {
   const chain = [previewIntervals(prev, now)];
   let state = prev;
   while (chain.length < MAX_LABEL_CHAIN) {

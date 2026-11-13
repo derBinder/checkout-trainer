@@ -1,4 +1,5 @@
 import { DartSlots } from "@/components/dart-slots";
+import { useDictionary } from "@/i18n/client";
 import type { Answer, Verdict } from "@/lib/darts/judge";
 import type { CardView, Note } from "./card-view";
 import { VerdictLine } from "./verdict";
@@ -65,12 +66,13 @@ export type StudyResult = { verdict: Verdict; answer: Answer; fixed: string[] };
 
 /** „Dein Weg“: die eingegebenen Darts in neutraler Farbe, oder „Nicht checkbar“. */
 function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: number[] }) {
+  const t = useDictionary().study.result;
   return (
     <div className="flex flex-col gap-1.5">
-      <p className={ROW_LABEL}>Dein Weg</p>
+      <p className={ROW_LABEL}>{t.yourRoute}</p>
       {result.answer.kind === "notCheckable" ? (
         <p className="flex h-11 items-center justify-center rounded-pill bg-muted font-heading text-base font-extrabold">
-          Nicht checkbar
+          {t.notCheckable}
         </p>
       ) : (
         <DartSlots
@@ -78,7 +80,7 @@ function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: numb
           tone="none"
           missSlots={missSlots}
           size="sm"
-          label="Dein Weg"
+          label={t.yourRoute}
         />
       )}
     </div>
@@ -87,8 +89,9 @@ function YourRoute({ result, missSlots }: { result: StudyResult; missSlots: numb
 
 /** Auflösung einer Karte, ohne Bedienelemente; mit Ergebnis, wenn eine Antwort eingegeben war. */
 export function StudyCard({ view, result }: { view: CardView; result?: StudyResult }) {
+  const t = useDictionary().study.result;
   const { answer } = view;
-  const rowLabel = answer.slotTone === "best" ? "Bester Weg" : "Stellwurf";
+  const rowLabel = answer.slotTone === "best" ? t.bestRoute : t.setupShot;
   const slots = (
     <DartSlots
       slots={answer.slots}

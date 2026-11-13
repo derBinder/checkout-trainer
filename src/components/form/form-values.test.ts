@@ -25,10 +25,10 @@ describe("validateValues", () => {
     expect(
       validateValues(fields, { name: "", email: "abc", password: "kurz" }),
     ).toEqual({
-      name: "Bitte gib einen Namen ein.",
+      name: "nameRequired",
       email:
-        "Das ist keine gültige E-Mail-Adresse, zum Beispiel name@beispiel.de.",
-      password: "Das Passwort braucht mindestens 10 Zeichen.",
+        "emailInvalid",
+      password: "passwordTooShort",
     });
   });
 
@@ -45,19 +45,19 @@ describe("validateValues", () => {
   it("zählt fehlende Schlüssel als leer", () => {
     // Feld nicht im Formular oder Autofill ohne Ereignis.
     expect(validateValues(fields, {})).toEqual({
-      name: "Bitte gib einen Namen ein.",
-      email: "Bitte gib deine E-Mail-Adresse ein.",
-      password: "Bitte gib ein Passwort ein.",
+      name: "nameRequired",
+      email: "emailRequired",
+      password: "passwordRequired",
     });
   });
 
   it("prüft die Zahl aus dem Formular als String", () => {
     const perDay = [{ name: "newPerDay", schema: newPerDaySchema }];
     expect(validateValues(perDay, { newPerDay: "abc" })).toEqual({
-      newPerDay: "Gib eine ganze Zahl von 0 bis 50 ein.",
+      newPerDay: "newPerDayInvalid",
     });
     expect(validateValues(perDay, { newPerDay: "51" })).toEqual({
-      newPerDay: "Gib eine ganze Zahl von 0 bis 50 ein.",
+      newPerDay: "newPerDayInvalid",
     });
     expect(validateValues(perDay, { newPerDay: "12" })).toEqual({
       newPerDay: null,
@@ -108,8 +108,8 @@ describe("validateFormData", () => {
     expect(validateFormData(fields, form)).toEqual({
       name: null,
       email:
-        "Das ist keine gültige E-Mail-Adresse, zum Beispiel name@beispiel.de.",
-      password: "Das Passwort braucht mindestens 10 Zeichen.",
+        "emailInvalid",
+      password: "passwordTooShort",
     });
   });
 
@@ -117,9 +117,9 @@ describe("validateFormData", () => {
     const form = new FormData();
     form.append("email", "a@b.de");
     expect(validateFormData(fields, form)).toEqual({
-      name: "Bitte gib einen Namen ein.",
+      name: "nameRequired",
       email: null,
-      password: "Bitte gib ein Passwort ein.",
+      password: "passwordRequired",
     });
   });
 });

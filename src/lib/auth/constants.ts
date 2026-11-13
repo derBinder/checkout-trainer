@@ -10,16 +10,21 @@ export const MAX_NAME_LENGTH = 100;
 // Höchstlänge einer Adresse nach RFC 5321.
 export const MAX_EMAIL_LENGTH = 254;
 
-/** Eigene Fehlermeldungen der Auth-Hooks; die Formulare zeigen sie unverändert. */
-export const AUTH_MESSAGES = {
-  operatorEmail: "Diese E-Mail-Adresse kann nicht registriert werden.",
-  signUpClosed: "Die Registrierung ist zurzeit nicht möglich.",
-  blocked: "Dieses Konto ist gesperrt.",
-  operatorDelete: "Das Betreiberkonto kann nicht gelöscht werden.",
-  nameRequired: "Bitte gib einen Namen ein.",
-  nameTooLong: `Der Name darf höchstens ${MAX_NAME_LENGTH} Zeichen haben.`,
-  nameInvalid: "Der Name enthält unzulässige Zeichen.",
-  emailTooLong: "Die E-Mail-Adresse ist zu lang.",
-  imageNotAllowed: "Ein Profilbild wird nicht unterstützt.",
-  passwordRequired: "Bitte gib dein Passwort ein.",
+/**
+ * Eigene Fehler der Auth-Hooks. Die Meldung des `APIError` ist der Schlüssel selbst;
+ * die Oberfläche übersetzt ihn über das Wörterbuch (`auth.errors`).
+ */
+export const AUTH_ERRORS = {
+  operatorEmail: "operatorEmail",
+  signUpClosed: "signUpClosed",
+  blocked: "blocked",
+  operatorDelete: "operatorDelete",
+  nameRequired: "nameRequired",
+  nameTooLong: "nameTooLong",
+  nameInvalid: "nameInvalid",
+  emailTooLong: "emailTooLong",
+  imageNotAllowed: "imageNotAllowed",
+  passwordRequired: "passwordRequired",
 } as const;
+
+export type AuthErrorKey = keyof typeof AUTH_ERRORS;

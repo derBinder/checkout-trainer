@@ -3,6 +3,11 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Activity } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const changePassword = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/auth/client", () => ({ authClient: { changePassword } }));
@@ -25,7 +30,7 @@ function submitButton() {
 
 async function fillAndSubmit(currentValue: string, newValue: string) {
   const user = userEvent.setup();
-  render(<ChangePasswordForm />);
+  render(<ChangePasswordForm />, { wrapper });
   if (currentValue) await user.type(current(), currentValue);
   if (newValue) await user.type(next(), newValue);
   await user.click(submitButton());
@@ -40,7 +45,7 @@ describe("ChangePasswordForm", () => {
   it("ändert das Passwort, meldet andere Geräte ab und leert die Felder", async () => {
     changePassword.mockResolvedValue({ error: null });
     const user = userEvent.setup();
-    render(<ChangePasswordForm />);
+    render(<ChangePasswordForm />, { wrapper });
     await user.type(current(), "alt-geheim");
     await user.type(next(), STRONG);
     await user.click(screen.getAllByRole("button", { name: "Passwort anzeigen" })[1]);
@@ -115,6 +120,7 @@ describe("ChangePasswordForm", () => {
       <Activity mode="visible">
         <ChangePasswordForm />
       </Activity>,
+      { wrapper },
     );
     await user.type(current(), "falsch-falsch");
     await user.type(next(), STRONG);

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
 import { session, user } from "../db/schema";
-import { AUTH_MESSAGES } from "./constants";
+import { AUTH_ERRORS } from "./constants";
 import { createAuth, seedAdmin } from "./index";
 
 const OPERATOR = "betreiber@checkout-trainer.test";
@@ -86,7 +86,7 @@ describe("Registrierung", () => {
   it("verweigert in Produktion ohne ADMIN_EMAIL jede Registrierung", async () => {
     vi.stubEnv("ADMIN_EMAIL", undefined);
     vi.stubEnv("NODE_ENV", "production");
-    await expect(signUp("g@example.test")).rejects.toThrow(AUTH_MESSAGES.signUpClosed);
+    await expect(signUp("g@example.test")).rejects.toThrow(AUTH_ERRORS.signUpClosed);
     expect(await userRow("g@example.test")).toBeUndefined();
   });
 
@@ -233,7 +233,7 @@ describe("gesperrte Nutzer", () => {
     expect(res.status).toBe(401);
     const body = (await res.json()) as { code?: string; message?: string };
     expect(body.code).toBe("INVALID_EMAIL_OR_PASSWORD");
-    expect(body.message).not.toBe(AUTH_MESSAGES.blocked);
+    expect(body.message).not.toBe(AUTH_ERRORS.blocked);
     expect(res.headers.getSetCookie()).toEqual([]);
   });
 
@@ -245,7 +245,7 @@ describe("gesperrte Nutzer", () => {
     const res = await post("/sign-in/email", { email: "p@example.test", password: PASSWORD });
     expect(res.status).toBe(403);
     const body = (await res.json()) as { message?: string };
-    expect(body.message).toBe(AUTH_MESSAGES.blocked);
+    expect(body.message).toBe(AUTH_ERRORS.blocked);
     expect(
       res.headers.getSetCookie().filter((c) => c.includes("session_token=") && !/max-age=0/i.test(c)),
     ).toEqual([]);

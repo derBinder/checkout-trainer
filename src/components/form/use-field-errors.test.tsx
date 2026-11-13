@@ -5,6 +5,11 @@ import { describe, expect, it, vi } from "vitest";
 import { emailSchema, passwordRequiredSchema } from "@/lib/validation/schemas";
 import { type FieldSpec } from "./form-values";
 import { useFieldErrors } from "./use-field-errors";
+import { I18nProvider } from "@/i18n/client";
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 const FIELDS: FieldSpec[] = [
   { name: "email", schema: emailSchema },
@@ -42,7 +47,7 @@ function Harness({ onValid }: { onValid: () => void }) {
 function setup() {
   const onValid = vi.fn();
   const user = userEvent.setup();
-  render(<Harness onValid={onValid} />);
+  render(<Harness onValid={onValid} />, { wrapper });
   return { user, onValid, email: screen.getByLabelText("E-Mail") };
 }
 

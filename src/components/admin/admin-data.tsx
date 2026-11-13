@@ -1,20 +1,19 @@
 import { cache } from "react";
-import { listUsers } from "@/app/(app)/verwaltung/admin-users";
+import { listUsers } from "@/app/[lang]/(app)/admin/admin-users";
+import { INTL_LOCALE, type Locale } from "@/i18n/locales";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { requireAdmin } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { USER_LIST, USER_ROW, UserRowDetails } from "./admin-parts";
 import { UserActions } from "./user-actions";
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: "wartend",
-  active: "aktiv",
-  blocked: "gesperrt",
-};
-
-const dateFormat = new Intl.DateTimeFormat("de-DE", {
-  dateStyle: "medium",
-  timeZone: "Europe/Berlin",
-});
+/** Registrierdatum in der Schreibweise der Sprache, nach Berliner Zeit. */
+export function formatCreated(date: Date, locale: Locale): string {
+  return new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    dateStyle: "medium",
+    timeZone: "Europe/Berlin",
+  }).format(date);
+}
 
 /**
  * Prüft zuerst den Zugriff: Nur das aktive Betreiberkonto bekommt die Liste,
@@ -28,6 +27,7 @@ const loadUsers = cache(async () => {
 /** Alle Konten mit ihren Aktionen. */
 export async function UserList() {
   const users = await loadUsers();
+  const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   return (
     <ul className={USER_LIST}>
       {users.map((u) => (
@@ -38,15 +38,15 @@ export async function UserList() {
             meta={
               <>
                 <span className="font-semibold text-foreground">
-                  {STATUS_LABEL[u.status] ?? u.status}
+                  {t.admin.status[u.status] ?? u.status}
                 </span>
-                {" · registriert am "}
-                {dateFormat.format(u.createdAt)}
+                {" · "}
+                {t.admin.registered(formatCreated(u.createdAt, locale))}
               </>
             }
           />
           {u.role === "admin" ? (
-            <p className="text-sm text-muted-foreground">Betreiberkonto</p>
+            <p className="text-sm text-muted-foreground">{t.admin.operatorAccount}</p>
           ) : (
             <UserActions userId={u.id} name={u.name} status={u.status} />
           )}

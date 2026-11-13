@@ -11,13 +11,12 @@ import {
   validateField,
 } from "./schemas";
 
-const EMAIL_FORMAT =
-  "Das ist keine gültige E-Mail-Adresse, zum Beispiel name@beispiel.de.";
+const EMAIL_FORMAT = "emailInvalid";
 
 describe("validateField", () => {
   it("prüft den Namen", () => {
-    expect(validateField(nameSchema, "")).toBe("Bitte gib einen Namen ein.");
-    expect(validateField(nameSchema, "   ")).toBe("Bitte gib einen Namen ein.");
+    expect(validateField(nameSchema, "")).toBe("nameRequired");
+    expect(validateField(nameSchema, "   ")).toBe("nameRequired");
     expect(validateField(nameSchema, "Felix")).toBeNull();
   });
 
@@ -25,7 +24,7 @@ describe("validateField", () => {
     expect(validateField(nameSchema, "a".repeat(100))).toBeNull();
     expect(validateField(nameSchema, `  ${"a".repeat(100)}  `)).toBeNull();
     expect(validateField(nameSchema, "a".repeat(101))).toBe(
-      "Der Name darf höchstens 100 Zeichen haben.",
+      "nameTooLong",
     );
   });
 
@@ -40,7 +39,7 @@ describe("validateField", () => {
       "a\u00ADb",
     ]) {
       expect(validateField(nameSchema, bad)).toBe(
-        "Der Name enthält unzulässige Zeichen.",
+        "nameInvalid",
       );
     }
   });
@@ -55,16 +54,16 @@ describe("validateField", () => {
     expect(at254).toHaveLength(254);
     expect(validateField(emailSchema, at254)).toBeNull();
     expect(validateField(emailSchema, `x${at254}`)).toBe(
-      "Die E-Mail-Adresse ist zu lang.",
+      "emailTooLong",
     );
   });
 
   it("prüft die E-Mail-Adresse", () => {
     expect(validateField(emailSchema, "")).toBe(
-      "Bitte gib deine E-Mail-Adresse ein.",
+      "emailRequired",
     );
     expect(validateField(emailSchema, "   ")).toBe(
-      "Bitte gib deine E-Mail-Adresse ein.",
+      "emailRequired",
     );
     for (const bad of ["abc", "a@b", "a@b.", "@b.de", "a b@c.de", "a@b..de"]) {
       expect(validateField(emailSchema, bad)).toBe(EMAIL_FORMAT);
@@ -80,33 +79,33 @@ describe("validateField", () => {
 
   it("prüft Pflicht- und aktuelles Passwort", () => {
     expect(validateField(passwordRequiredSchema, "")).toBe(
-      "Bitte gib ein Passwort ein.",
+      "passwordRequired",
     );
     expect(validateField(passwordRequiredSchema, "x")).toBeNull();
     expect(validateField(currentPasswordSchema, "")).toBe(
-      "Bitte gib dein aktuelles Passwort ein.",
+      "currentPasswordRequired",
     );
     expect(validateField(currentPasswordSchema, "x")).toBeNull();
   });
 
   it("prüft das neue Passwort", () => {
     expect(validateField(newPasswordSchema, "")).toBe(
-      "Bitte gib ein Passwort ein.",
+      "passwordRequired",
     );
     expect(validateField(newPasswordSchema, "a".repeat(9))).toBe(
-      "Das Passwort braucht mindestens 10 Zeichen.",
+      "passwordTooShort",
     );
     expect(validateField(newPasswordSchema, "a".repeat(10))).toBeNull();
     // Passwörter werden nicht getrimmt.
     expect(validateField(newPasswordSchema, " ".repeat(10))).toBeNull();
     expect(validateField(newPasswordSchema, "a".repeat(128))).toBeNull();
     expect(validateField(newPasswordSchema, "a".repeat(129))).toBe(
-      "Das Passwort darf höchstens 128 Zeichen haben.",
+      "passwordTooLong",
     );
   });
 
   it("prüft neue Karten pro Tag", () => {
-    const message = "Gib eine ganze Zahl von 0 bis 50 ein.";
+    const message = "newPerDayInvalid";
     for (const bad of [
       "",
       "abc",
@@ -125,6 +124,16 @@ describe("validateField", () => {
     for (const good of [0, 10, 50, "0", "10", " 50 "]) {
       expect(validateField(newPerDaySchema, good)).toBeNull();
     }
+  });
+
+  it("nennt den Schlüssel der Prüfmeldung", () => {
+    expect(validateField(nameSchema, 123)).toBe("nameRequired");
+    expect(validateField(newPerDaySchema, "x")).toBe("newPerDayInvalid");
+  });
+
+  it("nennt den Schlüssel invalid, wenn die Prüfung selbst scheitert", () => {
+    const broken = {} as unknown as Parameters<typeof validateField>[0];
+    expect(validateField(broken, "x")).toBe("invalid");
   });
 
   it("wirft nie und lehnt falsche Typen ab", () => {
@@ -153,21 +162,21 @@ describe("parseName", () => {
     });
   });
 
-  it("liefert die Meldung für ungültige Werte jeden Typs", () => {
+  it("liefert den Schlüssel für ungültige Werte jeden Typs", () => {
     expect(parseName(undefined)).toEqual({
       ok: false,
-      message: "Bitte gib einen Namen ein.",
+      message: "nameRequired",
     });
     for (const odd of [null, 5, { a: 1 }, [], true]) {
       expect(parseName(odd).ok).toBe(false);
     }
     expect(parseName("a".repeat(101))).toEqual({
       ok: false,
-      message: "Der Name darf höchstens 100 Zeichen haben.",
+      message: "nameTooLong",
     });
     expect(parseName("a\u0000")).toEqual({
       ok: false,
-      message: "Der Name enthält unzulässige Zeichen.",
+      message: "nameInvalid",
     });
   });
 });

@@ -1,22 +1,28 @@
+import type { Dictionary } from "@/i18n/dictionaries";
+import { useDictionary } from "@/i18n/client";
 import type { Verdict, VerdictCode } from "@/lib/darts/judge";
 import { cn } from "@/lib/utils";
 
 export type VerdictTone = "strong" | "soft" | "bad";
 
-const COPY: Record<VerdictCode, { tone: VerdictTone; title: string; note: string }> = {
-  best: { tone: "strong", title: "Bester Weg", note: "genau richtig" },
-  alternative: { tone: "soft", title: "Alternative", note: "auch richtig" },
-  notRecommended: { tone: "soft", title: "Geht, aber nicht empfohlen", note: "Finish stimmt, Weg ist schlechter" },
-  noCheckout: { tone: "bad", title: "Geht nicht auf", note: "" },
-  checkable: { tone: "bad", title: "Ist checkbar", note: "Es gibt einen Weg" },
-  bogeyRight: { tone: "strong", title: "Richtig", note: "Rest ist nicht checkbar" },
-  setupRight: { tone: "strong", title: "Richtiger Stellwurf", note: "genau richtig" },
-  setupOther: { tone: "soft", title: "Anderer Stellwurf", note: "empfohlen siehe unten" },
+const TONES: Record<VerdictCode, VerdictTone> = {
+  best: "strong",
+  alternative: "soft",
+  notRecommended: "soft",
+  noCheckout: "bad",
+  checkable: "bad",
+  bogeyRight: "strong",
+  setupRight: "strong",
+  setupOther: "soft",
 };
 
-export function verdictCopy(v: Verdict): { tone: VerdictTone; title: string; note: string } {
-  const copy = COPY[v.code];
-  return { ...copy, note: v.detail ?? copy.note };
+/** Ton, Titel und Hinweis eines Ergebnisses; ein Grund (`detail`) ersetzt den Hinweis. */
+export function verdictCopy(
+  v: Verdict,
+  t: Dictionary["study"],
+): { tone: VerdictTone; title: string; note: string } {
+  const { title, note } = t.verdict.codes[v.code];
+  return { tone: TONES[v.code], title, note: v.detail ? t.verdict.detail(v.detail) : note };
 }
 
 const TONE: Record<VerdictTone, string> = {
@@ -27,7 +33,7 @@ const TONE: Record<VerdictTone, string> = {
 
 /** Ergebnis der eingegebenen Antwort, oben in der Auflösung. */
 export function VerdictLine({ verdict }: { verdict: Verdict }) {
-  const { tone, title, note } = verdictCopy(verdict);
+  const { tone, title, note } = verdictCopy(verdict, useDictionary().study);
   return (
     <p
       role="status"

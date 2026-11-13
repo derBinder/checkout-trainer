@@ -2,8 +2,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { I18nProvider } from "@/i18n/client";
 import { PASSWORD_TOGGLE_ATTRIBUTE } from "./form-values";
 import { PasswordInput } from "./password-input";
+
+// Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <I18nProvider locale="de">{children}</I18nProvider>;
+}
 
 function renderInput(props: React.ComponentProps<typeof PasswordInput> = {}) {
   render(
@@ -11,6 +17,7 @@ function renderInput(props: React.ComponentProps<typeof PasswordInput> = {}) {
       <label htmlFor={props.id ?? undefined}>Passwort</label>
       <PasswordInput {...props} />
     </>,
+    { wrapper },
   );
   return screen.getByLabelText<HTMLInputElement>("Passwort", { selector: "input" });
 }
@@ -61,7 +68,7 @@ describe("PasswordInput im Browser", () => {
   });
 
   it("erzeugt eine eigene ID, wenn keine übergeben wird, und verknüpft das Auge damit", () => {
-    render(<PasswordInput name="pw" />);
+    render(<PasswordInput name="pw" />, { wrapper });
     const input = document.querySelector("input");
     const toggle = screen.getByRole("button", { name: "Passwort anzeigen" });
     expect(input?.id).toBeTruthy();

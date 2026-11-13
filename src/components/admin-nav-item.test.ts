@@ -41,7 +41,7 @@ describe("AdminNavItem", () => {
   });
 
   it("reicht Steuerfehler von Next weiter", async () => {
-    getSessionUser.mockImplementation(async () => redirect("/anmelden"));
+    getSessionUser.mockImplementation(async () => redirect("/de/sign-in"));
     await expect(AdminNavItem()).rejects.toHaveProperty(
       "digest",
       expect.stringMatching(/^NEXT_REDIRECT;/),

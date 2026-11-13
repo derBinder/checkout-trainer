@@ -3,6 +3,7 @@ import { LEVEL_CELL, WEAK_RING } from "@/components/level-style";
 import { CELL_BASE, RestGrid } from "@/components/rest-grid";
 import { RestSheet } from "@/components/rest-sheet";
 import { StreakChip } from "@/components/streak-chip";
+import { getDictionary } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { CARDS } from "@/lib/cards";
 import { db } from "@/lib/db";
@@ -29,18 +30,19 @@ export async function StatsStreak() {
 
 export async function StatsOverview() {
   const { counts, levels, hardest } = await loadStats();
+  const t = await getDictionary();
   // Lerninhalt: entsteht erst nach der Zugriffsprüfung und geht nur an diesen Client-Baustein.
   const details = restDetails(CARDS);
 
   return (
     <div className={STATS_BODY}>
-      <LevelCounts value={(level) => counts[level]} />
+      <LevelCounts value={(level) => counts[level]} t={t.stats} />
 
       <RestSheet details={details} levels={levels}>
-        <RestGrid levels={levels} weak={new Set(hardest.map((h) => h.rest))} />
+        <RestGrid levels={levels} weak={new Set(hardest.map((h) => h.rest))} t={t.stats} />
         {hardest.length > 0 && (
           <section className="flex flex-col gap-3">
-            <h2 className="text-xl font-extrabold font-stretch-semi-expanded">Am schwierigsten</h2>
+            <h2 className="text-xl font-extrabold font-stretch-semi-expanded">{t.stats.hardest}</h2>
             <ol className="flex flex-col gap-1">
               {hardest.map(({ rest, again }) => (
                 <li key={rest}>
@@ -52,7 +54,7 @@ export async function StatsOverview() {
                     <span className={cn(CELL_BASE, "h-11 w-14 text-lg", LEVEL_CELL[levels[rest]], WEAK_RING)}>
                       {rest}
                     </span>
-                    <span>{again}× „Nochmal“</span>
+                    <span>{t.stats.againCount(again)}</span>
                   </button>
                 </li>
               ))}

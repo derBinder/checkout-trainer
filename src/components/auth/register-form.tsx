@@ -14,6 +14,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useDictionary, useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
@@ -32,6 +34,8 @@ const FIELDS: FieldSpec[] = [
 
 export function RegisterForm() {
   const router = useRouter();
+  const localePath = useLocalePath();
+  const t = useDictionary();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [password, setPassword] = useState("");
@@ -51,13 +55,13 @@ export function RegisterForm() {
         password: String(form.get("password")),
       });
       if (error) {
-        setError(authErrorMessage(error));
+        setError(authErrorMessage(error, t.auth));
         setPending(false);
         return;
       }
-      router.replace("/warten");
+      router.replace(localePath(ROUTES.pending));
     } catch {
-      setError("Keine Verbindung. Versuche es erneut.");
+      setError(t.auth.noConnection);
       setPending(false);
     }
   }
@@ -71,7 +75,7 @@ export function RegisterForm() {
     >
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">Name</FieldLabel>
+          <FieldLabel htmlFor="name">{t.signUp.name}</FieldLabel>
           <Input
             id="name"
             name="name"
@@ -82,7 +86,7 @@ export function RegisterForm() {
           <FieldError id={errorId("name")}>{errors.name}</FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="email">E-Mail</FieldLabel>
+          <FieldLabel htmlFor="email">{t.signUp.email}</FieldLabel>
           <Input
             id="email"
             name="email"
@@ -95,7 +99,7 @@ export function RegisterForm() {
           <FieldError id={errorId("email")}>{errors.email}</FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Passwort</FieldLabel>
+          <FieldLabel htmlFor="password">{t.signUp.password}</FieldLabel>
           <PasswordInput
             id="password"
             name="password"
@@ -114,7 +118,7 @@ export function RegisterForm() {
       </FieldGroup>
       <div className="flex flex-col gap-3">
         <Button type="submit" size="xl" disabled={pending}>
-          Registrieren
+          {t.signUp.submit}
         </Button>
         {error ? (
           <p role="alert" className="text-sm text-destructive">

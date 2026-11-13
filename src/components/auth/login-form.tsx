@@ -13,6 +13,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useDictionary, useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { authClient } from "@/lib/auth/client";
 import {
   emailSchema,
@@ -28,6 +30,8 @@ const FIELDS: FieldSpec[] = [
 
 export function LoginForm() {
   const router = useRouter();
+  const localePath = useLocalePath();
+  const t = useDictionary();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const { errors, fieldProps, errorId, validateForm } = useFieldErrors(FIELDS);
@@ -44,14 +48,14 @@ export function LoginForm() {
         password: String(form.get("password")),
       });
       if (error) {
-        setError(authErrorMessage(error));
+        setError(authErrorMessage(error, t.auth));
         setPending(false);
         return;
       }
-      // Wartende Konten leitet /heute weiter auf /warten.
-      router.replace("/heute");
+      // Wartende Konten leitet die Übersicht weiter auf die Warteseite.
+      router.replace(localePath(ROUTES.today));
     } catch {
-      setError("Keine Verbindung. Versuche es erneut.");
+      setError(t.auth.noConnection);
       setPending(false);
     }
   }
@@ -65,7 +69,7 @@ export function LoginForm() {
     >
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="email">E-Mail</FieldLabel>
+          <FieldLabel htmlFor="email">{t.signIn.email}</FieldLabel>
           <Input
             id="email"
             name="email"
@@ -78,7 +82,7 @@ export function LoginForm() {
           <FieldError id={errorId("email")}>{errors.email}</FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Passwort</FieldLabel>
+          <FieldLabel htmlFor="password">{t.signIn.password}</FieldLabel>
           <PasswordInput
             id="password"
             name="password"
@@ -91,7 +95,7 @@ export function LoginForm() {
       </FieldGroup>
       <div className="flex flex-col gap-3">
         <Button type="submit" size="xl" disabled={pending}>
-          Anmelden
+          {t.signIn.submit}
         </Button>
         {error ? (
           <p role="alert" className="text-sm text-destructive">

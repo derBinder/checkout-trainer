@@ -13,6 +13,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { useDictionary } from "@/i18n/client";
 import { authClient } from "@/lib/auth/client";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/constants";
 import {
@@ -26,6 +27,7 @@ const FIELDS: FieldSpec[] = [
 ];
 
 export function ChangePasswordForm() {
+  const t = useDictionary();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [pending, setPending] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -64,16 +66,16 @@ export function ChangePasswordForm() {
         revokeOtherSessions: true,
       });
       if (error) {
-        setMessage({ text: authErrorMessage(error), ok: false });
+        setMessage({ text: authErrorMessage(error, t.auth), ok: false });
       } else {
         formElement.reset();
         reset();
         setNewPassword("");
         setFieldsKey((key) => key + 1);
-        setMessage({ text: "Passwort geändert. Andere Geräte sind abgemeldet.", ok: true });
+        setMessage({ text: t.settings.password.changed, ok: true });
       }
     } catch {
-      setMessage({ text: "Keine Verbindung. Versuche es erneut.", ok: false });
+      setMessage({ text: t.auth.noConnection, ok: false });
     }
     setPending(false);
   }
@@ -88,7 +90,7 @@ export function ChangePasswordForm() {
     >
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="currentPassword">Aktuelles Passwort</FieldLabel>
+          <FieldLabel htmlFor="currentPassword">{t.settings.password.current}</FieldLabel>
           <PasswordInput
             key={fieldsKey}
             id="currentPassword"
@@ -102,7 +104,7 @@ export function ChangePasswordForm() {
           </FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="newPassword">Neues Passwort</FieldLabel>
+          <FieldLabel htmlFor="newPassword">{t.settings.password.new}</FieldLabel>
           <PasswordInput
             key={fieldsKey}
             id="newPassword"
@@ -124,7 +126,7 @@ export function ChangePasswordForm() {
       </FieldGroup>
       <div className="flex flex-col gap-3">
         <Button type="submit" variant="secondary" size="xl" disabled={pending}>
-          Passwort ändern
+          {t.settings.password.submit}
         </Button>
         {message ? (
           <p

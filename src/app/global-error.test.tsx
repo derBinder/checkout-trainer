@@ -10,6 +10,7 @@ const { default: GlobalError } = await import("./global-error");
 
 afterEach(() => {
   vi.restoreAllMocks();
+  window.history.replaceState(null, "", "/");
 });
 
 // Eigene Datei: Die Seite rendert <html> und braucht das Dokument als Container. React
@@ -20,18 +21,36 @@ describe("Globale Fehlerseite", () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     const retry = vi.fn();
     const error = new Error("kaputt");
+    window.history.replaceState(null, "", "/de/today");
     render(<GlobalError error={error} retry={retry} />, { container: document });
 
     expect(log).toHaveBeenCalledWith(error);
     expect(screen.getByRole("heading", { name: "Das hat nicht geklappt." })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/heute");
+    expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
     fireEvent.click(screen.getByRole("button", { name: "Erneut versuchen" }));
     expect(retry).toHaveBeenCalledTimes(1);
   });
 
   it("ersetzt das ganze Dokument, mit eigenem Titel", () => {
+    window.history.replaceState(null, "", "/de/stats");
+    render(<GlobalError error={new Error("kaputt")} retry={() => {}} />, { container: document });
+    expect(document.documentElement.getAttribute("lang")).toBe("de");
+    expect(document.title).toBe("Fehler · Checkout-Trainer");
+  });
+
+  it("nimmt im Browser die Sprache aus der Adresse", () => {
+    window.history.replaceState(null, "", "/en/today");
+    render(<GlobalError error={new Error("kaputt")} retry={() => {}} />, { container: document });
+    expect(document.documentElement.getAttribute("lang")).toBe("en");
+    expect(screen.getByRole("heading", { name: "That did not work." })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Back to overview" }).getAttribute("href")).toBe("/en/today");
+  });
+
+  it("rendert auf dem Server immer Englisch, damit die Hydrierung nicht abweicht", () => {
+    window.history.replaceState(null, "", "/de/stats");
     const html = renderToStaticMarkup(<GlobalError error={new Error("kaputt")} retry={() => {}} />);
-    expect(html).toMatch(/^<html lang="de">/);
-    expect(html).toContain("<title>Fehler · Checkout-Trainer</title>");
+    expect(html).toMatch(/^<html lang="en"/);
+    expect(html).toContain("<title>Error · Checkout-Trainer</title>");
+    expect(html).toContain('href="/en/today"');
   });
 });

@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { getDictionary } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { DeleteAccount } from "./delete-account";
 import { NewPerDayInput } from "./new-per-day-form";
@@ -23,8 +24,9 @@ export async function NewPerDayField() {
 export async function DeleteAccountSection() {
   const { operator } = await loadSettings();
   if (operator) return null;
+  const t = await getDictionary();
   return (
-    <SettingsSection title="Konto löschen">
+    <SettingsSection title={t.settings.deleteAccount.title}>
       <DeleteAccount />
     </SettingsSection>
   );

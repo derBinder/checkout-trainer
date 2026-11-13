@@ -41,10 +41,13 @@ function SheetContent({
   children,
   side = "right",
   showCloseButton = true,
+  closeLabel,
   ...props
 }: SheetPrimitive.Popup.Props & {
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
+  /** Beschriftung des Schließen-Knopfs für Screenreader, aus dem Wörterbuch. */
+  closeLabel: string
 }) {
   return (
     <SheetPortal>
@@ -72,7 +75,7 @@ function SheetContent({
           >
             <XIcon
             />
-            <span className="sr-only">Schließen</span>
+            <span className="sr-only">{closeLabel}</span>
           </SheetPrimitive.Close>
         )}
       </SheetPrimitive.Popup>

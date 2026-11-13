@@ -2,12 +2,13 @@
 
 import { useRef, useState } from "react";
 import { DartSlots } from "@/components/dart-slots";
+import { useDictionary } from "@/i18n/client";
 import { restDetailView, type RestDetail } from "@/components/study/card-view";
 import { NoteList } from "@/components/study/study-card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
-import { LEVEL_CELL, LEVEL_LABEL, LEVEL_SAMPLE } from "./level-style";
+import { LEVEL_CELL, LEVEL_SAMPLE } from "./level-style";
 
 type RestSheetProps = {
   details: Record<number, RestDetail>;
@@ -32,6 +33,7 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
 
   // rest bleibt nach dem Schließen gesetzt, damit der Inhalt beim Ausblenden stehen bleibt.
   const detail = rest === null ? undefined : details[rest];
+  const t = useDictionary();
 
   return (
     <div onClick={handleClick} className="flex flex-col gap-10">
@@ -40,6 +42,7 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
         <SheetContent
           side="bottom"
           finalFocus={opener}
+          closeLabel={t.common.close}
           className="mx-auto max-h-5/6 w-full max-w-2xl gap-0 overflow-y-auto rounded-t-panel border-t-0 pb-home-indicator"
         >
           {detail && <RestDetailBody detail={detail} level={levels[detail.rest]} />}
@@ -50,21 +53,22 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
 }
 
 function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level }) {
-  const view = restDetailView(detail);
+  const t = useDictionary();
+  const view = restDetailView(detail, t.study);
   return (
     <>
       <SheetHeader className="gap-2 px-page pt-6 pb-5">
         <SheetTitle className="type-display text-3xl font-black">
-          Rest {detail.rest}
+          {t.study.card.scoreOf(detail.rest)}
         </SheetTitle>
         <SheetDescription className="flex items-center gap-2 text-sm font-medium">
           <span aria-hidden className={cn(LEVEL_SAMPLE, LEVEL_CELL[level])} />
-          Lernstand: {LEVEL_LABEL[level]}
+          {t.stats.levelOf(t.stats.levels[level])}
         </SheetDescription>
       </SheetHeader>
       <div className="flex flex-col gap-4 px-page pb-6">
         {detail.kind === "bogey" && (
-          <p className="type-display text-2xl">Nicht checkbar</p>
+          <p className="type-display text-2xl">{t.study.card.notCheckable}</p>
         )}
         <DartSlots slots={view.slots} tone={view.slotTone} />
         <NoteList notes={view.notes} />

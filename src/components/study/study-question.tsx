@@ -1,5 +1,6 @@
 import { DartSlots } from "@/components/dart-slots";
 import { Button } from "@/components/ui/button";
+import { useDictionary } from "@/i18n/client";
 import { offersNotCheckable, type Answer, type Check } from "@/lib/darts/judge";
 import type { CardView } from "./card-view";
 import { isFull, type InputAction, type InputState } from "./route-input";
@@ -68,6 +69,7 @@ export function QuestionFooter({
   /** Ohne Antwort: ohne Eingabe aufgedeckt. */
   onReveal: (answer?: Answer) => void;
 }) {
+  const t = useDictionary().study.question;
   const verify = (
     <Button
       size="xl"
@@ -75,7 +77,7 @@ export function QuestionFooter({
       disabled={input.darts.length === 0}
       onClick={() => onReveal({ kind: "darts", darts: input.darts })}
     >
-      Prüfen
+      {t.check}
     </Button>
   );
   return (
@@ -88,7 +90,7 @@ export function QuestionFooter({
             className="w-full"
             onClick={() => onReveal({ kind: "notCheckable" })}
           >
-            Nicht checkbar
+            {t.notCheckable}
           </Button>
           {verify}
         </div>
@@ -96,7 +98,7 @@ export function QuestionFooter({
         verify
       )}
       <Button variant="link" size="xs" className="self-center text-muted-foreground" onClick={() => onReveal()}>
-        Ohne Eingabe aufdecken
+        {t.reveal}
       </Button>
     </>
   );

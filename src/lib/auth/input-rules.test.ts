@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
 import { user } from "../db/schema";
-import { AUTH_MESSAGES } from "./constants";
+import { AUTH_ERRORS } from "./constants";
 import { createAuth, seedAdmin } from "./index";
 
 // Direkte Anfragen an den Handler, wie sie jeder ohne Formular schicken kann.
@@ -83,17 +83,17 @@ async function cookieFor(email: string, password = PASSWORD) {
 
 describe("Registrierung: Name, E-Mail, Bild", () => {
   it.each([
-    ["4 MB", FOUR_MB, AUTH_MESSAGES.nameTooLong],
-    ["101 Zeichen", "a".repeat(101), AUTH_MESSAGES.nameTooLong],
-    ["leer", "", AUTH_MESSAGES.nameRequired],
-    ["nur Leerzeichen", "   \t ", AUTH_MESSAGES.nameRequired],
-    ["RTL-Override", "Felix‮evil", AUTH_MESSAGES.nameInvalid],
-    ["NUL", "Fe\u0000lix", AUTH_MESSAGES.nameInvalid],
-    ["Nullbreite", "Fe​lix", AUTH_MESSAGES.nameInvalid],
-    ["Steuerzeichen", "Fe\u0007lix", AUTH_MESSAGES.nameInvalid],
-    ["Objekt", { a: 1 }, AUTH_MESSAGES.nameRequired],
-    ["Zahl", 5, AUTH_MESSAGES.nameRequired],
-    ["null", null, AUTH_MESSAGES.nameRequired],
+    ["4 MB", FOUR_MB, AUTH_ERRORS.nameTooLong],
+    ["101 Zeichen", "a".repeat(101), AUTH_ERRORS.nameTooLong],
+    ["leer", "", AUTH_ERRORS.nameRequired],
+    ["nur Leerzeichen", "   \t ", AUTH_ERRORS.nameRequired],
+    ["RTL-Override", "Felix‮evil", AUTH_ERRORS.nameInvalid],
+    ["NUL", "Fe\u0000lix", AUTH_ERRORS.nameInvalid],
+    ["Nullbreite", "Fe​lix", AUTH_ERRORS.nameInvalid],
+    ["Steuerzeichen", "Fe\u0007lix", AUTH_ERRORS.nameInvalid],
+    ["Objekt", { a: 1 }, AUTH_ERRORS.nameRequired],
+    ["Zahl", 5, AUTH_ERRORS.nameRequired],
+    ["null", null, AUTH_ERRORS.nameRequired],
   ])("lehnt den Namen ab: %s", async (_label, name, message) => {
     const res = await signUp({ name });
     expect(res.status).toBe(400);
@@ -107,7 +107,7 @@ describe("Registrierung: Name, E-Mail, Bild", () => {
       password: PASSWORD,
     });
     expect(res.status).toBe(400);
-    expect(res.message).toBe(AUTH_MESSAGES.nameRequired);
+    expect(res.message).toBe(AUTH_ERRORS.nameRequired);
     expect(await userRow("a@example.test")).toBeUndefined();
   });
 
@@ -116,7 +116,7 @@ describe("Registrierung: Name, E-Mail, Bild", () => {
     expect(email).toHaveLength(10_007);
     const res = await signUp({ email });
     expect(res.status).toBe(400);
-    expect(res.message).toBe(AUTH_MESSAGES.emailTooLong);
+    expect(res.message).toBe(AUTH_ERRORS.emailTooLong);
     expect(await userRow(email)).toBeUndefined();
   });
 
@@ -130,7 +130,7 @@ describe("Registrierung: Name, E-Mail, Bild", () => {
   it("lehnt das Bildfeld ab", async () => {
     const res = await signUp({ image: "javascript:alert(1)" });
     expect(res.status).toBe(400);
-    expect(res.message).toBe(AUTH_MESSAGES.imageNotAllowed);
+    expect(res.message).toBe(AUTH_ERRORS.imageNotAllowed);
     expect(await userRow("a@example.test")).toBeUndefined();
   });
 
@@ -147,7 +147,7 @@ describe("Registrierung: Name, E-Mail, Bild", () => {
       auth.api.signUpEmail({
         body: { email: "b@example.test", password: PASSWORD, name: FOUR_MB },
       }),
-    ).rejects.toThrow(AUTH_MESSAGES.nameTooLong);
+    ).rejects.toThrow(AUTH_ERRORS.nameTooLong);
     expect(await userRow("b@example.test")).toBeUndefined();
   });
 
@@ -164,7 +164,7 @@ describe("Registrierung: Name, E-Mail, Bild", () => {
     }
     const operator = await signUp({ email: OPERATOR });
     expect(operator.status).toBe(400);
-    expect(operator.message).toBe(AUTH_MESSAGES.operatorEmail);
+    expect(operator.message).toBe(AUTH_ERRORS.operatorEmail);
   });
 });
 
@@ -177,13 +177,13 @@ describe("update-user als wartender Nutzer", () => {
   });
 
   it.each([
-    ["4 MB", FOUR_MB, AUTH_MESSAGES.nameTooLong],
-    ["Objekt", { a: 1 }, AUTH_MESSAGES.nameRequired],
-    ["Zahl", 5, AUTH_MESSAGES.nameRequired],
-    ["null", null, AUTH_MESSAGES.nameRequired],
-    ["NUL", "Fe\u0000lix", AUTH_MESSAGES.nameInvalid],
-    ["RTL-Override", "Felix‮evil", AUTH_MESSAGES.nameInvalid],
-    ["nur Leerzeichen", "   ", AUTH_MESSAGES.nameRequired],
+    ["4 MB", FOUR_MB, AUTH_ERRORS.nameTooLong],
+    ["Objekt", { a: 1 }, AUTH_ERRORS.nameRequired],
+    ["Zahl", 5, AUTH_ERRORS.nameRequired],
+    ["null", null, AUTH_ERRORS.nameRequired],
+    ["NUL", "Fe\u0000lix", AUTH_ERRORS.nameInvalid],
+    ["RTL-Override", "Felix‮evil", AUTH_ERRORS.nameInvalid],
+    ["nur Leerzeichen", "   ", AUTH_ERRORS.nameRequired],
   ])("lehnt den Namen ab: %s", async (_label, name, message) => {
     const res = await post("/update-user", { name }, cookie);
     expect(res.status).toBe(400);
@@ -194,7 +194,7 @@ describe("update-user als wartender Nutzer", () => {
   it("lehnt das Bildfeld ab", async () => {
     const res = await post("/update-user", { image: "javascript:alert(1)" }, cookie);
     expect(res.status).toBe(400);
-    expect(res.message).toBe(AUTH_MESSAGES.imageNotAllowed);
+    expect(res.message).toBe(AUTH_ERRORS.imageNotAllowed);
     expect((await userRow("a@example.test")).image).toBeNull();
   });
 
@@ -235,7 +235,7 @@ describe("delete-user verlangt das Passwort", () => {
   ])("lehnt ab: %s", async (_label, body) => {
     const res = await post("/delete-user", body, cookie);
     expect(res.status).toBe(400);
-    expect(res.message).toBe(AUTH_MESSAGES.passwordRequired);
+    expect(res.message).toBe(AUTH_ERRORS.passwordRequired);
     expect(await userRow("a@example.test")).toBeDefined();
   });
 
@@ -256,7 +256,7 @@ describe("delete-user verlangt das Passwort", () => {
     const operatorCookie = await cookieFor(OPERATOR, OPERATOR_PASSWORD);
     const res = await post("/delete-user", { password: OPERATOR_PASSWORD }, operatorCookie);
     expect(res.status).toBe(403);
-    expect(res.message).toBe(AUTH_MESSAGES.operatorDelete);
+    expect(res.message).toBe(AUTH_ERRORS.operatorDelete);
     expect(await userRow(OPERATOR)).toBeDefined();
   });
 });

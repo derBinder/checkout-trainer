@@ -29,12 +29,21 @@ export type SingleCase = {
   follow: FollowText
 }
 
+/** Warum dieser Weg: strukturierter Fall, den das Wörterbuch je Sprache in einen Satz fasst. */
+export type Reason =
+  | { kind: 'only' }
+  | { kind: 'direct' }
+  | { kind: 'split'; a: number; b: number }
+  | { kind: 'singleFinish'; field: number; bull: boolean }
+  | { kind: 'halving'; double: string; times: 1 | 2 | 3 | 4 }
+  | { kind: 'chart' }
+
 export type RestCard = {
   id: string
   kind: 'rest'
   rest: number
   best: string[]
-  reason: string
+  reason: Reason
   alternatives: string[][]
   /** Der Weg der Tabellenspalte „mit 2 Darts“, wenn sie einen nennt (nur 41 bis 170). */
   twoDarts?: string[]
@@ -65,8 +74,6 @@ export type Card = RestCard | MissCard | BogeyCard
 const MIN_REST = 2
 const MAX_REST = 170
 const MAX_ALTERNATIVES = 2
-const TIMES = ['', 'einmal', 'zweimal', 'dreimal', 'viermal']
-const FALLBACK_REASON = 'Der übliche Weg nach Tabelle.'
 
 const fmt = (route: Steps): string[] => route.map(formatStep)
 
@@ -124,28 +131,23 @@ function distinctRoutes(rest: number): number {
   return new Set(keys).size
 }
 
-function reasonFor(rest: number, best: Steps, cases: SingleCase[]): string {
-  if (distinctRoutes(rest) === 1) return 'Der einzige Weg.'
+function reasonFor(rest: number, best: Steps, cases: SingleCase[]): Reason {
+  if (distinctRoutes(rest) === 1) return { kind: 'only' }
   const split = best.find(isSplit)
   if (split) {
     const [a, b] = split.split
-    return `Zwischen ${a.n} und ${b.n} gezielt lässt jedes der beiden Felder ein Doppel.`
+    return { kind: 'split', a: a.n, b: b.n }
   }
   const first = cases[0]
-  if (first) {
-    const field = first.hit.slice(1)
-    if (first.follow.kind === 'finish') {
-      const last = first.follow.route[first.follow.route.length - 1]
-      return last === 'Bull'
-        ? `Bleibt bei Single ${field} auf Bull-Finish.`
-        : `Bleibt bei Single ${field} auf einem Finish.`
-    }
+  if (first && first.follow.kind === 'finish') {
+    const last = first.follow.route[first.follow.route.length - 1]
+    return { kind: 'singleFinish', field: Number(first.hit.slice(1)), bull: last === 'Bull' }
   }
-  if (best.length === 1) return 'Direkt auf das Doppel.'
+  if (best.length === 1) return { kind: 'direct' }
   const last = best[best.length - 1] as Dart
   const count = halvings(last)
-  if (count === 0) return FALLBACK_REASON
-  return `Endet auf ${formatDart(last)}, das sich ${TIMES[count]} halbieren lässt.`
+  if (count === 0) return { kind: 'chart' }
+  return { kind: 'halving', double: formatDart(last), times: count as 1 | 2 | 3 | 4 }
 }
 
 const isPlainSingle = (d: Dart) => d.ring === 'S' && d.n <= 20

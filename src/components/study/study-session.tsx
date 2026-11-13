@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useDictionary, useLocalePath } from "@/i18n/client";
+import { ROUTES } from "@/i18n/paths";
 import { judge, type Answer, type Check } from "@/lib/darts/judge";
 import { submitReview } from "@/lib/review/actions";
-import type { Rating } from "@/lib/srs/fsrs";
+import type { IntervalLabel, Rating } from "@/lib/srs/fsrs";
 import { cn } from "@/lib/utils";
 import type { CardView } from "./card-view";
 import { initInput, inputReducer, type InputAction, type InputState } from "./route-input";
@@ -18,9 +20,9 @@ import {
   STUDY_FOOTER,
   STUDY_HEADER,
   STUDY_HEADER_ROW,
-  StudyCloseLink,
   StudySurface as Surface,
 } from "./study-parts";
+import { StudyCloseLink } from "./study-close-link";
 import { QuestionFooter, StudyQuestion, fixedDarts } from "./study-question";
 import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
 
@@ -32,20 +34,17 @@ export type StudyItem = {
   /** Gespeicherte Wiederholungen beim Laden der Seite. */
   reps: number;
   /** Abstände unter den Knöpfen, je weiterem „Nochmal“ ein Eintrag (siehe intervalLabelChain). */
-  labels: Record<Rating, string>[];
+  labels: Record<Rating, IntervalLabel>[];
 };
 
 const GOOD: Rating = 3;
 
-const RATING_BUTTONS: { rating: Rating; label: string }[] = [
-  { rating: 1, label: "Nochmal" },
-  { rating: 2, label: "Schwer" },
-  { rating: 3, label: "Gut" },
-  { rating: 4, label: "Leicht" },
-];
+const RATINGS: Rating[] = [1, 2, 3, 4];
 
 export function StudySession({ items }: { items: StudyItem[] }) {
   const router = useRouter();
+  const localePath = useLocalePath();
+  const t = useDictionary().study;
   const [byId] = useState(() => new Map(items.map((item) => [item.id, item])));
   const [state, dispatch] = useReducer(studyReducer, items, (list) =>
     initStudy(
@@ -83,11 +82,6 @@ export function StudySession({ items }: { items: StudyItem[] }) {
       },
     );
   }, [toSend]);
-
-  // Abgemeldet und nichts offen: sofort zur Anmeldung.
-  useEffect(() => {
-    if (state.signedOut && unsyncedCount === 0) router.replace("/anmelden");
-  }, [state.signedOut, unsyncedCount, router]);
 
   // Nach einem Fehler automatisch erneut versuchen, mit wachsendem Abstand.
   useEffect(() => {
@@ -132,7 +126,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
   }, [currentId, session.revealed, session.total]);
 
   function confirmClose(event: React.MouseEvent) {
-    if (unsyncedCount > 0 && !window.confirm("Noch nicht alles gespeichert. Trotzdem schließen?")) {
+    if (unsyncedCount > 0 && !window.confirm(t.session.confirmClose)) {
       event.preventDefault();
     }
   }
@@ -140,34 +134,29 @@ export function StudySession({ items }: { items: StudyItem[] }) {
   // Mitten in der Sitzung eine Zeile; die nächste Bewertung versucht es ohnehin erneut.
   const failedHint = state.failed && unsyncedCount > 0 && (
     <p role="status" className="text-center text-sm font-medium text-destructive">
-      Nicht gespeichert, wird erneut versucht
+      {t.session.saveFailed}
     </p>
   );
   const skippedHint = state.skipped > 0 && (
     <p role="status" className="text-center text-sm text-muted-foreground">
-      {state.skipped === 1
-        ? "Eine Bewertung wurde nicht gezählt."
-        : `${state.skipped} Bewertungen wurden nicht gezählt.`}
+      {t.session.skipped(state.skipped)}
     </p>
   );
 
+  // Abgemeldet wird nur beim Senden der ältesten offenen Bewertung; sie bleibt
+  // offen, es gibt hier also immer mindestens eine nicht gespeicherte.
   if (state.signedOut) {
     return (
       <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex-1" />
-        {unsyncedCount > 0 && (
-          <div className="flex flex-col gap-4">
-            <p role="alert" className="text-center text-sm font-medium text-destructive">
-              Du wurdest abgemeldet.{" "}
-              {unsyncedCount === 1
-                ? "1 Bewertung wurde nicht gespeichert."
-                : `${unsyncedCount} Bewertungen wurden nicht gespeichert.`}
-            </p>
-            <Button size="xl" className="w-full" onClick={() => router.replace("/anmelden")}>
-              Zur Anmeldung
-            </Button>
-          </div>
-        )}
+        <div className="flex flex-col gap-4">
+          <p role="alert" className="text-center text-sm font-medium text-destructive">
+            {t.session.signedOut} {t.session.notSaved(unsyncedCount)}
+          </p>
+          <Button size="xl" className="w-full" onClick={() => router.replace(localePath(ROUTES.signIn))}>
+            {t.session.toSignIn}
+          </Button>
+        </div>
       </Surface>
     );
   }
@@ -177,31 +166,31 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     return (
       <Surface className="px-page pt-screen-top pb-inset-bottom">
         <div className="flex flex-1 flex-col gap-5">
-          <h1 className="type-display text-hero">Geschafft</h1>
+          <h1 className="type-display text-hero">{t.session.finished}</h1>
           <p className="text-lg font-medium text-muted-foreground">
-            {session.done === 1 ? "1 Karte" : `${session.done} Karten`} gelernt.
+            {t.session.cardsStudied(session.done)}
           </p>
         </div>
         <div className="flex flex-col gap-3">
           {skippedHint}
           {failedHint}
           {saved ? (
-            <Link href="/heute" className={cn(buttonVariants({ size: "xl" }), "w-full")}>
-              Zur Übersicht
+            <Link href={localePath(ROUTES.today)} className={cn(buttonVariants({ size: "xl" }), "w-full")}>
+              {t.session.toOverview}
             </Link>
           ) : (
             <>
               {state.failed ? (
                 <Button variant="secondary" size="xl" className="w-full" onClick={() => dispatch({ type: "retry" })}>
-                  Erneut versuchen
+                  {t.session.retry}
                 </Button>
               ) : (
                 <p role="status" className="text-center text-sm text-muted-foreground">
-                  Speichere …
+                  {t.session.saving}
                 </p>
               )}
               <Button size="xl" className="w-full" disabled>
-                Zur Übersicht
+                {t.session.toOverview}
               </Button>
             </>
           )}
@@ -229,8 +218,8 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         <Progress
           value={session.done}
           max={session.total}
-          aria-label="Fortschritt"
-          getAriaValueText={() => `${session.done} von ${session.total} Karten gelernt`}
+          aria-label={t.session.progress}
+          getAriaValueText={() => t.session.progressText(session.done, session.total)}
         />
       </header>
 
@@ -266,7 +255,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
         {session.revealed ? (
           // Eine durchgehende Leiste; „Gut“ ist als Normalfall gelb hervorgehoben.
           <div className="grid grid-cols-4 rounded-panel bg-muted p-1">
-            {RATING_BUTTONS.map(({ rating, label }) => (
+            {RATINGS.map((rating) => (
               <button
                 key={rating}
                 type="button"
@@ -278,14 +267,14 @@ export function StudySession({ items }: { items: StudyItem[] }) {
                 )}
                 onClick={() => dispatch({ type: "rate", rating, at: performance.now() })}
               >
-                <span className="text-sm font-semibold">{label}</span>
+                <span className="text-sm font-semibold">{t.session.ratings[rating]}</span>
                 <span
                   className={cn(
                     "text-xs tabular-nums",
                     rating === GOOD ? "text-accent-muted" : "text-muted-foreground",
                   )}
                 >
-                  {labels[rating]}
+                  {t.interval(labels[rating])}
                 </span>
               </button>
             ))}
