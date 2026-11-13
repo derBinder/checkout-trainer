@@ -53,6 +53,9 @@ describe("MathRound", () => {
   it("zeigt Rest, Würfe, die Frage und das Zahlenfeld", () => {
     renderRound([T89, T159]);
     expect(screen.getByText("1 / 2")).toBeTruthy();
+    const progress = screen.getByRole("progressbar", { name: "Fortschritt" });
+    expect(progress.getAttribute("aria-valuetext")).toBe("0 von 2 erledigt");
+    expect(screen.getByRole("button", { name: "Übung beenden" })).toBeTruthy();
     expect(screen.getByText("Rest")).toBeTruthy();
     expect(screen.getByText("211")).toBeTruthy();
     expect(row("Darts")).toEqual(["T20", "T19", "S5"]);
