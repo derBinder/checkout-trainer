@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import { db, type Db } from "../db";
+import * as schema from "../db/schema";
 import { user as userTable } from "../db/schema";
 import { parseName } from "../validation/schemas";
 import {
@@ -64,7 +65,10 @@ function checkProfileInput(path: "/sign-up/email" | "/update-user", body: unknow
  */
 export function createAuth(database: Db) {
   return betterAuth({
-    database: drizzleAdapter(database, { provider: "pg" }),
+    // Schema ausdrücklich: Sonst liest die Schemaprüfung, die Better Auth schon
+    // beim Import startet, `database._` und öffnet damit die Datenbank, auch im
+    // Kurzzeitprozess von `next dev` für die Pfade (zweiter PGlite-Prozess).
+    database: drizzleAdapter(database, { provider: "pg", schema }),
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
