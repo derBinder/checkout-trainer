@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { cardState, user } from "@/lib/db/schema";
+import { EXTRA_SELECT, extraCardsOf } from "@/lib/extra-cards-db";
 import { queueFromRows } from "@/lib/review/queries";
 import { dayKey } from "@/lib/time";
 
@@ -32,6 +33,7 @@ export async function grantExtraNewCards(
         newPerDay: user.newPerDay,
         extraNewDay: user.extraNewDay,
         extraNewCount: user.extraNewCount,
+        ...EXTRA_SELECT,
       })
       .from(user)
       .where(eq(user.id, userId))
@@ -39,7 +41,7 @@ export async function grantExtraNewCards(
     if (!u || u.status !== "active") return { ok: false, reason: "inactive" };
 
     const rows = await tx.select().from(cardState).where(eq(cardState.userId, userId));
-    const { due, fresh, introducedToday, unseenCount } = queueFromRows(rows, u, now);
+    const { due, fresh, introducedToday, unseenCount } = queueFromRows(rows, u, now, extraCardsOf(u));
     if (due.length + fresh.length > 0) return { ok: false, reason: "not-done" };
     if (unseenCount === 0) return { ok: false, reason: "all-introduced" };
 
