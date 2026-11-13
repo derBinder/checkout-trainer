@@ -295,7 +295,7 @@ export const de = {
     againCount: (n: number) => `${n}× „Nochmal“`,
     levelOf: (level: string) => `Lernstand: ${level}`,
     forecast: {
-      until: (date: string) => `Alle Karten freigeschaltet voraussichtlich am ${date}`,
+      until: (date: string) => `Voraussichtlich alle Karten frei am ${date}`,
       done: "Alle Karten freigeschaltet",
       none: "Keine neuen Karten eingestellt",
     },

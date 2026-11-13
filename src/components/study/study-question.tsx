@@ -50,7 +50,10 @@ export function StudyQuestion({
           <div className="flex flex-col gap-1">
             <p className={EYEBROW}>{question.label}</p>
             <p className={BIG_NUMERAL}>{question.big}</p>
-            {question.sub && <p className="text-center font-medium text-muted-foreground">{question.sub}</p>}
+            {/* Klein und ohne Zeilenabstand: Mit dieser Zeile passt die Frage auf 375 × 667 noch ohne Scrollen. */}
+            {question.sub && (
+              <p className="text-center text-sm leading-none font-medium text-muted-foreground">{question.sub}</p>
+            )}
           </div>
           {dartSlots}
         </div>

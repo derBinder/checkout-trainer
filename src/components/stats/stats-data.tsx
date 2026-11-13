@@ -41,7 +41,8 @@ async function forecastText({ forecast: f, now }: { forecast: Forecast; now: Dat
     case "none":
       return t.stats.forecast.none;
     case "date":
-      return t.stats.forecast.until(formatDay(f.day, locale, now));
+      // Geschützte Leerzeichen: Auf schmalen Bildschirmen bricht die Zeile vor dem Datum um, nicht darin.
+      return t.stats.forecast.until(formatDay(f.day, locale, now).replaceAll(" ", "\u00a0"));
   }
 }
 

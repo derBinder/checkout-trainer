@@ -88,7 +88,9 @@ describe("Prognose", () => {
     queue(30, 0);
     render(await StatsOverview(), { wrapper });
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, new Date("2026-11-13T10:00:00Z"));
-    expect(screen.getByText("Alle Karten freigeschaltet voraussichtlich am 19. November")).toBeTruthy();
+    const line = screen.getByText("Voraussichtlich alle Karten frei am 19. November");
+    // Tag und Monat brechen nicht auseinander.
+    expect(line.textContent).toContain("19.\u00a0November");
   });
 
   it("meldet, wenn alle Karten freigeschaltet sind", async () => {
