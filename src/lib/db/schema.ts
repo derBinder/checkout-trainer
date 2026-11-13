@@ -38,6 +38,11 @@ export const user = pgTable("user", {
   // gepflegt und kein Better-Auth-Feld: über dessen Endpunkte nicht setzbar.
   extraNewDay: text("extra_new_day"),
   extraNewCount: integer("extra_new_count").default(0).notNull(),
+  // Schalter für Zusatzkarten, anfangs aus. Wie extraNew* von Hand gepflegt und
+  // kein Better-Auth-Feld: nur über die eigene Server Action setzbar.
+  extraSingleDouble: boolean("extra_single_double").default(false).notNull(),
+  extraNeighbours: boolean("extra_neighbours").default(false).notNull(),
+  extraOver170: boolean("extra_over_170").default(false).notNull(),
 });
 
 export const session = pgTable(
