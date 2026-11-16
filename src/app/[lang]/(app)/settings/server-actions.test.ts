@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import type { Db } from "@/lib/db";
 import { createTestDb } from "@/lib/db/test-db";
-import { user } from "@/lib/db/schema";
+import { cardState, reviewLog, user } from "@/lib/db/schema";
 import { NO_EXTRA_CARDS } from "@/lib/extra-cards";
 import { loadExtraCards } from "@/lib/extra-cards-db";
 
@@ -31,7 +31,7 @@ vi.mock("next/cache", () => ({ revalidatePath }));
 vi.stubEnv("BETTER_AUTH_URL", "http://localhost:3000");
 state.db = await createTestDb();
 const { auth } = await import("@/lib/auth");
-const { updateExtraCards } = await import("./actions");
+const { resetLearningProgress, updateExtraCards } = await import("./actions");
 
 const PASSWORD = "ein-langes-passwort";
 let counter = 0;
@@ -80,5 +80,48 @@ describe("updateExtraCards", () => {
     expect(await updateExtraCards("over170", "true" as never)).toEqual({ ok: false });
     expect(await loadExtraCards(state.db, id)).toEqual(NO_EXTRA_CARDS);
     expect(revalidatePath).not.toHaveBeenCalled();
+  });
+});
+
+describe("resetLearningProgress", () => {
+  async function addProgress(userId: string) {
+    const now = new Date("2026-11-10T10:00:00Z");
+    await state.db.insert(cardState).values({
+      userId,
+      cardId: "r40",
+      due: now,
+      stability: 1,
+      difficulty: 5,
+      elapsedDays: 0,
+      scheduledDays: 1,
+      learningSteps: 0,
+      reps: 1,
+      lapses: 0,
+      state: 2,
+      lastReview: now,
+      introducedAt: now,
+    });
+    await state.db.insert(reviewLog).values({ userId, cardId: "r40", rating: 3, reviewedAt: now });
+  }
+
+  it("resets the progress of the signed-in active account and refreshes the pages", async () => {
+    const id = await signedIn("active");
+    await addProgress(id);
+    expect(await resetLearningProgress()).toEqual({ ok: true });
+    expect(await state.db.select().from(cardState).where(eq(cardState.userId, id))).toHaveLength(0);
+    expect(await state.db.select().from(reviewLog).where(eq(reviewLog.userId, id))).toHaveLength(0);
+    expect(revalidatePath).toHaveBeenCalledWith("/[lang]/(app)", "layout");
+  });
+
+  it("refuses without a session", async () => {
+    expect(await resetLearningProgress()).toEqual({ ok: false });
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
+
+  it.each(["pending", "blocked"] as const)("refuses a %s account and keeps its progress", async (status) => {
+    const id = await signedIn(status);
+    await addProgress(id);
+    expect(await resetLearningProgress()).toEqual({ ok: false });
+    expect(await state.db.select().from(cardState).where(eq(cardState.userId, id))).toHaveLength(1);
   });
 });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
+import { ResetProgress } from "@/components/settings/reset-progress";
 import { NewPerDayForm } from "@/components/settings/new-per-day-form";
 import { DeleteAccountSection, ExtraCardsField, NewPerDayField } from "@/components/settings/settings-data";
 import { SETTINGS_BODY, SettingsSection } from "@/components/settings/settings-parts";
@@ -46,6 +47,10 @@ export default async function SettingsPage() {
         <Suspense fallback={<ExtraCardsSkeleton />}>
           <ExtraCardsField />
         </Suspense>
+      </SettingsSection>
+
+      <SettingsSection title={t.settings.resetProgress.title}>
+        <ResetProgress />
       </SettingsSection>
 
       <SettingsSection title={t.settings.password.title}>
