@@ -21,7 +21,9 @@ export function restDates({ states, logs }: RestDatesInput): Record<number, Rest
   const logsByCard = new Map<string, RestDatesInput["logs"]>();
   // Stabil nach Zeit sortiert: bei gleicher Zeit bleibt die Reihenfolge der Eingabe.
   for (const log of [...logs].sort((a, b) => a.reviewedAt.getTime() - b.reviewedAt.getTime())) {
-    logsByCard.set(log.cardId, [...(logsByCard.get(log.cardId) ?? []), log]);
+    const list = logsByCard.get(log.cardId);
+    if (list) list.push(log);
+    else logsByCard.set(log.cardId, [log]);
   }
 
   const dates: Record<number, RestDates> = {};
