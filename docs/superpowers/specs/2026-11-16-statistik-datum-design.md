@@ -34,19 +34,20 @@ Gewählt wurde B, weil Datenmenge und App klein sind und B den riskantesten Teil
 
 ## Umsetzung
 
-- `src/lib/stats.ts`: `summarize` liefert zusätzlich `dates: Record<number, { learned: string; known?: string }>` (Berliner Tage als `YYYY-MM-DD`). Für jeden Rest mit Lernstand gibt es einen Eintrag. `learned` kommt aus `introducedAt`. Dafür bekommt `StatsInput.states` das Feld `introducedAt`. `known` entsteht, indem die Bewertungen der Rest- bzw. Bogey-Karte nach `reviewedAt` (bei Gleichstand nach `id`) abgespielt werden:
+- `src/lib/rest-dates.ts` (neu): `restDates({ states, logs })` liefert `Record<number, { learned: string; known?: string }>` (Berliner Tage als `YYYY-MM-DD`), je ein Eintrag für jeden Rest mit Lernstand. `summarize` bleibt unverändert, denn auch die Heute-Seite ruft es auf und braucht das Abspielen nicht. `learned` kommt aus `introducedAt`. `known` entsteht, indem die Bewertungen der Rest- bzw. Bogey-Karte nach `reviewedAt` (stabil sortiert) abgespielt werden:
   - Wird der Zustand nach einer Bewertung sicher, merkt sich die Funktion deren Tag, falls noch keiner gemerkt ist.
   - Wird er nicht sicher, löscht sie den Tag.
-  - Ergibt der Lauf am Ende „nicht sicher“, obwohl der gespeicherte Stand „sicher“ sagt (etwa nach geänderten Parametern), entfällt `known`. Die Zeile fehlt dann, statt ein falsches Datum zu zeigen.
-- `src/lib/review/queries.ts`: `loadStatsData` lädt zusätzlich `introducedAt` und die `id` der Bewertungen (für die Reihenfolge bei Gleichstand).
-- `src/components/stats/stats-data.tsx`: reicht `dates` an das Blatt weiter. Datumsformat über ein neues `formatDate` neben `formatDay` in `src/lib/forecast.ts` oder in `src/lib/time.ts`.
+  - Gilt der gespeicherte Stand oder der Stand am Ende des Abspielens nicht als „sicher“ (etwa nach geänderten Parametern oder fehlenden Bewertungen), entfällt `known`. Die Zeile fehlt dann, statt ein falsches Datum zu zeigen.
+- `src/lib/stats.ts`: `levelOf` wird exportiert und von `restDates` mitbenutzt.
+- `src/lib/review/queries.ts`: `loadStatsData` lädt zusätzlich `introducedAt` und sortiert die Bewertungen nach `reviewedAt`, dann `id`, damit gleiche Zeitstempel eine feste Reihenfolge haben.
+- `src/components/stats/stats-data.tsx`: ruft `restDates` auf und reicht die formatierten Daten an das Blatt weiter. Datumsformat über ein neues `formatDate` neben `formatDay` in `src/lib/forecast.ts` oder in `src/lib/time.ts`.
 - `src/components/rest-sheet.tsx`: `RestDetailBody` zeigt unter der Stufe die ein bzw. zwei Zeilen.
 - `src/i18n/dictionaries/de.ts` und `en.ts`: `stats.learnedOn(date)` („gelernt am …“ / „learned on …“) und `stats.knownSince(date)` („sicher seit …“ / „known since …“).
 - Das Datum ist Nutzerdaten, kein Lerninhalt. Es entsteht erst im Datenbaustein nach `requireActiveUser()`, nie im vorgerenderten Gerüst, und wird nicht gecacht.
 
 ## Tests (zuerst schreiben)
 
-- `src/lib/stats.test.ts`: Rest im Lernen (nur `learned`), Rest sicher (beide Daten), Rückfall mit Neuaufbau (neues `known`, altes `learned`), Rückfall ohne Neuaufbau (kein `known`), neuer Rest (kein Eintrag), Abweichung zwischen gespeichertem Stand und Abspielergebnis (kein `known`).
+- `src/lib/rest-dates.test.ts`: Rest im Lernen (nur `learned`), Rest sicher (beide Daten), Rückfall mit Neuaufbau (neues `known`, altes `learned`), Rückfall ohne Neuaufbau (kein `known`), neuer Rest (kein Eintrag), Abweichung zwischen gespeichertem Stand und Abspielergebnis (kein `known`).
 - `src/components/rest-sheet.test.tsx`: Blatt für neu, im Lernen und sicher; deutsch und englisch.
 - `src/components/stats/stats-data.test.tsx` und `src/lib/review/review.test.ts`: angepasst an die erweiterten Daten.
 - `no-hardcoded-text.test.ts` bleibt grün, weil alle Texte aus dem Wörterbuch kommen.
