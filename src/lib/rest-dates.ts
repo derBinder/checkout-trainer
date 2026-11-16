@@ -3,11 +3,11 @@ import { rate, type Rating, type SrsState } from "@/lib/srs/fsrs";
 import { levelOf } from "@/lib/stats";
 import { dayKey } from "@/lib/time";
 
-/** Berliner Tage (`YYYY-MM-DD`): wann der Rest zuerst drankam und seit wann er lückenlos sicher ist. */
-type RestDates = { learned: string; known?: string };
+/** Berliner Tage (`YYYY-MM-DD`): wann der Rest zuerst drankam, seit wann er lückenlos sicher ist und wann seine Karte wieder fällig ist. */
+type RestDates = { learned: string; known?: string; due: string };
 
 type RestDatesInput = {
-  states: { cardId: string; state: number; scheduledDays: number; introducedAt: Date }[];
+  states: { cardId: string; state: number; scheduledDays: number; introducedAt: Date; due: Date }[];
   logs: { cardId: string; rating: number; reviewedAt: Date }[];
 };
 
@@ -31,7 +31,7 @@ export function restDates({ states, logs }: RestDatesInput): Record<number, Rest
     const card = cardById(s.cardId);
     if (!card || (card.kind !== "rest" && card.kind !== "bogey")) continue;
 
-    const entry: RestDates = { learned: dayKey(s.introducedAt) };
+    const entry: RestDates = { learned: dayKey(s.introducedAt), due: dayKey(s.due) };
     let known: string | undefined;
     let replayed: SrsState | null = null;
     for (const log of logsByCard.get(s.cardId) ?? []) {

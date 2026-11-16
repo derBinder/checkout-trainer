@@ -11,6 +11,7 @@ import { forecast, formatDate, formatDay, type Forecast } from "@/lib/forecast";
 import { loadQueue, loadStatsData } from "@/lib/review/queries";
 import { restDates } from "@/lib/rest-dates";
 import { summarize } from "@/lib/stats";
+import { dayKey } from "@/lib/time";
 import { cn } from "@/lib/utils";
 import { restDetails } from "./rest-details";
 import { FORECAST_LINE, LevelCounts, STATS_BODY, STATS_COUNTS } from "./stats-parts";
@@ -58,10 +59,16 @@ export async function StatsOverview() {
   const { counts, levels, hardest } = stats;
   const [t, locale, forecastLine] = await Promise.all([getDictionary(), getLocale(), forecastText(stats)]);
   // Nutzerdaten: entstehen erst hier, nach der Zugriffsprüfung des Laders.
+  const today = dayKey(stats.now);
   const dates = Object.fromEntries(
     Object.entries(stats.dates).map(([rest, d]) => [
       rest,
-      { learned: formatDate(d.learned, locale), ...(d.known && { known: formatDate(d.known, locale) }) },
+      {
+        learned: formatDate(d.learned, locale),
+        ...(d.known && { known: formatDate(d.known, locale) }),
+        // Schon fällige Karten bekommen kein Datum in der Vergangenheit.
+        due: d.due > today ? formatDate(d.due, locale) : null,
+      },
     ]),
   );
   // Lerninhalt: entsteht erst nach der Zugriffsprüfung und geht nur an diesen Client-Baustein.

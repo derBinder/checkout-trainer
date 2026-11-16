@@ -19,8 +19,8 @@ const levels: Record<number, Level> = Object.fromEntries(
 levels[100] = "known";
 levels[170] = "learning";
 const dates = {
-  100: { learned: "01.01.2026", known: "05.01.2026" },
-  170: { learned: "02.01.2026" },
+  100: { learned: "01.01.2026", known: "05.01.2026", due: "20.01.2026" },
+  170: { learned: "02.01.2026", due: null },
 };
 
 function setup(locale: Locale = "de") {
@@ -98,6 +98,20 @@ describe("RestSheet", () => {
     expect(dialog.textContent).toContain("sicher seit 05.01.2026");
   });
 
+  it("nennt, wann die Karte wieder fällig ist", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "100, sicher" }));
+    expect((await screen.findByRole("dialog")).textContent).toContain("fällig am 20.01.2026");
+  });
+
+  it("sagt „heute fällig“, wenn die Karte schon dran ist", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "170, im Lernen" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("heute fällig");
+    expect(dialog.textContent).not.toContain("fällig am");
+  });
+
   it("nennt bei einer Zahl im Lernen nur das Lerndatum", async () => {
     const user = setup();
     await user.click(screen.getByRole("button", { name: "170, im Lernen" }));
@@ -112,6 +126,7 @@ describe("RestSheet", () => {
     const dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).not.toContain("gelernt am");
     expect(dialog.textContent).not.toContain("sicher seit");
+    expect(dialog.textContent).not.toContain("fällig");
   });
 
   it("nennt die Daten auf Englisch", async () => {
@@ -120,5 +135,6 @@ describe("RestSheet", () => {
     const dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).toContain("learned on 01.01.2026");
     expect(dialog.textContent).toContain("known since 05.01.2026");
+    expect(dialog.textContent).toContain("due on 20.01.2026");
   });
 });

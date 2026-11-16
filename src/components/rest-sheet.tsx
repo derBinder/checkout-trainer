@@ -10,11 +10,14 @@ import type { Level } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { LEVEL_CELL, LEVEL_SAMPLE } from "./level-style";
 
+/** Fertig formatiert; `due` ist `null`, wenn die Karte heute oder schon früher fällig ist. */
+type RestSheetDates = { learned: string; known?: string; due: string | null };
+
 type RestSheetProps = {
   details: Record<number, RestDetail>;
   levels: Record<number, Level>;
   /** Fertig formatierte Tage je Rest mit Lernstand; ein Rest ohne Eintrag (neu) zeigt keine Zeile. */
-  dates: Record<number, { learned: string; known?: string }>;
+  dates: Record<number, RestSheetDates>;
   /** Server-gerendertes Raster und Liste; jedes Element mit data-rest öffnet das Sheet. */
   children: React.ReactNode;
 };
@@ -61,7 +64,7 @@ function RestDetailBody({
 }: {
   detail: RestDetail;
   level: Level;
-  dates: { learned: string; known?: string } | undefined;
+  dates: RestSheetDates | undefined;
 }) {
   const t = useDictionary();
   const view = restDetailView(detail, t.study);
@@ -77,13 +80,17 @@ function RestDetailBody({
         </SheetDescription>
         {dates && (
           <p className="text-sm text-muted-foreground">
-            {t.stats.learnedOn(dates.learned)}
-            {dates.known && (
-              <>
-                <br />
-                {t.stats.knownSince(dates.known)}
-              </>
-            )}
+            {[
+              t.stats.learnedOn(dates.learned),
+              dates.known && t.stats.knownSince(dates.known),
+              dates.due ? t.stats.dueOn(dates.due) : t.stats.dueToday,
+            ]
+              .filter(Boolean)
+              .map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
           </p>
         )}
       </SheetHeader>

@@ -36,6 +36,7 @@ vi.mock("@/lib/review/queries", () => queries);
 const { StatsOverview, StatsStreak } = await import("./stats-data");
 
 const introducedAt = new Date("2026-11-01T10:00:00Z");
+const due = new Date("2026-12-20T10:00:00Z");
 const again = (cardId: string) => ({ cardId, rating: 1, reviewedAt: new Date() });
 
 function queue(unseenCount: number, newLeftToday: number) {
@@ -57,8 +58,8 @@ describe("StatsOverview", () => {
   it("zählt die Lernstände, zeigt das Raster und die schwierigsten Reste", async () => {
     queries.loadStatsData.mockResolvedValue({
       states: [
-        { cardId: "r-5", state: State.Review, scheduledDays: 30, introducedAt },
-        { cardId: "r-7", state: State.Learning, scheduledDays: 0, introducedAt },
+        { cardId: "r-5", state: State.Review, scheduledDays: 30, introducedAt, due },
+        { cardId: "r-7", state: State.Learning, scheduledDays: 0, introducedAt, due },
       ],
       logs: [again("r-7"), again("r-7"), again("r-5")],
     });
@@ -84,35 +85,41 @@ describe("StatsOverview", () => {
   it("nennt im Detailblatt das Lerndatum, aber kein Sicher-seit-Datum, das der Verlauf nicht trägt", async () => {
     queries.loadStatsData.mockResolvedValue({
       states: [
-        { cardId: "r-5", state: State.Review, scheduledDays: 30, introducedAt },
-        { cardId: "r-7", state: State.Learning, scheduledDays: 0, introducedAt },
+        { cardId: "r-5", state: State.Review, scheduledDays: 30, introducedAt, due },
+        // Schon überfällig: „heute fällig“ statt eines Datums in der Vergangenheit.
+        { cardId: "r-7", state: State.Learning, scheduledDays: 0, introducedAt, due: new Date("2026-11-16T08:00:00Z") },
       ],
       // Ein einzelnes „Nochmal“ erklärt keinen Stand „sicher“: kein Datum erfinden.
       logs: [again("r-5")],
     });
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-16T10:00:00Z"));
     const person = userEvent.setup();
     render(await StatsOverview(), { wrapper });
 
     await person.click(screen.getByRole("button", { name: "7, im Lernen" }));
     let dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).toContain("gelernt am 01.11.2026");
+    expect(dialog.textContent).toContain("heute fällig");
     await person.click(within(dialog).getByRole("button", { name: "Schließen" }));
 
     await person.click(screen.getByRole("button", { name: /^5, sicher/ }));
     dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).toContain("gelernt am 01.11.2026");
     expect(dialog.textContent).not.toContain("sicher seit");
+    expect(dialog.textContent).toContain("fällig am 20.12.2026");
     await person.click(within(dialog).getByRole("button", { name: "Schließen" }));
 
     await person.click(screen.getByRole("button", { name: "6, neu" }));
     dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).not.toContain("gelernt am");
+    expect(dialog.textContent).not.toContain("fällig");
   });
 
   it.each([
-    ["de", "gelernt am", "sicher seit", "sicher"],
-    ["en", "learned on", "known since", "known"],
-  ] as const)("nennt im Detailblatt gelernt am und sicher seit im Format der Sprache (%s)", async (locale, learnedOn, knownSince, level) => {
+    ["de", "gelernt am", "sicher seit", "fällig am", "sicher"],
+    ["en", "learned on", "known since", "due on", "known"],
+  ] as const)("nennt im Detailblatt gelernt am und sicher seit im Format der Sprache (%s)", async (locale, learnedOn, knownSince, dueOn, level) => {
     // Bewertungen und gespeicherter Stand aus demselben rate()-Verlauf: der Verlauf trägt „sicher“.
     const logs: { cardId: string; rating: number; reviewedAt: Date }[] = [];
     const levels: string[] = [];
@@ -127,10 +134,12 @@ describe("StatsOverview", () => {
     expect(levels.at(-1)).toBe("known");
     const knownDay = dayKey(logs[levels.indexOf("known")].reviewedAt);
     queries.loadStatsData.mockResolvedValue({
-      states: [{ cardId: "r-5", state: card!.state, scheduledDays: card!.scheduledDays, introducedAt }],
+      states: [{ cardId: "r-5", state: card!.state, scheduledDays: card!.scheduledDays, introducedAt, due: card!.due }],
       logs,
     });
     request.lang = locale;
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-16T10:00:00Z"));
     const person = userEvent.setup();
     render(await StatsOverview(), { wrapper: wrapperFor(locale) });
 
@@ -138,6 +147,37 @@ describe("StatsOverview", () => {
     const dialog = await screen.findByRole("dialog");
     expect(dialog.textContent).toContain(`${learnedOn} ${formatDate(dayKey(introducedAt), locale)}`);
     expect(dialog.textContent).toContain(`${knownSince} ${formatDate(knownDay, locale)}`);
+    expect(dialog.textContent).toContain(`${dueOn} ${formatDate(dayKey(card!.due), locale)}`);
+  });
+
+  it("zählt für „heute fällig“ den Berliner Tag, nicht die Uhrzeit", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-16T10:00:00Z"));
+    const row = (cardId: string, dueAt: string) => ({
+      cardId,
+      state: State.Learning,
+      scheduledDays: 0,
+      introducedAt,
+      due: new Date(dueAt),
+    });
+    queries.loadStatsData.mockResolvedValue({
+      states: [
+        row("r-7", "2026-11-16T20:00:00Z"), // heute abend, 21:00 in Berlin
+        row("r-8", "2026-11-16T23:30:00Z"), // 00:30 in Berlin, also morgen
+      ],
+      logs: [],
+    });
+    const person = userEvent.setup();
+    render(await StatsOverview(), { wrapper });
+
+    await person.click(screen.getByRole("button", { name: "7, im Lernen" }));
+    let dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("heute fällig");
+    await person.click(within(dialog).getByRole("button", { name: "Schließen" }));
+
+    await person.click(screen.getByRole("button", { name: "8, im Lernen" }));
+    dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("fällig am 17.11.2026");
   });
 
   it("lässt die schwierigsten Reste weg, solange es kein „Nochmal“ gab", async () => {

@@ -162,6 +162,10 @@ describe("Übrige Seiten", () => {
     expect(en.stats.learnedOn("01/01/2026")).toBe("learned on 01/01/2026");
     expect(de.stats.knownSince("05.01.2026")).toBe("sicher seit 05.01.2026");
     expect(en.stats.knownSince("05/01/2026")).toBe("known since 05/01/2026");
+    expect(de.stats.dueOn("20.01.2026")).toBe("fällig am 20.01.2026");
+    expect(en.stats.dueOn("20/01/2026")).toBe("due on 20/01/2026");
+    expect(de.stats.dueToday).toBe("heute fällig");
+    expect(en.stats.dueToday).toBe("due today");
   });
 
   it("setzt Namen und Datum in die Texte der Verwaltung", () => {
