@@ -1,5 +1,9 @@
+import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 import { State } from "ts-fsrs";
+import { cardState, user } from "@/lib/db/schema";
+import { createTestDb } from "@/lib/db/test-db";
+import { applyReview, loadStatsData } from "@/lib/review/queries";
 import { rate, type Rating, type SrsState } from "@/lib/srs/fsrs";
 import { levelOf, type Level } from "@/lib/stats";
 import { dayKey } from "@/lib/time";
@@ -7,6 +11,8 @@ import { restDates } from "./rest-dates";
 
 const DAY_MS = 24 * 3600_000;
 const start = new Date("2026-03-02T10:00:00Z");
+// Kurz vor Mitternacht UTC: in Berlin schon der nächste Tag, auch über den Jahreswechsel.
+const lateStart = new Date("2025-12-31T23:30:00Z");
 
 type Log = { cardId: string; rating: number; reviewedAt: Date };
 const GOOD_RUN: Rating[] = [3, 3, 3, 3, 3, 3];
@@ -15,11 +21,11 @@ const GOOD_RUN: Rating[] = [3, 3, 3, 3, 3, 3];
  * Spielt die Bewertungen durch rate() ab, jede folgende am Fälligkeitstag des vorigen Ergebnisses
  * (mindestens einen Tag später). Gespeicherter Stand und Log passen so per Konstruktion zusammen.
  */
-function simulate(cardId: string, ratings: Rating[]) {
+function simulate(cardId: string, ratings: Rating[], first = start) {
   const logs: Log[] = [];
   const trace: { reviewedAt: Date; level: Level }[] = [];
   let state: SrsState | null = null;
-  let at = start;
+  let at = first;
   for (const rating of ratings) {
     state = rate(state, rating, at);
     logs.push({ cardId, rating, reviewedAt: at });
@@ -100,6 +106,39 @@ describe("restDates", () => {
     const { logs, final, trace } = simulate("r-100", GOOD_RUN);
     const dates = restDates({ states: [rowOf("r-100", final)], logs: [...logs].reverse() });
     expect(dates[100].known).toBe(trailingKnownDay(trace));
+  });
+
+  it("puts a review shortly before midnight UTC on the next Berlin day", () => {
+    const { logs, final, trace } = simulate("r-100", GOOD_RUN, lateStart);
+    const known = restDates({ states: [rowOf("r-100", final, lateStart)], logs })[100].known!;
+    const first = trace.find((t) => t.level === "known")!.reviewedAt;
+    // Die Bewertung liegt um 23:30 UTC: der UTC-Tag wäre ein anderer als der Berliner Tag.
+    expect(first.toISOString().slice(11, 16)).toBe("23:30");
+    expect(known).not.toBe(first.toISOString().slice(0, 10));
+    expect(known).toBe(trailingKnownDay(trace));
+  });
+
+  it("matches the dates a real run through applyReview produces", async () => {
+    const db = await createTestDb();
+    await db.insert(user).values({ id: "u1", name: "u1", email: "u1@x.test", status: "active" });
+    const u = { id: "u1", newPerDay: 10 };
+    const ratings: Rating[] = [3, 4, 3, 2, 3, 3, 3, 1, 3, 4, 3, 2, 3, 3, 3, 3];
+    const levels: { reviewedAt: Date; level: Level }[] = [];
+    let at = start;
+    let reps = 0;
+    for (const rating of ratings) {
+      expect(await applyReview(db, u, { cardId: "r-100", rating, reps }, at)).toEqual({ ok: true });
+      const [row] = await db.select().from(cardState).where(eq(cardState.cardId, "r-100"));
+      levels.push({ reviewedAt: at, level: levelOf(row.state, row.scheduledDays) });
+      reps = row.reps;
+      at = new Date(Math.max(row.due.getTime(), at.getTime() + DAY_MS));
+    }
+    expect(levels.at(-1)?.level).toBe("known");
+
+    const { states, logs } = await loadStatsData(db, "u1");
+    expect(restDates({ states, logs })).toEqual({
+      100: { learned: dayKey(start), known: trailingKnownDay(levels) },
+    });
   });
 
   it("uses the Berlin day", () => {
