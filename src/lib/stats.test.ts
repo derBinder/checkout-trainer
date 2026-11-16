@@ -167,7 +167,19 @@ describe("loadStatsData", () => {
     ]);
 
     const data = await loadStatsData(db, "u1");
-    expect(data.states).toEqual([{ cardId: "r-40", state: State.Review, scheduledDays: 30 }]);
+    expect(data.states).toEqual([{ cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: now }]);
     expect(data.logs).toEqual([{ cardId: "r-40", rating: 1, reviewedAt: now }]);
+  });
+
+  it("returns the logs ordered by time, then by id", async () => {
+    const db = await createTestDb();
+    await db.insert(user).values({ id: "u1", name: "u1", email: "u1@x.test", status: "active" });
+    const late = new Date(now.getTime() + 1000);
+    const log = (id: number, cardId: string, reviewedAt: Date) => ({ id, userId: "u1", cardId, rating: 3, reviewedAt });
+    // Eingefügt: spät, dann zwei gleichzeitige Zeilen mit der höheren id zuerst. Nur die id kann sie ordnen.
+    await db.insert(reviewLog).values([log(1, "r-3", late), log(9, "r-2", now), log(8, "r-1", now)]);
+
+    const data = await loadStatsData(db, "u1");
+    expect(data.logs.map((l) => l.cardId)).toEqual(["r-1", "r-2", "r-3"]);
   });
 });

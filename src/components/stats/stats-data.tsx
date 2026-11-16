@@ -7,8 +7,9 @@ import { getDictionary, getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { CARDS } from "@/lib/cards";
 import { db } from "@/lib/db";
-import { forecast, formatDay, type Forecast } from "@/lib/forecast";
+import { forecast, formatDate, formatDay, type Forecast } from "@/lib/forecast";
 import { loadQueue, loadStatsData } from "@/lib/review/queries";
+import { restDates } from "@/lib/rest-dates";
 import { summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { restDetails } from "./rest-details";
@@ -28,6 +29,7 @@ const loadStats = cache(async () => {
   ]);
   return {
     ...summarize({ states, logs, now }),
+    dates: restDates({ states, logs }),
     forecast: forecast({ unseen: unseenCount, newLeftToday, newPerDay: user.newPerDay, now }),
     now,
   };
@@ -54,7 +56,14 @@ export async function StatsStreak() {
 export async function StatsOverview() {
   const stats = await loadStats();
   const { counts, levels, hardest } = stats;
-  const [t, forecastLine] = await Promise.all([getDictionary(), forecastText(stats)]);
+  const [t, locale, forecastLine] = await Promise.all([getDictionary(), getLocale(), forecastText(stats)]);
+  // Nutzerdaten: entstehen erst hier, nach der Zugriffsprüfung des Laders.
+  const dates = Object.fromEntries(
+    Object.entries(stats.dates).map(([rest, d]) => [
+      rest,
+      { learned: formatDate(d.learned, locale), ...(d.known && { known: formatDate(d.known, locale) }) },
+    ]),
+  );
   // Lerninhalt: entsteht erst nach der Zugriffsprüfung und geht nur an diesen Client-Baustein.
   const details = restDetails(CARDS);
 
@@ -65,7 +74,7 @@ export async function StatsOverview() {
         <p className={FORECAST_LINE}>{forecastLine}</p>
       </div>
 
-      <RestSheet details={details} levels={levels}>
+      <RestSheet details={details} levels={levels} dates={dates}>
         <RestGrid levels={levels} weak={new Set(hardest.map((h) => h.rest))} t={t.stats} />
         {hardest.length > 0 && (
           <section className="flex flex-col gap-3">

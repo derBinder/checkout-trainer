@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { forecast, formatDay } from "./forecast";
+import { forecast, formatDate, formatDay } from "./forecast";
 
 const now = new Date("2026-11-13T10:00:00Z");
 const at = (unseen: number, newLeftToday: number, newPerDay: number, when = now) =>
@@ -58,5 +58,16 @@ describe("formatDay", () => {
   it("nennt das Jahr nur, wenn es nicht das laufende ist", () => {
     expect(formatDay("2027-01-14", "de", now)).toBe("14. Januar 2027");
     expect(formatDay("2027-01-14", "en", now)).toBe("14 January 2027");
+  });
+});
+
+describe("formatDate", () => {
+  it("schreibt den Tag numerisch in der Reihenfolge der Sprache", () => {
+    expect(formatDate("2026-01-05", "de")).toBe("05.01.2026");
+    expect(formatDate("2026-01-05", "en")).toBe("05/01/2026");
+  });
+
+  it("nennt das Jahr immer, auch im laufenden", () => {
+    expect(formatDate("2026-12-31", "de")).toBe("31.12.2026");
   });
 });

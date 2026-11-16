@@ -319,6 +319,8 @@ export const en: Dictionary = {
     hardest: "Hardest",
     againCount: (n: number) => `${n}× “Again”`,
     levelOf: (level: string) => `Level: ${level}`,
+    learnedOn: (date: string) => `learned on ${date}`,
+    knownSince: (date: string) => `known since ${date}`,
     forecast: {
       until: (date: string) => `All cards unlocked by ${date}`,
       done: "All cards unlocked",

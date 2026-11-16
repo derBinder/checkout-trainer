@@ -166,13 +166,16 @@ export async function loadStatsData(db: Db, userId: string) {
         cardId: cardState.cardId,
         state: cardState.state,
         scheduledDays: cardState.scheduledDays,
+        introducedAt: cardState.introducedAt,
       })
       .from(cardState)
       .where(eq(cardState.userId, userId)),
     db
       .select({ cardId: reviewLog.cardId, rating: reviewLog.rating, reviewedAt: reviewLog.reviewedAt })
       .from(reviewLog)
-      .where(eq(reviewLog.userId, userId)),
+      .where(eq(reviewLog.userId, userId))
+      // Die id entscheidet bei gleicher Zeit: restDates spielt die Bewertungen in dieser Reihenfolge ab.
+      .orderBy(reviewLog.reviewedAt, reviewLog.id),
   ]);
   return { states, logs };
 }
