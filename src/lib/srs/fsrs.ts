@@ -26,6 +26,9 @@ const DAY_MS = 24 * HOUR_MS;
 // an extra memory value (stabilityFast) that card_state has no column for, and its
 // scheduler is async. The (deprecated) classic API runs FSRS-6, is synchronous and its
 // card fits SrsState, so it is used here on purpose.
+//
+// Die Statistik („sicher seit“, src/lib/rest-dates.ts) spielt review_log mit diesen Parametern
+// neu ab. Ändert man sie, verschieben sich diese Daten, ohne dass etwas fehlschlägt.
 const scheduler = fsrs(generatorParameters({ enable_fuzz: false, enable_short_term: false }));
 
 function toCard(prev: SrsState | null, now: Date): Card {
