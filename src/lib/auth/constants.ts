@@ -28,3 +28,8 @@ export const AUTH_ERRORS = {
 } as const;
 
 export type AuthErrorKey = keyof typeof AUTH_ERRORS;
+
+// Obergrenze für Konten im Status pending. Weiche Grenze: parallele Anmeldungen
+// können sie um wenige überschreiten. Der Betreiber schafft durch Freischalten
+// oder Löschen wieder Platz.
+export const MAX_PENDING_USERS = 100;

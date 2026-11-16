@@ -3,7 +3,8 @@ import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
 import { session, user } from "../db/schema";
-import { AUTH_ERRORS } from "./constants";
+import type { UserStatus } from "../db/schema";
+import { AUTH_ERRORS, MAX_PENDING_USERS } from "./constants";
 import { createAuth, seedAdmin } from "./index";
 
 const OPERATOR = "betreiber@checkout-trainer.test";
@@ -118,6 +119,49 @@ describe("Registrierung", () => {
   it("lehnt ein Passwort mit 9 Zeichen ab, nimmt 10 an", async () => {
     await expect(signUp("e@example.test", {}, "123456789")).rejects.toThrow();
     await expect(signUp("f@example.test", {}, "1234567890")).resolves.toBeDefined();
+  });
+});
+
+describe("Obergrenze wartender Konten", () => {
+  async function fillUsers(count: number, status: UserStatus) {
+    await db.insert(user).values(
+      Array.from({ length: count }, (_, i) => ({
+        id: `${status}-${i}`,
+        name: "Fuell",
+        email: `${status}-${i}@example.test`,
+        status,
+      })),
+    );
+  }
+
+  it("lässt die Registrierung zu, solange weniger als die Obergrenze wartet", async () => {
+    await fillUsers(MAX_PENDING_USERS - 1, "pending");
+    await expect(signUp("neu@example.test")).resolves.toBeDefined();
+    expect((await userRow("neu@example.test")).status).toBe("pending");
+  });
+
+  it("lehnt die Registrierung ab, sobald die Obergrenze erreicht ist", async () => {
+    await fillUsers(MAX_PENDING_USERS, "pending");
+    await expect(signUp("neu@example.test")).rejects.toThrow(AUTH_ERRORS.signUpClosed);
+    expect(await userRow("neu@example.test")).toBeUndefined();
+  });
+
+  it("zählt aktive und gesperrte Konten nicht mit", async () => {
+    await fillUsers(MAX_PENDING_USERS, "active");
+    await fillUsers(MAX_PENDING_USERS, "blocked");
+    await fillUsers(3, "pending");
+    await expect(signUp("neu@example.test")).resolves.toBeDefined();
+  });
+
+  it("lässt wartende Konten sich auch bei voller Grenze anmelden", async () => {
+    await signUp("alt@example.test");
+    await fillUsers(MAX_PENDING_USERS, "pending");
+    await expect(sessionHeaders("alt@example.test")).resolves.toBeDefined();
+  });
+
+  it("meldet die Betreiberadresse bei voller Grenze weiter mit der bisherigen Meldung", async () => {
+    await fillUsers(MAX_PENDING_USERS, "pending");
+    await expect(signUp(OPERATOR)).rejects.toThrow(AUTH_ERRORS.operatorEmail);
   });
 });
 
