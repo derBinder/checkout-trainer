@@ -193,7 +193,7 @@ describe("Einstellungen", () => {
     render(await SettingsPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Einstellungen" })).toBeTruthy();
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Zusatzkarten", "Passwort ändern", "Abmelden"]);
+    expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Zusatzkarten", "Lernstand zurücksetzen", "Passwort ändern", "Abmelden"]);
     expect(screen.getByText("Schalter Zusatzkarten")).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "Darstellung" })).toBeTruthy();
     expect(screen.getByText("Feld Neue Karten")).toBeTruthy();
@@ -279,7 +279,7 @@ describe("Angemeldete Seiten auf Englisch", () => {
     rootParams.lang = "en";
     render(await SettingsPage(), { wrapper: wrapperEn });
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Change password", "Sign out"]);
+    expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Reset progress", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
   });
 

@@ -379,6 +379,15 @@ export const de = {
       submit: "Passwort ändern",
       changed: "Passwort geändert. Andere Geräte sind abgemeldet.",
     },
+    resetProgress: {
+      title: "Lernstand zurücksetzen",
+      hint: "Fängt mit allen Karten wieder von vorn an. Dein Konto und deine Einstellungen bleiben.",
+      question: "Lernstand zurücksetzen?",
+      description:
+        "Alle Karten, dein Verlauf, die Statistik und deine Serie werden gelöscht. Das lässt sich nicht rückgängig machen.",
+      confirm: "Endgültig zurücksetzen",
+      done: "Lernstand zurückgesetzt.",
+    },
     deleteAccount: {
       title: "Konto löschen",
       question: "Konto löschen?",
