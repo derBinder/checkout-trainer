@@ -73,7 +73,7 @@ Kosten: keine.
 
 ### Stand der Umsetzung (2026-11-11): Schritte 5 und 6 laufen beim Bau
 
-Die von Neon angelegten Variablen sind bei Vercel als geheim markiert und lassen sich nicht auf diesen Rechner zurücklesen. Deshalb werden Schema und Betreiberkonto nicht mehr von Hand eingespielt, sondern beim Bau der Produktionsbereitstellung: `vercel.json` setzt als Build-Befehl `sh scripts/vercel-build.sh`. Das Skript spielt in der Produktionsumgebung zuerst die Migrationen über `DATABASE_URL_UNPOOLED` ein und legt, wenn `ADMIN_INITIAL_PASSWORD` gesetzt ist, das Betreiberkonto an. Beides ist wiederholbar. Vorschau-Bereitstellungen fassen die Datenbank nicht an.
+Die von Neon angelegten Variablen sind bei Vercel als geheim markiert und lassen sich nicht auf diesen Rechner zurücklesen. Deshalb werden Schema und Betreiberkonto nicht mehr von Hand eingespielt, sondern beim Bau der Produktionsbereitstellung: `vercel.json` setzt als Build-Befehl `sh scripts/vercel-build.sh`. Das Skript prüft in der Produktionsumgebung zuerst, dass `DATABASE_URL_UNPOOLED` gesetzt ist, und führt dann `next build` aus. Erst nach erfolgreichem Bau spielt es die Migrationen über `DATABASE_URL_UNPOOLED` ein und legt, wenn `ADMIN_INITIAL_PASSWORD` gesetzt ist, das Betreiberkonto an. Beides ist wiederholbar. Scheitert der Bau, bleibt die Datenbank unberührt und die Live-Seite läuft unverändert weiter. Die Migrationen sollten trotzdem additiv bleiben (erst erweitern, später aufräumen): Zwischen Migration und Freischaltung der neuen Version läuft noch kurz der alte Code. Vorschau-Bereitstellungen fassen die Datenbank nicht an.
 
 Das Startpasswort gibst du selbst ein, es läuft nicht durch den Chat:
 
