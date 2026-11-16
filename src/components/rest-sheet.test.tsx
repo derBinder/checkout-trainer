@@ -18,12 +18,16 @@ const levels: Record<number, Level> = Object.fromEntries(
 );
 levels[100] = "known";
 levels[170] = "learning";
+const dates = {
+  100: { learned: "01.01.2026", known: "05.01.2026" },
+  170: { learned: "02.01.2026" },
+};
 
 function setup(locale: Locale = "de") {
   const user = userEvent.setup();
   render(
     <I18nProvider locale={locale}>
-      <RestSheet details={details} levels={levels}>
+      <RestSheet details={details} levels={levels} dates={dates}>
         <p>Tippe auf einen Rest.</p>
         <RestGrid levels={levels} weak={new Set()} t={(locale === "de" ? de : en).stats} />
       </RestSheet>
@@ -84,5 +88,37 @@ describe("RestSheet", () => {
     expect(dialog.textContent).toContain("Level: new");
     expect(dialog.textContent).toContain("No checkout");
     expect(within(dialog).getByRole("button", { name: "Close" })).toBeTruthy();
+  });
+
+  it("nennt bei einer sicheren Zahl beide Daten", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "100, sicher" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("gelernt am 01.01.2026");
+    expect(dialog.textContent).toContain("sicher seit 05.01.2026");
+  });
+
+  it("nennt bei einer Zahl im Lernen nur das Lerndatum", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "170, im Lernen" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("gelernt am 02.01.2026");
+    expect(dialog.textContent).not.toContain("sicher seit");
+  });
+
+  it("zeigt bei einer neuen Zahl kein Datum", async () => {
+    const user = setup();
+    await user.click(screen.getByRole("button", { name: "169, neu, nicht checkbar" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).not.toContain("gelernt am");
+    expect(dialog.textContent).not.toContain("sicher seit");
+  });
+
+  it("nennt die Daten auf Englisch", async () => {
+    const user = setup("en");
+    await user.click(screen.getByRole("button", { name: "100, known" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.textContent).toContain("learned on 01.01.2026");
+    expect(dialog.textContent).toContain("known since 05.01.2026");
   });
 });

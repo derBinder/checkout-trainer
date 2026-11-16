@@ -158,6 +158,10 @@ describe("Übrige Seiten", () => {
     expect(en.stats.againCount(3)).toBe("3× “Again”");
     expect(de.stats.levelOf("neu")).toBe("Lernstand: neu");
     expect(en.stats.levelOf("new")).toBe("Level: new");
+    expect(de.stats.learnedOn("01.01.2026")).toBe("gelernt am 01.01.2026");
+    expect(en.stats.learnedOn("01/01/2026")).toBe("learned on 01/01/2026");
+    expect(de.stats.knownSince("05.01.2026")).toBe("sicher seit 05.01.2026");
+    expect(en.stats.knownSince("05/01/2026")).toBe("known since 05/01/2026");
   });
 
   it("setzt Namen und Datum in die Texte der Verwaltung", () => {
