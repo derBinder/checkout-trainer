@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { db, type Db } from "../db";
 import * as schema from "../db/schema";
 import { user as userTable } from "../db/schema";
@@ -11,6 +11,7 @@ import { parseName } from "../validation/schemas";
 import {
   AUTH_ERRORS,
   MAX_EMAIL_LENGTH,
+  MAX_PENDING_USERS,
   MIN_PASSWORD_LENGTH,
 } from "./constants";
 
@@ -115,6 +116,19 @@ export function createAuth(database: Db) {
           throw new APIError("BAD_REQUEST", {
             message: AUTH_ERRORS.operatorEmail,
           });
+        }
+        // Der Betreiber schaltet von Hand frei: Ohne Grenze könnte ein Bot mit
+        // wechselnden IPs echte Anfragen unter Wartenden begraben.
+        if (ctx.path === "/sign-up/email") {
+          const [pending] = await database
+            .select({ n: count() })
+            .from(userTable)
+            .where(eq(userTable.status, "pending"));
+          if ((pending?.n ?? 0) >= MAX_PENDING_USERS) {
+            throw new APIError("FORBIDDEN", {
+              message: AUTH_ERRORS.signUpClosed,
+            });
+          }
         }
         if (ctx.path === "/sign-up/email" || ctx.path === "/update-user") {
           return checkProfileInput(ctx.path, ctx.body);

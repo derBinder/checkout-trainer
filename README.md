@@ -1,6 +1,6 @@
 # Checkout-Trainer
 
-Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Betreiber schaltet jedes Konto von Hand frei. Es werden keine E-Mails verschickt.
+Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Betreiber schaltet jedes Konto von Hand frei. Es warten höchstens 100 Konten gleichzeitig (`MAX_PENDING_USERS`), danach ist die Registrierung bis zum Freischalten oder Löschen geschlossen. Es werden keine E-Mails verschickt.
 
 ## Lokale Einrichtung
 
