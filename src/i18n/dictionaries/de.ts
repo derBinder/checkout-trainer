@@ -334,6 +334,8 @@ export const de = {
     hardest: "Am schwierigsten",
     againCount: (n: number) => `${n}× „Nochmal“`,
     levelOf: (level: string) => `Lernstand: ${level}`,
+    learnedOn: (date: string) => `gelernt am ${date}`,
+    knownSince: (date: string) => `sicher seit ${date}`,
     forecast: {
       until: (date: string) => `Voraussichtlich alle Karten frei am ${date}`,
       done: "Alle Karten freigeschaltet",

@@ -43,3 +43,13 @@ export function formatDay(day: string, locale: Locale, now: Date): string {
     timeZone: "UTC",
   }).format(new Date(`${day}T12:00:00Z`));
 }
+
+/** Ein Berliner Tag numerisch mit Jahr, als „05.01.2026“ bzw. „05/01/2026“. */
+export function formatDate(day: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(INTL_LOCALE[locale], {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${day}T12:00:00Z`));
+}

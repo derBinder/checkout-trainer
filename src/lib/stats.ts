@@ -26,7 +26,7 @@ const KNOWN_MIN_DAYS = 21;
 const HARDEST_LIMIT = 5;
 const AGAIN = 1;
 
-function levelOf(state: number, scheduledDays: number): Level {
+export function levelOf(state: number, scheduledDays: number): Level {
   return state === State.Review && scheduledDays >= KNOWN_MIN_DAYS ? "known" : "learning";
 }
 

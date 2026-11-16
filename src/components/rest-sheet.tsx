@@ -13,12 +13,14 @@ import { LEVEL_CELL, LEVEL_SAMPLE } from "./level-style";
 type RestSheetProps = {
   details: Record<number, RestDetail>;
   levels: Record<number, Level>;
+  /** Fertig formatierte Tage je Rest mit Lernstand; ein Rest ohne Eintrag (neu) zeigt keine Zeile. */
+  dates: Record<number, { learned: string; known?: string }>;
   /** Server-gerendertes Raster und Liste; jedes Element mit data-rest öffnet das Sheet. */
   children: React.ReactNode;
 };
 
 /** Öffnet zu einem angetippten Rest ein Sheet mit Weg, Begründung und Alternativen. */
-export function RestSheet({ details, levels, children }: RestSheetProps) {
+export function RestSheet({ details, levels, dates, children }: RestSheetProps) {
   const [rest, setRest] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const opener = useRef<HTMLElement | null>(null);
@@ -45,14 +47,22 @@ export function RestSheet({ details, levels, children }: RestSheetProps) {
           closeLabel={t.common.close}
           className="mx-auto max-h-5/6 w-full max-w-2xl gap-0 overflow-y-auto rounded-t-panel border-t-0 pb-home-indicator"
         >
-          {detail && <RestDetailBody detail={detail} level={levels[detail.rest]} />}
+          {detail && <RestDetailBody detail={detail} level={levels[detail.rest]} dates={dates[detail.rest]} />}
         </SheetContent>
       </Sheet>
     </div>
   );
 }
 
-function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level }) {
+function RestDetailBody({
+  detail,
+  level,
+  dates,
+}: {
+  detail: RestDetail;
+  level: Level;
+  dates: { learned: string; known?: string } | undefined;
+}) {
   const t = useDictionary();
   const view = restDetailView(detail, t.study);
   return (
@@ -65,6 +75,17 @@ function RestDetailBody({ detail, level }: { detail: RestDetail; level: Level })
           <span aria-hidden className={cn(LEVEL_SAMPLE, LEVEL_CELL[level])} />
           {t.stats.levelOf(t.stats.levels[level])}
         </SheetDescription>
+        {dates && (
+          <p className="text-sm text-muted-foreground">
+            {t.stats.learnedOn(dates.learned)}
+            {dates.known && (
+              <>
+                <br />
+                {t.stats.knownSince(dates.known)}
+              </>
+            )}
+          </p>
+        )}
       </SheetHeader>
       <div className="flex flex-col gap-4 px-page pb-6">
         {detail.kind === "bogey" && (
