@@ -364,6 +364,15 @@ export const en: Dictionary = {
       submit: "Change password",
       changed: "Password changed. Other devices are signed out.",
     },
+    resetProgress: {
+      title: "Reset progress",
+      hint: "Starts all cards over from the beginning. Your account and settings stay.",
+      question: "Reset progress?",
+      description:
+        "All cards, your history, your stats and your streak will be deleted. This cannot be undone.",
+      confirm: "Reset for good",
+      done: "Progress reset.",
+    },
     deleteAccount: {
       title: "Delete account",
       question: "Delete account?",
