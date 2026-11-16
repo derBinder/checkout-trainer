@@ -85,7 +85,7 @@ Der Auftraggeber hat diesen Ablauf dauerhaft freigegeben und will ihn nicht jede
 2. Vor dem Commit `npm run test:coverage`, `npm run typecheck`, `npm run lint`.
 3. Commit auf dem Branch, den Branch nach `develop` mergen (`--no-ff`).
 4. `develop` nach `main` mergen, dann aus dem Hauptverzeichnis (`main`, sauberer Stand) mit `npx vercel@65.12.1 deploy --prod` direkt bereitstellen (CLI, ohne Git-Anbindung, siehe [docs/bereitstellung.md](docs/bereitstellung.md)). Gepusht wird nie.
-5. Bringt die Änderung eine Migration mit, vorher die erzeugte SQL-Datei prüfen: Sie läuft beim Prod-Bau automatisch auf Neon (`scripts/vercel-build.sh`).
+5. Bringt die Änderung eine Migration mit, vorher die erzeugte SQL-Datei prüfen: Sie läuft beim Prod-Bau automatisch auf Neon (`scripts/vercel-build.sh`), aber erst nach erfolgreichem `next build`. Sie bleibt trotzdem additiv (erst erweitern, später aufräumen), weil zwischen Migration und Freischaltung der neuen Version noch kurz der alte Code läuft.
 6. Nach dem Deploy kurz prüfen, dass die Produktionsadresse antwortet, und Ergebnis melden.
 
 ## Pakete installieren
