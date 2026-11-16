@@ -1,12 +1,12 @@
 import { cardById } from "@/lib/cards";
 import { rate, type Rating, type SrsState } from "@/lib/srs/fsrs";
-import { levelOf, MAX_REST, MIN_REST } from "@/lib/stats";
+import { levelOf } from "@/lib/stats";
 import { dayKey } from "@/lib/time";
 
 /** Berliner Tage (`YYYY-MM-DD`): wann der Rest zuerst drankam und seit wann er lückenlos sicher ist. */
-export type RestDates = { learned: string; known?: string };
+type RestDates = { learned: string; known?: string };
 
-export type RestDatesInput = {
+type RestDatesInput = {
   states: { cardId: string; state: number; scheduledDays: number; introducedAt: Date }[];
   logs: { cardId: string; rating: number; reviewedAt: Date }[];
 };
@@ -28,7 +28,6 @@ export function restDates({ states, logs }: RestDatesInput): Record<number, Rest
   for (const s of states) {
     const card = cardById(s.cardId);
     if (!card || (card.kind !== "rest" && card.kind !== "bogey")) continue;
-    if (card.rest < MIN_REST || card.rest > MAX_REST) continue;
 
     const entry: RestDates = { learned: dayKey(s.introducedAt) };
     let known: string | undefined;

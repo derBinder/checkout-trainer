@@ -84,6 +84,26 @@ describe("restDates", () => {
     expect(restDates({ states: [row], logs })).toEqual({ 40: { learned: dayKey(start) } });
   });
 
+  it("drops known when the replay is known but the stored state is not", () => {
+    const { logs } = simulate("r-100", GOOD_RUN);
+    const row = { cardId: "r-100", state: State.Learning, scheduledDays: 0, introducedAt: start };
+    expect(restDates({ states: [row], logs })).toEqual({ 100: { learned: dayKey(start) } });
+  });
+
+  it("keeps the replays of different rests apart", () => {
+    const known = simulate("r-100", GOOD_RUN);
+    const lapsed = simulate("r-101", [...GOOD_RUN, 1]);
+    // Nach Zeit gemischt: Bewertungen beider Reste wechseln sich ab.
+    const logs = [...known.logs, ...lapsed.logs].sort((a, b) => a.reviewedAt.getTime() - b.reviewedAt.getTime());
+    expect(logs.map((l) => l.cardId)).toContain("r-101");
+    expect(new Set(logs.slice(0, 4).map((l) => l.cardId)).size).toBe(2);
+    const states = [rowOf("r-100", known.final), rowOf("r-101", lapsed.final)];
+    expect(restDates({ states, logs })).toEqual({
+      100: { learned: dayKey(start), known: trailingKnownDay(known.trace) },
+      101: { learned: dayKey(start) },
+    });
+  });
+
   it("gives learned only when there are no logs", () => {
     const row = { cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: start };
     expect(restDates({ states: [row], logs: [] })).toEqual({ 40: { learned: dayKey(start) } });
