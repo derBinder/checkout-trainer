@@ -321,6 +321,8 @@ export const en: Dictionary = {
     levelOf: (level: string) => `Level: ${level}`,
     learnedOn: (date: string) => `learned on ${date}`,
     knownSince: (date: string) => `known since ${date}`,
+    dueOn: (date: string) => `due on ${date}`,
+    dueToday: "due today",
     forecast: {
       until: (date: string) => `All cards unlocked by ${date}`,
       done: "All cards unlocked",

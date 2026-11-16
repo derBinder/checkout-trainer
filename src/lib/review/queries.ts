@@ -167,6 +167,7 @@ export async function loadStatsData(db: Db, userId: string) {
         state: cardState.state,
         scheduledDays: cardState.scheduledDays,
         introducedAt: cardState.introducedAt,
+        due: cardState.due,
       })
       .from(cardState)
       .where(eq(cardState.userId, userId)),
