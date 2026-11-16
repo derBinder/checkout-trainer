@@ -40,6 +40,7 @@ const rowOf = (cardId: string, final: SrsState, introducedAt = start) => ({
   state: final.state,
   scheduledDays: final.scheduledDays,
   introducedAt,
+  due: final.due,
 });
 
 /** Tag der ersten Bewertung des abschließenden Abschnitts, in dem die Karte sicher war. */
@@ -51,15 +52,15 @@ function trailingKnownDay(trace: { reviewedAt: Date; level: Level }[]): string {
 
 describe("restDates", () => {
   it("gives only learned for a card in learning", () => {
-    const row = { cardId: "r-40", state: State.Learning, scheduledDays: 0, introducedAt: start };
-    expect(restDates({ states: [row], logs: [] })).toEqual({ 40: { learned: dayKey(start) } });
+    const row = { cardId: "r-40", state: State.Learning, scheduledDays: 0, introducedAt: start, due: start };
+    expect(restDates({ states: [row], logs: [] })).toEqual({ 40: { learned: dayKey(start), due: dayKey(start) } });
   });
 
   it("gives learned and known for a known card", () => {
     const { logs, final, trace } = simulate("r-100", GOOD_RUN);
     expect(trace.at(-1)?.level).toBe("known");
     const dates = restDates({ states: [rowOf("r-100", final)], logs });
-    expect(dates).toEqual({ 100: { learned: dayKey(start), known: trailingKnownDay(trace) } });
+    expect(dates).toEqual({ 100: { learned: dayKey(start), known: trailingKnownDay(trace), due: dayKey(final.due) } });
   });
 
   it("resets known after a lapse and sets it again later", () => {
@@ -75,19 +76,19 @@ describe("restDates", () => {
   it("drops known while a lapsed card is not known again", () => {
     const { logs, final, trace } = simulate("r-100", [...GOOD_RUN, 1]);
     expect(trace.at(-1)?.level).not.toBe("known");
-    expect(restDates({ states: [rowOf("r-100", final)], logs })).toEqual({ 100: { learned: dayKey(start) } });
+    expect(restDates({ states: [rowOf("r-100", final)], logs })).toEqual({ 100: { learned: dayKey(start), due: dayKey(final.due) } });
   });
 
   it("drops known when the stored state and the replay disagree", () => {
-    const row = { cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: start };
+    const row = { cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: start, due: start };
     const logs = [{ cardId: "r-40", rating: 1, reviewedAt: start }];
-    expect(restDates({ states: [row], logs })).toEqual({ 40: { learned: dayKey(start) } });
+    expect(restDates({ states: [row], logs })).toEqual({ 40: { learned: dayKey(start), due: dayKey(start) } });
   });
 
   it("drops known when the replay is known but the stored state is not", () => {
     const { logs } = simulate("r-100", GOOD_RUN);
-    const row = { cardId: "r-100", state: State.Learning, scheduledDays: 0, introducedAt: start };
-    expect(restDates({ states: [row], logs })).toEqual({ 100: { learned: dayKey(start) } });
+    const row = { cardId: "r-100", state: State.Learning, scheduledDays: 0, introducedAt: start, due: start };
+    expect(restDates({ states: [row], logs })).toEqual({ 100: { learned: dayKey(start), due: dayKey(start) } });
   });
 
   it("keeps the replays of different rests apart", () => {
@@ -99,14 +100,14 @@ describe("restDates", () => {
     expect(new Set(logs.slice(0, 4).map((l) => l.cardId)).size).toBe(2);
     const states = [rowOf("r-100", known.final), rowOf("r-101", lapsed.final)];
     expect(restDates({ states, logs })).toEqual({
-      100: { learned: dayKey(start), known: trailingKnownDay(known.trace) },
-      101: { learned: dayKey(start) },
+      100: { learned: dayKey(start), known: trailingKnownDay(known.trace), due: dayKey(known.final.due) },
+      101: { learned: dayKey(start), due: dayKey(lapsed.final.due) },
     });
   });
 
   it("gives learned only when there are no logs", () => {
-    const row = { cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: start };
-    expect(restDates({ states: [row], logs: [] })).toEqual({ 40: { learned: dayKey(start) } });
+    const row = { cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: start, due: start };
+    expect(restDates({ states: [row], logs: [] })).toEqual({ 40: { learned: dayKey(start), due: dayKey(start) } });
   });
 
   it("ignores logs of other cards and unknown ids", () => {
@@ -156,21 +157,29 @@ describe("restDates", () => {
     expect(levels.at(-1)?.level).toBe("known");
 
     const { states, logs } = await loadStatsData(db, "u1");
+    const [stored] = states;
     expect(restDates({ states, logs })).toEqual({
-      100: { learned: dayKey(start), known: trailingKnownDay(levels) },
+      100: { learned: dayKey(start), known: trailingKnownDay(levels), due: dayKey(stored.due) },
     });
   });
 
   it("uses the Berlin day", () => {
-    const row = { cardId: "r-40", state: State.Learning, scheduledDays: 0, introducedAt: new Date("2025-12-31T23:30:00Z") };
+    const row = { cardId: "r-40", state: State.Learning, scheduledDays: 0, introducedAt: new Date("2025-12-31T23:30:00Z"), due: start };
     expect(restDates({ states: [row], logs: [] })[40].learned).toBe("2026-01-01");
   });
 
   it("also covers a bogey card", () => {
     const { logs, final, trace } = simulate("b-169", GOOD_RUN);
     expect(restDates({ states: [rowOf("b-169", final)], logs })).toEqual({
-      169: { learned: dayKey(start), known: trailingKnownDay(trace) },
+      169: { learned: dayKey(start), known: trailingKnownDay(trace), due: dayKey(final.due) },
     });
+  });
+
+  it("gives the Berlin day on which the card is due next", () => {
+    const row = (due: string) => ({ cardId: "r-40", state: State.Review, scheduledDays: 3, introducedAt: start, due: new Date(due) });
+    expect(restDates({ states: [row("2026-12-24T09:00:00Z")], logs: [] })[40].due).toBe("2026-12-24");
+    // 23:30 UTC ist in Berlin schon der nächste Tag.
+    expect(restDates({ states: [row("2026-12-23T23:30:00Z")], logs: [] })[40].due).toBe("2026-12-24");
   });
 
   it("has no entry for a rest without state", () => {

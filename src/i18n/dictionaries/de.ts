@@ -336,6 +336,8 @@ export const de = {
     levelOf: (level: string) => `Lernstand: ${level}`,
     learnedOn: (date: string) => `gelernt am ${date}`,
     knownSince: (date: string) => `sicher seit ${date}`,
+    dueOn: (date: string) => `fällig am ${date}`,
+    dueToday: "heute fällig",
     forecast: {
       until: (date: string) => `Voraussichtlich alle Karten frei am ${date}`,
       done: "Alle Karten freigeschaltet",

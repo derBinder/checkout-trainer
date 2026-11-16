@@ -167,7 +167,7 @@ describe("loadStatsData", () => {
     ]);
 
     const data = await loadStatsData(db, "u1");
-    expect(data.states).toEqual([{ cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: now }]);
+    expect(data.states).toEqual([{ cardId: "r-40", state: State.Review, scheduledDays: 30, introducedAt: now, due: now }]);
     expect(data.logs).toEqual([{ cardId: "r-40", rating: 1, reviewedAt: now }]);
   });
 
