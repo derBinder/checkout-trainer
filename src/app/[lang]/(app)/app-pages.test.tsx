@@ -60,6 +60,7 @@ vi.mock("@/components/settings/settings-data", async () => ({
 vi.mock("@/components/admin-nav-item", async () => ({
   AdminNavItem: await dataStub("Verwaltung"),
 }));
+vi.mock("@/components/session-refresh", () => ({ SessionRefresh: () => null }));
 vi.mock("@/components/settings/new-per-day-form", () => ({
   NewPerDayForm: ({ children }: { children: React.ReactNode }) => <form>{children}</form>,
 }));

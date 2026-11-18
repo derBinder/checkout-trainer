@@ -14,7 +14,7 @@ vi.mock("next/navigation", () => ({
   notFound: () => notFound(),
   redirect: (to: string) => redirect(to),
 }));
-vi.mock("./index", () => ({ auth: { api: { getSession: () => getSession() } } }));
+vi.mock("./index", () => ({ auth: { api: { getSession: (args: unknown) => getSession(args) } } }));
 
 const { requireActiveUser, requireAdmin } = await import("./guard");
 
@@ -43,6 +43,16 @@ describe("requireActiveUser", () => {
       getSession.mockResolvedValue(sessionOf(status, "user"));
       await expect(requireActiveUser()).rejects.toThrow("NEXT_REDIRECT /pending");
     }
+  });
+});
+
+describe("getSessionUser", () => {
+  it("verlängert die Sitzung nicht serverseitig, weil hier kein Cookie gesetzt werden kann", async () => {
+    getSession.mockResolvedValue(sessionOf("active", "user"));
+    await requireActiveUser();
+    expect(getSession).toHaveBeenCalledWith(
+      expect.objectContaining({ query: { disableRefresh: true } }),
+    );
   });
 });
 
