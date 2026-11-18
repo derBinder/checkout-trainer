@@ -35,12 +35,13 @@ export async function TodayStreak() {
 }
 
 export async function TodayOverview() {
-  const { dueCount, freshCount, unseenCount, progress } = await loadToday();
+  const { dueCount, freshCount, unseenCount, streak, progress } = await loadToday();
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
   const nothingToDo = dueCount + freshCount === 0;
 
   return (
     <div className={TODAY_BODY}>
+      {streak.paused && !(nothingToDo && unseenCount === 0) ? <p className="text-sm text-muted-foreground">{t.today.streakPaused}</p> : null}
       {nothingToDo ? (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">

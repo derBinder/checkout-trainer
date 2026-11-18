@@ -225,4 +225,17 @@ describe("StatsStreak", () => {
     render(await StatsStreak(), { wrapper });
     expect(screen.getByText("1 Tag Serie")).toBeTruthy();
   });
+
+  it("zeigt die pausierte Serie", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
+    const now = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+    queries.loadStatsData.mockResolvedValue({
+      states: [],
+      logs: [2, 3].map((d) => ({ cardId: "r-5", rating: 3, reviewedAt: new Date(now - d * day) })),
+    });
+    render(await StatsStreak(), { wrapper });
+    expect(screen.getByText("2 Tage Serie · pausiert")).toBeTruthy();
+  });
 });

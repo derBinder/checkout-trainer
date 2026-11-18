@@ -17,6 +17,8 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
+const streakLabel = (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`);
+
 export const de = {
   common: {
     appName: "Checkout-Trainer",
@@ -243,7 +245,8 @@ export const de = {
     admin: "Verwaltung",
   },
   streak: {
-    label: (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`),
+    label: streakLabel,
+    pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
     sample: "00 Tage Serie",
   },
@@ -274,6 +277,8 @@ export const de = {
   today: {
     due: "fällig",
     new: "neu",
+    streakPaused:
+      "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Einen ausgelassenen Tag pro Woche fängt die Serie ab.",
     done: "Für heute bist du fertig.",
     allStarted: "Du hast alle Karten begonnen.",
     learn: "Lernen",

@@ -11,6 +11,8 @@ import {
 } from "@/lib/auth/constants";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 
+const streakLabel = (n: number) => `${n}-day streak`;
+
 export const en: Dictionary = {
   common: {
     appName: "Checkout-Trainer",
@@ -229,7 +231,8 @@ export const en: Dictionary = {
     admin: "Admin",
   },
   streak: {
-    label: (n: number) => `${n}-day streak`,
+    label: streakLabel,
+    pausedLabel: (n: number) => `${streakLabel(n)} · paused`,
     sample: "00-day streak",
   },
   home: {
@@ -259,6 +262,8 @@ export const en: Dictionary = {
   today: {
     due: "due",
     new: "new",
+    streakPaused:
+      "Your streak is paused. Study today to keep it going. The streak absorbs one missed day per week.",
     done: "You are done for today.",
     allStarted: "You have started every card.",
     learn: "Study",
