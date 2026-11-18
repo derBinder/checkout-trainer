@@ -13,26 +13,35 @@ function wrapperEn({ children }: { children: React.ReactNode }) {
 
 describe("StreakChip", () => {
   it("zeigt nichts ohne Serie", () => {
-    const { container } = render(<StreakChip streak={0} />, { wrapper });
+    const { container } = render(<StreakChip streak={{ days: 0, paused: false }} />, { wrapper });
     expect(container.innerHTML).toBe("");
   });
 
   it("zeigt einen Tag in der Einzahl", () => {
-    render(<StreakChip streak={1} />, { wrapper });
+    render(<StreakChip streak={{ days: 1, paused: false }} />, { wrapper });
     expect(screen.getByText("1 Tag Serie")).toBeTruthy();
   });
 
   it("zeigt mehrere Tage in der Mehrzahl", () => {
-    render(<StreakChip streak={12} />, { wrapper });
+    render(<StreakChip streak={{ days: 12, paused: false }} />, { wrapper });
     expect(screen.getByText("12 Tage Serie")).toBeTruthy();
+  });
+});
+
+describe("StreakChip pausiert", () => {
+  it("zeigt die pausierte Serie", () => {
+    render(<StreakChip streak={{ days: 1, paused: true }} />, { wrapper });
+    expect(screen.getByText("1 Tag Serie · pausiert")).toBeTruthy();
+    render(<StreakChip streak={{ days: 5, paused: true }} />, { wrapper: wrapperEn });
+    expect(screen.getByText("5-day streak · paused")).toBeTruthy();
   });
 });
 
 describe("StreakChip auf Englisch", () => {
   it("zeigt die Serie auf Englisch", () => {
-    render(<StreakChip streak={1} />, { wrapper: wrapperEn });
+    render(<StreakChip streak={{ days: 1, paused: false }} />, { wrapper: wrapperEn });
     expect(screen.getByText("1-day streak")).toBeTruthy();
-    render(<StreakChip streak={12} />, { wrapper: wrapperEn });
+    render(<StreakChip streak={{ days: 12, paused: false }} />, { wrapper: wrapperEn });
     expect(screen.getByText("12-day streak")).toBeTruthy();
   });
 });
