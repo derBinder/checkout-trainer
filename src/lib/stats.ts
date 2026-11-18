@@ -48,7 +48,7 @@ function streakOf(logs: StatsInput["logs"], now: Date): Streak {
     if (days.has(dayKey(day))) count++;
     else if (sinceBridge >= 7 && days.has(dayKey(previousDay(day)))) {
       sinceBridge = 0;
-      paused = first;
+      if (first) paused = true; // nur die Lücke gestern bedeutet Pause, ältere Überbrückungen nicht
     } else break;
     sinceBridge++;
     first = false;

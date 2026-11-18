@@ -130,6 +130,11 @@ describe("summarize", () => {
     expect(summarize({ states: [], logs, now }).streak).toEqual({ days: 7, paused: false });
   });
 
+  it("stays paused when an older gap is bridged as well", () => {
+    // Lücken an Tag 1 (gestern) und Tag 8.
+    expect(summarize({ states: [], logs: logsOn(2, 3, 4, 5, 6, 7, 9, 10), now }).streak).toEqual({ days: 8, paused: true });
+  });
+
   it("does not keep a streak when studying only every other day", () => {
     expect(summarize({ states: [], logs: logsOn(0, 2, 4, 6), now }).streak).toEqual({ days: 2, paused: false });
   });
