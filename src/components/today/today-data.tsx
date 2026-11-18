@@ -41,7 +41,7 @@ export async function TodayOverview() {
 
   return (
     <div className={TODAY_BODY}>
-      {streak.paused ? <p className="text-sm text-muted-foreground">{t.today.streakPaused}</p> : null}
+      {streak.paused && !(nothingToDo && unseenCount === 0) ? <p className="text-sm text-muted-foreground">{t.today.streakPaused}</p> : null}
       {nothingToDo ? (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">

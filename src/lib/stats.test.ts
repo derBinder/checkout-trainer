@@ -140,11 +140,20 @@ describe("summarize", () => {
   });
 
   it("bridges a gap across the DST change", () => {
-    // Berlin stellt am 25.10.2026 um. Gelernt 23. und 24.10. sowie 26.10., Lücke am 25.10.
+    // Berlin stellt am 25.10.2026 um (der Tag hat 25 Stunden). Gelernt 22., 23. und 25.10., Lücke am 24.10.
+    // Jetzt ist es 23:30 Berliner Zeit am 25.10.: Ein Schritt „minus 24 Stunden“ landet am selben Tag.
     const at = (iso: string) => ({ cardId: "r-2", rating: 3, reviewedAt: new Date(iso) });
-    const logs = [at("2026-10-23T10:00:00Z"), at("2026-10-24T10:00:00Z"), at("2026-10-26T10:00:00Z")];
-    const s = summarize({ states: [], logs, now: new Date("2026-10-26T12:00:00Z") });
+    const logs = [at("2026-10-22T10:00:00Z"), at("2026-10-23T10:00:00Z"), at("2026-10-25T10:00:00Z")];
+    const s = summarize({ states: [], logs, now: new Date("2026-10-25T22:30:00Z") });
     expect(s.streak).toEqual({ days: 3, paused: false });
+  });
+
+  it("pauses by Berlin day, not by 24 hours", () => {
+    // Jetzt Berlin 00:30; letzte Bewertung Berlin 23:30, zwei Berliner Tage davor (nur 25 Stunden her).
+    const logs = [{ cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-08T22:30:00Z") }]; // Berlin 08.11. 23:30
+    logs.push({ cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-07T10:00:00Z") });
+    const s = summarize({ states: [], logs, now: new Date("2026-11-09T23:30:00Z") }); // Berlin 10.11. 00:30
+    expect(s.streak).toEqual({ days: 2, paused: true });
   });
 
   it("lists the rests with the most Again ratings across all card kinds", () => {

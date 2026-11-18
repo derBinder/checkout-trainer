@@ -17,6 +17,8 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
+const streakLabel = (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`);
+
 export const de = {
   common: {
     appName: "Checkout-Trainer",
@@ -243,8 +245,8 @@ export const de = {
     admin: "Verwaltung",
   },
   streak: {
-    label: (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`),
-    pausedLabel: (n: number) => `${n === 1 ? "1 Tag Serie" : `${n} Tage Serie`} · pausiert`,
+    label: streakLabel,
+    pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
     sample: "00 Tage Serie",
   },

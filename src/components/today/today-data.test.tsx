@@ -173,6 +173,31 @@ describe("pausierte Serie", () => {
     expect(screen.queryByText(HINT)).toBeNull();
   });
 
+  it("verspricht nichts, wenn es nichts zu lernen gibt", async () => {
+    queue(0, 0, 0);
+    logsAgo(2, 3);
+    render(await TodayOverview(), { wrapper });
+    expect(screen.queryByText(HINT)).toBeNull();
+  });
+
+  it("zeigt den Hinweis auf Englisch", async () => {
+    queue(1, 0, 0);
+    logsAgo(2, 3);
+    rootParams.lang = "en";
+    try {
+      render(await TodayOverview(), {
+        wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
+      });
+      expect(
+        screen.getByText(
+          "Your streak is paused. Study today to keep it going. The streak absorbs one missed day per week.",
+        ),
+      ).toBeTruthy();
+    } finally {
+      rootParams.lang = "de";
+    }
+  });
+
   it("zeigt bei zu alter Serie weder Hinweis noch Schildchen", async () => {
     queue(1, 0, 0);
     logsAgo(3, 4);
