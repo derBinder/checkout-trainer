@@ -17,9 +17,15 @@ export type SessionUser = {
 /**
  * Der Status kommt pro Anfrage frisch aus der Datenbank (kein Cookie-Cache).
  * cache(): Layout und Seite derselben Anfrage teilen sich eine Abfrage.
+ * disableRefresh: Server Components dürfen kein Cookie setzen. Eine Verlängerung
+ * hier ginge nur in die Datenbank, das Cookie liefe trotzdem ab. Verlängert wird
+ * über SessionRefresh im Client.
  */
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableRefresh: true },
+  });
   if (!session) return null;
   const u = session.user as typeof session.user & {
     status: SessionUser["status"];
