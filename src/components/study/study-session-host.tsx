@@ -22,16 +22,16 @@ const usedLoads = new Set<string>();
  * router.refresh() oder Zurück/Vor. So startet jeder Aufruf über die App frisch,
  * eine laufende Sitzung übersteht aber das Neurendern nach einer Bewertung.
  */
-export function StudySessionHost({ loadId, items }: StudyLoad<StudyItem[]>) {
+export function StudySessionHost(load: StudyLoad<StudyItem[]>) {
   const { bfcacheId } = useRouter();
-  return <StudyLoadView key={bfcacheId} loadId={loadId} items={items} />;
+  return <StudyLoadView key={bfcacheId} {...load} />;
 }
 
-function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
+function StudyLoadView({ loadId, items, doneToday }: StudyLoad<StudyItem[]>) {
   const router = useRouter();
   const localePath = useLocalePath();
   const t = useDictionary().study.session;
-  const incoming = { loadId, items };
+  const incoming = { loadId, items, doneToday };
   const [active, setActive] = useState(() => nextLoad(null, incoming, usedLoads));
   const next = nextLoad(active, incoming, usedLoads);
   if (next !== active) setActive(next);
@@ -68,5 +68,5 @@ function StudyLoadView({ loadId, items }: StudyLoad<StudyItem[]>) {
     );
   }
   if (!active) return <StudySkeleton />;
-  return <StudySession items={active.items} />;
+  return <StudySession items={active.items} doneToday={active.doneToday} />;
 }

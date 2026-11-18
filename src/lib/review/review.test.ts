@@ -67,6 +67,17 @@ describe("loadQueue", () => {
     expect((await loadQueue(db, u, tomorrow)).cardIds).toContain("r-2");
   });
 
+  it("counts the cards finished today, not the ones still due or from yesterday", async () => {
+    const u = await addUser("u1");
+    const yesterday = new Date(now.getTime() - 24 * 3600_000);
+    await introduce(u, ["r-2"], yesterday);
+    await introduce(u, ["r-3", "r-4"], now);
+    await applyReview(db, u, { cardId: "r-5", rating: 1, reps: 0 }, now);
+    expect((await loadQueue(db, u, now)).doneToday).toBe(2);
+    await applyReview(db, u, { cardId: "r-5", rating: 3, reps: 1 }, now);
+    expect((await loadQueue(db, u, now)).doneToday).toBe(3);
+  });
+
   it("lists due cards before new ones", async () => {
     const u = await addUser("u1", 3);
     await applyReview(db, u, { cardId: "r-3", rating: 1, reps: 0 }, now);

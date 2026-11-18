@@ -61,6 +61,11 @@ describe("StudySessionHost", () => {
     expect(router.refresh).not.toHaveBeenCalled();
   });
 
+  it("zählt die heute schon erledigten Karten in den Fortschritt", () => {
+    render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} doneToday={2} />, { wrapper });
+    expect(screen.getByText("3 / 3")).toBeTruthy();
+  });
+
   it("holt für eine schon verbrauchte Ladung frische Karten und meldet, wenn keine kommen", async () => {
     const loadId = newLoadId();
     const first = render(<StudySessionHost loadId={loadId} items={items("r-5")} />, { wrapper });

@@ -1,5 +1,5 @@
 /** Eine Ladung der Sitzung vom Server: Kennung und Karten. */
-export type StudyLoad<T> = { loadId: string; items: T };
+export type StudyLoad<T> = { loadId: string; items: T; doneToday?: number };
 
 /**
  * Welche Ladung die Sitzung zeigt. Ohne React, damit testbar.

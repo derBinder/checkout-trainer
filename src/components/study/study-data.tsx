@@ -35,14 +35,14 @@ const loadStudy = cache(async () => {
       },
     ];
   });
-  return { empty: queue.cardIds.length === 0, items };
+  return { empty: queue.cardIds.length === 0, items, doneToday: queue.doneToday };
 });
 
 export async function StudySessionData() {
-  const { empty, items } = await loadStudy();
+  const { empty, items, doneToday } = await loadStudy();
   if (empty) redirect(localePath(await getLocale(), ROUTES.today));
 
   // Kennung dieser Ladung: StudySessionHost erkennt daran eine Ladung aus dem
   // Zurück-Cache, mit der schon eine Sitzung lief.
-  return <StudySessionHost loadId={crypto.randomUUID()} items={items} />;
+  return <StudySessionHost loadId={crypto.randomUUID()} items={items} doneToday={doneToday} />;
 }

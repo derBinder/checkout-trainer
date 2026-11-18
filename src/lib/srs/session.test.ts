@@ -8,6 +8,10 @@ describe("sessionReducer", () => {
     expect(initSession(["a", "b"])).toEqual({ queue: ["a", "b"], revealed: false, done: 0, total: 2, unsynced: [] });
   });
 
+  it("counts cards already finished today into done and total", () => {
+    expect(initSession(["a", "b"], 2)).toMatchObject({ done: 2, total: 4 });
+  });
+
   it("ignores rating while the card is hidden", () => {
     const s = initSession(["a", "b", "c", "d", "e"]);
     expect(sessionReducer(s, { type: "rate", rating: 3, reps: 0 })).toEqual(s);
