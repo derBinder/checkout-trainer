@@ -16,8 +16,9 @@ export type SessionAction =
 
 const AGAIN_OFFSET = 3;
 
-export function initSession(cardIds: string[]): SessionState {
-  return { queue: [...cardIds], revealed: false, done: 0, total: cardIds.length, unsynced: [] };
+/** `doneBefore`: heute schon erledigte Karten, damit der Tagesfortschritt beim erneuten Öffnen bleibt. */
+export function initSession(cardIds: string[], doneBefore = 0): SessionState {
+  return { queue: [...cardIds], revealed: false, done: doneBefore, total: cardIds.length + doneBefore, unsynced: [] };
 }
 
 export function sessionReducer(s: SessionState, a: SessionAction): SessionState {

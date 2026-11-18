@@ -27,7 +27,7 @@ const GOOD: Rating = 3;
 
 const RATINGS: Rating[] = [1, 2, 3, 4];
 
-export function StudySession({ items }: { items: StudyItem[] }) {
+export function StudySession({ items, doneToday = 0 }: { items: StudyItem[]; doneToday?: number }) {
   const router = useRouter();
   const localePath = useLocalePath();
   const t = useDictionary().study;
@@ -36,6 +36,7 @@ export function StudySession({ items }: { items: StudyItem[] }) {
     initStudy(
       list.map((item) => item.id),
       Object.fromEntries(list.map((item) => [item.id, item.reps])),
+      { doneBefore: doneToday },
     ),
   );
   const { session } = state;
