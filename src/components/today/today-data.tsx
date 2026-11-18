@@ -31,7 +31,7 @@ const loadToday = cache(async () => {
 
 export async function TodayStreak() {
   const { streak } = await loadToday();
-  return <StreakChip streak={streak} />;
+  return <StreakChip streak={streak.days} />;
 }
 
 export async function TodayOverview() {

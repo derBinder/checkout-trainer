@@ -4,12 +4,18 @@ import { dayKey, dayStart } from "@/lib/time";
 
 export type Level = "new" | "learning" | "known";
 
+export type Streak = { days: number; paused: boolean };
+
 export type Stats = {
   counts: Record<Level, number>;
   /** Ein Eintrag für jeden Rest von 2 bis 170. */
   levels: Record<number, Level>;
-  /** Aufeinanderfolgende Berliner Tage mit Bewertung, endend heute oder gestern. */
-  streak: number;
+  /**
+   * Berliner Tage mit Bewertung, endend heute oder gestern. Ein Fehltag wird überbrückt, wenn der Tag davor
+   * bewertet ist und die letzte Überbrückung mindestens 7 Tage zurückliegt. `paused`: heute und gestern
+   * ohne Bewertung, gestern wird überbrückt.
+   */
+  streak: Streak;
   /** Bis zu fünf Reste mit den meisten „Nochmal“, absteigend. */
   hardest: { rest: number; again: number }[];
 };
@@ -30,16 +36,25 @@ export function levelOf(state: number, scheduledDays: number): Level {
   return state === State.Review && scheduledDays >= KNOWN_MIN_DAYS ? "known" : "learning";
 }
 
-function streakOf(logs: StatsInput["logs"], now: Date): number {
+function streakOf(logs: StatsInput["logs"], now: Date): Streak {
   const days = new Set(logs.map((l) => dayKey(l.reviewedAt)));
   const previousDay = (d: Date) => new Date(dayStart(d).getTime() - 1);
   let day = days.has(dayKey(now)) ? now : previousDay(now);
-  let streak = 0;
-  while (days.has(dayKey(day))) {
-    streak++;
+  let count = 0;
+  let sinceBridge = Infinity; // Tage seit der letzten Überbrückung, in Schritten (Zeitumstellung)
+  let paused = false;
+  let first = true;
+  while (true) {
+    if (days.has(dayKey(day))) count++;
+    else if (sinceBridge >= 7 && days.has(dayKey(previousDay(day)))) {
+      sinceBridge = 0;
+      paused = first;
+    } else break;
+    sinceBridge++;
+    first = false;
     day = previousDay(day);
   }
-  return streak;
+  return { days: count, paused: paused && count > 0 };
 }
 
 export function summarize({ states, logs, now }: StatsInput): Stats {
