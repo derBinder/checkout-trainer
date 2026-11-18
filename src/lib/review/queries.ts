@@ -46,13 +46,23 @@ export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now
 }
 
 export async function loadQueue(db: Db, u: QueueUser, now: Date) {
-  const [rows, [extra]] = await Promise.all([
+  const [rows, [extra], reviewedToday] = await Promise.all([
     db.select().from(cardState).where(eq(cardState.userId, u.id)),
     // Extrakarten und Zusatzkarten stehen nicht in der Sitzung, sondern nur in der Datenbank.
     db
       .select({ extraNewDay: user.extraNewDay, extraNewCount: user.extraNewCount, ...EXTRA_SELECT })
       .from(user)
       .where(eq(user.id, u.id)),
+    db
+      .selectDistinct({ cardId: reviewLog.cardId })
+      .from(reviewLog)
+      .where(
+        and(
+          eq(reviewLog.userId, u.id),
+          gte(reviewLog.reviewedAt, dayStart(now)),
+          lte(reviewLog.reviewedAt, dayEnd(now)),
+        ),
+      ),
   ]);
   const { due, fresh, unseenCount, newLeftToday } = queueFromRows(
     rows,
@@ -60,8 +70,12 @@ export async function loadQueue(db: Db, u: QueueUser, now: Date) {
     now,
     extra ? extraCardsOf(extra) : NO_EXTRA_CARDS,
   );
+  const cardIds = [...due, ...fresh];
+  const open = new Set(cardIds);
   return {
-    cardIds: [...due, ...fresh],
+    cardIds,
+    /** Heute bewertete Karten, die nicht mehr anstehen: der schon erledigte Teil des Tages. */
+    doneToday: reviewedToday.filter((r) => !open.has(r.cardId)).length,
     dueCount: due.length,
     freshCount: fresh.length,
     unseenCount,

@@ -56,10 +56,10 @@ export type Outgoing = { cardId: string; rating: Rating; reps: number };
 export function initStudy(
   cardIds: string[],
   reps: Record<string, number>,
-  { save = true }: { save?: boolean } = {},
+  { save = true, doneBefore = 0 }: { save?: boolean; doneBefore?: number } = {},
 ): StudyState {
   return {
-    session: initSession(cardIds),
+    session: initSession(cardIds, doneBefore),
     save,
     confirmedReps: { ...reps },
     sending: false,
