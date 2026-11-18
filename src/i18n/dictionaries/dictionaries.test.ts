@@ -144,6 +144,8 @@ describe("Lernen", () => {
 describe("Übrige Seiten", () => {
   it("schreibt die Serie und den Fortschritt in beiden Sprachen", () => {
     expect([de.streak.label(1), de.streak.label(12)]).toEqual(["1 Tag Serie", "12 Tage Serie"]);
+    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["1 Tag Serie · pausiert", "5 Tage Serie · pausiert"]);
+    expect(en.streak.pausedLabel(5)).toBe("5-day streak · paused");
     expect([en.streak.label(1), en.streak.label(12)]).toEqual(["1-day streak", "12-day streak"]);
     expect(de.today.progress(2, 169, 1)).toBe("2 von 169 begonnen, 1 sicher");
     expect(en.today.progress(2, 169, 1)).toBe("2 of 169 started, 1 known");

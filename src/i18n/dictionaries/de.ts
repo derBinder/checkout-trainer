@@ -244,6 +244,7 @@ export const de = {
   },
   streak: {
     label: (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`),
+    pausedLabel: (n: number) => `${n === 1 ? "1 Tag Serie" : `${n} Tage Serie`} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
     sample: "00 Tage Serie",
   },
@@ -274,6 +275,8 @@ export const de = {
   today: {
     due: "fällig",
     new: "neu",
+    streakPaused:
+      "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Einen ausgelassenen Tag pro Woche fängt die Serie ab.",
     done: "Für heute bist du fertig.",
     allStarted: "Du hast alle Karten begonnen.",
     learn: "Lernen",

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { State } from "ts-fsrs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
@@ -137,6 +137,48 @@ describe("TodayStreak", () => {
 
   it("zeigt ohne Serie nichts", async () => {
     queue(0, 0, 0);
+    const { container } = render(await TodayStreak(), { wrapper });
+    expect(container.textContent).toBe("");
+  });
+});
+
+describe("pausierte Serie", () => {
+  const HINT =
+    "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Einen ausgelassenen Tag pro Woche fängt die Serie ab.";
+
+  function logsAgo(...days: number[]) {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
+    const now = Date.now();
+    queries.loadStatsData.mockResolvedValue({
+      states: [],
+      logs: days.map((d) => ({ cardId: "r-5", rating: 3, reviewedAt: new Date(now - d * DAY_MS) })),
+    });
+  }
+
+  it("zeigt das Schildchen und den Hinweis", async () => {
+    queue(1, 0, 0);
+    logsAgo(2, 3);
+    render(await TodayStreak(), { wrapper });
+    expect(screen.getByText("2 Tage Serie · pausiert")).toBeTruthy();
+    cleanup();
+    render(await TodayOverview(), { wrapper });
+    expect(screen.getByText(HINT)).toBeTruthy();
+  });
+
+  it("zeigt keinen Hinweis, wenn heute gelernt wurde", async () => {
+    queue(1, 0, 0);
+    logsAgo(0, 1);
+    render(await TodayOverview(), { wrapper });
+    expect(screen.queryByText(HINT)).toBeNull();
+  });
+
+  it("zeigt bei zu alter Serie weder Hinweis noch Schildchen", async () => {
+    queue(1, 0, 0);
+    logsAgo(3, 4);
+    render(await TodayOverview(), { wrapper });
+    expect(screen.queryByText(HINT)).toBeNull();
+    cleanup();
     const { container } = render(await TodayStreak(), { wrapper });
     expect(container.textContent).toBe("");
   });

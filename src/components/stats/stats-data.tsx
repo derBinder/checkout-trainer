@@ -51,7 +51,7 @@ async function forecastText({ forecast: f, now }: { forecast: Forecast; now: Dat
 
 export async function StatsStreak() {
   const { streak } = await loadStats();
-  return <StreakChip streak={streak.days} />;
+  return <StreakChip streak={streak} />;
 }
 
 export async function StatsOverview() {

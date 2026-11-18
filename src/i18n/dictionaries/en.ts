@@ -230,6 +230,7 @@ export const en: Dictionary = {
   },
   streak: {
     label: (n: number) => `${n}-day streak`,
+    pausedLabel: (n: number) => `${n}-day streak · paused`,
     sample: "00-day streak",
   },
   home: {
@@ -259,6 +260,8 @@ export const en: Dictionary = {
   today: {
     due: "due",
     new: "new",
+    streakPaused:
+      "Your streak is paused. Study today to keep it going. The streak absorbs one missed day per week.",
     done: "You are done for today.",
     allStarted: "You have started every card.",
     learn: "Study",
