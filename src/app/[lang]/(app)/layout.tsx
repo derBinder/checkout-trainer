@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { AdminNavItem } from "@/components/admin-nav-item";
 import { AppNav } from "@/components/app-nav";
+import { SessionRefresh } from "@/components/session-refresh";
 
 /**
  * Gerüst der angemeldeten Seiten, ohne Sitzungsabfrage: Es wird vorgerendert und
@@ -11,6 +12,7 @@ export default function AppLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
+      <SessionRefresh />
       <AppNav
         adminItem={
           // Kein sichtbarer Platzhalter: Der Eintrag erscheint nur beim Betreiber nachträglich.
