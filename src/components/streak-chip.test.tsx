@@ -52,6 +52,20 @@ describe("StreakChip heute", () => {
     render(<StreakChip streak={{ days: 5, paused: true, today: false }} />, { wrapper });
     expect(screen.getByText("5 Tage Serie · pausiert").getAttribute("data-state")).toBe("paused");
   });
+
+  it("färbt jeden Zustand mit seinen Theme-Farben", () => {
+    const cases = [
+      { streak: { days: 5, paused: false, today: true }, text: "5 Tage Serie", colors: "bg-accent text-accent-foreground" },
+      { streak: { days: 5, paused: false, today: false }, text: "5 Tage Serie", colors: "bg-streak-open text-streak-open-foreground" },
+      { streak: { days: 5, paused: true, today: false }, text: "5 Tage Serie · pausiert", colors: "bg-muted text-muted-foreground" },
+    ];
+    for (const { streak, text, colors } of cases) {
+      const { unmount } = render(<StreakChip streak={streak} />, { wrapper });
+      const classes = screen.getByText(text).className.split(" ");
+      for (const color of colors.split(" ")) expect(classes).toContain(color);
+      unmount();
+    }
+  });
 });
 
 describe("StreakChip auf Englisch", () => {
