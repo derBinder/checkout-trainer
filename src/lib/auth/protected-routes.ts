@@ -48,6 +48,12 @@ export function proxyDecision(req: {
     const picked = pickLocale({ cookie: req.cookieLocale, acceptLanguage: req.acceptLanguage });
     return { type: "redirect", location: `/${picked}${rest}` };
   }
+  // Die Homescreen-App startet immer auf der Startseite: Wer ein Cookie hat,
+  // soll dort nicht „Anmelden“ sehen. Nur die Startseite, nie /sign-in (Schleife
+  // bei ungültigem Cookie, das /today wieder zur Anmeldung schickt).
+  if (isPageRequest && req.hasSessionCookie && (rest === ROUTES.home || rest === "/")) {
+    return { type: "redirect", location: localePath(locale, ROUTES.today) };
+  }
   if (isPageRequest && !req.hasSessionCookie && isProtectedPath(rest)) {
     return { type: "redirect", location: localePath(locale, ROUTES.signIn) };
   }

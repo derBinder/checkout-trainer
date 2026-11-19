@@ -185,6 +185,11 @@ export function createAuth(database: Db) {
       customRules: {
         "/sign-up/email": { window: 60 * 60, max: 5 },
         "/sign-in/email": { window: 60, max: 10 },
+        // Prüft das Passwort: ohne eigene Regel nur 100 Versuche in 10 s.
+        "/delete-user": { window: 60, max: 5 },
+        // Jeder App-Start fragt die Sitzung ab (SessionRefresh). Der Zähler
+        // kostete dabei jedes Mal einen Schreibzugriff auf die Datenbank.
+        "/get-session": false,
       },
     },
   });
@@ -196,8 +201,8 @@ export const auth: Auth = createAuth(db);
 
 /**
  * Legt den Betreiber an (aktiv, Admin). Idempotent: existiert die Adresse
- * schon, passiert nichts (bei einem Konto ohne Adminrolle Fehler statt
- * stiller Beförderung).
+ * schon, bleibt das Passwort unverändert; nur ein fehlendes Passwortkonto wird
+ * ergänzt (bei einem Konto ohne Adminrolle Fehler statt stiller Beförderung).
  */
 export async function seedAdmin(
   authInstance: Auth,
@@ -218,6 +223,11 @@ export async function seedAdmin(
         "Unter dieser Adresse existiert bereits ein Konto ohne Adminrolle.",
       );
     }
+    // createUser und linkAccount laufen ohne Transaktion: Brach ein früherer
+    // Lauf dazwischen ab, holt dieser das Passwortkonto nach.
+    if (!(await ctx.internalAdapter.findCredentialAccount(existing.user.id))) {
+      await linkPassword(existing.user.id);
+    }
     return;
   }
   const created = await ctx.internalAdapter.createUser<{
@@ -235,10 +245,14 @@ export async function seedAdmin(
     },
     { method: "admin" },
   );
-  await ctx.internalAdapter.linkAccount({
-    userId: created.id,
-    providerId: "credential",
-    accountId: created.id,
-    password: await ctx.password.hash(password),
-  });
+  await linkPassword(created.id);
+
+  async function linkPassword(userId: string) {
+    await ctx.internalAdapter.linkAccount({
+      userId,
+      providerId: "credential",
+      accountId: userId,
+      password: await ctx.password.hash(password),
+    });
+  }
 }
