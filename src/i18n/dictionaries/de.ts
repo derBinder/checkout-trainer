@@ -353,6 +353,7 @@ export const de = {
     appearance: "Darstellung",
     theme: { system: "System", light: "Hell", dark: "Dunkel" },
     amount: "Lernmenge",
+    version: (v: string) => `Version ${v}`,
     newPerDay: {
       label: "Neue Karten pro Tag",
       hint: (max: number) => `Von 0 bis ${max}. Fällige Wiederholungen kommen immer dazu.`,
