@@ -13,6 +13,8 @@ concurrency:
 
 jobs:
   check:
+    # Der Rück-PR main → develop nach einem Release ändert keinen Inhalt (CLAUDE.md, Ablauf Schritt 12).
+    if: ${{ !(github.head_ref == 'main' && github.base_ref == 'develop') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
