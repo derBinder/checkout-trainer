@@ -193,7 +193,7 @@ Es werden keine weiteren Dienste angelegt. Kein E-Mail-Versand, keine Domain, ke
 
 ### Git
 
-Du pushst selbst nach GitHub, der Erbauer pusht nie. Die erste Bereitstellung läuft deshalb direkt (Schritt 7). Später verbindest du das Repository im Vercel-Projekt unter Settings, Git, "Connect Git Repository". Ab dann löst jeder Push eine Bereitstellung aus. Dann gilt Schritt 4 erneut: Production-Variablen bleiben, für Previews entscheidest du bewusst (eigene Datenbank-Verzweigung bei Neon oder keine Previews, und `BETTER_AUTH_TRUSTED_ORIGINS` für deren Adressen).
+Seit November 2026 pusht der Erbauer `main` und `develop` nach jedem Prod-Deploy nach GitHub (`derBinder/checkout-trainer`), Arbeits-Branches bleiben lokal. Die erste Bereitstellung läuft deshalb direkt (Schritt 7). Später verbindest du das Repository im Vercel-Projekt unter Settings, Git, "Connect Git Repository". Ab dann löst jeder Push eine Bereitstellung aus. Dann gilt Schritt 4 erneut: Production-Variablen bleiben, für Previews entscheidest du bewusst (eigene Datenbank-Verzweigung bei Neon oder keine Previews, und `BETTER_AUTH_TRUSTED_ORIGINS` für deren Adressen).
 
 ## Rückbau
 

@@ -70,8 +70,8 @@ Lokal bleibt `DATABASE_URL` leer: Die App nutzt dann PGlite unter `.data/pglite`
 - Für die Reste 41 bis 170 gelten alle Regeln der Referenztabelle (`src/lib/darts/reference.ts`): Variante 1 als bester Weg, Variante 2 als Alternative, die Spalte „mit 2 Darts" und das Zielen zwischen zwei Feldern. Unter 41 gilt das eigene Regelwerk.
 - Kein E-Mail-Versand. Konten werden vom Betreiber manuell freigeschaltet.
 - Alles muss in kostenlosen Tarifen bleiben (Vercel Hobby, Neon Free).
-- Kein Zugriff auf Vercel, Neon oder andere fremde Dienste ohne vorherige Absprache mit dem Auftraggeber. Ausnahme: der Prod-Deploy im Abschnitt „Ablauf bis Produktion“, den der Auftraggeber dauerhaft freigegeben hat.
-- Git: nie pushen. Keine Attributionszeilen in Commit-Nachrichten.
+- Kein Zugriff auf Vercel, Neon oder andere fremde Dienste ohne vorherige Absprache mit dem Auftraggeber. Ausnahme: Prod-Deploy und Push nach GitHub im Abschnitt „Ablauf bis Produktion“, beides hat der Auftraggeber dauerhaft freigegeben.
+- Git: nur `main` und `develop` nach `origin` pushen (`git@github-privat:derBinder/checkout-trainer.git`, SSH-Alias `github-privat` mit eigenem Schlüssel), und nur wie im Ablauf beschrieben. Arbeits-Branches bleiben lokal. Kein Force-Push. Keine Attributionszeilen in Commit-Nachrichten.
 - `src/lib/db/schema.ts` von Hand pflegen und Migrationen mit `db:generate` erzeugen. Den Better-Auth-CLI-Generator nicht in diese Datei schreiben lassen, er überschreibt die Handänderungen.
 - Tests zuerst schreiben. Vor jedem Commit: `npm run test:coverage`, `npm run typecheck`, `npm run lint`.
 - Testabdeckung mindestens 80 % (Zeilen, Anweisungen, Zweige, Funktionen), getrennt für Backend (`src/lib`, `src/proxy.ts`, `src/app/api`, `src/app/**/*.ts`) und Frontend (`src/components`, `src/app/**/*.tsx`). Die Schwellen stehen in `vitest.config.ts`. Neuer Code bringt seine Tests mit, die Schwellen werden nicht gesenkt.
@@ -84,9 +84,10 @@ Der Auftraggeber hat diesen Ablauf dauerhaft freigegeben und will ihn nicht jede
 1. Auf eigenem Branch in einem eigenen Worktree unter `.claude/worktrees/<name>` arbeiten, angelegt aus `develop`. Nie direkt auf `develop` oder `main`.
 2. Vor dem Commit `npm run test:coverage`, `npm run typecheck`, `npm run lint`.
 3. Commit auf dem Branch, den Branch nach `develop` mergen (`--no-ff`).
-4. `develop` nach `main` mergen, dann aus dem Hauptverzeichnis (`main`, sauberer Stand) mit `npx vercel@65.12.1 deploy --prod` direkt bereitstellen (CLI, ohne Git-Anbindung, siehe [docs/bereitstellung.md](docs/bereitstellung.md)). Gepusht wird nie.
+4. `develop` nach `main` mergen, dann aus dem Hauptverzeichnis (`main`, sauberer Stand) mit `npx vercel@65.12.1 deploy --prod` direkt bereitstellen (CLI, ohne Git-Anbindung, siehe [docs/bereitstellung.md](docs/bereitstellung.md)).
 5. Bringt die Änderung eine Migration mit, vorher die erzeugte SQL-Datei prüfen: Sie läuft beim Prod-Bau automatisch auf Neon (`scripts/vercel-build.sh`), aber erst nach erfolgreichem `next build`. Sie bleibt trotzdem additiv (erst erweitern, später aufräumen), weil zwischen Migration und Freischaltung der neuen Version noch kurz der alte Code läuft.
-6. Nach dem Deploy kurz prüfen, dass die Produktionsadresse antwortet, und Ergebnis melden.
+6. Nach dem Deploy kurz prüfen, dass die Produktionsadresse antwortet.
+7. Erst danach `git push origin main develop`, dann Ergebnis melden. Schlägt der Push fehl (etwa weil `origin` neuere Commits hat), nichts erzwingen, sondern melden.
 
 ## Pakete installieren
 
