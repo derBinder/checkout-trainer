@@ -94,12 +94,11 @@ Der Auftraggeber hat diesen Ablauf dauerhaft freigegeben und will ihn nicht jede
 - Jede Arbeit in einem eigenen Worktree unter `.claude/worktrees/`, angelegt aus dem frischen Stand auf GitHub (`git fetch origin`, `git worktree add --no-track -b <branch> .claude/worktrees/<name> origin/<basis>`). Das Hauptverzeichnis bleibt sauber auf `main`. Nach dem letzten Merge eines Branches: Worktree und lokalen Branch aus dem Hauptverzeichnis entfernen.
 - Alle Texte auf GitHub auf Englisch: Issues, PRs, Kommentare, Labels, Release-Notizen, Commit-Nachrichten, Branch-Namen. Entwürfe und Pläne unter `docs/` bleiben auf Deutsch. Keine Attributionszeilen.
 - Issues werden nie über Schlüsselwörter geschlossen: kein `Closes`, `Fixes` oder `Resolves` vor einer Issue-Nummer, weder in PR-Texten noch in Commit-Nachrichten (in PRs nach `develop`, dem Standard-Branch, schlössen sie das Issue vor dem Livegang). Verweise immer als `Refs #<nr>`. Geschlossen wird nach dem Deploy per `gh` (Release, Schritt 6).
-- Vor jedem Commit `npm run test:coverage`, `npm run typecheck`, `npm run lint`.
 - Merge-Konflikte immer mit dem Skill `resolving-merge-conflicts` lösen (`/resolving-merge-conflicts`), nie von Hand oder per Skript, danach die drei Prüfungen.
 
 ### Code-Review
 
-Vor jedem Merge von neuem Code läuft `/code-review` mit Stufe `high` (Skill `code-review`) im Worktree des Branches, nach `git fetch origin`, mit `high origin/<ziel>...HEAD` (Ziel `develop` für Features, `main` für Hotfixes). Nie `@{upstream}`, das ist nach dem Push der Branch selbst und ergibt einen leeren Diff. Gibt es Findings, legt Claude sie dem Auftraggeber vor und wartet auf seine Entscheidung, welche behoben werden. Korrekturen kommen als neue Commits auf den Branch, danach läuft das Review nur über sie: `git log --first-parent --no-merges --format=%h <Commit vor den Korrekturen>..HEAD` listet sie; ohne Merge im Bereich `high <Commit vor den Korrekturen>..HEAD`, sonst jeden Korrektur-Commit einzeln (`high <sha>^..<sha>`). Neue Findings gehen wieder an den Auftraggeber. Ohne Findings das Ergebnis melden und weiter. Kein Review brauchen PRs, die nur schon geprüften Inhalt verschieben: Release nach `main` (außer Commits, die auf dem Release-Branch selbst entstanden sind, etwa Fehlerbehebungen) und die Rück-PRs nach `develop`.
+Vor jedem Merge von neuem Code läuft `/code-review` mit Stufe `high` (Skill `code-review`) im Worktree des Branches, nach `git fetch origin`, mit `high origin/<ziel>...HEAD` (Ziel `develop` für Features, `main` für Hotfixes). Nie `@{upstream}`, das ist nach dem Push der Branch selbst und ergibt einen leeren Diff. Gibt es Findings, legt Claude sie dem Auftraggeber vor und wartet auf seine Entscheidung, welche behoben werden. Korrekturen kommen als neue Commits auf den Branch, danach läuft das Review nur über sie: `git log --first-parent --no-merges --format=%h <Commit vor den Korrekturen>..HEAD` listet sie; ohne Merge im Bereich `high <Commit vor den Korrekturen>..HEAD`, sonst jeden Korrektur-Commit einzeln (`high <sha>^..<sha>`). Neue Findings gehen wieder an den Auftraggeber. Ohne Findings das Ergebnis melden und weiter. Kein Review brauchen PRs, die nur schon geprüften Inhalt verschieben: Release nach `main` und die Rück-PRs nach `develop`. Was dabei neu entsteht, wird gezielt reviewt: Fehlerbehebungen auf einem Release-Branch jeder Fix-Commit einzeln (`high <sha>^..<sha>`, nicht der Versions-Commit), eine Konfliktlösung auf einem `merge/…`-Branch nur die Lösung selbst (Umfang `git show --remerge-diff <merge-sha>`, das zeigt genau, was beim Lösen anders gewählt wurde als in den beiden Seiten).
 
 ### CI
 
@@ -111,7 +110,8 @@ Der Workflow `CI` (`.github/workflows/ci.yml`, Job `check`: `test:coverage`, `ty
 | `feature/*` → `develop`, nur `docs/**` oder `*.md` | nein (`paths-ignore`) | Tests, Typen und Lint hängen nicht daran |
 | `release/*` → `main` | ja | letzte Prüfung vor der Produktion, auch für die neue Versionsnummer |
 | `hotfix/*` → `main` | ja | neuer Code, direkt vor der Produktion |
-| `release/*` oder `hotfix/*` → `develop` | nein (Job übersprungen) | derselbe Stand war gerade in `main` grün |
+| `release/*` oder `hotfix/*` → `develop`, `develop` seit dem Abzweig unverändert | nein (Job `scope` überspringt `check`) | derselbe Stand war gerade in `main` grün |
+| `release/*` oder `hotfix/*` → `develop`, `develop` ist weiter | ja | die Kombination mit neueren Features wurde noch nie getestet |
 | `merge/*` → `develop` | ja | Konfliktlösung ist neuer Inhalt |
 
 Wo CI läuft, wird nur gemergt, wenn `gh pr checks <pr> --watch` mit Exit-Code 0 endet; nie rot mergen. Wo CI nicht läuft, meldet `gh pr checks` keine oder übersprungene Checks, dann ohne Warten mergen.

@@ -16,9 +16,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Release- oder Hotfix-Branch zurück nach develop: Der Stand war gerade in main grün. Ein Lauf ist nur nötig,
+  # wenn develop seit dem Abzweig weiter ist, denn dann entsteht eine Kombination, die noch nie getestet wurde.
+  scope:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - id: decide
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          run=true
+          if [[ "$BASE_REF" == develop && ( "$HEAD_REF" == release/* || "$HEAD_REF" == hotfix/* ) ]]; then
+            [ "$(git rev-list --count "$HEAD_SHA..$BASE_SHA")" = 0 ] && run=false
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "CI run needed: $run"
+
   check:
-    # Release- und Hotfix-Branches zurück nach develop: derselbe Stand war gerade in main grün.
-    if: ${{ !(github.base_ref == 'develop' && (startsWith(github.head_ref, 'release/') || startsWith(github.head_ref, 'hotfix/'))) }}
+    needs: scope
+    if: ${{ needs.scope.outputs.run == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
