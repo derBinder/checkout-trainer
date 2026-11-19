@@ -193,7 +193,7 @@ Es werden keine weiteren Dienste angelegt. Kein E-Mail-Versand, keine Domain, ke
 
 ### Git
 
-Seit November 2026 pusht der Erbauer `main` und `develop` nach jedem Prod-Deploy nach GitHub (`derBinder/checkout-trainer`), Arbeits-Branches bleiben lokal. Die erste Bereitstellung läuft deshalb direkt (Schritt 7). Später verbindest du das Repository im Vercel-Projekt unter Settings, Git, "Connect Git Repository". Ab dann löst jeder Push eine Bereitstellung aus. Dann gilt Schritt 4 erneut: Production-Variablen bleiben, für Previews entscheidest du bewusst (eigene Datenbank-Verzweigung bei Neon oder keine Previews, und `BETTER_AUTH_TRUSTED_ORIGINS` für deren Adressen).
+Das Repository liegt privat auf GitHub (`derBinder/checkout-trainer`). Seit November 2026 kommt jede Änderung über ein Issue und einen PR nach `develop`, geprüft von GitHub Actions, und über einen Release-PR nach `main` (Ablauf in der CLAUDE.md). Vercel ist nicht mit GitHub verbunden, bereitgestellt wird weiter direkt per CLI aus `main` (wie die erste Bereitstellung, Schritt 7). Später kannst du das Repository im Vercel-Projekt unter Settings, Git, "Connect Git Repository" verbinden. Ab dann löst jeder Merge nach `main` eine Bereitstellung aus, und der CLI-Deploy fällt aus dem Ablauf, sonst wird doppelt bereitgestellt. Dann gilt Schritt 4 erneut: Production-Variablen bleiben, für Previews entscheidest du bewusst (eigene Datenbank-Verzweigung bei Neon oder keine Previews, und `BETTER_AUTH_TRUSTED_ORIGINS` für deren Adressen).
 
 ## Rückbau
 
