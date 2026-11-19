@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { AppVersion } from "@/components/settings/app-version";
 import { ChangePasswordForm } from "@/components/settings/change-password-form";
 import { ResetProgress } from "@/components/settings/reset-progress";
 import { NewPerDayForm } from "@/components/settings/new-per-day-form";
@@ -64,6 +65,8 @@ export default async function SettingsPage() {
       <Suspense fallback={<DeleteAccountSectionSkeleton />}>
         <DeleteAccountSection />
       </Suspense>
+
+      <AppVersion label={t.settings.version} />
     </div>
   );
 }
