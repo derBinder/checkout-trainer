@@ -16,7 +16,7 @@ const shared = await createTestDb();
 let fromPreviousTest: Db | undefined;
 
 afterEach(async () => {
-  // Läuft vor dem Schließen in test-db.ts: Die Kopie des Tests ist noch offen.
+  // Läuft vor dem Schließen durch test-db.ts: Die Kopie des Tests ist noch offen.
   if (fromPreviousTest) expect(await tableOf(fromPreviousTest, '"user"')).toBe('"user"');
 });
 
@@ -35,7 +35,11 @@ describe("createTestDb", () => {
   });
 
   it("schließt Kopien aus einem Test nach dessen Ende, die der Datei erst danach", async () => {
-    await expect(tableOf(fromPreviousTest!, '"user"')).rejects.toThrow();
+    // Ohne den ersten Test (etwa mit -t) gäbe es nichts zu prüfen.
+    expect(fromPreviousTest).toBeDefined();
+    await expect(tableOf(fromPreviousTest!, '"user"')).rejects.toMatchObject({
+      cause: { message: "PGlite is closed" },
+    });
     fromPreviousTest = undefined;
     expect(await tableOf(shared, '"user"')).toBe('"user"');
   });

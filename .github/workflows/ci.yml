@@ -22,7 +22,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # Der Runner hat 2 vCPU; Vitest nimmt ohne Angabe nur CPUs - 1 = 1 Worker.
-      - run: npm run test:coverage -- --maxWorkers=2
+      # Vitest nimmt ohne Angabe CPUs - 1 Worker, auf dem 2-vCPU-Runner also nur einen.
+      - run: npm run test:coverage -- --maxWorkers=100%
       - run: npm run typecheck
       - run: npm run lint
