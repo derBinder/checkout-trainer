@@ -38,6 +38,7 @@ const CODES: VerdictCode[] = [
   "setupRight",
   "setupOther",
   "setupBogey",
+  "setupBust",
 ];
 
 describe("verdictCopy in beiden Sprachen", () => {
@@ -84,6 +85,22 @@ describe("setup that leaves a bogey number", () => {
       tone: "bad",
       title: "Leaves a bogey",
       note: "Leaves 159, no checkout",
+    });
+  });
+});
+
+describe("setup that busts", () => {
+  it("is light red and says the rest stays", () => {
+    const verdict = { code: "setupBust", detail: { kind: "bust", total: 180, rest: 171 } } as const;
+    expect(verdictCopy(verdict, de.study)).toEqual({
+      tone: "bad",
+      title: "Überworfen",
+      note: "Ergibt 180, Rest bleibt 171",
+    });
+    expect(verdictCopy(verdict, en.study)).toEqual({
+      tone: "bad",
+      title: "Bust",
+      note: "Scores 180, still 171 left",
     });
   });
 });

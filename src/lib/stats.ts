@@ -1,5 +1,6 @@
 import { State } from "ts-fsrs";
 import { cardById } from "@/lib/cards";
+import { MAX_REST, MIN_REST } from "@/lib/darts/checkouts";
 import { dayKey, dayStart } from "@/lib/time";
 
 export type Level = "new" | "learning" | "known";
@@ -27,8 +28,7 @@ export type StatsInput = {
   now: Date;
 };
 
-export const MIN_REST = 2;
-export const MAX_REST = 170;
+export { MAX_REST, MIN_REST };
 const KNOWN_MIN_DAYS = 21;
 const HARDEST_LIMIT = 5;
 const AGAIN = 1;
@@ -37,8 +37,8 @@ export function levelOf(state: number, scheduledDays: number): Level {
   return state === State.Review && scheduledDays >= KNOWN_MIN_DAYS ? "known" : "learning";
 }
 
-function streakOf(logs: StatsInput["logs"], now: Date): Streak {
-  const days = new Set(logs.map((l) => dayKey(l.reviewedAt)));
+/** Serie aus den Berliner Tagen (`YYYY-MM-DD`) mit mindestens einer Bewertung. */
+export function streakOf(days: ReadonlySet<string>, now: Date): Streak {
   const previousDay = (d: Date) => new Date(dayStart(d).getTime() - 1);
   const today = days.has(dayKey(now));
   let day = today ? now : previousDay(now);
@@ -72,10 +72,8 @@ export function summarize({ states, logs, now }: StatsInput): Stats {
   const counts: Record<Level, number> = { new: 0, learning: 0, known: 0 };
   for (const level of Object.values(levels)) counts[level]++;
 
-  const validLogs = logs.filter((l) => cardById(l.cardId));
-
   const againByRest = new Map<number, number>();
-  for (const l of validLogs) {
+  for (const l of logs) {
     const card = cardById(l.cardId);
     // Reste über 170 zeigt das Raster nicht, die Detailansicht kann sie nicht öffnen.
     if (!card || l.rating !== AGAIN || card.rest > MAX_REST) continue;
@@ -86,5 +84,7 @@ export function summarize({ states, logs, now }: StatsInput): Stats {
     .sort((a, b) => b.again - a.again || a.rest - b.rest)
     .slice(0, HARDEST_LIMIT);
 
-  return { counts, levels, streak: streakOf(validLogs, now), hardest };
+  // Die Serie zählt jeden Tag mit Bewertung, auch einer inzwischen unbekannten Karte, wie loadReviewDays.
+  const days = new Set(logs.map((l) => dayKey(l.reviewedAt)));
+  return { counts, levels, streak: streakOf(days, now), hardest };
 }

@@ -1,4 +1,4 @@
-import { allCheckouts, isBogey } from '@/lib/darts/checkouts'
+import { allCheckouts, isBogey, MAX_REST, MIN_REST } from '@/lib/darts/checkouts'
 import {
   dartValue,
   formatDart,
@@ -104,8 +104,6 @@ export type OverCard = {
 
 export type Card = RestCard | MissCard | BogeyCard | TwoDartCard | OverCard
 
-const MIN_REST = 2
-const MAX_REST = 170
 const MAX_ALTERNATIVES = 2
 const MAX_OVER = 230
 const MIN_DOUBLE = 2

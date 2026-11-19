@@ -8,25 +8,26 @@ import { getDictionary, getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { progressView } from "@/lib/progress";
-import { loadQueue, loadStatsData } from "@/lib/review/queries";
-import { summarize } from "@/lib/stats";
+import { loadQueue, loadReviewDays } from "@/lib/review/queries";
+import { streakOf, summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { Count, Counts, LEARN_ACTIONS, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
 
 /**
  * Prüft zuerst den Zugriff, dann lädt sie die Daten der Heute-Seite. cache():
  * Beide Datenbausteine der Seite teilen sich innerhalb einer Anfrage eine Abfrage.
- * Die Tagesgrenze (new Date()) entsteht erst hier, zur Anfragezeit.
+ * Die Tagesgrenze (new Date()) entsteht erst hier, zur Anfragezeit. Für die Serie
+ * reichen die Lerntage; den ganzen Verlauf lädt nur die Statistik.
  */
 const loadToday = cache(async () => {
   const user = await requireActiveUser();
   const now = new Date();
-  const [{ dueCount, freshCount, unseenCount }, { states, logs }] = await Promise.all([
+  const [{ dueCount, freshCount, unseenCount, states }, days] = await Promise.all([
     loadQueue(db, user, now),
-    loadStatsData(db, user.id),
+    loadReviewDays(db, user.id),
   ]);
-  const { counts, streak } = summarize({ states, logs, now });
-  return { dueCount, freshCount, unseenCount, streak, progress: progressView(counts) };
+  const { counts } = summarize({ states: Object.values(states), logs: [], now });
+  return { dueCount, freshCount, unseenCount, streak: streakOf(new Set(days), now), progress: progressView(counts) };
 });
 
 export async function TodayStreak() {

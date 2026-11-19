@@ -161,6 +161,7 @@ export const en: Dictionary = {
         setupRight: { title: "Correct setup shot", note: "spot on" },
         setupOther: { title: "Different setup shot", note: "recommended one below" },
         setupBogey: { title: "Leaves a bogey", note: "no checkout" },
+        setupBust: { title: "Bust", note: "the score stays" },
       },
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
@@ -172,6 +173,8 @@ export const en: Dictionary = {
             return "No checkout from this score";
           case "leavesBogey":
             return `Leaves ${d.leaves}, no checkout`;
+          case "bust":
+            return `Scores ${d.total}, still ${d.rest} left`;
         }
       },
     },

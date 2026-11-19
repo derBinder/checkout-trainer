@@ -23,9 +23,9 @@ type StateRow = typeof cardState.$inferSelect;
  */
 export function queueFromRows(rows: StateRow[], allowance: NewCardAllowance, now: Date, extras: ExtraCards) {
   const order = cardOrderFor(extras);
-  const introducedToday = rows.filter(
-    (r) => r.introducedAt >= dayStart(now) && r.introducedAt <= dayEnd(now),
-  ).length;
+  const start = dayStart(now);
+  const end = dayEnd(now);
+  const introducedToday = rows.filter((r) => r.introducedAt >= start && r.introducedAt <= end).length;
   const limit = effectiveNewLimit(allowance, now);
   const { due, fresh } = buildQueue({
     order,
@@ -170,6 +170,16 @@ export async function applyReview(
     await tx.insert(reviewLog).values({ userId: u.id, cardId, rating, reviewedAt: now });
     return { ok: true };
   });
+}
+
+/**
+ * Berliner Tage (`YYYY-MM-DD`) mit mindestens einer Bewertung, ohne Reihenfolge: genug für die Serie,
+ * ohne den ganzen Verlauf zu laden. reviewed_at ist UTC ohne Zeitzone gespeichert.
+ */
+export async function loadReviewDays(db: Db, userId: string): Promise<string[]> {
+  const day = sql<string>`to_char((${reviewLog.reviewedAt} at time zone 'UTC') at time zone 'Europe/Berlin', 'YYYY-MM-DD')`;
+  const rows = await db.selectDistinct({ day }).from(reviewLog).where(eq(reviewLog.userId, userId));
+  return rows.map((r) => r.day);
 }
 
 /** Rohdaten für die Statistik: alle Lernstände und Bewertungen eines Nutzers. */
