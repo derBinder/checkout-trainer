@@ -12,9 +12,7 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       // Next löst server-only im Bau selbst auf; in Tests ist es ein leeres Modul.
-      "server-only": fileURLToPath(
-        new URL("./node_modules/next/dist/compiled/server-only/empty.js", import.meta.url),
-      ),
+      "server-only": fileURLToPath(new URL("./vitest.server-only.ts", import.meta.url)),
     },
   },
   test: {
