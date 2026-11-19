@@ -52,6 +52,16 @@ describe("proxyDecision", () => {
     expect(proxyDecision({ ...base, pathname: "/en/todayx" })).toEqual({ type: "next", locale: "en" });
   });
 
+  it("schickt Besucher mit Sitzungs-Cookie von der Startseite direkt zu Heute", () => {
+    const signedIn = { ...base, hasSessionCookie: true };
+    expect(proxyDecision({ ...signedIn, pathname: "/de" })).toEqual({ type: "redirect", location: "/de/today" });
+    expect(proxyDecision({ ...signedIn, pathname: "/en/" })).toEqual({ type: "redirect", location: "/en/today" });
+    // Ohne Cookie bleibt die Startseite; die Anmeldung leitet nie um, sonst
+    // entstünde mit einem ungültigen Cookie eine Schleife über /today.
+    expect(proxyDecision({ ...base, pathname: "/de" })).toEqual({ type: "next", locale: "de" });
+    expect(proxyDecision({ ...signedIn, pathname: "/de/sign-in" })).toEqual({ type: "next", locale: "de" });
+  });
+
   it("leitet andere Methoden als GET und HEAD nie um", () => {
     expect(proxyDecision({ ...base, method: "POST", pathname: "/en/today" })).toEqual({ type: "next", locale: "en" });
     expect(proxyDecision({ ...base, method: "POST", pathname: "/today" })).toEqual({ type: "next", locale: null });

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import { createTestDb } from "../db/test-db";
 import type { Db } from "../db";
-import { session, user } from "../db/schema";
+import { account, session, user } from "../db/schema";
 import type { UserStatus } from "../db/schema";
 import { AUTH_ERRORS, MAX_PENDING_USERS } from "./constants";
 import { createAuth, seedAdmin } from "./index";
@@ -263,6 +263,17 @@ describe("seedAdmin", () => {
     await expect(
       auth.api.signInEmail({ body: { email: OPERATOR, password: "anderes-passwort-456" } }),
     ).rejects.toThrow();
+  });
+
+  it("ergänzt beim nächsten Lauf ein fehlendes Passwortkonto, ohne ein vorhandenes zu ändern", async () => {
+    // Abbruch zwischen createUser und linkAccount (etwa Verbindungsabbruch beim Prod-Bau).
+    await seedAdmin(auth, OPERATOR, "startpasswort-123");
+    await db.delete(account);
+    await seedAdmin(auth, OPERATOR, "startpasswort-123");
+    await expect(
+      auth.api.signInEmail({ body: { email: OPERATOR, password: "startpasswort-123" } }),
+    ).resolves.toBeDefined();
+    expect(await db.select().from(account)).toHaveLength(1);
   });
 
   it("verweigert zu kurze Startpasswörter", async () => {
