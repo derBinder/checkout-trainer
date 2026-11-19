@@ -13,10 +13,16 @@ export function StreakChip({ streak }: { streak: Streak }) {
   const t = useDictionary().streak;
   if (streak.days < 1) return null;
   return (
-    <p className={cn(CHIP_BOX, streak.paused ? "bg-muted text-muted-foreground" : "bg-accent text-accent-foreground")}>
+    <p className={cn(CHIP_BOX, chipColors(streak))}>
       {streak.paused ? t.pausedLabel(streak.days) : t.label(streak.days)}
     </p>
   );
+}
+
+/** Pausiert grau, heute verlängert kräftig gelb, heute noch offen hellgelb. */
+function chipColors({ paused, today }: Streak) {
+  if (paused) return "bg-muted text-muted-foreground";
+  return today ? "bg-accent text-accent-foreground" : "bg-streak-open text-streak-open-foreground";
 }
 
 /** Platzhalter in Größe eines typischen Schildchens („00 Tage Serie“, ohne Nutzerdaten). */
