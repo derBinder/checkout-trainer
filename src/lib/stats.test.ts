@@ -24,7 +24,7 @@ describe("summarize", () => {
     expect(Object.keys(s.levels)).toHaveLength(169);
     expect(s.levels[2]).toBe("new");
     expect(s.levels[170]).toBe("new");
-    expect(s.streak).toEqual({ days: 0, paused: false });
+    expect(s.streak).toEqual({ days: 0, paused: false, today: false });
     expect(s.hardest).toEqual([]);
   });
 
@@ -106,37 +106,51 @@ describe("summarize", () => {
     expect(summarize({ states: [], logs, now }).streak.days).toBe(2);
   });
 
+  it("marks the streak as extended today after a rating today", () => {
+    expect(summarize({ states: [], logs: logsOn(0, 1), now }).streak).toEqual({ days: 2, paused: false, today: true });
+  });
+
+  it("leaves the streak open today when only yesterday is rated", () => {
+    expect(summarize({ states: [], logs: logsOn(1, 2), now }).streak).toEqual({ days: 2, paused: false, today: false });
+  });
+
+  it("counts a rating just after midnight in Berlin as today", () => {
+    const logs = [{ cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-09T23:30:00Z") }]; // Berlin 10.11. 00:30
+    const s = summarize({ states: [], logs, now: new Date("2026-11-10T08:00:00Z") }); // Berlin 10.11. 09:00
+    expect(s.streak).toEqual({ days: 1, paused: false, today: true });
+  });
+
   it("pauses the streak the day after a missed day", () => {
-    expect(summarize({ states: [], logs: logsOn(2, 3, 4), now }).streak).toEqual({ days: 3, paused: true });
+    expect(summarize({ states: [], logs: logsOn(2, 3, 4), now }).streak).toEqual({ days: 3, paused: true, today: false });
   });
 
   it("resumes the streak with a rating today, without counting the missed day", () => {
-    expect(summarize({ states: [], logs: logsOn(0, 2, 3, 4, 5, 6), now }).streak).toEqual({ days: 6, paused: false });
+    expect(summarize({ states: [], logs: logsOn(0, 2, 3, 4, 5, 6), now }).streak).toEqual({ days: 6, paused: false, today: true });
   });
 
   it("ends the streak after two missed days in a row", () => {
-    expect(summarize({ states: [], logs: logsOn(3, 4), now }).streak).toEqual({ days: 0, paused: false });
+    expect(summarize({ states: [], logs: logsOn(3, 4), now }).streak).toEqual({ days: 0, paused: false, today: false });
   });
 
   it("bridges two gaps exactly seven days apart", () => {
     // Lücken an Tag 2 und Tag 9.
     const logs = logsOn(0, 1, 3, 4, 5, 6, 7, 8, 10, 11);
-    expect(summarize({ states: [], logs, now }).streak).toEqual({ days: 10, paused: false });
+    expect(summarize({ states: [], logs, now }).streak).toEqual({ days: 10, paused: false, today: true });
   });
 
   it("bridges only the newer of two gaps six days apart", () => {
     // Lücken an Tag 2 und Tag 8: Die Serie endet an Tag 8.
     const logs = logsOn(0, 1, 3, 4, 5, 6, 7, 9, 10);
-    expect(summarize({ states: [], logs, now }).streak).toEqual({ days: 7, paused: false });
+    expect(summarize({ states: [], logs, now }).streak).toEqual({ days: 7, paused: false, today: true });
   });
 
   it("stays paused when an older gap is bridged as well", () => {
     // Lücken an Tag 1 (gestern) und Tag 8.
-    expect(summarize({ states: [], logs: logsOn(2, 3, 4, 5, 6, 7, 9, 10), now }).streak).toEqual({ days: 8, paused: true });
+    expect(summarize({ states: [], logs: logsOn(2, 3, 4, 5, 6, 7, 9, 10), now }).streak).toEqual({ days: 8, paused: true, today: false });
   });
 
   it("does not keep a streak when studying only every other day", () => {
-    expect(summarize({ states: [], logs: logsOn(0, 2, 4, 6), now }).streak).toEqual({ days: 2, paused: false });
+    expect(summarize({ states: [], logs: logsOn(0, 2, 4, 6), now }).streak).toEqual({ days: 2, paused: false, today: true });
   });
 
   it("bridges a gap across the DST change", () => {
@@ -145,7 +159,7 @@ describe("summarize", () => {
     const at = (iso: string) => ({ cardId: "r-2", rating: 3, reviewedAt: new Date(iso) });
     const logs = [at("2026-10-22T10:00:00Z"), at("2026-10-23T10:00:00Z"), at("2026-10-25T10:00:00Z")];
     const s = summarize({ states: [], logs, now: new Date("2026-10-25T22:30:00Z") });
-    expect(s.streak).toEqual({ days: 3, paused: false });
+    expect(s.streak).toEqual({ days: 3, paused: false, today: true });
   });
 
   it("pauses by Berlin day, not by 24 hours", () => {
@@ -153,7 +167,7 @@ describe("summarize", () => {
     const logs = [{ cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-08T22:30:00Z") }]; // Berlin 08.11. 23:30
     logs.push({ cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-07T10:00:00Z") });
     const s = summarize({ states: [], logs, now: new Date("2026-11-09T23:30:00Z") }); // Berlin 10.11. 00:30
-    expect(s.streak).toEqual({ days: 2, paused: true });
+    expect(s.streak).toEqual({ days: 2, paused: true, today: false });
   });
 
   it("lists the rests with the most Again ratings across all card kinds", () => {
