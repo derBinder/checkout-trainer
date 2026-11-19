@@ -3,6 +3,10 @@ name: CI
 on:
   pull_request:
     branches: [develop, main]
+    # Reine Doku-Änderungen brauchen keinen Lauf (CLAUDE.md, Abschnitt CI).
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
 
 permissions:
   contents: read
@@ -13,6 +17,8 @@ concurrency:
 
 jobs:
   check:
+    # Release- und Hotfix-Branches zurück nach develop: derselbe Stand war gerade in main grün.
+    if: ${{ !(github.base_ref == 'develop' && (startsWith(github.head_ref, 'release/') || startsWith(github.head_ref, 'hotfix/'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
