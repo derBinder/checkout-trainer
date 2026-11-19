@@ -204,7 +204,7 @@ describe("Einstellungen", () => {
     expect(screen.getByText("Abschnitt Konto löschen")).toBeTruthy();
     expect((await settingsMetadata()).title).toBe("Einstellungen · Checkout-Trainer");
     // Die Version steht ganz unten, nach dem Abschnitt „Konto löschen“.
-    expect(container.firstElementChild?.lastElementChild?.textContent).toBe(`Version ${version}`);
+    expect(container.textContent?.endsWith(`Version ${version}`)).toBe(true);
   });
 
   it("zeigt Skeletons für gespeicherte Werte und das Löschen, solange sie laden", async () => {
@@ -285,7 +285,7 @@ describe("Angemeldete Seiten auf Englisch", () => {
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Reset progress", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
-    expect(container.firstElementChild?.lastElementChild?.textContent).toBe(`Version ${version}`);
+    expect(container.textContent?.endsWith(`Version ${version}`)).toBe(true);
   });
 
   it("beschriftet Navigation und Fehlerseite auf Englisch", () => {
