@@ -9,7 +9,11 @@ const MIN = { lines: 80, statements: 80, branches: 80, functions: 80 };
 
 export default defineConfig({
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Next löst server-only im Bau selbst auf; in Tests ist es ein leeres Modul.
+      "server-only": fileURLToPath(new URL("./vitest.server-only.ts", import.meta.url)),
+    },
   },
   test: {
     environment: "node",

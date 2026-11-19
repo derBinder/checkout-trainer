@@ -338,6 +338,7 @@ export const en: Dictionary = {
     appearance: "Appearance",
     theme: { system: "System", light: "Light", dark: "Dark" },
     amount: "Study amount",
+    version: (v: string) => `Version ${v}`,
     newPerDay: {
       label: "New cards per day",
       hint: (max: number) => `From 0 to ${max}. Cards due for review are added on top.`,

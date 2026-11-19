@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { version } from "../../../../package.json";
 import { I18nProvider } from "@/i18n/client";
+
+// Letzte Zeile der Einstellungen.
+const VERSION_LINE = `Version ${version}`;
 
 // Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -191,7 +195,7 @@ describe("Verwaltung", () => {
 
 describe("Einstellungen", () => {
   it("zeigt alle Abschnitte", async () => {
-    render(await SettingsPage(), { wrapper });
+    const { container } = render(await SettingsPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Einstellungen" })).toBeTruthy();
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(["Darstellung", "Sprache", "Lernmenge", "Zusatzkarten", "Lernstand zurücksetzen", "Passwort ändern", "Abmelden"]);
@@ -202,6 +206,8 @@ describe("Einstellungen", () => {
     expect(screen.getByRole("button", { name: "Abmelden" })).toBeTruthy();
     expect(screen.getByText("Abschnitt Konto löschen")).toBeTruthy();
     expect((await settingsMetadata()).title).toBe("Einstellungen · Checkout-Trainer");
+    // Die Version steht ganz unten, nach dem Abschnitt „Konto löschen“.
+    expect(container.textContent?.slice(-VERSION_LINE.length)).toBe(VERSION_LINE);
   });
 
   it("zeigt Skeletons für gespeicherte Werte und das Löschen, solange sie laden", async () => {
@@ -278,10 +284,11 @@ describe("Angemeldete Seiten auf Englisch", () => {
 
   it("zeigt die Abschnitte der Einstellungen auf Englisch", async () => {
     rootParams.lang = "en";
-    render(await SettingsPage(), { wrapper: wrapperEn });
+    const { container } = render(await SettingsPage(), { wrapper: wrapperEn });
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Reset progress", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
+    expect(container.textContent?.slice(-VERSION_LINE.length)).toBe(VERSION_LINE);
   });
 
   it("beschriftet Navigation und Fehlerseite auf Englisch", () => {
