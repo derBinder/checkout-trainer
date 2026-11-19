@@ -4,6 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { version } from "../../../../package.json";
 import { I18nProvider } from "@/i18n/client";
 
+// Letzte Zeile der Einstellungen.
+const VERSION_LINE = `Version ${version}`;
+
 // Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
 function wrapper({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale="de">{children}</I18nProvider>;
@@ -204,7 +207,7 @@ describe("Einstellungen", () => {
     expect(screen.getByText("Abschnitt Konto löschen")).toBeTruthy();
     expect((await settingsMetadata()).title).toBe("Einstellungen · Checkout-Trainer");
     // Die Version steht ganz unten, nach dem Abschnitt „Konto löschen“.
-    expect(container.textContent?.endsWith(`Version ${version}`)).toBe(true);
+    expect(container.textContent?.slice(-VERSION_LINE.length)).toBe(VERSION_LINE);
   });
 
   it("zeigt Skeletons für gespeicherte Werte und das Löschen, solange sie laden", async () => {
@@ -285,7 +288,7 @@ describe("Angemeldete Seiten auf Englisch", () => {
     const sections = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(["Appearance", "Language", "Study amount", "Extra cards", "Reset progress", "Change password", "Sign out"]);
     expect(screen.getByRole("radiogroup", { name: "Appearance" })).toBeTruthy();
-    expect(container.textContent?.endsWith(`Version ${version}`)).toBe(true);
+    expect(container.textContent?.slice(-VERSION_LINE.length)).toBe(VERSION_LINE);
   });
 
   it("beschriftet Navigation und Fehlerseite auf Englisch", () => {
