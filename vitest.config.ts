@@ -9,7 +9,13 @@ const MIN = { lines: 80, statements: 80, branches: 80, functions: 80 };
 
 export default defineConfig({
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Next löst server-only im Bau selbst auf; in Tests ist es ein leeres Modul.
+      "server-only": fileURLToPath(
+        new URL("./node_modules/next/dist/compiled/server-only/empty.js", import.meta.url),
+      ),
+    },
   },
   test: {
     environment: "node",

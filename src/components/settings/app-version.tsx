@@ -1,4 +1,6 @@
-// Nur in Serverkomponenten verwenden: Der Import von package.json soll nicht ins Browser-Bundle.
+// Nur in Serverkomponenten: package.json soll nicht ins Browser-Bundle. Ein Import aus
+// einer Client-Komponente bricht dank server-only den Bau ab.
+import "server-only";
 import { version } from "../../../package.json";
 
 /** Version des laufenden Stands, ganz unten in den Einstellungen. */
