@@ -13,8 +13,9 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    // PGlite braucht unter Last (Coverage, parallele Läufe) mehrere Sekunden zum Start;
-    // Tests, die ihre Datenbank im Testkörper anlegen, liefen sonst in die 5 s.
+    // Der erste createTestDb()-Aufruf je Testdatei startet und migriert PGlite; das
+    // braucht unter Last (Coverage, parallele Läufe) mehrere Sekunden. Liegt er im
+    // Testkörper, liefe er sonst in die 5 s. Spätere Aufrufe klonen nur.
     testTimeout: 15_000,
     hookTimeout: 20_000,
     include: ["src/**/*.test.{ts,tsx}"],
