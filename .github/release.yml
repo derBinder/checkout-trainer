@@ -1,0 +1,5 @@
+# Release and merge-back PRs only move content that is already listed.
+changelog:
+  exclude:
+    labels:
+      - release
