@@ -27,6 +27,7 @@ export type VerdictCode =
   | 'setupRight'
   | 'setupOther'
   | 'setupBogey'
+  | 'setupBust'
 
 /** Warum ein Weg nicht aufgeht, als Daten; den Text liefert das Wörterbuch (`study.verdict.detail`). */
 export type VerdictDetail =
@@ -34,6 +35,7 @@ export type VerdictDetail =
   | { kind: 'notDouble' }
   | { kind: 'notCheckable' }
   | { kind: 'leavesBogey'; leaves: number }
+  | { kind: 'bust'; total: number; rest: number }
 
 export type Verdict = { code: VerdictCode; detail?: VerdictDetail }
 
@@ -97,10 +99,15 @@ function judgeRoute(rest: number, best: string[][], good: string[][], darts: str
   return { code: 'notRecommended' }
 }
 
-/** Stellwurf: der der Karte, sonst einer, der eine Bogey-Zahl lässt, sonst ein anderer. */
+/**
+ * Stellwurf: der der Karte, sonst überworfen (Rest unter 2; ein Finish gibt es auf
+ * Stellwurf-Karten nicht), sonst einer, der eine Bogey-Zahl lässt, sonst ein anderer.
+ */
 function judgeSetup(rest: number, throws: string[], darts: string[]): Verdict {
   if (key(darts) === key(throws)) return { code: 'setupRight' }
-  const leaves = darts.reduce((left, d) => left - dartValue(parseDart(d)), rest)
+  const total = darts.reduce((sum, d) => sum + dartValue(parseDart(d)), 0)
+  const leaves = rest - total
+  if (leaves < 2) return { code: 'setupBust', detail: { kind: 'bust', total, rest } }
   if (isBogey(leaves)) return { code: 'setupBogey', detail: { kind: 'leavesBogey', leaves } }
   return { code: 'setupOther' }
 }

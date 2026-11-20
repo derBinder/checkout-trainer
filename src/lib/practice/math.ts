@@ -1,5 +1,5 @@
 import type { Card } from "@/lib/darts/cards";
-import { BOGEYS, isBogey } from "@/lib/darts/checkouts";
+import { BOGEYS, isBogey, MAX_REST, MIN_REST } from "@/lib/darts/checkouts";
 import { dartValue, parseDart } from "@/lib/darts/model";
 import type { Rng } from "./filter";
 
@@ -17,8 +17,6 @@ export const MATH_ROUND_SIZE = 10;
 
 const MIN_START = 171;
 const MAX_START = 230;
-const MIN_REST = 2;
-const MAX_REST = 170;
 const BOGEY_SHARE = 0.25;
 
 type Triple = { throws: [string, string, string]; sum: number };
