@@ -31,7 +31,7 @@ vi.mock("next/cache", () => ({ revalidatePath }));
 vi.stubEnv("BETTER_AUTH_URL", "http://localhost:3000");
 state.db = await createTestDb();
 const { auth } = await import("@/lib/auth");
-const { resetLearningProgress, updateExtraCards } = await import("./actions");
+const { resetLearningProgress, updateExtraCards, updateNewPerDay } = await import("./actions");
 
 const PASSWORD = "ein-langes-passwort";
 let counter = 0;
@@ -53,6 +53,33 @@ async function signedIn(status: "pending" | "active" | "blocked") {
 beforeEach(() => {
   state.cookie = "";
   revalidatePath.mockClear();
+});
+
+async function newPerDayOf(id: string) {
+  const [row] = await state.db.select({ newPerDay: user.newPerDay }).from(user).where(eq(user.id, id));
+  return row.newPerDay;
+}
+
+describe("updateNewPerDay", () => {
+  it("stores the value for the signed-in active account and refreshes Today", async () => {
+    const id = await signedIn("active");
+    expect(await updateNewPerDay(7)).toEqual({ ok: true });
+    expect(await newPerDayOf(id)).toBe(7);
+    expect(revalidatePath).toHaveBeenCalledWith("/[lang]/(app)/today", "page");
+  });
+
+  it("refuses without a session", async () => {
+    expect(await updateNewPerDay(7)).toEqual({ ok: false });
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
+
+  it.each(["pending", "blocked"] as const)("refuses a %s account and keeps its value", async (status) => {
+    const id = await signedIn(status);
+    const before = await newPerDayOf(id);
+    expect(await updateNewPerDay(before + 1)).toEqual({ ok: false });
+    expect(await newPerDayOf(id)).toBe(before);
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
 });
 
 describe("updateExtraCards", () => {
