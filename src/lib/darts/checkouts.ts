@@ -33,9 +33,3 @@ export function allCheckouts(rest: number, maxDarts: 1 | 2 | 3): Route[] {
   return routes
 }
 
-export function minDarts(rest: number): 1 | 2 | 3 | null {
-  for (const n of [1, 2, 3] as const) {
-    if (allCheckouts(rest, n).length > 0) return n
-  }
-  return null
-}
