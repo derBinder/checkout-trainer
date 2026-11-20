@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { State } from "ts-fsrs";
 import { createTestDb } from "@/lib/db/test-db";
 import { cardState, reviewLog, user } from "@/lib/db/schema";
-import { loadStatsData } from "@/lib/review/queries";
-import { summarize } from "./stats";
+import { loadReviewDays, loadStatsData } from "@/lib/review/queries";
+import { streakOf, summarize } from "./stats";
+import { dayKey } from "./time";
 
 const now = new Date("2026-11-11T10:00:00Z");
 const DAY_MS = 24 * 3600_000;
@@ -81,13 +82,22 @@ describe("summarize", () => {
     expect(s.streak.days).toBe(1);
   });
 
-  it("ignores state and log of an unknown card", () => {
+  it("ignores state and log of an unknown card except for the streak", () => {
     const s = summarize({
       states: [review("r-9999", 30)],
       logs: [again("r-9999")],
       now,
     });
-    expect(s).toEqual(summarize({ states: [], logs: [], now }));
+    // Gelernt wurde an dem Tag trotzdem; die Heute-Seite zählt die Tage ebenso ohne Kartenprüfung.
+    const { streak, ...rest } = summarize({ states: [], logs: [], now });
+    expect(s).toEqual({ ...rest, streak: { ...streak, days: 1, today: true } });
+  });
+
+  it("computes the same streak from the Berlin days alone", () => {
+    const logs = logsOn(0, 1, 2, 4, 5);
+    expect(streakOf(new Set(logs.map((l) => dayKey(l.reviewedAt))), now)).toEqual(
+      summarize({ states: [], logs, now }).streak,
+    );
   });
 
   it("counts consecutive Berlin days ending yesterday", () => {
@@ -192,6 +202,29 @@ describe("summarize", () => {
     const { hardest } = summarize({ states: [], logs, now });
     expect(hardest).toHaveLength(5);
     expect(hardest[0]).toEqual({ rest: 15, again: 2 });
+  });
+});
+
+describe("loadReviewDays", () => {
+  it("returns each Berlin day with a review once, only for the given user", async () => {
+    const db = await createTestDb();
+    await db.insert(user).values([
+      { id: "u1", name: "u1", email: "u1@x.test", status: "active" },
+      { id: "u2", name: "u2", email: "u2@x.test", status: "active" },
+    ]);
+    const log = (userId: string, iso: string) => ({ userId, cardId: "r-2", rating: 3, reviewedAt: new Date(iso) });
+    await db.insert(reviewLog).values([
+      // 00:30 in Berlin im Winter (UTC+1) und im Sommer (UTC+2): schon der nächste Berliner Tag.
+      log("u1", "2026-01-14T23:30:00Z"),
+      log("u1", "2026-07-01T22:30:00Z"),
+      // Zwei Bewertungen am selben Berliner Tag zählen einmal.
+      log("u1", "2026-07-02T08:00:00Z"),
+      // 23:30 in Berlin im Sommer: noch derselbe Tag.
+      log("u1", "2026-07-02T21:30:00Z"),
+      log("u2", "2026-03-03T12:00:00Z"),
+    ]);
+
+    expect((await loadReviewDays(db, "u1")).sort()).toEqual(["2026-01-15", "2026-07-02"]);
   });
 });
 

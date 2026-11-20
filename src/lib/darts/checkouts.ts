@@ -1,5 +1,9 @@
 import { ALL_DARTS, dartValue, type Route } from '@/lib/darts/model'
 
+/** Kleinster und größter Rest mit eigener Karte; darüber gibt es nur Stellwurf-Karten. */
+export const MIN_REST = 2
+export const MAX_REST = 170
+
 export const BOGEYS: readonly number[] = [159, 162, 163, 165, 166, 168, 169]
 
 export function isBogey(rest: number): boolean {

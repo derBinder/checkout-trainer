@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CARDS, cardById } from '@/lib/cards'
-import { BOGEYS } from './checkouts'
+import { allCheckouts, BOGEYS } from './checkouts'
 import { checkFor, judge, maxDarts, offersNotCheckable, type Answer, type Check } from './judge'
 
 const check = (id: string) => checkFor(cardById(id)!)
@@ -105,7 +105,14 @@ describe('judge', () => {
   it('judges a miss setup without ever saying noCheckout', () => {
     expect(judge(check('m-125-1'), darts('S20'))).toEqual({ code: 'setupRight' })
     expect(judge(check('m-125-1'), darts('S12'))).toEqual({ code: 'setupOther' })
-    expect(judge(check('m-125-1'), darts('T20'))).toEqual({ code: 'setupOther' })
+  })
+
+  it('calls a miss setup that overshoots the new rest a bust', () => {
+    // m-125-1: neuer Rest 52, 1 Dart
+    expect(judge(check('m-125-1'), darts('T20'))).toEqual({
+      code: 'setupBust',
+      detail: { kind: 'bust', total: 60, rest: 52 },
+    })
   })
 })
 
@@ -171,9 +178,27 @@ describe('three-dart setups above 170', () => {
     expect(judge(setup, darts('S19', 'T20', 'T20'))).toEqual({ code: 'setupOther' })
   })
 
-  it('calls an overshoot or a short setup a different setup', () => {
-    expect(judge(setup, darts('T20', 'T20', 'T20'))).toEqual({ code: 'setupOther' })
+  it('calls a short setup a different setup', () => {
     expect(judge(setup, darts('T20', 'T20'))).toEqual({ code: 'setupOther' })
+  })
+
+  it('calls a setup that leaves less than 2 a bust', () => {
+    expect(judge(setup, darts('T20', 'T20', 'T20'))).toEqual({
+      code: 'setupBust',
+      detail: { kind: 'bust', total: 180, rest: 171 },
+    })
+    // Rest 0 ohne Doppel und Rest 1 sind ebenfalls überworfen, Rest 3 nicht.
+    expect(judge(setup, darts('T20', 'T20', 'T17')).code).toBe('setupBust')
+    expect(judge(setup, darts('T20', 'T20', 'Bull')).code).toBe('setupBust')
+    expect(judge(setup, darts('T20', 'T20', 'T16')).code).toBe('setupOther')
+  })
+
+  it('has no setup card that a dart could check out, so rest 0 is always a bust', () => {
+    for (const card of CARDS) {
+      const c = checkFor(card)
+      if (c.kind !== 'setup') continue
+      expect(allCheckouts(c.rest, c.maxDarts), card.id).toEqual([])
+    }
   })
 
   it('allows three darts', () => {

@@ -173,6 +173,7 @@ export const de = {
         setupRight: { title: "Richtiger Stellwurf", note: "genau richtig" },
         setupOther: { title: "Anderer Stellwurf", note: "empfohlen siehe unten" },
         setupBogey: { title: "Lässt Bogey-Zahl", note: "nicht checkbar" },
+        setupBust: { title: "Überworfen", note: "Rest bleibt stehen" },
       } satisfies Record<VerdictCode, { title: string; note: string }>,
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
@@ -184,6 +185,8 @@ export const de = {
             return "Rest ist nicht checkbar";
           case "leavesBogey":
             return `Lässt ${d.leaves}, nicht checkbar`;
+          case "bust":
+            return `Ergibt ${d.total} bei Rest ${d.rest}`;
         }
       },
     },

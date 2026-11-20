@@ -4,6 +4,7 @@ import { State } from "ts-fsrs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "@/lib/db";
 import { I18nProvider } from "@/i18n/client";
+import { dayKey } from "@/lib/time";
 
 // Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -18,7 +19,7 @@ const user = vi.hoisted(() => ({
   role: "user",
   newPerDay: 5,
 }));
-const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStatsData: vi.fn() }));
+const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadReviewDays: vi.fn() }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
 vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards: vi.fn() }));
@@ -29,8 +30,14 @@ const { TodayOverview, TodayStreak } = await import("./today-data");
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+// Lernstände wie aus loadQueue: ein sicherer und ein begonnener Rest.
+const STATES = {
+  "r-5": { cardId: "r-5", state: State.Review, scheduledDays: 30 },
+  "r-7": { cardId: "r-7", state: State.Learning, scheduledDays: 0 },
+};
+
 function queue(dueCount: number, freshCount: number, unseenCount: number) {
-  queries.loadQueue.mockResolvedValue({ cardIds: [], dueCount, freshCount, unseenCount, reps: {}, states: {} });
+  queries.loadQueue.mockResolvedValue({ cardIds: [], dueCount, freshCount, unseenCount, reps: {}, states: STATES });
 }
 
 afterEach(() => {
@@ -39,13 +46,7 @@ afterEach(() => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  queries.loadStatsData.mockResolvedValue({
-    states: [
-      { cardId: "r-5", state: State.Review, scheduledDays: 30 },
-      { cardId: "r-7", state: State.Learning, scheduledDays: 0 },
-    ],
-    logs: [],
-  });
+  queries.loadReviewDays.mockResolvedValue([]);
 });
 
 describe("TodayOverview", () => {
@@ -54,7 +55,7 @@ describe("TodayOverview", () => {
     render(await TodayOverview(), { wrapper });
 
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
-    expect(queries.loadStatsData).toHaveBeenCalledWith(db, "u1");
+    expect(queries.loadReviewDays).toHaveBeenCalledWith(db, "u1");
     expect(screen.getByText("fällig").nextElementSibling?.textContent).toBe("3");
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("2");
     expect(screen.getByText("2 von 169 begonnen, 1 sicher").nextElementSibling?.textContent).toBe("1\u00a0%");
@@ -124,13 +125,7 @@ describe("TodayStreak", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadStatsData.mockResolvedValue({
-      states: [],
-      logs: [
-        { cardId: "r-5", rating: 3, reviewedAt: new Date(now) },
-        { cardId: "r-5", rating: 3, reviewedAt: new Date(now - DAY_MS) },
-      ],
-    });
+    queries.loadReviewDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
     render(await TodayStreak(), { wrapper });
     expect(screen.getByText("2 Tage Serie")).toBeTruthy();
   });
@@ -150,10 +145,7 @@ describe("pausierte Serie", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadStatsData.mockResolvedValue({
-      states: [],
-      logs: days.map((d) => ({ cardId: "r-5", rating: 3, reviewedAt: new Date(now - d * DAY_MS) })),
-    });
+    queries.loadReviewDays.mockResolvedValue(days.map((d) => dayKey(new Date(now - d * DAY_MS))));
   }
 
   it("zeigt das Schildchen und den Hinweis", async () => {
