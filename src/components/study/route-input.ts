@@ -1,5 +1,5 @@
 import { maxDarts, type Check } from "@/lib/darts/judge";
-import { dartValue, parseDart, type Ring } from "@/lib/darts/model";
+import type { Ring } from "@/lib/darts/model";
 
 /**
  * Eingabe eines Wegs über das Tastenfeld, ohne React, damit testbar.
@@ -29,10 +29,6 @@ export type InputAction =
 export function initInput(check: Check): InputState {
   // Jede Karte beginnt auf Single, auch wenn der Rest ein direktes Doppel ist.
   return { ring: "S", darts: [], ringsBefore: [], rest: check.rest, max: maxDarts(check) };
-}
-
-export function remaining(s: InputState): number {
-  return s.darts.reduce((left, d) => left - dartValue(parseDart(d)), s.rest);
 }
 
 export function isFull(s: InputState): boolean {

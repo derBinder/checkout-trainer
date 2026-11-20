@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, type Check } from "@/lib/darts/judge";
-import { initInput, inputReducer, isFull, remaining, type InputAction, type InputState } from "./route-input";
+import { initInput, inputReducer, isFull, type InputAction, type InputState } from "./route-input";
 
 const check = (id: string) => checkFor(cardById(id)!);
 const restCheck = (rest: number): Check => ({ kind: "rest", rest, best: [], good: [] });
@@ -32,7 +32,7 @@ describe("inputReducer", () => {
     expect(run(initInput(restCheck(33)), num(1)).ring).toBe("S");
     expect(run(initInput(restCheck(100)), T, num(20)).ring).toBe("S");
     const s = run(initInput(restCheck(110)), T, num(20));
-    expect(remaining(s)).toBe(50);
+    expect(s.darts).toEqual(["T20"]);
     expect(s.ring).toBe("S");
   });
 

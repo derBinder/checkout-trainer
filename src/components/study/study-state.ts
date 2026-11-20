@@ -145,3 +145,87 @@ export function isFinished(s: StudyState): boolean {
 export function retryDelayMs(failures: number): number {
   return Math.min(15000, 1000 * 2 ** failures);
 }
+
+export type SendResult = { ok: true } | { ok: false; reason: string };
+
+/** Antwort des Servers auf eine Bewertung als Aktion für studyReducer. */
+export function resultAction(result: SendResult): StudyAction {
+  if (result.ok) return { type: "result", outcome: "ok" };
+  // Offene Bewertungen nicht stillschweigend verwerfen: erst Hinweis, dann Anmeldung.
+  if (result.reason === "auth") return { type: "signedOut" };
+  // "stale": schon gespeichert (doppelt gesendet), zählt als bestätigt.
+  // "limit", "invalid", "unknown-card", "off" (Zusatzkarte inzwischen ausgeschaltet): nicht gezählt.
+  return { type: "result", outcome: result.reason === "stale" ? "stale" : "skipped" };
+}
+
+/**
+ * Sendet die offenen Bewertungen einer verborgenen oder verlassenen Lernsitzung
+ * weiter, ohne React: Verbirgt Next.js die Seite (Zurück, Wischgeste), laufen ihre
+ * Effekte nicht mehr, und ein neuer Aufruf der Seite verwirft die alte Sitzung.
+ * Dieselbe Reihenfolge und Rechnung wie in der Sitzung (studyReducer, nextToSend);
+ * schickt die Sitzung danach selbst weiter, antwortet der Server auf Doppeltes mit
+ * "stale", und das zählt als gespeichert. Liefert eine Funktion zum Anhalten.
+ */
+export function drainDetached(snapshot: StudyState, send: (o: Outgoing) => Promise<SendResult>): () => void {
+  let stopped = false;
+  // Was beim Verbergen unterwegs war, kommt nur noch bei der Sitzung an: erneut senden.
+  let s: StudyState = { ...snapshot, sending: false, failed: false };
+  if (!nextToSend(s)) return () => {};
+  detachedRunning++;
+  void (async () => {
+    try {
+      for (let next = nextToSend(s); next && !stopped; next = nextToSend(s)) {
+        s = studyReducer(s, { type: "sending" });
+        try {
+          const result = await send(next);
+          // "stale": schon gespeichert, etwa von der eigenen Anfrage der Sitzung nach dem Verbergen.
+          if (result.ok || result.reason === "stale") lastDetachedSave = Date.now();
+          s = studyReducer(s, resultAction(result));
+        } catch {
+          s = studyReducer(s, { type: "failed" });
+          await new Promise((resolve) => setTimeout(resolve, retryDelayMs(s.failures)));
+          s = studyReducer(s, { type: "retry" });
+        }
+      }
+    } finally {
+      detachedRunning--;
+      if (detachedRunning === 0) {
+        const waiting = [...idleListeners];
+        idleListeners.clear();
+        for (const then of waiting) then();
+      }
+    }
+  })();
+  return () => {
+    stopped = true;
+  };
+}
+
+/**
+ * So lange nach einer Speicherung im Hintergrund kann eine eben geladene Lernsitzung
+ * die Karte noch mit dem alten Stand zeigen (geladen, bevor die Bewertung ankam).
+ */
+export const DETACHED_FRESH_MS = 10_000;
+
+let detachedRunning = 0;
+let lastDetachedSave = -Infinity;
+const idleListeners = new Set<() => void>();
+
+/**
+ * Sendet eine verlassene Sitzung noch, oder hat sie eben gespeichert? Dann kann eine
+ * neue Sitzung veraltete Wiederholungszahlen haben: Ihre erste Bewertung einer solchen
+ * Karte gälte dem Server als schon gespeichert ("stale") und ginge verloren.
+ */
+export function detachedBusy(now = Date.now()): boolean {
+  return detachedRunning > 0 || now - lastDetachedSave < DETACHED_FRESH_MS;
+}
+
+/** Ruft `then` auf, sobald keine verlassene Sitzung mehr sendet, sofort, wenn keine sendet. Liefert die Abmeldung. */
+export function afterDetached(then: () => void): () => void {
+  if (detachedRunning === 0) {
+    then();
+    return () => {};
+  }
+  idleListeners.add(then);
+  return () => idleListeners.delete(then);
+}

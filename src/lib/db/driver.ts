@@ -1,3 +1,22 @@
+import { Pool } from "pg";
+
+// Serverless: jede Funktionsinstanz hält ihren eigenen Pool. Klein halten,
+// damit viele parallele Instanzen das Verbindungslimit von Neon nicht ausschöpfen,
+// und ungenutzte Verbindungen bald schließen.
+const PG_POOL = { max: 5, idleTimeoutMillis: 10_000 } as const;
+
+/**
+ * Bricht eine ruhende Verbindung ab (Neon pausiert, der Pooler trennt), meldet
+ * pg-pool das als `error` am Pool. Ohne Zuhörer wäre das ein unbehandelter Fehler,
+ * der die Funktionsinstanz mitsamt laufenden Anfragen beendet. Der Pool ersetzt
+ * die Verbindung bei der nächsten Abfrage selbst.
+ */
+export function createPgPool(url: string): Pool {
+  const pool = new Pool({ connectionString: url, ...PG_POOL });
+  pool.on("error", (error) => console.error("Ruhende Datenbankverbindung abgebrochen:", error));
+  return pool;
+}
+
 export type DbTarget =
   | { driver: "pg"; url: string }
   | { driver: "pglite"; location: string | undefined };
