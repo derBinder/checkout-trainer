@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  DETACHED_FRESH_MS,
   TAP_GUARD_MS,
+  afterDetached,
+  detachedBusy,
   drainDetached,
   initStudy,
   isFinished,
@@ -274,6 +277,7 @@ describe("drainDetached", () => {
     await s.answer({ ok: false, reason: "stale" });
     await s.answer({ ok: false, reason: "limit" });
     expect(s.calls.at(-1)).toEqual({ cardId: "a", rating: 3, reps: 5 });
+    await s.answer({ ok: true });
   });
 
   it("retries after a failed request with the usual back-off", async () => {
@@ -287,6 +291,7 @@ describe("drainDetached", () => {
       { cardId: "a", rating: 3, reps: 0 },
       { cardId: "a", rating: 3, reps: 0 },
     ]);
+    await s.answer({ ok: true });
   });
 
   it("stops after a signed-out answer", async () => {
@@ -309,5 +314,33 @@ describe("drainDetached", () => {
     drainDetached(initStudy(["a"], {}), s.send);
     drainDetached(run(snapshot(), { type: "signedOut" }), s.send);
     expect(s.calls).toHaveLength(0);
+  });
+
+  it("is busy while sending and shortly after a save, so a new session waits for fresh cards", async () => {
+    const s = server();
+    const idle = vi.fn();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    expect(detachedBusy()).toBe(true);
+    afterDetached(idle);
+    expect(idle).not.toHaveBeenCalled();
+
+    await s.answer({ ok: true });
+    expect(idle).toHaveBeenCalledTimes(1);
+    // Eine eben geladene Seite kann älter sein als diese Speicherung.
+    expect(detachedBusy()).toBe(true);
+    expect(detachedBusy(Date.now() + DETACHED_FRESH_MS)).toBe(false);
+  });
+
+  it("runs the callback right away when nothing is sending, and not after cancelling", async () => {
+    const now = vi.fn();
+    afterDetached(now);
+    expect(now).toHaveBeenCalledTimes(1);
+
+    const s = server();
+    const cancelled = vi.fn();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    afterDetached(cancelled)();
+    await s.answer({ ok: false, reason: "limit" });
+    expect(cancelled).not.toHaveBeenCalled();
   });
 });

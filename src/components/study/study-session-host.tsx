@@ -11,6 +11,7 @@ import { loadsToRecord, nextLoad, REFRESH_TIMEOUT_MS, type StudyLoad } from "./s
 import { StudySurface } from "./study-parts";
 import { StudySession, type StudyItem } from "./study-session";
 import { StudySkeleton } from "./study-skeleton";
+import { afterDetached, detachedBusy } from "./study-state";
 
 /** Ladungen, mit denen in diesem Tab schon eine Sitzung lief. */
 const usedLoads = new Set<string>();
@@ -32,7 +33,12 @@ function StudyLoadView({ loadId, items, doneToday }: StudyLoad<StudyItem[]>) {
   const localePath = useLocalePath();
   const t = useDictionary().study.session;
   const incoming = { loadId, items, doneToday };
-  const [active, setActive] = useState(() => nextLoad(null, incoming, usedLoads));
+  const [active, setActive] = useState(() => {
+    // Speichert eine verlassene Sitzung noch (oder eben erst), kann diese Ladung Karten
+    // mit altem Stand zeigen: Sie gilt als verbraucht, frische Karten kommen unten.
+    if (detachedBusy()) usedLoads.add(loadId);
+    return nextLoad(null, incoming, usedLoads);
+  });
   const next = nextLoad(active, incoming, usedLoads);
   if (next !== active) setActive(next);
 
@@ -44,13 +50,21 @@ function StudyLoadView({ loadId, items, doneToday }: StudyLoad<StudyItem[]>) {
   }, [active, loadId, items]);
 
   // Zurück/Vor ohne vorgehaltenen Zustand: Die Ladung aus dem Zurück-Cache ist
-  // schon verbraucht, also einmal frische Karten vom Server holen. Kommen keine,
-  // erscheint nach kurzer Zeit ein Hinweis statt eines endlosen Skeletons.
+  // schon verbraucht, also einmal frische Karten vom Server holen, erst wenn keine
+  // verlassene Sitzung mehr speichert. Kommen keine, erscheint nach kurzer Zeit ein
+  // Hinweis statt eines endlosen Skeletons.
   useEffect(() => {
     if (active) return;
-    router.refresh();
-    const timer = setTimeout(() => setFailed(true), REFRESH_TIMEOUT_MS);
-    return () => clearTimeout(timer);
+    let timer = setTimeout(() => setFailed(true), REFRESH_TIMEOUT_MS);
+    const cancel = afterDetached(() => {
+      router.refresh();
+      clearTimeout(timer);
+      timer = setTimeout(() => setFailed(true), REFRESH_TIMEOUT_MS);
+    });
+    return () => {
+      cancel();
+      clearTimeout(timer);
+    };
   }, [active, router]);
 
   if (!active && failed) {

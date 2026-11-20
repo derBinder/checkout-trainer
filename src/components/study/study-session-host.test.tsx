@@ -6,6 +6,7 @@ import { checkFor } from "@/lib/darts/judge";
 import { de } from "@/i18n/dictionaries/de";
 import { cardView } from "./card-view";
 import { REFRESH_TIMEOUT_MS } from "./study-load";
+import { drainDetached, initStudy, studyReducer } from "./study-state";
 import { I18nProvider } from "@/i18n/client";
 
 // Die Komponenten lesen die Sprache aus dem I18nProvider des Root-Layouts.
@@ -126,6 +127,45 @@ describe("StudySessionHost", () => {
     rerender(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />);
     expect(screen.queryByText("Nach S1")).toBeNull();
     expect(screen.getByRole("button", { name: "Prüfen" })).toBeTruthy();
+  });
+
+  it("wartet auf eine verlassene Sitzung, die noch speichert, und holt dann frische Karten", async () => {
+    // Uhr fest auf einen Zeitpunkt lange vor heute: Die Speicherung gilt danach für die anderen Tests als alt.
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"], now: new Date("2020-01-01T10:00:00Z") });
+    let answer!: (r: { ok: true }) => void;
+    const open = [{ type: "reveal" }, { type: "rate", rating: 3 }] as const;
+    drainDetached(
+      open.reduce(studyReducer, initStudy(["r-5"], {})),
+      () => new Promise((resolve) => (answer = resolve)),
+    );
+
+    // Diese Ladung entstand, bevor die alte Bewertung ankam: Sie kann r-5 mit alter Wiederholungszahl zeigen.
+    const { container, rerender } = render(
+      <StudySessionHost loadId={newLoadId()} items={items("r-5", "r-7")} />,
+      { wrapper },
+    );
+    expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
+    expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
+    expect(router.refresh).not.toHaveBeenCalled();
+
+    await act(async () => answer({ ok: true }));
+    expect(router.refresh).toHaveBeenCalledTimes(1);
+
+    rerender(<StudySessionHost loadId={newLoadId()} items={items("r-5", "r-7")} />);
+    expect(screen.getByText("1 / 2")).toBeTruthy();
+    await act(async () => vi.advanceTimersByTime(REFRESH_TIMEOUT_MS));
+    expect(screen.queryByText(ERROR_TEXT)).toBeNull();
+  });
+
+  it("lädt gleich frisch, wenn eine verlassene Sitzung eben erst gespeichert hat", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"], now: new Date("2020-01-02T10:00:00Z") });
+    const open = [{ type: "reveal" }, { type: "rate", rating: 3 }] as const;
+    drainDetached(open.reduce(studyReducer, initStudy(["r-5"], {})), async () => ({ ok: true }));
+    await act(async () => {});
+
+    render(<StudySessionHost loadId={newLoadId()} items={items("r-5")} />, { wrapper });
+    expect(router.refresh).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
   });
 
   it("behält einen halb eingegebenen Weg, wenn der Server die Seite neu rendert", () => {
