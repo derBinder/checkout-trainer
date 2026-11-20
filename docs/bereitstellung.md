@@ -198,7 +198,7 @@ Das Repository liegt privat auf GitHub (`derBinder/checkout-trainer`). Seit Nove
 Previews gibt es bewusst keine. Die Datenbank-Variablen der Neon-Integration (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `PG*`, `POSTGRES_*`) gelten für Production **und Preview**, entgegen Schritt 3. Eine Preview liefe also mit unveröffentlichtem Code gegen die Produktionsdatenbank (sie migriert nicht, `scripts/vercel-build.sh` tut das nur in Production, aber sie liest und schreibt). Zwei Sperren verhindern Previews:
 
 - `vercel.json`: `git.deploymentEnabled` erlaubt nur `main` (`"**": false` statt `"*"`, weil `*` nicht auf Namen mit Schrägstrich wie `feature/…` passt).
-- Dashboard, Settings, Build and Deployment, Ignored Build Step: „Only build production“. Das greift auch für Branches, deren `vercel.json` die Sperre noch nicht enthält; deren Pushes erscheinen als abgebrochene Bereitstellung.
+- Dashboard, Settings, Build and Deployment, Ignored Build Step: „Only build production“. Das greift auch für Branches, deren `vercel.json` die Sperre noch nicht enthält; deren Pushes erscheinen als abgebrochene Bereitstellung, mit Commit-Status `Vercel` = `success` und der Beschreibung „Canceled by Ignored Build Step“ (am 2026-11-20 am Merge-Commit von PR #42 gesehen). Der Status ist also nicht rot und hält `gh pr checks` nicht auf.
 
 Wer später Previews will, braucht vorher eine eigene Datenbank-Verzweigung bei Neon nur für Preview, die Datenbank-Variablen auf nur Production und `BETTER_AUTH_TRUSTED_ORIGINS` für die Preview-Adressen.
 
