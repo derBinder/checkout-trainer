@@ -186,7 +186,7 @@ export const de = {
           case "leavesBogey":
             return `Lässt ${d.leaves}, nicht checkbar`;
           case "bust":
-            return `Ergibt ${d.total}, Rest bleibt ${d.rest}`;
+            return `Ergibt ${d.total} bei Rest ${d.rest}`;
         }
       },
     },

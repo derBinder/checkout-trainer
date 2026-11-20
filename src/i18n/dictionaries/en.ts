@@ -174,7 +174,7 @@ export const en: Dictionary = {
           case "leavesBogey":
             return `Leaves ${d.leaves}, no checkout`;
           case "bust":
-            return `Scores ${d.total}, still ${d.rest} left`;
+            return `Scores ${d.total} with ${d.rest} left`;
         }
       },
     },

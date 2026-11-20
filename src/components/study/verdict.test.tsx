@@ -90,17 +90,18 @@ describe("setup that leaves a bogey number", () => {
 });
 
 describe("setup that busts", () => {
-  it("is light red and says the rest stays", () => {
+  // Der Rest zu Beginn der Aufnahme ist auf Fehlwurf- und Zwei-Dart-Karten nicht der Rest der Karte: keine Behauptung darüber.
+  it("is light red and names the score and the rest", () => {
     const verdict = { code: "setupBust", detail: { kind: "bust", total: 180, rest: 171 } } as const;
     expect(verdictCopy(verdict, de.study)).toEqual({
       tone: "bad",
       title: "Überworfen",
-      note: "Ergibt 180, Rest bleibt 171",
+      note: "Ergibt 180 bei Rest 171",
     });
     expect(verdictCopy(verdict, en.study)).toEqual({
       tone: "bad",
       title: "Bust",
-      note: "Scores 180, still 171 left",
+      note: "Scores 180 with 171 left",
     });
   });
 });
