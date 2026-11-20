@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { Activity } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor } from "@/lib/darts/judge";
@@ -248,6 +249,44 @@ describe("StudySession", () => {
     await rateCurrent("Gut");
     expect(submitReview).toHaveBeenCalledTimes(3);
     expect(submitReview.mock.calls.map(([input]) => input.cardId)).toEqual(["r-5", "r-5", "r-7"]);
+  });
+
+  it("speichert nach dem Verlassen der Seite weiter, bis alles beim Server ist", async () => {
+    const first = deferred();
+    submitReview.mockReturnValueOnce(first.promise);
+    const { unmount } = render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
+    await rateCurrent("Gut");
+    await rateCurrent("Gut");
+    expect(submitReview).toHaveBeenCalledTimes(1);
+
+    // Ein neuer Aufruf von /study ersetzt die Sitzung (neuer Schlüssel); ihre offenen Bewertungen bleiben.
+    unmount();
+    await act(async () => first.resolve({ ok: true }));
+    await flush();
+    expect(submitReview.mock.calls.map(([input]) => input.cardId)).toEqual(["r-5", "r-5", "r-7"]);
+  });
+
+  it("speichert weiter, solange die Seite verborgen ist (Zurück, Wischgeste)", async () => {
+    const first = deferred();
+    submitReview.mockReturnValueOnce(first.promise);
+    const items = [item("r-5"), item("r-7")];
+    const { rerender } = render(
+      <Activity mode="visible">
+        <StudySession items={items} />
+      </Activity>,
+      { wrapper },
+    );
+    await rateCurrent("Gut");
+    await rateCurrent("Gut");
+
+    rerender(
+      <Activity mode="hidden">
+        <StudySession items={items} />
+      </Activity>,
+    );
+    await act(async () => first.resolve({ ok: true }));
+    await flush();
+    expect(submitReview.mock.calls.at(-1)?.[0]).toEqual({ cardId: "r-7", rating: 3, reps: 0 });
   });
 
   it("zeigt nach einer abgelaufenen Anmeldung die offenen Bewertungen und führt zur Anmeldung", async () => {

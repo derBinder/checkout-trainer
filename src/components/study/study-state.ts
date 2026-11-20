@@ -145,3 +145,44 @@ export function isFinished(s: StudyState): boolean {
 export function retryDelayMs(failures: number): number {
   return Math.min(15000, 1000 * 2 ** failures);
 }
+
+export type SendResult = { ok: true } | { ok: false; reason: string };
+
+/** Antwort des Servers auf eine Bewertung als Aktion für studyReducer. */
+export function resultAction(result: SendResult): StudyAction {
+  if (result.ok) return { type: "result", outcome: "ok" };
+  // Offene Bewertungen nicht stillschweigend verwerfen: erst Hinweis, dann Anmeldung.
+  if (result.reason === "auth") return { type: "signedOut" };
+  // "stale": schon gespeichert (doppelt gesendet), zählt als bestätigt.
+  // "limit", "invalid", "unknown-card", "off" (Zusatzkarte inzwischen ausgeschaltet): nicht gezählt.
+  return { type: "result", outcome: result.reason === "stale" ? "stale" : "skipped" };
+}
+
+/**
+ * Sendet die offenen Bewertungen einer verborgenen oder verlassenen Lernsitzung
+ * weiter, ohne React: Verbirgt Next.js die Seite (Zurück, Wischgeste), laufen ihre
+ * Effekte nicht mehr, und ein neuer Aufruf der Seite verwirft die alte Sitzung.
+ * Dieselbe Reihenfolge und Rechnung wie in der Sitzung (studyReducer, nextToSend);
+ * schickt die Sitzung danach selbst weiter, antwortet der Server auf Doppeltes mit
+ * "stale", und das zählt als gespeichert. Liefert eine Funktion zum Anhalten.
+ */
+export function drainDetached(snapshot: StudyState, send: (o: Outgoing) => Promise<SendResult>): () => void {
+  let stopped = false;
+  void (async () => {
+    // Was beim Verbergen unterwegs war, kommt nur noch bei der Sitzung an: erneut senden.
+    let s: StudyState = { ...snapshot, sending: false, failed: false };
+    for (let next = nextToSend(s); next && !stopped; next = nextToSend(s)) {
+      s = studyReducer(s, { type: "sending" });
+      try {
+        s = studyReducer(s, resultAction(await send(next)));
+      } catch {
+        s = studyReducer(s, { type: "failed" });
+        await new Promise((resolve) => setTimeout(resolve, retryDelayMs(s.failures)));
+        s = studyReducer(s, { type: "retry" });
+      }
+    }
+  })();
+  return () => {
+    stopped = true;
+  };
+}
