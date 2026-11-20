@@ -1,7 +1,10 @@
 /**
- * Prüft den Schutz gegen doppelt abgeschickte Bewertungen (SELECT … FOR UPDATE
- * in applyReview): zwei identische Bewertungen laufen gleichzeitig, genau eine
- * darf gelten. Legt dafür einen Wegwerf-Nutzer an und entfernt ihn danach
+ * Prüft die Sperre der Nutzerzeile (SELECT … FOR UPDATE in applyReview) in zwei
+ * Wettläufen: zwei identische Bewertungen gleichzeitig, genau eine darf gelten;
+ * dann zwei verschiedene neue Karten, wenn nur noch eine ins Tageslimit passt,
+ * genau eine darf eingeführt werden. PGlite arbeitet Transaktionen nacheinander
+ * ab, aussagekräftig ist die Prüfung deshalb nur gegen Postgres (DATABASE_URL).
+ * Legt dafür einen Wegwerf-Nutzer an und entfernt ihn danach
  * wieder (ON DELETE CASCADE räumt Lernstand und Protokoll mit ab).
  *
  * Datenbank wie in der App: mit DATABASE_URL über pg (zwei echte Verbindungen
@@ -49,7 +52,26 @@ try {
 
   const ok = results.filter((r) => r.ok).length;
   const stale = results.filter((r) => !r.ok && r.reason === "stale").length;
-  passed = ok === 1 && stale === 1 && logRows.length === 1 && stateRows.length === 1;
+  const sameCardPassed = ok === 1 && stale === 1 && logRows.length === 1 && stateRows.length === 1;
+
+  // Heute ist eine Karte eingeführt; bei zwei neuen pro Tag passt noch genau eine.
+  const limitActor = { id, newPerDay: 2 };
+  const limitResults = await Promise.all(
+    [CARD_ORDER[1], CARD_ORDER[2]].map((cardId) =>
+      applyReview(db, limitActor, { cardId, rating: 3, reps: 0 }, new Date()),
+    ),
+  );
+  const introduced = await db.select().from(cardState).where(eq(cardState.userId, id));
+  console.log("Ergebnisse Tageslimit:", JSON.stringify(limitResults));
+  console.log("card_state-Zeilen danach:", introduced.length);
+  const limitPassed =
+    limitResults.filter((r) => r.ok).length === 1 &&
+    limitResults.filter((r) => !r.ok && r.reason === "limit").length === 1 &&
+    introduced.length === 2;
+
+  console.log(sameCardPassed ? "OK: genau eine Bewertung gilt." : "FEHLER: Doppelte Bewertung nicht abgewehrt.");
+  console.log(limitPassed ? "OK: Tageslimit hält." : "FEHLER: Tageslimit überschritten.");
+  passed = sameCardPassed && limitPassed;
 } finally {
   await db.delete(user).where(eq(user.id, id));
   const left = await db.select().from(reviewLog).where(eq(reviewLog.userId, id));
@@ -57,5 +79,4 @@ try {
   await close();
 }
 
-console.log(passed ? "OK: genau eine Bewertung gilt." : "FEHLER: Der Schutz greift nicht.");
 process.exit(passed ? 0 : 1);
