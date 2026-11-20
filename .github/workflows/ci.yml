@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Release- oder Hotfix-Branch zurück nach develop: Der Stand war gerade in main grün. Ein Lauf ist nur nötig,
-  # wenn develop seit dem Abzweig weiter ist, denn dann entsteht eine Kombination, die noch nie getestet wurde.
+  # Rückführung main nach develop: Der Stand war gerade in main grün. Ein Lauf ist nur nötig, wenn develop
+  # Commits hat, die nicht in main sind, denn dann entsteht eine Kombination, die noch nie getestet wurde.
   scope:
     runs-on: ubuntu-latest
     outputs:
@@ -34,7 +34,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           run=true
-          if [[ "$BASE_REF" == develop && ( "$HEAD_REF" == release/* || "$HEAD_REF" == hotfix/* ) ]]; then
+          if [[ "$BASE_REF" == develop && "$HEAD_REF" == main ]]; then
             [ "$(git rev-list --count "$HEAD_SHA..$BASE_SHA")" = 0 ] && run=false
           fi
           echo "run=$run" >> "$GITHUB_OUTPUT"
