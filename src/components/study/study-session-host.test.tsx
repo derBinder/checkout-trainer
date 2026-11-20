@@ -147,9 +147,9 @@ describe("StudySessionHost", () => {
     expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
     expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
     expect(router.refresh).not.toHaveBeenCalled();
-    // Solange noch gespeichert wird, ist nichts fehlgeschlagen.
+    // Dauert das Speichern zu lange (offline), erscheint der Hinweis statt eines endlosen Skeletons.
     await act(async () => vi.advanceTimersByTime(REFRESH_TIMEOUT_MS));
-    expect(screen.queryByText(ERROR_TEXT)).toBeNull();
+    expect(screen.getByRole("alert").textContent).toBe(ERROR_TEXT);
 
     await act(async () => answer({ ok: true }));
     expect(router.refresh).toHaveBeenCalledTimes(1);

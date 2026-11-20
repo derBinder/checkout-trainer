@@ -55,10 +55,11 @@ function StudyLoadView({ loadId, items, doneToday }: StudyLoad<StudyItem[]>) {
   // Hinweis statt eines endlosen Skeletons.
   useEffect(() => {
     if (active) return;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    // Die Frist für den Hinweis läuft erst ab dem Neuladen, nicht schon während des Speicherns.
+    // Die Frist läuft schon während des Speicherns: Offline endet das Warten sonst nie.
+    let timer = setTimeout(() => setFailed(true), REFRESH_TIMEOUT_MS);
     const cancel = afterDetached(() => {
       router.refresh();
+      clearTimeout(timer);
       timer = setTimeout(() => setFailed(true), REFRESH_TIMEOUT_MS);
     });
     return () => {

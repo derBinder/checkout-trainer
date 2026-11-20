@@ -339,6 +339,13 @@ describe("drainDetached", () => {
     // Die eigene Anfrage der Sitzung kam nach dem Verbergen noch an: gespeichert, nur nicht von hier.
     await s.answer({ ok: false, reason: "stale" });
     expect(detachedBusy()).toBe(true);
+
+    // Spätere Tests laufen mit echter Uhr: die Speicherung von 2099 durch eine alte ersetzen.
+    vi.setSystemTime(new Date("2000-01-01T10:00:00Z"));
+    drainDetached(run(initStudy(["b"], {}), reveal, rate(3)), s.send);
+    await s.answer({ ok: true });
+    vi.useRealTimers();
+    expect(detachedBusy()).toBe(false);
   });
 
   it("runs the callback right away when nothing is sending, and not after cancelling", async () => {
