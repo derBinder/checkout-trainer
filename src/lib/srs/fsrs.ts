@@ -1,5 +1,5 @@
 import { createEmptyCard, fsrs, generatorParameters, type Card, type Grade } from "ts-fsrs";
-import { dayStart } from "@/lib/time";
+import { dayKey } from "@/lib/time";
 
 export type Rating = 1 | 2 | 3 | 4; // Nochmal, Schwer, Gut, Leicht
 
@@ -32,10 +32,14 @@ const DAY_MS = 24 * HOUR_MS;
 // neu ab. Ändert man sie, verschieben sich diese Daten, ohne dass etwas fehlschlägt.
 const scheduler = fsrs(generatorParameters({ enable_fuzz: false, enable_short_term: false }));
 
-/** Berliner Kalendertage zwischen zwei Zeitpunkten; Tage mit 23 oder 25 Stunden zählen als einer. */
+/**
+ * Berliner Kalendertage seit der letzten Wiederholung. Die Tage als UTC-Mitternacht
+ * gelesen (`YYYY-MM-DD`) liegen genau ganze 24 Stunden auseinander, auch über eine
+ * Zeitumstellung; eine Formatierung je Datum statt einer Suche nach dem Tagesbeginn.
+ */
 function berlinDaysSince(prev: SrsState | null, now: Date): number {
   if (!prev?.lastReview) return 0;
-  return Math.max(0, Math.round((dayStart(now).getTime() - dayStart(prev.lastReview).getTime()) / DAY_MS));
+  return Math.max(0, (Date.parse(dayKey(now)) - Date.parse(dayKey(prev.lastReview))) / DAY_MS);
 }
 
 function toCard(prev: SrsState | null, now: Date): Card {
