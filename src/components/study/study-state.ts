@@ -178,7 +178,8 @@ export function drainDetached(snapshot: StudyState, send: (o: Outgoing) => Promi
         s = studyReducer(s, { type: "sending" });
         try {
           const result = await send(next);
-          if (result.ok) lastDetachedSave = Date.now();
+          // "stale": schon gespeichert, etwa von der eigenen Anfrage der Sitzung nach dem Verbergen.
+          if (result.ok || result.reason === "stale") lastDetachedSave = Date.now();
           s = studyReducer(s, resultAction(result));
         } catch {
           s = studyReducer(s, { type: "failed" });

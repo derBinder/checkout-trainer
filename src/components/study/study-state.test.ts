@@ -331,6 +331,16 @@ describe("drainDetached", () => {
     expect(detachedBusy(Date.now() + DETACHED_FRESH_MS)).toBe(false);
   });
 
+  it("counts an already saved head as a recent save too", async () => {
+    // Uhr weit nach allen Speicherungen der anderen Tests in dieser Datei.
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2099-03-01T10:00:00Z") });
+    const s = server();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    // Die eigene Anfrage der Sitzung kam nach dem Verbergen noch an: gespeichert, nur nicht von hier.
+    await s.answer({ ok: false, reason: "stale" });
+    expect(detachedBusy()).toBe(true);
+  });
+
   it("runs the callback right away when nothing is sending, and not after cancelling", async () => {
     const now = vi.fn();
     afterDetached(now);
