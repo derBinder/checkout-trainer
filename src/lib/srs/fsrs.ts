@@ -1,4 +1,5 @@
 import { createEmptyCard, fsrs, generatorParameters, type Card, type Grade } from "ts-fsrs";
+import { dayStart } from "@/lib/time";
 
 export type Rating = 1 | 2 | 3 | 4; // Nochmal, Schwer, Gut, Leicht
 
@@ -31,6 +32,12 @@ const DAY_MS = 24 * HOUR_MS;
 // neu ab. Ändert man sie, verschieben sich diese Daten, ohne dass etwas fehlschlägt.
 const scheduler = fsrs(generatorParameters({ enable_fuzz: false, enable_short_term: false }));
 
+/** Berliner Kalendertage zwischen zwei Zeitpunkten; Tage mit 23 oder 25 Stunden zählen als einer. */
+function berlinDaysSince(prev: SrsState | null, now: Date): number {
+  if (!prev?.lastReview) return 0;
+  return Math.max(0, Math.round((dayStart(now).getTime() - dayStart(prev.lastReview).getTime()) / DAY_MS));
+}
+
 function toCard(prev: SrsState | null, now: Date): Card {
   if (!prev) return createEmptyCard(now);
   return {
@@ -42,13 +49,12 @@ function toCard(prev: SrsState | null, now: Date): Card {
     reps: prev.reps,
     lapses: prev.lapses,
     state: prev.state as Card["state"],
-    last_review: prev.lastReview ?? undefined,
+    // ts-fsrs zählt die vergangenen Tage als UTC-Kalendertage; sein Tag begänne also um
+    // 1 bzw. 2 Uhr in Berlin. Um ganze UTC-Tage zurückgerechnet ergibt der Abstand genau
+    // die Berliner Tage, wie die Tagesgrenze der Warteschlange. Gespeichert wird der echte
+    // Zeitpunkt: Die Bibliothek setzt last_review der neuen Karte auf `now`.
+    last_review: prev.lastReview ? new Date(now.getTime() - berlinDaysSince(prev, now) * DAY_MS) : undefined,
   };
-}
-
-function elapsedDaysSince(prev: SrsState | null, now: Date): number {
-  if (!prev?.lastReview) return 0;
-  return Math.max(0, Math.floor((now.getTime() - prev.lastReview.getTime()) / DAY_MS));
 }
 
 function toState(card: Card, elapsedDays: number): SrsState {
@@ -68,7 +74,7 @@ function toState(card: Card, elapsedDays: number): SrsState {
 
 export function rate(prev: SrsState | null, rating: Rating, now: Date): SrsState {
   const { card } = scheduler.next(toCard(prev, now), now, rating as Grade);
-  const next = toState(card, elapsedDaysSince(prev, now));
+  const next = toState(card, berlinDaysSince(prev, now));
   // "Nochmal" stays due until it is passed; the other state fields are FSRS's.
   if (rating === 1) next.due = now;
   return next;
