@@ -193,7 +193,14 @@ Es werden keine weiteren Dienste angelegt. Kein E-Mail-Versand, keine Domain, ke
 
 ### Git
 
-Das Repository liegt privat auf GitHub (`derBinder/checkout-trainer`). Seit November 2026 gilt Git-Flow: Jede Änderung kommt über ein Issue und einen Feature-PR nach `develop`, geprüft von GitHub Actions, und über einen Release-Branch `release/<version>` nach `main`, mit Tag `v<version>` (Ablauf in der CLAUDE.md). Vercel ist nicht mit GitHub verbunden, bereitgestellt wird weiter direkt per CLI aus `main` (wie die erste Bereitstellung, Schritt 7). Später kannst du das Repository im Vercel-Projekt unter Settings, Git, "Connect Git Repository" verbinden. Ab dann löst jeder Merge nach `main` eine Bereitstellung aus, und der CLI-Deploy fällt aus dem Ablauf, sonst wird doppelt bereitgestellt. Dann gilt Schritt 4 erneut: Production-Variablen bleiben, für Previews entscheidest du bewusst (eigene Datenbank-Verzweigung bei Neon oder keine Previews, und `BETTER_AUTH_TRUSTED_ORIGINS` für deren Adressen).
+Das Repository liegt privat auf GitHub (`derBinder/checkout-trainer`). Seit November 2026 gilt Git-Flow: Jede Änderung kommt über ein Issue und einen Feature-PR nach `develop`, geprüft von GitHub Actions, und über einen Release-Branch `release/<version>` nach `main`, mit Tag `v<version>` (Ablauf in der CLAUDE.md). Seit dem 2026-11-20 ist das Vercel-Projekt mit dem Repository verbunden (Settings, Git). Jeder Merge nach `main` löst die Produktionsbereitstellung aus, der CLI-Deploy aus Schritt 7 fällt weg (er würde doppelt bereitstellen). Vercel meldet jeden Bau als Commit-Status `Vercel` an GitHub, daran prüft der Release-Ablauf den Deploy.
+
+Previews gibt es bewusst keine. Die Datenbank-Variablen der Neon-Integration (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `PG*`, `POSTGRES_*`) gelten für Production **und Preview**, entgegen Schritt 3. Eine Preview liefe also mit unveröffentlichtem Code gegen die Produktionsdatenbank (sie migriert nicht, `scripts/vercel-build.sh` tut das nur in Production, aber sie liest und schreibt). Zwei Sperren verhindern Previews:
+
+- `vercel.json`: `git.deploymentEnabled` erlaubt nur `main` (`"**": false` statt `"*"`, weil `*` nicht auf Namen mit Schrägstrich wie `feature/…` passt).
+- Dashboard, Settings, Build and Deployment, Ignored Build Step: „Only build production“. Das greift auch für Branches, deren `vercel.json` die Sperre noch nicht enthält; deren Pushes erscheinen als abgebrochene Bereitstellung, mit Commit-Status `Vercel` = `success` und der Beschreibung „Canceled by Ignored Build Step“ (am 2026-11-20 am Merge-Commit von PR #42 gesehen). Der Status ist also nicht rot und hält `gh pr checks` nicht auf.
+
+Wer später Previews will, braucht vorher eine eigene Datenbank-Verzweigung bei Neon nur für Preview, die Datenbank-Variablen auf nur Production und `BETTER_AUTH_TRUSTED_ORIGINS` für die Preview-Adressen.
 
 ## Rückbau
 
