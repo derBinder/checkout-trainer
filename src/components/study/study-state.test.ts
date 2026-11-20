@@ -1,9 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  DETACHED_FRESH_MS,
   TAP_GUARD_MS,
+  afterDetached,
+  detachedBusy,
+  drainDetached,
   initStudy,
   isFinished,
   nextToSend,
+  resultAction,
   retryDelayMs,
   studyReducer,
   type StudyAction,
@@ -214,5 +219,145 @@ describe("studyReducer ohne Speichern (Übung)", () => {
 
   it("speichert ohne Angabe wie bisher", () => {
     expect(initStudy(["a"], {}).save).toBe(true);
+  });
+});
+
+describe("resultAction", () => {
+  it("maps the server answer to a reducer action", () => {
+    expect(resultAction({ ok: true })).toEqual({ type: "result", outcome: "ok" });
+    expect(resultAction({ ok: false, reason: "stale" })).toEqual({ type: "result", outcome: "stale" });
+    expect(resultAction({ ok: false, reason: "limit" })).toEqual({ type: "result", outcome: "skipped" });
+    expect(resultAction({ ok: false, reason: "auth" })).toEqual({ type: "signedOut" });
+  });
+});
+
+describe("drainDetached", () => {
+  afterEach(() => vi.useRealTimers());
+
+  type Sent = { cardId: string; rating: number; reps: number };
+  type Answer = { ok: true } | { ok: false; reason: string };
+
+  /** Ein Server zum Mitschreiben; jede Antwort kommt erst, wenn der Test sie freigibt. */
+  function server() {
+    const calls: Sent[] = [];
+    const pending: ((a: Answer | Error) => void)[] = [];
+    const send = (o: Sent) => {
+      calls.push(o);
+      return new Promise<Answer>((resolve, reject) =>
+        pending.push((a) => (a instanceof Error ? reject(a) : resolve(a))),
+      );
+    };
+    const answer = async (a: Answer | Error) => {
+      pending.shift()!(a);
+      // Die Schleife läuft über mehrere Mikroaufgaben weiter.
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+    };
+    return { calls, send, answer };
+  }
+
+  // Karte a: „Nochmal“, dann „Gut“; Karte b: „Gut“. Der Kopf ist schon unterwegs.
+  const snapshot = () => run(initStudy(["a", "b"], { a: 4 }), reveal, rate(1), sent, reveal, rate(3), reveal, rate(3));
+
+  it("sends the open ratings one after another, with reps counted from the confirmed ones", async () => {
+    const s = server();
+    drainDetached(snapshot(), s.send);
+    expect(s.calls).toEqual([{ cardId: "a", rating: 1, reps: 4 }]);
+    await s.answer({ ok: true });
+    // Die zweite Bewertung derselben Karte erst nach der ersten, mit einer Wiederholung mehr.
+    expect(s.calls.at(-1)).toEqual({ cardId: "b", rating: 3, reps: 0 });
+    await s.answer({ ok: true });
+    expect(s.calls.at(-1)).toEqual({ cardId: "a", rating: 3, reps: 5 });
+    await s.answer({ ok: true });
+    expect(s.calls).toHaveLength(3);
+  });
+
+  it("counts a stale head as saved and a skipped one as not counted", async () => {
+    const s = server();
+    drainDetached(snapshot(), s.send);
+    await s.answer({ ok: false, reason: "stale" });
+    await s.answer({ ok: false, reason: "limit" });
+    expect(s.calls.at(-1)).toEqual({ cardId: "a", rating: 3, reps: 5 });
+    await s.answer({ ok: true });
+  });
+
+  it("retries after a failed request with the usual back-off", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    const s = server();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    await s.answer(new Error("offline"));
+    expect(s.calls).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(retryDelayMs(1));
+    expect(s.calls).toEqual([
+      { cardId: "a", rating: 3, reps: 0 },
+      { cardId: "a", rating: 3, reps: 0 },
+    ]);
+    await s.answer({ ok: true });
+  });
+
+  it("stops after a signed-out answer", async () => {
+    const s = server();
+    drainDetached(snapshot(), s.send);
+    await s.answer({ ok: false, reason: "auth" });
+    expect(s.calls).toHaveLength(1);
+  });
+
+  it("sends nothing more once stopped; the request on its way still finishes", async () => {
+    const s = server();
+    const stop = drainDetached(snapshot(), s.send);
+    stop();
+    await s.answer({ ok: true });
+    expect(s.calls).toHaveLength(1);
+  });
+
+  it("does nothing without open ratings or after signing out", () => {
+    const s = server();
+    drainDetached(initStudy(["a"], {}), s.send);
+    drainDetached(run(snapshot(), { type: "signedOut" }), s.send);
+    expect(s.calls).toHaveLength(0);
+  });
+
+  it("is busy while sending and shortly after a save, so a new session waits for fresh cards", async () => {
+    const s = server();
+    const idle = vi.fn();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    expect(detachedBusy()).toBe(true);
+    afterDetached(idle);
+    expect(idle).not.toHaveBeenCalled();
+
+    await s.answer({ ok: true });
+    expect(idle).toHaveBeenCalledTimes(1);
+    // Eine eben geladene Seite kann älter sein als diese Speicherung.
+    expect(detachedBusy()).toBe(true);
+    expect(detachedBusy(Date.now() + DETACHED_FRESH_MS)).toBe(false);
+  });
+
+  it("counts an already saved head as a recent save too", async () => {
+    // Uhr weit nach allen Speicherungen der anderen Tests in dieser Datei.
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2099-03-01T10:00:00Z") });
+    const s = server();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    // Die eigene Anfrage der Sitzung kam nach dem Verbergen noch an: gespeichert, nur nicht von hier.
+    await s.answer({ ok: false, reason: "stale" });
+    expect(detachedBusy()).toBe(true);
+
+    // Spätere Tests laufen mit echter Uhr: die Speicherung von 2099 durch eine alte ersetzen.
+    vi.setSystemTime(new Date("2000-01-01T10:00:00Z"));
+    drainDetached(run(initStudy(["b"], {}), reveal, rate(3)), s.send);
+    await s.answer({ ok: true });
+    vi.useRealTimers();
+    expect(detachedBusy()).toBe(false);
+  });
+
+  it("runs the callback right away when nothing is sending, and not after cancelling", async () => {
+    const now = vi.fn();
+    afterDetached(now);
+    expect(now).toHaveBeenCalledTimes(1);
+
+    const s = server();
+    const cancelled = vi.fn();
+    drainDetached(run(initStudy(["a"], {}), reveal, rate(3)), s.send);
+    afterDetached(cancelled)();
+    await s.answer({ ok: false, reason: "limit" });
+    expect(cancelled).not.toHaveBeenCalled();
   });
 });

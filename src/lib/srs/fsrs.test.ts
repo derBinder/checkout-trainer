@@ -44,6 +44,24 @@ describe("rate", () => {
     expect(next.elapsedDays).toBe(3);
   });
 
+  it("counts elapsed days in Berlin days, also in the hour after midnight", () => {
+    // Schwer am 10. November um 21:00 in Berlin (UTC+1), wieder gelernt am 12. November.
+    const hardOn10th = rate(null, 2, new Date("2026-11-10T20:00:00Z"));
+    const at0030 = rate(hardOn10th, 3, new Date("2026-11-11T23:30:00Z")); // 00:30 in Berlin
+    const at0130 = rate(hardOn10th, 3, new Date("2026-11-12T00:30:00Z")); // 01:30 in Berlin
+    expect(at0030.elapsedDays).toBe(2);
+    expect(at0030.stability).toBe(at0130.stability);
+    expect(at0130.due.getTime() - at0030.due.getTime()).toBe(60 * 60 * 1000);
+    // Gespeichert wird der echte Zeitpunkt, nicht der für die Rechnung verschobene.
+    expect(at0030.lastReview).toEqual(new Date("2026-11-11T23:30:00Z"));
+  });
+
+  it("counts Berlin days across a daylight saving change", () => {
+    // 28. März 23:30 (UTC+1) bis 29. März 23:30 (UTC+2, ein 23-Stunden-Tag): ein Tag.
+    const before = rate(null, 3, new Date("2026-03-28T22:30:00Z"));
+    expect(rate(before, 3, new Date("2026-03-29T21:30:00Z")).elapsedDays).toBe(1);
+  });
+
   it("round-trips stored state as plain values", () => {
     const stored = JSON.parse(JSON.stringify(good)) as Record<string, unknown>;
     stored.due = new Date(stored.due as string);

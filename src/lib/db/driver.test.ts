@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { resolveDbTarget, withVerifiedSsl } from "./driver";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { createPgPool, resolveDbTarget, withVerifiedSsl } from "./driver";
 
 const build = "phase-production-build";
 
@@ -71,5 +71,21 @@ describe("withVerifiedSsl", () => {
       driver: "pg",
       url: "postgres://example.test/db?sslmode=verify-full",
     });
+  });
+});
+
+describe("createPgPool", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it("protokolliert den Fehler einer ruhenden Verbindung, statt den Prozess zu beenden", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    // Verbindet erst bei der ersten Abfrage; hier wird keine aufgebaut.
+    const pool = createPgPool("postgres://u:p@127.0.0.1:1/db");
+    const error = new Error("Connection terminated unexpectedly");
+
+    // So meldet pg-pool eine abgebrochene ruhende Verbindung; ohne Zuhörer wirft emit.
+    expect(() => pool.emit("error", error)).not.toThrow();
+    expect(log).toHaveBeenCalledWith(expect.any(String), error);
+    await pool.end();
   });
 });

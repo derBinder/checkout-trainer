@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { allCheckouts, BOGEYS, isBogey, minDarts } from '@/lib/darts/checkouts'
+import { allCheckouts, BOGEYS, isBogey } from '@/lib/darts/checkouts'
 import { formatRoute, routeTotal } from '@/lib/darts/model'
 
 describe('allCheckouts', () => {
@@ -45,6 +45,11 @@ describe('allCheckouts', () => {
     for (const r of allCheckouts(100, 2)) expect(r.length).toBeLessThanOrEqual(2)
   })
 })
+
+/** Kleinste Zahl Darts, mit der allCheckouts einen Weg findet. */
+function minDarts(rest: number): 1 | 2 | 3 | null {
+  return ([1, 2, 3] as const).find((n) => allCheckouts(rest, n).length > 0) ?? null
+}
 
 describe('minDarts', () => {
   it('liefert die minimale Anzahl Darts', () => {

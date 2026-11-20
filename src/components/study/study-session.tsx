@@ -14,7 +14,15 @@ import { EndHeading } from "./end-heading";
 import { SessionScreen, type SessionCard } from "./session-screen";
 import { StudySurface as Surface } from "./study-parts";
 import { StudyCloseLink } from "./study-close-link";
-import { initStudy, isFinished, nextToSend, retryDelayMs, studyReducer } from "./study-state";
+import {
+  drainDetached,
+  initStudy,
+  isFinished,
+  nextToSend,
+  resultAction,
+  retryDelayMs,
+  studyReducer,
+} from "./study-state";
 
 export type StudyItem = SessionCard & {
   /** Gespeicherte Wiederholungen beim Laden der Seite. */
@@ -53,15 +61,7 @@ export function StudySession({ items, doneToday = 0 }: { items: StudyItem[]; don
     submitReview(toSend).then(
       (result) => {
         inFlight.current = false;
-        if (!result.ok && result.reason === "auth") {
-          // Offene Bewertungen nicht stillschweigend verwerfen: erst Hinweis, dann Anmeldung.
-          dispatch({ type: "signedOut" });
-          return;
-        }
-        // "stale": schon gespeichert (doppelt gesendet), zählt als bestätigt.
-        // "limit", "invalid", "unknown-card", "off" (Zusatzkarte inzwischen ausgeschaltet): nicht gezählt, die Sitzung läuft weiter.
-        const outcome = result.ok ? "ok" : result.reason === "stale" ? "stale" : "skipped";
-        dispatch({ type: "result", outcome });
+        dispatch(resultAction(result));
       },
       () => {
         inFlight.current = false;
@@ -69,6 +69,22 @@ export function StudySession({ items, doneToday = 0 }: { items: StudyItem[]; don
       },
     );
   }, [toSend]);
+
+  // Verborgen (Zurück, Wischgeste) oder ersetzt laufen die Effekte oben nicht mehr:
+  // Dann sendet drainDetached die offenen Bewertungen weiter. Wird die Seite wieder
+  // gezeigt, übernimmt die Sitzung selbst; Doppeltes beantwortet der Server mit "stale".
+  const latest = useRef(state);
+  const stopDetached = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    latest.current = state;
+  });
+  useEffect(() => {
+    stopDetached.current?.();
+    stopDetached.current = null;
+    return () => {
+      stopDetached.current = drainDetached(latest.current, submitReview);
+    };
+  }, []);
 
   // Nach einem Fehler automatisch erneut versuchen, mit wachsendem Abstand.
   useEffect(() => {
