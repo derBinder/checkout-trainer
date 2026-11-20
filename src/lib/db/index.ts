@@ -6,9 +6,8 @@ import { mkdirSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
-import { resolveDbTarget } from "./driver";
+import { createPgPool, resolveDbTarget } from "./driver";
 import * as schema from "./schema";
 
 /** Gemeinsamer Typ für beide Treiber (node-postgres und PGlite). */
@@ -22,15 +21,10 @@ const store = globalThis as typeof globalThis & {
   __checkoutTrainerPgliteShutdown?: true;
 };
 
-// Serverless: jede Funktionsinstanz hält ihren eigenen Pool. Klein halten,
-// damit viele parallele Instanzen das Verbindungslimit von Neon nicht ausschöpfen,
-// und ungenutzte Verbindungen bald schließen.
-const PG_POOL = { max: 5, idleTimeoutMillis: 10_000 } as const;
-
 function connect(): Db {
   const target = resolveDbTarget(process.env);
   if (target.driver === "pg") {
-    return drizzlePg({ client: new Pool({ connectionString: target.url, ...PG_POOL }), schema });
+    return drizzlePg({ client: createPgPool(target.url), schema });
   }
   if (target.location === undefined) {
     // Build-Phase: flüchtige Datenbank, das lokale Verzeichnis bleibt unberührt.
