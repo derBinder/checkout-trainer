@@ -126,9 +126,13 @@ describe("Lernen", () => {
   });
 
   it("zählt Bewertungen und Karten in Einzahl und Mehrzahl", () => {
-    expect(en.study.session.skipped(1)).toBe("1 rating was not counted.");
+    expect(en.study.session.skipped(1)).toBe("One rating was not counted.");
     expect(en.study.session.skipped(3)).toBe("3 ratings were not counted.");
-    expect(en.study.session.notSaved(1)).toBe("1 rating was not saved.");
+    expect(en.study.session.notSaved(1)).toBe("One rating was not saved.");
+    expect(de.study.session.skipped(1)).toBe("Eine Bewertung wurde nicht gezählt.");
+    expect(de.study.session.notSaved(1)).toBe("Eine Bewertung wurde nicht gespeichert.");
+    expect(de.study.session.notSaved(2)).toBe("2 Bewertungen wurden nicht gespeichert.");
+    expect([en.study.closeLabel, en.practice.closeLabel]).toEqual(["Stop studying", "Stop practising"]);
     expect(en.study.session.cardsStudied(1)).toBe("1 card studied.");
     expect(en.study.session.cardsStudied(4)).toBe("4 cards studied.");
     expect(de.study.session.progressText(0, 1)).toBe("0 von 1 Karte gelernt");
@@ -159,8 +163,8 @@ describe("Lernen", () => {
 
 describe("Übrige Seiten", () => {
   it("schreibt die Serie und den Fortschritt in beiden Sprachen", () => {
-    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["1 Tag in Folge", "12 Tage in Folge"]);
-    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["1 Tag in Folge · pausiert", "5 Tage in Folge · pausiert"]);
+    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["Serie: 1 Tag", "Serie: 12 Tage"]);
+    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["Serie: 1 Tag · pausiert", "Serie: 5 Tage · pausiert"]);
     expect(en.streak.pausedLabel(5)).toBe("5-day streak · paused");
     expect([en.streak.label(1), en.streak.label(12)]).toEqual(["1-day streak", "12-day streak"]);
     expect(de.today.progress(2, 169, 1)).toBe("2 von 169 begonnen, 1 sicher");

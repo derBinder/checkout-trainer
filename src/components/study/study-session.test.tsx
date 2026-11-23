@@ -295,7 +295,7 @@ describe("StudySession", () => {
     await rateCurrent("Gut");
 
     expect(screen.getByRole("alert").textContent).toBe(
-      "Du wurdest abgemeldet. 1 Bewertung wurde nicht gespeichert.",
+      "Du wurdest abgemeldet. Eine Bewertung wurde nicht gespeichert.",
     );
     expect(screen.queryByRole("button", { name: "Prüfen" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Ohne Eingabe aufdecken" })).toBeNull();
@@ -323,7 +323,7 @@ describe("StudySession", () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "limit" });
     render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
-    expect(screen.getByText("1 Bewertung wurde nicht gezählt.")).toBeTruthy();
+    expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
     expect(screen.getByText("2 / 2")).toBeTruthy();
   });
 
@@ -331,7 +331,7 @@ describe("StudySession", () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "off" });
     render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
-    expect(screen.getByText("1 Bewertung wurde nicht gezählt.")).toBeTruthy();
+    expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
     expect(screen.getByText("2 / 2")).toBeTruthy();
   });
 

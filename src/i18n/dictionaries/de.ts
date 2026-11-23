@@ -17,7 +17,7 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
-const streakLabel = (n: number) => (n === 1 ? "1 Tag in Folge" : `${n} Tage in Folge`);
+const streakLabel = (n: number) => (n === 1 ? "Serie: 1 Tag" : `Serie: ${n} Tage`);
 
 export const de = {
   common: {
@@ -228,9 +228,9 @@ export const de = {
       progressText: (done: number, total: number) => `${done} von ${total} ${total === 1 ? "Karte" : "Karten"} gelernt`,
       confirmClose: "Noch nicht alles gespeichert. Trotzdem schließen?",
       saveFailed: "Nicht gespeichert, wird erneut versucht",
-      skipped: (n: number) => (n === 1 ? "1 Bewertung wurde nicht gezählt." : `${n} Bewertungen wurden nicht gezählt.`),
+      skipped: (n: number) => (n === 1 ? "Eine Bewertung wurde nicht gezählt." : `${n} Bewertungen wurden nicht gezählt.`),
       signedOut: "Du wurdest abgemeldet.",
-      notSaved: (n: number) => (n === 1 ? "1 Bewertung wurde nicht gespeichert." : `${n} Bewertungen wurden nicht gespeichert.`),
+      notSaved: (n: number) => (n === 1 ? "Eine Bewertung wurde nicht gespeichert." : `${n} Bewertungen wurden nicht gespeichert.`),
       toSignIn: "Zur Anmeldung",
       finished: "Geschafft",
       cardsStudied: (n: number) => `${n === 1 ? "1 Karte" : `${n} Karten`} gelernt.`,
@@ -251,7 +251,7 @@ export const de = {
     label: streakLabel,
     pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
-    sample: "00 Tage in Folge",
+    sample: "Serie: 00 Tage",
   },
   home: {
     intro:
