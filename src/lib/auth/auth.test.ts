@@ -257,6 +257,7 @@ describe("seedAdmin", () => {
     expect(rows[0].status).toBe("active");
     expect(rows[0].role).toBe("admin");
     expect(rows[0].email).toBe(OPERATOR);
+    expect(rows[0].name).toBe("Administrator");
     await expect(
       auth.api.signInEmail({ body: { email: OPERATOR, password: "startpasswort-123" } }),
     ).resolves.toBeDefined();

@@ -10,11 +10,11 @@ describe("verdictCopy", () => {
   it.each([
     ["best", "strong", "Bester Weg", "genau richtig"],
     ["alternative", "soft", "Alternative", "auch richtig"],
-    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Finish stimmt, Weg ist schlechter"],
+    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Checkout stimmt, der Weg ist schlechter"],
     ["checkable", "bad", "Ist checkbar", "Es gibt einen Weg"],
     ["bogeyRight", "strong", "Richtig", "Rest ist nicht checkbar"],
     ["setupRight", "strong", "Richtiger Stellwurf", "genau richtig"],
-    ["setupOther", "soft", "Anderer Stellwurf", "empfohlen siehe unten"],
+    ["setupOther", "soft", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as const)("%s", (code, tone, title, note) => {
     expect(verdictCopy({ code }, de.study)).toEqual({ tone, title, note });
   });
@@ -83,7 +83,7 @@ describe("setup that leaves a bogey number", () => {
     });
     expect(verdictCopy(verdict, en.study)).toEqual({
       tone: "bad",
-      title: "Leaves a bogey",
+      title: "Leaves a bogey number",
       note: "Leaves 159, no checkout",
     });
   });

@@ -41,7 +41,7 @@ export const en: Dictionary = {
       operatorEmail: "This email address cannot be registered.",
       signUpClosed: "Sign-up is not possible at the moment.",
       blocked: "This account is blocked.",
-      operatorDelete: "The operator account cannot be deleted.",
+      operatorDelete: "The administrator account cannot be deleted.",
       nameRequired: "Please enter a name.",
       nameTooLong: `The name can be at most ${MAX_NAME_LENGTH} characters long.`,
       nameInvalid: "The name contains characters that are not allowed.",
@@ -76,7 +76,7 @@ export const en: Dictionary = {
       minimum: (min) => `At least ${min} characters.`,
       remaining: (count) =>
         `${count} more ${count === 1 ? "character" : "characters"} to the minimum.`,
-      stronger: "Make it longer or more varied to strengthen it.",
+      stronger: "A longer or more varied password is stronger.",
     },
   },
   signIn: {
@@ -86,7 +86,7 @@ export const en: Dictionary = {
     password: "Password",
     submit: "Sign in",
     forgotPassword:
-      "Forgotten your password? Ask the operator, who will set a new one for you.",
+      "Forgotten your password? The administrator will set a new one for you.",
     noAccount: "No account yet?",
     signUpLink: "Sign up",
   },
@@ -103,7 +103,7 @@ export const en: Dictionary = {
   pending: {
     metaTitle: "Approval",
     blocked: "Your account is blocked.",
-    waiting: "Your account is waiting for approval by the operator.",
+    waiting: "Your account is waiting for approval by the administrator.",
   },
   study: {
     reason: (r: Reason): string => {
@@ -113,7 +113,7 @@ export const en: Dictionary = {
         case "direct":
           return "Straight at the double.";
         case "split":
-          return `Aim between ${r.a} and ${r.b}: either one leaves a double.`;
+          return `Aim between ${r.a} and ${r.b}. Either field leaves a double.`;
       }
     },
     metaTitle: "Study",
@@ -135,7 +135,7 @@ export const en: Dictionary = {
       setUp: (text: string) => `Set up: ${text}`,
       setupShort: (throws: string, leaves: number) => `${throws}, ${leaves} left`,
       afterwards: (leaves: number) => `Then ${leaves} left`,
-      bogeySetup: (leaves: number) => `No checkout. Set up ${leaves}.`,
+      bogeySetup: (leaves: number) => `Set up ${leaves}.`,
       twoDartsLeft: "2 darts left",
       twoDartsOf: (rest: number) => `${rest} with 2 darts`,
       noFinish: "No finish",
@@ -155,12 +155,12 @@ export const en: Dictionary = {
         best: { title: "Best route", note: "spot on" },
         alternative: { title: "Alternative", note: "also correct" },
         notRecommended: { title: "Works, but not recommended", note: "The checkout is right, the route is worse" },
-        noCheckout: { title: "Does not check out", note: "The route does not lead to a finish" },
-        checkable: { title: "Can be checked out", note: "There is a route" },
+        noCheckout: { title: "Does not check out", note: "The route does not lead to a checkout" },
+        checkable: { title: "Checkout possible", note: "There is a route" },
         bogeyRight: { title: "Correct", note: "No checkout from this score" },
         setupRight: { title: "Correct setup shot", note: "spot on" },
-        setupOther: { title: "Different setup shot", note: "recommended one below" },
-        setupBogey: { title: "Leaves a bogey", note: "no checkout" },
+        setupOther: { title: "Different setup shot", note: "Recommended setup shot below" },
+        setupBogey: { title: "Leaves a bogey number", note: "no checkout" },
         setupBust: { title: "Bust", note: "the score stays" },
       },
       detail: (d: VerdictDetail): string => {
@@ -247,7 +247,7 @@ export const en: Dictionary = {
   legal: {
     imprint: "Imprint",
     privacy: "Privacy",
-    placeholder: "The operator will add this text.",
+    placeholder: "The administrator will add this text.",
     toHome: "Back to the home page",
   },
   errors: {
@@ -266,7 +266,7 @@ export const en: Dictionary = {
     due: "due",
     new: "new",
     streakPaused:
-      "Your streak is paused. Study today to keep it going. The streak absorbs one missed day per week.",
+      "Your streak is paused. Study today to keep it going. You can skip one day per week without ending the streak.",
     done: "You are done for today.",
     allStarted: "You have started every card.",
     learn: "Study",
@@ -314,8 +314,8 @@ export const en: Dictionary = {
       rightNote: (rest: number) => `${rest} left`,
       wrong: (rest: number) => `Wrong, ${rest} left`,
       wrongNote: (answer: number) => `not ${answer}`,
-      checkable: "Checkable, best route",
-      bogey: "Bogey, no checkout",
+      checkable: "Checkout possible, best route",
+      bogey: "Bogey number, no checkout",
       score: (right: number, total: number) => `${right} of ${total} correct`,
     },
   },
@@ -332,8 +332,8 @@ export const en: Dictionary = {
     dueOn: (date: string) => `due on ${date}`,
     dueToday: "due today",
     forecast: {
-      until: (date: string) => `All cards unlocked by ${date}`,
-      done: "All cards unlocked",
+      until: (date: string) => `All cards started by ${date}`,
+      done: "All cards started",
       none: "No new cards per day set",
     },
   },
@@ -396,7 +396,7 @@ export const en: Dictionary = {
     status: { pending: "pending", active: "active", blocked: "blocked" },
     registered: (date: string) => `registered on ${date}`,
     metaSample: "status · registered on 00 Mon 0000",
-    operatorAccount: "Operator account",
+    operatorAccount: "Administrator account",
     approve: "Approve",
     unblock: "Unblock",
     block: "Block",

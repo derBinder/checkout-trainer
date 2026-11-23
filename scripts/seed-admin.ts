@@ -7,5 +7,5 @@ if (!email || !password) {
   process.exit(1);
 }
 await seedAdmin(auth, email, password);
-console.log("Betreiberkonto ist angelegt.");
+console.log("Administratorkonto ist angelegt.");
 process.exit(0);

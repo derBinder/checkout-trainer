@@ -105,7 +105,7 @@ describe("MathRound", () => {
     tap("Prüfen");
     const setup = SOLUTIONS[159];
     if (setup.kind !== "bogey") throw new Error("159 ist eine Bogey-Zahl");
-    expect(screen.getByText("Bogey, nicht checkbar")).toBeTruthy();
+    expect(screen.getByText("Bogey-Zahl, nicht checkbar")).toBeTruthy();
     expect(row("Stellwurf")).toEqual(setup.throws);
     expect(screen.getByText(`Danach Rest ${setup.leaves}`)).toBeTruthy();
   });
@@ -180,6 +180,6 @@ describe("MathRound", () => {
     type(9, 8);
     tap("Check");
     expect(screen.getByText("Wrong, 89 left")).toBeTruthy();
-    expect(screen.getByText("Checkable, best route")).toBeTruthy();
+    expect(screen.getByText("Checkout possible, best route")).toBeTruthy();
   });
 });

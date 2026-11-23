@@ -237,7 +237,7 @@ export async function seedAdmin(
   }>(
     {
       email: normalized,
-      name: "Betreiber",
+      name: "Administrator",
       emailVerified: true,
       role: "admin",
       status: "active",
