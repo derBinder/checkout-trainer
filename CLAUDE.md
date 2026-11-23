@@ -110,9 +110,9 @@ Der Auftraggeber hat diesen Ablauf dauerhaft freigegeben und will ihn nicht jede
 - Das Branch-Modell ist Git-Flow nach Driessen:
   - `main` enthält nur veröffentlichte Stände, jeder mit Tag `v<version>`. Jeder Merge nach `main` startet über die Vercel-Git-Anbindung den Prod-Deploy. Andere Branches deployt Vercel nicht. Das regelt `git.deploymentEnabled` in `vercel.json` und im Dashboard zusätzlich der Ignored Build Step "Only build production". Es gibt keine Previews, weil die Datenbank-Variablen der Neon-Integration auch für Preview gelten und auf die Produktionsdatenbank zeigen. Nie `vercel deploy` von Hand ausführen, das stellt doppelt bereit.
   - `develop` ist der Integrations-Branch und der Standard-Branch auf GitHub.
-  - `feature/<nr>-<kurzname>` geht aus `develop` hervor und zurück nach `develop`.
-  - `release/<version>` geht aus `develop` hervor und nach `main`. Danach wird `main` nach `develop` zurückgeführt.
-  - `hotfix/<version>` geht aus `main` hervor und nach `main`. Danach wird `main` nach `develop` zurückgeführt. Ist ein Release-Branch offen, geht der Hotfix stattdessen dorthin, siehe Hotfix.
+  - `feature/<nr>-<kurzname>` entsteht aus `develop` und geht zurück nach `develop`.
+  - `release/<version>` entsteht aus `develop` und geht nach `main`. Danach wird `main` nach `develop` zurückgeführt.
+  - `hotfix/<version>` entsteht aus `main` und geht nach `main`. Danach wird `main` nach `develop` zurückgeführt. Ist ein Release-Branch offen, geht der Hotfix stattdessen dorthin, siehe Hotfix.
   - Zurückgeführt wird immer `main` selbst, nicht der Release- oder Hotfix-Branch. Nur so kommen auch die Merge-Commits aus `main` nach `develop`. Nach jeder Rückführung ist `git rev-list --count origin/develop..origin/main` 0.
 - Versionen folgen SemVer in `package.json`. Eine neue Funktion im Release erhöht die mittlere Stelle, etwa von `0.2.0` auf `0.3.0`. Ein Release nur mit Fehlerbehebungen und jeder Hotfix erhöhen die letzte Stelle, etwa von `0.2.0` auf `0.2.1`. Gesetzt wird die Version mit `npm version <version> --no-git-tag-version`.
 - `main` und `develop` ändern sich nur durch Merges von PRs auf GitHub. Gemergt wird immer als Merge-Commit mit `gh pr merge <pr> -R derBinder/checkout-trainer --merge`, nie als Squash oder Rebase. Lokal werden die beiden Branches nur nachgezogen.
