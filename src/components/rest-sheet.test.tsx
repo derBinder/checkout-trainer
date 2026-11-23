@@ -43,7 +43,7 @@ describe("RestSheet", () => {
     await user.click(screen.getByRole("button", { name: "100, sicher" }));
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByRole("heading", { name: "Rest 100" })).toBeTruthy();
-    expect(dialog.textContent).toContain("Lernstand: sicher");
+    expect(dialog.textContent).toContain("Stufe: sicher");
     const darts = within(dialog).getByRole("list", { name: "Darts" });
     expect(within(darts).getAllByRole("listitem").map((li) => li.textContent)).toEqual([
       "T20",
@@ -60,7 +60,7 @@ describe("RestSheet", () => {
     expect(within(dialog).getByRole("heading", { name: "Rest 169" })).toBeTruthy();
     expect(dialog.textContent).toContain("Nicht checkbar");
     expect(dialog.textContent).toContain("Stellen auf Rest 32.");
-    expect(dialog.textContent).toContain("Lernstand: neu");
+    expect(dialog.textContent).toContain("Stufe: neu");
   });
 
   it("öffnet nichts bei einem Klick neben die Reste", async () => {
@@ -74,7 +74,7 @@ describe("RestSheet", () => {
     const cell = screen.getByRole("button", { name: "170, im Lernen" });
     await user.click(cell);
     const dialog = await screen.findByRole("dialog");
-    expect(dialog.textContent).toContain("Lernstand: im Lernen");
+    expect(dialog.textContent).toContain("Stufe: im Lernen");
     await user.click(within(dialog).getByRole("button", { name: "Schließen" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(document.activeElement).toBe(cell);

@@ -86,7 +86,7 @@ export const de = {
       levels: { 0: "Schwach", 1: "Mittel", 2: "Gut", 3: "Stark" },
       minimum: (min: number) => `Mindestens ${min} Zeichen.`,
       remaining: (count: number) => `Noch ${count} Zeichen bis zum Minimum.`,
-      stronger: "Länger oder gemischter wird stärker.",
+      stronger: "Ein längeres oder gemischteres Passwort ist stärker.",
     },
   },
   signIn: {
@@ -123,7 +123,7 @@ export const de = {
         case "direct":
           return "Direkt auf das Doppel.";
         case "split":
-          return `Zwischen ${r.a} und ${r.b} gezielt lässt jedes der beiden Felder ein Doppel.`;
+          return `Ziele zwischen ${r.a} und ${r.b}. Beide Felder lassen ein Doppel.`;
       }
     },
     metaTitle: "Lernen",
@@ -146,7 +146,7 @@ export const de = {
       setUp: (text: string) => `Stellen: ${text}`,
       setupShort: (throws: string, leaves: number) => `${throws}, Rest ${leaves}`,
       afterwards: (leaves: number) => `Danach Rest ${leaves}`,
-      bogeySetup: (leaves: number) => `Kein Finish möglich. Stellen auf Rest ${leaves}.`,
+      bogeySetup: (leaves: number) => `Nicht checkbar. Stellen auf Rest ${leaves}.`,
       twoDartsLeft: "noch 2 Darts",
       twoDartsOf: (rest: number) => `Rest ${rest} mit 2 Darts`,
       noFinish: "Kein Finish",
@@ -166,12 +166,12 @@ export const de = {
       codes: {
         best: { title: "Bester Weg", note: "genau richtig" },
         alternative: { title: "Alternative", note: "auch richtig" },
-        notRecommended: { title: "Geht, aber nicht empfohlen", note: "Finish stimmt, Weg ist schlechter" },
-        noCheckout: { title: "Geht nicht auf", note: "Der Weg führt nicht zum Finish" },
+        notRecommended: { title: "Geht, aber nicht empfohlen", note: "Checkout stimmt, der Weg ist schlechter" },
+        noCheckout: { title: "Geht nicht auf", note: "Der Weg führt nicht zum Checkout" },
         checkable: { title: "Ist checkbar", note: "Es gibt einen Weg" },
         bogeyRight: { title: "Richtig", note: "Rest ist nicht checkbar" },
         setupRight: { title: "Richtiger Stellwurf", note: "genau richtig" },
-        setupOther: { title: "Anderer Stellwurf", note: "empfohlen siehe unten" },
+        setupOther: { title: "Anderer Stellwurf", note: "Empfohlener Stellwurf unten" },
         setupBogey: { title: "Lässt Bogey-Zahl", note: "nicht checkbar" },
         setupBust: { title: "Überworfen", note: "Rest bleibt stehen" },
       } satisfies Record<VerdictCode, { title: string; note: string }>,
@@ -281,7 +281,7 @@ export const de = {
     due: "fällig",
     new: "neu",
     streakPaused:
-      "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Einen ausgelassenen Tag pro Woche fängt die Serie ab.",
+      "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.",
     done: "Für heute bist du fertig.",
     allStarted: "Du hast alle Karten begonnen.",
     learn: "Lernen",
@@ -330,7 +330,7 @@ export const de = {
       wrong: (rest: number) => `Falsch, es bleiben ${rest}`,
       wrongNote: (answer: number) => `nicht ${answer}`,
       checkable: "Checkbar, bester Weg",
-      bogey: "Bogey, nicht checkbar",
+      bogey: "Bogey-Zahl, nicht checkbar",
       score: (right: number, total: number) => `${right} von ${total} richtig`,
     },
   },
@@ -341,14 +341,14 @@ export const de = {
     weak: "schwierig",
     hardest: "Am schwierigsten",
     againCount: (n: number) => `${n}× „Nochmal“`,
-    levelOf: (level: string) => `Lernstand: ${level}`,
+    levelOf: (level: string) => `Stufe: ${level}`,
     learnedOn: (date: string) => `gelernt am ${date}`,
     knownSince: (date: string) => `sicher seit ${date}`,
     dueOn: (date: string) => `fällig am ${date}`,
     dueToday: "heute fällig",
     forecast: {
-      until: (date: string) => `Voraussichtlich alle Karten frei am ${date}`,
-      done: "Alle Karten freigeschaltet",
+      until: (date: string) => `Voraussichtlich alle Karten begonnen am ${date}`,
+      done: "Alle Karten begonnen",
       none: "Keine neuen Karten eingestellt",
     },
   },
