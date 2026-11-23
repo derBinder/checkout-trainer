@@ -35,14 +35,14 @@ npm run build
 npm run generate:cards # src/data/cards.generated.json neu erzeugen
 npm run db:generate    # Drizzle-Migration aus dem Schema erzeugen
 npm run db:migrate
-npm run db:seed-admin  # Betreiberkonto aus ADMIN_EMAIL / ADMIN_INITIAL_PASSWORD anlegen
+npm run db:seed-admin  # Administratorkonto aus ADMIN_EMAIL / ADMIN_INITIAL_PASSWORD anlegen
 ```
 
 Lokal bleibt `DATABASE_URL` leer. Die App nutzt dann PGlite unter `.data/pglite`. Ist die lokale Datenbank beschädigt, `.data/pglite` löschen und danach `db:migrate` und `db:seed-admin` ausführen.
 
 ### Testkonto für den Browser
 
-- Das lokale Konto `testnutzer@checkout-trainer.test` hat die Betreiberrolle und sieht alle Tabs, auch die Verwaltung. Das Passwort steht in `.data/test-user.json`. Die Datei ist gitignored. Das Passwort nie in committete Dateien schreiben.
+- Das lokale Konto `testnutzer@checkout-trainer.test` hat die Administratorrolle und sieht alle Tabs, auch die Verwaltung. Das Passwort steht in `.data/test-user.json`. Die Datei ist gitignored. Das Passwort nie in committete Dateien schreiben.
 - Das Konto wurde mit `seedAdmin` aus `src/lib/auth` angelegt. Es ist aktiv und braucht keine Freischaltung. Wird `.data/pglite` gelöscht, ist das Konto weg. Dann das Konto neu anlegen und `.data/test-user.json` aktualisieren. PGlite erlaubt nur einen Prozess, dafür den Dev-Server vorher anhalten.
 - Ist Port 3000 belegt, über den Launch-Eintrag `checkout-trainer-3001` starten. Er setzt `BETTER_AUTH_URL` auf Port 3001. Sonst lehnt Better Auth die Anmeldung mit "Invalid origin" ab.
 
@@ -74,7 +74,7 @@ Lokal bleibt `DATABASE_URL` leer. Die App nutzt dann PGlite unter `.data/pglite`
   - `*-data` für Lader und Datenbausteine
   - `*-skeleton` für den Rückfall-Inhalt in `LoadingRegion`
 - Das Gerüst besteht aus der Seite ohne Datenbausteine, dem Layout und den Skeletons. Es enthält keine Nutzerdaten und keine Lerninhalte, also keine Wege, Begründungen, Alternativen, Stellwürfe oder Karten.
-- `src/proxy.ts` ist nur eine Cookie-Vorprüfung ohne Datenbank und ersetzt keine Prüfung. Echte Status-Codes kommen nur noch aus `proxy.ts`. Ohne Sitzungs-Cookie leitet es mit 307 nach `/<lang>/sign-in` um. Sonst antwortet jede Seite mit 200. `redirect()` und `notFound()` aus Datenbausteinen kommen als Anweisung im Datenstrom. Ein aktiver Nicht-Betreiber wird von `/<lang>/admin` nach `/<lang>/today` umgeleitet.
+- `src/proxy.ts` ist nur eine Cookie-Vorprüfung ohne Datenbank und ersetzt keine Prüfung. Echte Status-Codes kommen nur noch aus `proxy.ts`. Ohne Sitzungs-Cookie leitet es mit 307 nach `/<lang>/sign-in` um. Sonst antwortet jede Seite mit 200. `redirect()` und `notFound()` aus Datenbausteinen kommen als Anweisung im Datenstrom. Ein aktiver Nicht-Administrator wird von `/<lang>/admin` nach `/<lang>/today` umgeleitet.
 - `proxy.ts` leitet außerdem Adressen ohne Sprache mit 307 auf `/<lang>/…` um. Die Sprache kommt aus dem Cookie `lang`, dann aus `Accept-Language`, sonst ist sie Englisch. `proxy.ts` setzt `x-locale` für die Seite. Der Sprachumschalter lädt die Seite vollständig neu.
 - React Activity behält den Clientzustand über Seitenwechsel. Formulare mit Geheimnissen setzen sich beim Verbergen per `useLayoutEffect`-Cleanup zurück. Das betrifft Passwortfelder und Rückfragen mit Passwort. Die Lernsitzung bekommt je Navigation einen eigenen React-Schlüssel `bfcacheId` und startet nach dem Verlassen neu.
 
@@ -89,7 +89,7 @@ Lokal bleibt `DATABASE_URL` leer. Die App nutzt dann PGlite unter `.data/pglite`
   - Die Spalte "mit 2 Darts" gilt.
   - Das Zielen zwischen zwei Feldern gilt.
   - Unter 41 gilt das eigene Regelwerk.
-- Kein E-Mail-Versand. Der Betreiber schaltet Konten von Hand frei.
+- Kein E-Mail-Versand. Der Administrator schaltet Konten von Hand frei.
 - Alles muss in kostenlosen Tarifen bleiben, also Vercel Hobby und Neon Free.
 - Kein Zugriff auf Vercel, Neon oder andere fremde Dienste ohne vorherige Absprache mit dem Auftraggeber. Ausgenommen ist alles, was der Abschnitt "Git-Flow und Ablauf bis Produktion" beschreibt. Das hat der Auftraggeber dauerhaft freigegeben. Dazu gehören auf GitHub Issues, Labels, Branches, PRs, Merges, Releases mit Tags und das Lesen des Deploy-Status. Den Prod-Deploy selbst übernimmt die Vercel-Git-Anbindung.
 - `src/lib/db/schema.ts` von Hand pflegen und Migrationen mit `db:generate` erzeugen. Den Better-Auth-CLI-Generator nicht in diese Datei schreiben lassen, er überschreibt die Handänderungen.

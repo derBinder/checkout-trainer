@@ -1,6 +1,6 @@
 # Checkout-Trainer
 
-Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Betreiber schaltet jedes Konto von Hand frei. Es warten höchstens 100 Konten gleichzeitig (`MAX_PENDING_USERS`), danach ist die Registrierung bis zum Freischalten oder Löschen geschlossen. Es werden keine E-Mails verschickt.
+Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 2 bis 170) per Karteikarten lernen. Die Registrierung ist öffentlich, der Administrator schaltet jedes Konto von Hand frei. Es warten höchstens 100 Konten gleichzeitig (`MAX_PENDING_USERS`), danach ist die Registrierung bis zum Freischalten oder Löschen geschlossen. Es werden keine E-Mails verschickt.
 
 ## Lokale Einrichtung
 
@@ -15,8 +15,8 @@ Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 
    - `DATABASE_URL`: lokal leer lassen, dann nutzt die App eine eingebettete Datenbank unter `.data/pglite`.
    - `BETTER_AUTH_SECRET`: zufälliger, langer Wert, zum Beispiel aus `openssl rand -base64 32`.
    - `BETTER_AUTH_URL`: `http://localhost:3000`.
-   - `ADMIN_EMAIL`: Adresse des Betreiberkontos. Sie ist für die Registrierung gesperrt.
-   - `ADMIN_INITIAL_PASSWORD`: Startpasswort des Betreibers, mindestens 10 Zeichen.
+   - `ADMIN_EMAIL`: Adresse des Administratorkontos. Sie ist für die Registrierung gesperrt.
+   - `ADMIN_INITIAL_PASSWORD`: Startpasswort des Administrators, mindestens 10 Zeichen.
 
 3. Datenbank migrieren:
 
@@ -24,7 +24,7 @@ Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 
    npm run db:migrate
    ```
 
-4. Betreiberkonto anlegen. Es ist sofort aktiv und hat die Betreiberrolle. Ein zweiter Lauf ändert nichts.
+4. Administratorkonto anlegen. Es ist sofort aktiv und hat die Administratorrolle. Ein zweiter Lauf ändert nichts.
 
    ```bash
    npm run db:seed-admin
@@ -36,7 +36,7 @@ Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 
    npm run dev
    ```
 
-   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/de/admin` oder `/en/admin`. Dort schaltet der Betreiber sie frei, sperrt sie oder setzt ein neues Passwort.
+   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/de/admin` oder `/en/admin`. Dort schaltet der Administrator sie frei, sperrt sie oder setzt ein neues Passwort.
 
 Ist die lokale Datenbank beschädigt: `.data/pglite` löschen und die Schritte 3 und 4 wiederholen.
 

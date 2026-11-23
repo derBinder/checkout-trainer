@@ -41,7 +41,7 @@ export const en: Dictionary = {
       operatorEmail: "This email address cannot be registered.",
       signUpClosed: "Sign-up is not possible at the moment.",
       blocked: "This account is blocked.",
-      operatorDelete: "The operator account cannot be deleted.",
+      operatorDelete: "The administrator account cannot be deleted.",
       nameRequired: "Please enter a name.",
       nameTooLong: `The name can be at most ${MAX_NAME_LENGTH} characters long.`,
       nameInvalid: "The name contains characters that are not allowed.",
@@ -86,7 +86,7 @@ export const en: Dictionary = {
     password: "Password",
     submit: "Sign in",
     forgotPassword:
-      "Forgotten your password? Ask the operator, who will set a new one for you.",
+      "Forgotten your password? The administrator will set a new one for you.",
     noAccount: "No account yet?",
     signUpLink: "Sign up",
   },
@@ -103,7 +103,7 @@ export const en: Dictionary = {
   pending: {
     metaTitle: "Approval",
     blocked: "Your account is blocked.",
-    waiting: "Your account is waiting for approval by the operator.",
+    waiting: "Your account is waiting for approval by the administrator.",
   },
   study: {
     reason: (r: Reason): string => {
@@ -247,7 +247,7 @@ export const en: Dictionary = {
   legal: {
     imprint: "Imprint",
     privacy: "Privacy",
-    placeholder: "The operator will add this text.",
+    placeholder: "The administrator will add this text.",
     toHome: "Back to the home page",
   },
   errors: {
@@ -396,7 +396,7 @@ export const en: Dictionary = {
     status: { pending: "pending", active: "active", blocked: "blocked" },
     registered: (date: string) => `registered on ${date}`,
     metaSample: "status · registered on 00 Mon 0000",
-    operatorAccount: "Operator account",
+    operatorAccount: "Administrator account",
     approve: "Approve",
     unblock: "Unblock",
     block: "Block",

@@ -21,10 +21,10 @@ Dieses Dokument beschreibt die Einrichtung, den Ablauf eines Deploys und die Pr�
 3. Das Skript prüft zuerst, dass `DATABASE_URL_UNPOOLED` gesetzt ist. Fehlt die Variable, bricht der Bau sofort ab.
 4. Danach läuft `next build`.
 5. Nur wenn der Bau gelingt, spielt das Skript die Migrationen aus `drizzle/` über `DATABASE_URL_UNPOOLED` ein.
-6. Ist `ADMIN_INITIAL_PASSWORD` gesetzt, legt das Skript danach das Betreiberkonto an. Ein vorhandenes Betreiberkonto bleibt unverändert. Gehört die Adresse aus `ADMIN_EMAIL` einem Konto ohne Betreiberrolle, bricht das Skript ab.
+6. Ist `ADMIN_INITIAL_PASSWORD` gesetzt, legt das Skript danach das Administratorkonto an. Ein vorhandenes Administratorkonto bleibt unverändert. Das Skript bricht ab, wenn die Adresse aus `ADMIN_EMAIL` einem Konto ohne Administratorrolle gehört oder das Startpasswort kürzer als 10 Zeichen ist.
 7. Vercel meldet das Ergebnis als Commit-Status `Vercel` an GitHub. Bei Erfolg ist der Status `success` mit der Beschreibung "Deployment has completed".
 
-Scheitert `next build`, bleibt die Datenbank unverändert. Die Live-Seite läuft dann mit dem alten Code und dem alten Schema weiter. Scheitert erst das Anlegen des Betreiberkontos, ist die Migration schon gelaufen. Dann läuft der alte Code gegen das neue Schema weiter, bis ein Deploy gelingt. In beiden Fällen zeigt der Bau-Log hinter `target_url` im Commit-Status den Fehler.
+Scheitert `next build`, bleibt die Datenbank unverändert. Die Live-Seite läuft dann mit dem alten Code und dem alten Schema weiter. Scheitert erst das Anlegen des Administratorkontos, ist die Migration schon gelaufen. Dann läuft der alte Code gegen das neue Schema weiter, bis ein Deploy gelingt. In beiden Fällen zeigt der Bau-Log hinter `target_url` im Commit-Status den Fehler.
 
 Migrationen bleiben additiv. Zuerst wird das Schema erweitert, aufgeräumt wird in einem späteren Release. Der Grund: Zwischen der Migration und der Freischaltung der neuen Version läuft für kurze Zeit noch der alte Code gegen das neue Schema.
 
@@ -63,11 +63,11 @@ Die Angabe ist `24.x` und nicht `>=24`. Mit einer offenen Angabe würde Vercel b
 Neon bietet zwei Verbindungsadressen. Beide stehen im Neon-Dashboard unter "Connect", und die Integration legt beide bei Vercel an:
 
 - `DATABASE_URL` ist die gepoolte Adresse, ihr Host enthält `-pooler`. Die Funktionen nutzen sie. Jede Funktion öffnet kurzlebige Verbindungen, und der Pooler von Neon verteilt sie auf wenige Datenbankverbindungen.
-- `DATABASE_URL_UNPOOLED` ist die direkte Adresse ohne `-pooler`. Nur Migrationen und das Anlegen des Betreiberkontos nutzen sie. Der Pooler ist PgBouncer im Transaktionsmodus und für Schemaänderungen nicht geeignet.
+- `DATABASE_URL_UNPOOLED` ist die direkte Adresse ohne `-pooler`. Nur Migrationen und das Anlegen des Administratorkontos nutzen sie. Der Pooler ist PgBouncer im Transaktionsmodus und für Schemaänderungen nicht geeignet.
 
 Die App liest nur `DATABASE_URL`. Ist die Variable gesetzt, nutzt `src/lib/db/driver.ts` node-postgres (`pg`) mit höchstens 5 Verbindungen je Funktionsinstanz. Ohne die Variable nutzt die App PGlite. Fehlt sie bei Vercel zur Laufzeit, bricht die App mit einer Fehlermeldung ab und legt keine lokale Datenbank an.
 
-Die Variablen der Neon-Integration sind bei Vercel als geheim markiert. Sie lassen sich nicht auf einen lokalen Rechner zurücklesen. Deshalb laufen Migrationen und das Anlegen des Betreiberkontos beim Bau und nicht von Hand.
+Die Variablen der Neon-Integration sind bei Vercel als geheim markiert. Sie lassen sich nicht auf einen lokalen Rechner zurücklesen. Deshalb laufen Migrationen und das Anlegen des Administratorkontos beim Bau und nicht von Hand.
 
 ## Umgebungsvariablen
 
@@ -77,18 +77,18 @@ Die Variablen der Neon-Integration sind bei Vercel als geheim markiert. Sie lass
 | `DATABASE_URL_UNPOOLED` | direkte Neon-Adresse, setzt die Integration |
 | `BETTER_AUTH_SECRET` | eigener Zufallswert, etwa aus `openssl rand -base64 32`, nicht der lokale Wert |
 | `BETTER_AUTH_URL` | `https://<projektname>.vercel.app`, ohne Schrägstrich am Ende |
-| `ADMIN_EMAIL` | echte Adresse des Betreibers. Die Registrierung sperrt diese Adresse, deshalb muss sie bei Vercel gesetzt sein. |
-| `ADMIN_INITIAL_PASSWORD` | nur für das erste Anlegen des Betreiberkontos, danach wieder entfernen |
+| `ADMIN_EMAIL` | echte Adresse des Administrators. Die Registrierung sperrt diese Adresse, deshalb muss sie bei Vercel gesetzt sein. |
+| `ADMIN_INITIAL_PASSWORD` | nur für das erste Anlegen des Administratorkontos, danach wieder entfernen |
 
-## Betreiberkonto anlegen
+## Administratorkonto anlegen
 
-Der Betreiber gibt das Startpasswort selbst im Terminal ein. Es geht nicht durch den Chat:
+Der Administrator gibt das Startpasswort selbst im Terminal ein. Es geht nicht durch den Chat:
 
 ```bash
 npx vercel@65.12.1 env add ADMIN_INITIAL_PASSWORD production --sensitive
 ```
 
-Der nächste Deploy legt das Konto an. Nach der ersten Anmeldung ändert der Betreiber das Passwort in der App und entfernt die Variable:
+Der nächste Deploy legt das Konto an. Nach der ersten Anmeldung ändert der Administrator das Passwort in der App und entfernt die Variable:
 
 ```bash
 npx vercel@65.12.1 env rm ADMIN_INITIAL_PASSWORD production
@@ -96,7 +96,7 @@ npx vercel@65.12.1 env rm ADMIN_INITIAL_PASSWORD production
 
 Die Vercel-CLI immer mit ausdrücklicher Version aufrufen. Auf dem Entwicklungsrechner läuft Safe-chain und blendet Paketversionen aus, die jünger als ein Mindestalter sind. `@latest` liefert deshalb nicht die neueste Version.
 
-## Ausweichweg: Migration und Betreiberkonto von Hand
+## Ausweichweg: Migration und Administratorkonto von Hand
 
 Der Bau übernimmt beides. Fällt er dafür aus, geht es von einem lokalen Rechner mit der direkten Neon-Adresse. Die Werte landen dabei weder in Dateien noch im Shell-Verlauf. Die `read`-Befehle sind zsh-Syntax.
 
@@ -110,11 +110,11 @@ unset DIRECT_URL
 
 `drizzle.config.ts` liest `DATABASE_URL` aus der Shell. Ohne die Variable migriert der Befehl ohne Warnung die lokale PGlite-Datenbank. Deshalb die Variable immer ausdrücklich setzen.
 
-Betreiberkonto:
+Administratorkonto:
 
 ```bash
 read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
-read -r "OP_EMAIL?Betreiberadresse: "
+read -r "OP_EMAIL?Administratoradresse: "
 read -rs "OP_PW?Startpasswort: "; echo
 DATABASE_URL="$DIRECT_URL" ADMIN_EMAIL="$OP_EMAIL" ADMIN_INITIAL_PASSWORD="$OP_PW" npm run db:seed-admin
 unset DIRECT_URL OP_EMAIL OP_PW
@@ -153,7 +153,7 @@ Web Analytics setzt keine Cookies. Es zählt Seitenaufrufe anonymisiert mit Seit
 Diese Prüfungen gehören zu einer neuen Einrichtung oder zu einer Änderung an Datenbank, Region oder Better Auth. Sie legen keine Daten echter Nutzer an.
 
 1. Startseite, `/de/sign-in`, `/de/sign-up`, `/de/imprint` und `/de/privacy` laden.
-2. Mit der Betreiberadresse anmelden. `/de/admin` öffnet sich.
+2. Mit der Administratoradresse anmelden. `/de/admin` öffnet sich.
 3. Ein Testkonto registrieren. Es landet unter `/de/pending` und erscheint in `/de/admin`. Nach dem Freischalten öffnen sich `/de/today` und `/de/study`, und eine Karte lässt sich bewerten.
 4. Gleichzeitigkeit prüfen, siehe unten.
 5. Rate-Limit prüfen: Mit einer falschen Testadresse elfmal in einer Minute anmelden. Der elfte Versuch muss mit Fehler 429 abgewiesen werden.
@@ -184,7 +184,7 @@ Meldet das Skript `FEHLER` und endet mit Exit-Code 1, schützt die Sperre auf Ne
 
 ## Vor dem Weitergeben der Adresse
 
-`/de/imprint` und `/de/privacy` zeigen noch den Platzhalter "Dieser Text wird vom Betreiber ergänzt." Der Betreiber füllt beide Seiten mit seinen echten Angaben, bevor er die Adresse öffentlich weitergibt. In den Datenschutztext gehören:
+`/de/imprint` und `/de/privacy` zeigen noch den Platzhalter "Dieser Text wird vom Administrator ergänzt." Der Administrator füllt beide Seiten mit seinen echten Angaben, bevor er die Adresse öffentlich weitergibt. In den Datenschutztext gehören:
 
 - Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent des Nutzers.
 - Das Rate-Limit speichert Einträge je IP-Adresse.

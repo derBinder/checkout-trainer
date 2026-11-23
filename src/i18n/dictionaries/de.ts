@@ -50,7 +50,7 @@ export const de = {
       operatorEmail: "Diese E-Mail-Adresse kann nicht registriert werden.",
       signUpClosed: "Die Registrierung ist zurzeit nicht möglich.",
       blocked: "Dieses Konto ist gesperrt.",
-      operatorDelete: "Das Betreiberkonto kann nicht gelöscht werden.",
+      operatorDelete: "Das Administratorkonto kann nicht gelöscht werden.",
       nameRequired: "Bitte gib einen Namen ein.",
       nameTooLong: `Der Name darf höchstens ${MAX_NAME_LENGTH} Zeichen haben.`,
       nameInvalid: "Der Name enthält unzulässige Zeichen.",
@@ -96,7 +96,7 @@ export const de = {
     password: "Passwort",
     submit: "Anmelden",
     forgotPassword:
-      "Passwort vergessen? Wende dich an den Betreiber, er setzt dir ein neues.",
+      "Passwort vergessen? Der Administrator setzt dir ein neues.",
     noAccount: "Noch kein Konto?",
     signUpLink: "Registrieren",
   },
@@ -113,7 +113,7 @@ export const de = {
   pending: {
     metaTitle: "Freischaltung",
     blocked: "Dein Konto ist gesperrt.",
-    waiting: "Dein Konto wartet auf Freischaltung durch den Betreiber.",
+    waiting: "Dein Konto wartet auf Freischaltung durch den Administrator.",
   },
   study: {
     reason: (r: Reason): string => {
@@ -262,7 +262,7 @@ export const de = {
   legal: {
     imprint: "Impressum",
     privacy: "Datenschutz",
-    placeholder: "Dieser Text wird vom Betreiber ergänzt.",
+    placeholder: "Dieser Text wird vom Administrator ergänzt.",
     toHome: "Zur Startseite",
   },
   errors: {
@@ -411,7 +411,7 @@ export const de = {
     status: { pending: "wartend", active: "aktiv", blocked: "gesperrt" } as Record<string, string>,
     registered: (date: string) => `registriert am ${date}`,
     metaSample: "status · registriert am 00.00.0000",
-    operatorAccount: "Betreiberkonto",
+    operatorAccount: "Administratorkonto",
     approve: "Freischalten",
     unblock: "Entsperren",
     block: "Sperren",
