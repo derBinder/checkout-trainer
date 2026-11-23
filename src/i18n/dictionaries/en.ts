@@ -28,7 +28,7 @@ export const en: Dictionary = {
     nameInvalid: "The name contains characters that are not allowed.",
     emailRequired: "Please enter your email address.",
     emailTooLong: "The email address is too long.",
-    emailInvalid: "That is not a valid email address, for example name@example.com.",
+    emailInvalid: "That is not a valid email address. A valid one is, for example, name@example.com.",
     passwordRequired: "Please enter a password.",
     currentPasswordRequired: "Please enter your current password.",
     passwordTooShort: `The password needs at least ${MIN_PASSWORD_LENGTH} characters.`,
@@ -46,7 +46,7 @@ export const en: Dictionary = {
       nameTooLong: `The name can be at most ${MAX_NAME_LENGTH} characters long.`,
       nameInvalid: "The name contains characters that are not allowed.",
       emailTooLong: "The email address is too long.",
-      imageNotAllowed: "A profile picture is not supported.",
+      imageNotAllowed: "Profile pictures are not supported.",
       passwordRequired: "Please enter your password.",
     },
     byCode: {
@@ -75,7 +75,7 @@ export const en: Dictionary = {
       levels: { 0: "Weak", 1: "Fair", 2: "Good", 3: "Strong" },
       minimum: (min) => `At least ${min} characters.`,
       remaining: (count) =>
-        `${count} more ${count === 1 ? "character" : "characters"} to the minimum.`,
+        `${count} more ${count === 1 ? "character" : "characters"} to reach the minimum.`,
       stronger: "A longer or more varied password is stronger.",
     },
   },
@@ -117,7 +117,7 @@ export const en: Dictionary = {
       }
     },
     metaTitle: "Study",
-    closeLabel: "End studying",
+    closeLabel: "Stop studying",
     card: {
       score: "Score",
       scoreWas: (rest: number) => `Score was ${rest}`,
@@ -161,7 +161,7 @@ export const en: Dictionary = {
         setupRight: { title: "Correct setup shot", note: "spot on" },
         setupOther: { title: "Different setup shot", note: "Recommended setup shot below" },
         setupBogey: { title: "Leaves a bogey number", note: "no checkout" },
-        setupBust: { title: "Bust", note: "the score stays" },
+        setupBust: { title: "Bust", note: "The score stays" },
       },
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
@@ -211,12 +211,12 @@ export const en: Dictionary = {
     session: {
       ratings: { 1: "Again", 2: "Hard", 3: "Good", 4: "Easy" },
       progress: "Progress",
-      progressText: (done: number, total: number) => `${done} of ${total} cards studied`,
+      progressText: (done: number, total: number) => `${done} of ${total} ${total === 1 ? "card" : "cards"} studied`,
       confirmClose: "Not everything is saved yet. Close anyway?",
       saveFailed: "Not saved, trying again",
       skipped: (n: number) => (n === 1 ? "One rating was not counted." : `${n} ratings were not counted.`),
       signedOut: "You have been signed out.",
-      notSaved: (n: number) => (n === 1 ? "1 rating was not saved." : `${n} ratings were not saved.`),
+      notSaved: (n: number) => (n === 1 ? "One rating was not saved." : `${n} ratings were not saved.`),
       toSignIn: "Sign in",
       finished: "Done",
       cardsStudied: (n: number) => `${n === 1 ? "1 card" : `${n} cards`} studied.`,
@@ -240,7 +240,7 @@ export const en: Dictionary = {
   },
   home: {
     intro:
-      "Learn the checkout routes from 170 downwards with flashcards that come back at growing intervals. You also practise what comes next when you hit the single instead of the treble.",
+      "Learn the checkout routes from 170 downwards with flashcards that come back at increasing intervals. You also practise what comes next when you hit the single instead of the treble.",
     signUp: "Sign up",
     signIn: "Sign in",
   },
@@ -278,7 +278,7 @@ export const en: Dictionary = {
     progressSample: "00 of 169 started, 00 known",
     moreCardsErrors: {
       auth: "Please sign in again.",
-      inactive: "Your account has not been approved.",
+      inactive: "Your account has not been approved yet.",
       notDone: "There are still cards waiting for you. Reload the page.",
       allIntroduced: "You have started every card.",
       cap: "No more cards are possible today. Carry on tomorrow.",
@@ -297,7 +297,7 @@ export const en: Dictionary = {
     noCards: "No cards match this selection.",
     mathIntro: "Ten quick sums before the checkout: what is left after three darts, and is it a bogey number?",
     start: "Start",
-    closeLabel: "End practice",
+    closeLabel: "Stop practising",
     again: "Again",
     next: "Next",
     progressText: (done: number, total: number) => `${done} of ${total} done`,
@@ -334,7 +334,7 @@ export const en: Dictionary = {
     forecast: {
       until: (date: string) => `All cards started by ${date}`,
       done: "All cards started",
-      none: "No new cards per day set",
+      none: "New cards per day set to 0",
     },
   },
   settings: {
@@ -375,7 +375,7 @@ export const en: Dictionary = {
     },
     resetProgress: {
       title: "Reset progress",
-      hint: "Starts all cards over from the beginning. Your account and settings stay.",
+      hint: "All cards start again from the beginning. Your account and settings stay.",
       question: "Reset progress?",
       description:
         "All cards, your history, your stats and your streak will be deleted. This cannot be undone.",

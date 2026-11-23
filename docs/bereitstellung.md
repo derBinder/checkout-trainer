@@ -56,7 +56,7 @@ Jede Seite stellt mehrere Datenbankabfragen nacheinander. Liegen Funktion und Da
 
 `package.json` legt `"engines": { "node": "24.x" }` fest, weil `ts-fsrs` 6 mindestens Node 24 braucht. Bei Vercel hat das Feld `engines` Vorrang vor der Einstellung im Dashboard unter Settings, General, Node.js Version.
 
-Die Angabe ist `24.x` und nicht `>=24`. Mit einer offenen Angabe würde Vercel beim Erscheinen einer neuen Hauptversion selbst hochstufen und warnt deshalb beim Bau. Lokal läuft Node 26. Diese Version wird nicht hochgeladen, npm warnt lokal höchstens wegen der Engine-Angabe.
+Die Angabe ist `24.x` und nicht `>=24`. Bei einer offenen Angabe stuft Vercel beim Erscheinen einer neuen Hauptversion selbst hoch und warnt deshalb beim Bau. Lokal läuft Node 26. Diese Version wird nicht hochgeladen, npm warnt lokal höchstens wegen der Engine-Angabe.
 
 ## Datenbankverbindungen
 
@@ -146,7 +146,7 @@ Das Root-Layout bindet `@vercel/analytics` und `@vercel/speed-insights` ein. Dat
 
 Beide Funktionen haben im Tarif Hobby ein monatliches Freikontingent. Ist es aufgebraucht, erfasst Vercel nichts mehr, es entstehen keine Kosten. Die Größe des Kontingents steht im Dashboard.
 
-Web Analytics setzt keine Cookies. Es zählt Seitenaufrufe anonymisiert mit Seite, Herkunft, Land, Gerät und Browser. Speed Insights misst Ladezeiten im Browser der Besucher. Vercel verarbeitet beide Daten, deshalb gehören sie in die Datenschutzerklärung.
+Web Analytics setzt keine Cookies. Es zählt Seitenaufrufe anonymisiert mit Seite, Herkunft, Land, Gerät und Browser. Speed Insights misst Ladezeiten im Browser der Besucher. Vercel verarbeitet diese Daten, deshalb gehören beide Funktionen in die Datenschutzerklärung.
 
 ## Prüfungen nach der Einrichtung
 

@@ -10,9 +10,9 @@ describe("verdictCopy", () => {
   it.each([
     ["best", "strong", "Bester Weg", "genau richtig"],
     ["alternative", "soft", "Alternative", "auch richtig"],
-    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Checkout stimmt, der Weg ist schlechter"],
+    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
     ["checkable", "bad", "Ist checkbar", "Es gibt einen Weg"],
-    ["bogeyRight", "strong", "Richtig", "Rest ist nicht checkbar"],
+    ["bogeyRight", "strong", "Richtig", "Der Rest ist nicht checkbar"],
     ["setupRight", "strong", "Richtiger Stellwurf", "genau richtig"],
     ["setupOther", "soft", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as const)("%s", (code, tone, title, note) => {
@@ -68,7 +68,7 @@ describe("verdictCopy in beiden Sprachen", () => {
       "The last dart is not a double",
     );
     expect(verdictCopy({ code: "noCheckout", detail: { kind: "notCheckable" } }, de.study).note).toBe(
-      "Rest ist nicht checkbar",
+      "Der Rest ist nicht checkbar",
     );
   });
 });
@@ -78,7 +78,7 @@ describe("setup that leaves a bogey number", () => {
     const verdict = { code: "setupBogey", detail: { kind: "leavesBogey", leaves: 159 } } as const;
     expect(verdictCopy(verdict, de.study)).toEqual({
       tone: "bad",
-      title: "Lässt Bogey-Zahl",
+      title: "Lässt eine Bogey-Zahl",
       note: "Lässt 159, nicht checkbar",
     });
     expect(verdictCopy(verdict, en.study)).toEqual({

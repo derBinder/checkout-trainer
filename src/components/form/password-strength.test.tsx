@@ -49,8 +49,8 @@ describe("PasswordStrength", () => {
     const { html, live } = render("abcdefg", "en");
     expect(live).toContain("Strength: ");
     expect(live).toContain("Weak");
-    expect(html).toContain("3 more characters to the minimum.");
-    expect(render("abcdefghi", "en").html).toContain("1 more character to the minimum.");
+    expect(html).toContain("3 more characters to reach the minimum.");
+    expect(render("abcdefghi", "en").html).toContain("1 more character to reach the minimum.");
     expect(render("", "en").html).toContain("At least 10 characters.");
   });
 });
