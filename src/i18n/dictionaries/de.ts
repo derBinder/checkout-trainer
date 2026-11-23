@@ -281,7 +281,7 @@ export const de = {
     due: "fällig",
     new: "neu",
     streakPaused:
-      "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass sie endet.",
+      "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.",
     done: "Für heute bist du fertig.",
     allStarted: "Du hast alle Karten begonnen.",
     learn: "Lernen",

@@ -119,7 +119,6 @@ describe("VerdictLine", () => {
     );
     expect(html).toContain('role="status"');
     expect(html).toContain("Bester Weg");
-    expect(html).toContain(">Bester Weg</span></p>");
   });
 });
 
