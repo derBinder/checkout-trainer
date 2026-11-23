@@ -425,7 +425,7 @@ describe("StudySession", () => {
       expect(row("Darts")).toEqual(["S1", "D2", "?offen"]);
 
       tap("Prüfen");
-      expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
+      expect(screen.getByRole("status").textContent).toBe("Bester Weg");
       expect(row("Dein Weg")).toEqual(["S1", "D2"]);
       expect(row("Bester Weg")).toEqual(["S1", "D2"]);
       expect(screen.getByText("Nach S1")).toBeTruthy();
@@ -452,7 +452,7 @@ describe("StudySession", () => {
       render(<StudySession items={[item("r-5")]} />, { wrapper });
       press("Single 1");
       tap("Nicht checkbar");
-      expect(screen.getByRole("status").textContent).toBe("Ist checkbarEs gibt einen Weg");
+      expect(screen.getByRole("status").textContent).toBe("Ist checkbar");
       expect(screen.queryByRole("list", { name: "Dein Weg" })).toBeNull();
       expect(screen.getByText("Dein Weg").nextElementSibling?.textContent).toBe("Nicht checkbar");
     });
@@ -495,7 +495,7 @@ describe("StudySession", () => {
       fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
       press("Triple 11");
       tap("Prüfen");
-      expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
+      expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurf");
       expect(screen.getByText("Rest 125 mit 2 Darts")).toBeTruthy();
       expect(big("Kein Finish")).toBeTruthy();
       expect(row("Dein Weg")).toEqual(["–verbraucht", "T20", "T11"]);
@@ -526,7 +526,7 @@ describe("StudySession", () => {
       expect(row("Darts")).toEqual(["S16 (Fehlwurf)", "D20", "?offen"]);
 
       tap("Prüfen");
-      expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
+      expect(screen.getByRole("status").textContent).toBe("Bester Weg");
       expect(row("Dein Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
       expect(big("40")).toBeTruthy();
     });

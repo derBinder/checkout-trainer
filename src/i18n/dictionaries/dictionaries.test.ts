@@ -150,6 +150,8 @@ describe("Lernen", () => {
     expect(en.stats.forecast.none).toBe("New cards per day set to 0");
     expect(en.today.moreCardsErrors.inactive).toBe("Your account has not been approved yet.");
     expect(en.home.intro).toContain("at increasing intervals");
+    expect(en.practice.mathIntro).toBe("Ten quick sums before the checkout. What is left after three darts, and is it a bogey number?");
+    expect(en.study.verdict.codes.setupRight).toEqual({ title: "Correct setup shot" });
     expect(de.home.intro).toContain("statt des Triples");
     expect(de.study.session.cardsStudied(4)).toBe("4 Karten gelernt.");
   });

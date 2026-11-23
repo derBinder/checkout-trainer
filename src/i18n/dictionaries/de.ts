@@ -164,17 +164,17 @@ export const de = {
     },
     verdict: {
       codes: {
-        best: { title: "Bester Weg", note: "genau richtig" },
+        best: { title: "Bester Weg" },
         alternative: { title: "Alternative", note: "auch richtig" },
         notRecommended: { title: "Geht, aber nicht empfohlen", note: "Der Checkout stimmt, der Weg ist schlechter" },
         noCheckout: { title: "Geht nicht auf", note: "Der Weg führt nicht zum Checkout" },
-        checkable: { title: "Ist checkbar", note: "Es gibt einen Weg" },
+        checkable: { title: "Ist checkbar" },
         bogeyRight: { title: "Richtig", note: "Der Rest ist nicht checkbar" },
-        setupRight: { title: "Richtiger Stellwurf", note: "genau richtig" },
+        setupRight: { title: "Richtiger Stellwurf" },
         setupOther: { title: "Anderer Stellwurf", note: "Empfohlener Stellwurf unten" },
         setupBogey: { title: "Lässt eine Bogey-Zahl", note: "nicht checkbar" },
         setupBust: { title: "Überworfen", note: "Der Rest bleibt stehen" },
-      } satisfies Record<VerdictCode, { title: string; note: string }>,
+      } satisfies Record<VerdictCode, { title: string; note?: string }>,
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
           case "total":
@@ -281,7 +281,7 @@ export const de = {
     due: "fällig",
     new: "neu",
     streakPaused:
-      "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.",
+      "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.",
     done: "Für heute bist du fertig.",
     allStarted: "Du hast alle Karten begonnen.",
     learn: "Lernen",
@@ -310,7 +310,7 @@ export const de = {
     matching: (n: number) => (n === 1 ? "1 Karte passt" : `${n} Karten passen`),
     noRange: "Wähle mindestens einen Bereich.",
     noCards: "Zu dieser Auswahl gibt es keine Karten.",
-    mathIntro: "Zehn kurze Rechnungen vor dem Checkout: Was bleibt nach drei Darts, und ist es eine Bogey-Zahl?",
+    mathIntro: "Zehn kurze Rechnungen vor dem Checkout. Was bleibt nach drei Darts, und ist es eine Bogey-Zahl?",
     start: "Los",
     closeLabel: "Übung beenden",
     again: "Nochmal",

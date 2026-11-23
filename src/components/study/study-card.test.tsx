@@ -85,7 +85,7 @@ describe("StudyCard", () => {
   describe("mit eingegebener Antwort", () => {
     it("meldet den besten Weg und stellt den eigenen Weg über den besten", () => {
       showWith("r-121", { kind: "darts", darts: ["T20", "T11", "D14"] });
-      expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
+      expect(screen.getByRole("status").textContent).toBe("Bester Weg");
       expect(row("Dein Weg")).toEqual(["T20", "T11", "D14"]);
       expect(row("Bester Weg")).toEqual(["T20", "T11", "D14"]);
       // Die Erklärungen bleiben.
@@ -102,7 +102,7 @@ describe("StudyCard", () => {
 
     it("zeigt „Nicht checkbar“ als eigenen Weg statt Feldern", () => {
       showWith("r-121", { kind: "notCheckable" });
-      expect(screen.getByRole("status").textContent).toBe("Ist checkbarEs gibt einen Weg");
+      expect(screen.getByRole("status").textContent).toBe("Ist checkbar");
       expect(screen.queryByRole("list", { name: "Dein Weg" })).toBeNull();
       expect(screen.getByText("Dein Weg").nextElementSibling?.textContent).toBe("Nicht checkbar");
     });
@@ -118,7 +118,7 @@ describe("StudyCard", () => {
 
     it("stellt bei einem Fehlwurf die schon geworfenen Darts vor den eigenen Folgeweg", () => {
       showWith("m-56-0", { kind: "darts", darts: ["D20"] });
-      expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
+      expect(screen.getByRole("status").textContent).toBe("Bester Weg");
       expect(row("Dein Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
       expect(row("Bester Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
     });
