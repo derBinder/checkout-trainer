@@ -24,7 +24,7 @@ Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 
    npm run db:migrate
    ```
 
-4. Betreiber anlegen (aktiv, mit Adminrolle; läuft wiederholt ohne Wirkung):
+4. Betreiberkonto anlegen. Es ist sofort aktiv und hat die Betreiberrolle. Ein zweiter Lauf ändert nichts.
 
    ```bash
    npm run db:seed-admin
@@ -36,7 +36,7 @@ Deutsch- und englischsprachige Web-App, mit der Dartspieler Checkout-Wege (Rest 
    npm run dev
    ```
 
-   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/de/admin` (bzw. `/en/admin`). Dort schaltet der Betreiber sie frei, sperrt sie oder setzt ein neues Passwort.
+   Die App läuft unter http://localhost:3000. Neue Konten erscheinen als "wartend" unter `/de/admin` oder `/en/admin`. Dort schaltet der Betreiber sie frei, sperrt sie oder setzt ein neues Passwort.
 
 Ist die lokale Datenbank beschädigt: `.data/pglite` löschen und die Schritte 3 und 4 wiederholen.
 
@@ -44,6 +44,7 @@ Ist die lokale Datenbank beschädigt: `.data/pglite` löschen und die Schritte 3
 
 ```bash
 npm test
+npm run test:coverage
 npm run typecheck
 npm run lint
 npm run build

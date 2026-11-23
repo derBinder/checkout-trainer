@@ -1,108 +1,116 @@
-# Bereitstellungsvorschlag
+# Bereitstellung
 
-Stand: 2026-11-11. Dieses Dokument ist ein Vorschlag. Bis zu deiner Zustimmung wird bei Vercel und Neon nichts angelegt, eingerichtet oder aufgerufen. Alle Prüfungen bis hierher liefen lokal.
+Stand: 2026-11-23. Die App läuft bei Vercel im Tarif Hobby. Die Datenbank ist Postgres bei Neon im Tarif Free. Beide Tarife sind kostenlos und brauchen keine Zahlungsart. Jeder Merge nach `main` stellt eine neue Version bereit.
 
-Ziel: Die App läuft unter einer Adresse `*.vercel.app`, mit Datenbank bei Neon, ohne dass dich etwas Geld kostet.
+Dieses Dokument beschreibt die Einrichtung, den Ablauf eines Deploys und die Prüfungen. Den Git-Ablauf bis zum Merge beschreibt die CLAUDE.md im Abschnitt "Git-Flow und Ablauf bis Produktion".
 
-## Was du vorher entscheiden musst
+## Überblick
 
-1. **Betreiberadresse.** `ADMIN_EMAIL` ist lokal der Platzhalter `betreiber@checkout-trainer.test`. Für die Produktion brauchen wir deine echte Adresse. Sie wird für die Registrierung gesperrt, es werden keine E-Mails dorthin verschickt.
-2. **Startpasswort.** `ADMIN_INITIAL_PASSWORD`, mindestens 10 Zeichen. Du nennst es nicht im Chat, sondern gibst es selbst im Terminal ein (siehe Schritt 6). Nach der ersten Anmeldung ändern.
-3. **Projektname.** Er bestimmt die Adresse (`<name>.vercel.app`). Vorschlag: `checkout-trainer`. Ist er vergeben, nehmen wir einen anderen.
-4. **Impressum und Datenschutz.** `/impressum` und `/datenschutz` sind Platzhalter. Sie müssen mit deinen echten Angaben gefüllt sein, bevor die Adresse öffentlich weitergegeben wird. Das ist deine Aufgabe, vor oder nach der ersten Bereitstellung, aber vor dem Weitergeben. Für den Datenschutztext wichtig: Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent (Browserkennung) des Nutzers, und für das Rate-Limit Einträge je IP-Adresse. Beides liegt in der Datenbank bei Neon (Frankfurt, siehe Schritt 3). Außerdem sind Vercel Web Analytics und Speed Insights eingebunden (siehe Schritt 7a), die ebenfalls in den Datenschutztext gehören.
-5. **Nicht kommerziell.** Vercel Hobby ist nur für nicht kommerzielle Nutzung gedacht. Bleibt die App ein privates Lernwerkzeug ohne Einnahmen, passt das. Sobald sie Geld einbringt, wäre ein bezahlter Tarif nötig.
+| Teil | Einrichtung |
+| --- | --- |
+| Vercel-Projekt | Team `team_L16ekIiXaBpa4vlg7m0xQUbg`, Tarif Hobby, Adresse `<projektname>.vercel.app` |
+| Git-Anbindung | Seit dem 2026-11-20 mit `derBinder/checkout-trainer` verbunden |
+| Neon-Projekt | Tarif Free, über den Vercel Marketplace angelegt und mit dem Vercel-Projekt verbunden |
+| Regionen | Funktionen in Frankfurt (`fra1`), Datenbank in Frankfurt (`aws-eu-central-1`) |
+| Node | `package.json` legt `"engines": { "node": "24.x" }` fest |
 
-## Reihenfolge der Schritte
+## Ablauf eines Deploys
 
-Jeder Schritt sagt, was angelegt wird und was er kostet. Keiner braucht eine Zahlungsart.
+1. Ein PR wird nach `main` gemergt.
+2. Vercel baut den Merge-Commit mit `sh scripts/vercel-build.sh`. `vercel.json` setzt diesen Befehl als Build-Befehl.
+3. Das Skript prüft zuerst, dass `DATABASE_URL_UNPOOLED` gesetzt ist. Fehlt die Variable, bricht der Bau sofort ab.
+4. Danach läuft `next build`.
+5. Nur wenn der Bau gelingt, spielt das Skript die Migrationen aus `drizzle/` über `DATABASE_URL_UNPOOLED` ein.
+6. Ist `ADMIN_INITIAL_PASSWORD` gesetzt, legt das Skript danach das Betreiberkonto an. Ein vorhandenes Konto bleibt unverändert.
+7. Vercel meldet das Ergebnis als Commit-Status `Vercel` an GitHub. Bei Erfolg lautet er `success Deployment has completed`.
 
-### Schritt 1: Node-Version festlegen
+Scheitert der Bau, bleibt die Datenbank unverändert. Die Live-Seite läuft dann mit dem alten Code und dem alten Schema weiter. Den Fehler zeigt der Bau-Log hinter `target_url` im Commit-Status.
 
-Was angelegt wird: nichts bei Vercel. `package.json` legt `"engines": { "node": "24.x" }` fest, weil `ts-fsrs` 6 mindestens Node 24 braucht.
+Migrationen bleiben additiv. Zuerst wird das Schema erweitert, aufgeräumt wird in einem späteren Release. Der Grund: Zwischen der Migration und der Freischaltung der neuen Version läuft für kurze Zeit noch der alte Code gegen das neue Schema.
 
-Bei Vercel hat das Feld `engines` Vorrang vor der Einstellung im Dashboard (Settings, General, Node.js Version); die Funktionen laufen also mit Node 24. Bewusst `24.x` statt `>=24`: Eine offene Angabe würde Vercel beim Erscheinen einer neuen Hauptversion automatisch hochstufen und warnt deshalb beim Bau. Auf diesem Rechner läuft Node 26; die lokale Version reicht, sie wird nicht hochgeladen (npm meldet lokal höchstens eine Warnung zur Engine-Angabe).
+Nie `vercel deploy` von Hand ausführen. Die Git-Anbindung stellt jeden Merge nach `main` schon bereit, ein zweiter Deploy würde doppelt bereitstellen.
 
-Kosten: keine.
+## Keine Previews
 
-### Schritt 2: Vercel-Projekt anlegen
+Die Datenbankvariablen der Neon-Integration gelten für Production und für Preview. Das sind `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `PG*` und `POSTGRES_*`. Eine Preview liefe also mit unveröffentlichtem Code gegen die Produktionsdatenbank. Sie würde nicht migrieren, weil `scripts/vercel-build.sh` das nur in Production tut. Lesen und schreiben würde sie aber.
 
-Was angelegt wird: ein leeres Vercel-Projekt im Team `team_L16ekIiXaBpa4vlg7m0xQUbg`, Tarif Hobby, ohne Git-Anbindung. Dabei entsteht die Produktionsadresse `<projektname>.vercel.app`.
+Zwei Sperren verhindern Previews:
 
-Direkt nach dem Anlegen: unter Settings, Functions, Function Region **Frankfurt (`fra1`)** wählen. Grund: Die Nutzer sitzen in Deutschland, und jede Seite stellt mehrere Datenbankabfragen nacheinander. Funktion und Datenbank müssen deshalb in derselben Region liegen (Neon in Frankfurt, siehe Schritt 3); sonst addiert sich die Laufzeit zwischen den Kontinenten bei jeder Abfrage. Kostet im Hobby-Tarif nichts.
+- `vercel.json` erlaubt über `git.deploymentEnabled` nur Deploys von `main`. Dort steht `"**": false` statt `"*": false`, weil `*` nicht auf Branch-Namen mit Schrägstrich wie `feature/…` passt.
+- Im Dashboard steht unter Settings, Build and Deployment, Ignored Build Step die Einstellung "Only build production". Sie greift auch für Branches, deren `vercel.json` die erste Sperre noch nicht enthält. Ihre Pushes erscheinen als abgebrochene Bereitstellung. Der Commit-Status `Vercel` ist dann `success` mit der Beschreibung "Canceled by Ignored Build Step". So geschehen am 2026-11-20 am Merge-Commit von PR #42. Der Status ist nicht rot und hält `gh pr checks` nicht auf.
 
-Ausführung (Vorschlag): Vercel-CLI, Version ausdrücklich angeben, zum Beispiel `npx vercel@<Version> link`. Auf diesem Rechner läuft Safe-chain und blendet Paketversionen aus, die jünger als ein Mindestalter sind. `@latest` liefert deshalb nicht die neueste Version. Wir nehmen eine ausdrücklich genannte, ältere Version und überspringen die Prüfung nicht. Die Anmeldung bei Vercel (`vercel login`) machst du selbst im Browser.
+Wer später Previews will, braucht vorher drei Änderungen:
 
-Kosten: keine.
+1. Eine eigene Datenbank-Verzweigung bei Neon nur für Preview.
+2. Die Produktionsvariablen nur noch für Production.
+3. `BETTER_AUTH_TRUSTED_ORIGINS` für die Preview-Adressen, siehe Abschnitt "Better Auth".
 
-### Schritt 3: Neon über den Vercel Marketplace verbinden
+## Regionen
 
-Was angelegt wird: ein Neon-Projekt mit einer Postgres-Datenbank im kostenlosen Tarif (Free), über Vercel, Storage, Marketplace, Neon. Es wird mit dem Vercel-Projekt verbunden und legt dort Umgebungsvariablen an.
+Jede Seite stellt mehrere Datenbankabfragen nacheinander. Liegen Funktion und Datenbank in verschiedenen Regionen, kommt bei jeder Abfrage die Laufzeit zwischen den Rechenzentren dazu. Deshalb liegen beide in Frankfurt:
 
-Im Dialog der Integration:
+- Die Funktionsregion steht im Vercel-Projekt unter Settings, Functions, Function Region auf `fra1`. Die Einstellung kostet im Tarif Hobby nichts.
+- Die Neon-Region ist `aws-eu-central-1`. Sie lässt sich nachträglich nicht ändern. Dafür bräuchte es ein neues Neon-Projekt.
 
-- Region **AWS Europe Central 1 (Frankfurt), `aws-eu-central-1`** wählen, passend zur Funktionsregion `fra1` aus Schritt 2. Die Region lässt sich später nicht ändern, nur durch ein neues Projekt.
-- Die Umgebungen für die Datenbankvariablen auf **nur Production** beschränken (Preview und Development abwählen). Bietet der Dialog die Auswahl nicht an, prüfen wir die Geltungsbereiche direkt danach unter Settings, Environment Variables und stellen jede von der Integration angelegte Variable auf nur Production um. Sonst kämen Preview-Bereitstellungen an die Produktionsdatenbank.
+## Node-Version
 
-Zwei Verbindungsadressen sind wichtig. Beide stehen im Neon-Dashboard unter "Connect":
+`package.json` legt `"engines": { "node": "24.x" }` fest, weil `ts-fsrs` 6 mindestens Node 24 braucht. Bei Vercel hat das Feld `engines` Vorrang vor der Einstellung im Dashboard unter Settings, General, Node.js Version.
 
-- **Gepoolt** (Host enthält `-pooler`): für die Vercel-Funktionen. Jede Funktion öffnet kurzlebige Verbindungen, der Pooler bei Neon hält sie zusammen. Diese Adresse wird `DATABASE_URL` in Vercel.
-- **Direkt** (ohne `-pooler`): nur für Migration und Betreiberkonto von diesem Rechner. Der Pooler (PgBouncer im Transaktionsmodus) ist für Schemaänderungen nicht geeignet.
+Die Angabe ist `24.x` und nicht `>=24`. Mit einer offenen Angabe würde Vercel beim Erscheinen einer neuen Hauptversion selbst hochstufen und warnt deshalb beim Bau. Lokal läuft Node 26. Diese Version wird nicht hochgeladen, npm warnt lokal höchstens wegen der Engine-Angabe.
 
-Die Integration legt in der Regel beide an (`DATABASE_URL` gepoolt, `DATABASE_URL_UNPOOLED` direkt). Das prüfen wir im Dashboard, bevor wir uns darauf verlassen. Die App liest nur `DATABASE_URL`. Ist sie gesetzt, nutzt `src/lib/db/driver.ts` node-postgres (`pg`, kleiner Pool mit höchstens 5 Verbindungen je Funktionsinstanz), sonst PGlite. Fehlt sie auf Vercel zur Laufzeit, bricht die App mit einer klaren Meldung ab, statt eine lokale Datenbank anlegen zu wollen.
+## Datenbankverbindungen
 
-Kosten: keine. Der Free-Tarif von Neon braucht keine Zahlungsart. Er hat Grenzen (Speicher, Rechenzeit, Datenbank schläft bei Nichtnutzung ein und braucht beim ersten Aufruf einen Moment). Für diese App reicht er weit.
+Neon bietet zwei Verbindungsadressen. Beide stehen im Neon-Dashboard unter "Connect", und die Integration legt beide bei Vercel an:
 
-### Schritt 4: Umgebungsvariablen bei Vercel setzen
+- `DATABASE_URL` ist die gepoolte Adresse, ihr Host enthält `-pooler`. Die Funktionen nutzen sie. Jede Funktion öffnet kurzlebige Verbindungen, und der Pooler von Neon verteilt sie auf wenige Datenbankverbindungen.
+- `DATABASE_URL_UNPOOLED` ist die direkte Adresse ohne `-pooler`. Nur Migrationen und das Anlegen des Betreiberkontos nutzen sie. Der Pooler ist PgBouncer im Transaktionsmodus und für Schemaänderungen nicht geeignet.
 
-Was angelegt wird: Einträge in den Projekteinstellungen, Geltungsbereich **nur Production**. Preview-Bereitstellungen sollen nicht an die Produktionsdatenbank kommen.
+Die App liest nur `DATABASE_URL`. Ist die Variable gesetzt, nutzt `src/lib/db/driver.ts` node-postgres (`pg`) mit höchstens 5 Verbindungen je Funktionsinstanz. Ohne die Variable nutzt die App PGlite. Fehlt sie bei Vercel zur Laufzeit, bricht die App mit einer Fehlermeldung ab und legt keine lokale Datenbank an.
+
+Die Variablen der Neon-Integration sind bei Vercel als geheim markiert. Sie lassen sich nicht auf einen lokalen Rechner zurücklesen. Deshalb laufen Migrationen und das Anlegen des Betreiberkontos beim Bau und nicht von Hand.
+
+## Umgebungsvariablen
 
 | Variable | Wert |
 | --- | --- |
-| `DATABASE_URL` | gepoolte Neon-Adresse (setzt die Integration) |
-| `BETTER_AUTH_SECRET` | neuer Zufallswert, `openssl rand -base64 32`, nicht der lokale |
-| `BETTER_AUTH_URL` | `https://<projektname>.vercel.app` (ohne Schrägstrich am Ende) |
-| `ADMIN_EMAIL` | deine echte Betreiberadresse |
+| `DATABASE_URL` | gepoolte Neon-Adresse, setzt die Integration |
+| `DATABASE_URL_UNPOOLED` | direkte Neon-Adresse, setzt die Integration |
+| `BETTER_AUTH_SECRET` | eigener Zufallswert, etwa aus `openssl rand -base64 32`, nicht der lokale Wert |
+| `BETTER_AUTH_URL` | `https://<projektname>.vercel.app`, ohne Schrägstrich am Ende |
+| `ADMIN_EMAIL` | echte Adresse des Betreibers. Die Registrierung sperrt diese Adresse, deshalb muss sie bei Vercel gesetzt sein. |
+| `ADMIN_INITIAL_PASSWORD` | nur für das erste Anlegen des Betreiberkontos, danach wieder entfernen |
 
-`ADMIN_INITIAL_PASSWORD` wird bei Vercel **nicht** gesetzt. Es wird nur einmal beim Anlegen des Betreibers gebraucht (Schritt 6) und gehört nicht dauerhaft in die Laufzeitumgebung. Das ist eine bewusste Abweichung vom ursprünglichen Plan, der es unter den Variablen führte. Wenn du es trotzdem dort haben willst, sag Bescheid.
+## Betreiberkonto anlegen
 
-`ADMIN_EMAIL` muss bei Vercel gesetzt sein, weil die Registrierung diese Adresse sperrt.
-
-Zu `BETTER_AUTH_URL` und erlaubten Herkünften (Better Auth, installierte Version geprüft): Better Auth nimmt `BETTER_AUTH_URL` als Basisadresse und lässt Anfragen nur von dieser Herkunft zu. Für die Produktionsadresse reicht deshalb diese eine Variable. Preview-Bereitstellungen haben jeweils eigene Adressen und würden bei Anmeldung und Registrierung abgelehnt. Darum gilt: Previews zunächst nicht nutzen. Wenn du später welche willst, gibt es `BETTER_AUTH_TRUSTED_ORIGINS` (kommagetrennt, Platzhalter wie `*.vercel.app` werden unterstützt). Ein so breites Muster erlaubt aber jede Vercel-Adresse und wird deshalb nicht empfohlen. Besser ein enges Muster aus Projektname und Team-Kürzel, das wir dann anhand der echten Preview-Adresse festlegen.
-
-Kosten: keine.
-
-### Stand der Umsetzung (2026-11-11): Schritte 5 und 6 laufen beim Bau
-
-Die von Neon angelegten Variablen sind bei Vercel als geheim markiert und lassen sich nicht auf diesen Rechner zurücklesen. Deshalb werden Schema und Betreiberkonto nicht mehr von Hand eingespielt, sondern beim Bau der Produktionsbereitstellung: `vercel.json` setzt als Build-Befehl `sh scripts/vercel-build.sh`. Das Skript prüft in der Produktionsumgebung zuerst, dass `DATABASE_URL_UNPOOLED` gesetzt ist, und führt dann `next build` aus. Erst nach erfolgreichem Bau spielt es die Migrationen über `DATABASE_URL_UNPOOLED` ein und legt, wenn `ADMIN_INITIAL_PASSWORD` gesetzt ist, das Betreiberkonto an. Beides ist wiederholbar. Scheitert der Bau, bleibt die Datenbank unberührt und die Live-Seite läuft unverändert weiter. Die Migrationen sollten trotzdem additiv bleiben (erst erweitern, später aufräumen): Zwischen Migration und Freischaltung der neuen Version läuft noch kurz der alte Code. Vorschau-Bereitstellungen fassen die Datenbank nicht an.
-
-Das Startpasswort gibst du selbst ein, es läuft nicht durch den Chat:
+Der Betreiber gibt das Startpasswort selbst im Terminal ein. Es geht nicht durch den Chat:
 
 ```bash
 npx vercel@65.12.1 env add ADMIN_INITIAL_PASSWORD production --sensitive
 ```
 
-Nach der ersten Anmeldung das Passwort in der App ändern und die Variable wieder entfernen (`npx vercel@65.12.1 env rm ADMIN_INITIAL_PASSWORD production`). Die folgenden Schritte 5 und 6 beschreiben den ursprünglichen Handweg und bleiben als Ausweichlösung stehen.
+Der nächste Deploy legt das Konto an. Nach der ersten Anmeldung ändert der Betreiber das Passwort in der App und entfernt die Variable:
 
-### Schritt 5: Datenbankschema einspielen
+```bash
+npx vercel@65.12.1 env rm ADMIN_INITIAL_PASSWORD production
+```
 
-Was angelegt wird: die Tabellen in der Neon-Datenbank (Migration `drizzle/0000_petite_stepford_cuckoos.sql`: Nutzer, Sitzungen, Konten, Rate-Limit, Lernstand, Bewertungsprotokoll, Einstellungen).
+Die Vercel-CLI immer mit ausdrücklicher Version aufrufen. Auf dem Entwicklungsrechner läuft Safe-chain und blendet Paketversionen aus, die jünger als ein Mindestalter sind. `@latest` liefert deshalb nicht die neueste Version.
 
-Von diesem Rechner aus, mit der **direkten** Adresse. Der Wert wird nicht in Dateien oder den Verlauf geschrieben:
+## Ausweichweg: Migration und Betreiberkonto von Hand
+
+Der Bau übernimmt beides. Fällt er dafür aus, geht es von einem lokalen Rechner mit der direkten Neon-Adresse. Die Werte landen dabei weder in Dateien noch im Shell-Verlauf. Die `read`-Befehle sind zsh-Syntax.
+
+Migration:
 
 ```bash
 read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
 DATABASE_URL="$DIRECT_URL" npm run db:migrate
+unset DIRECT_URL
 ```
 
-`drizzle.config.ts` liest `DATABASE_URL` aus der Shell. Ohne diese Variable würde der Befehl stillschweigend die lokale PGlite-Datenbank migrieren. Deshalb immer ausdrücklich setzen. Nach dem Lauf prüfen wir im Neon-Dashboard (Tables), dass die Tabellen da sind.
+`drizzle.config.ts` liest `DATABASE_URL` aus der Shell. Ohne die Variable migriert der Befehl ohne Warnung die lokale PGlite-Datenbank. Deshalb die Variable immer ausdrücklich setzen.
 
-Kosten: keine.
-
-### Schritt 6: Betreiberkonto anlegen
-
-Was angelegt wird: ein Konto (aktiv, Adminrolle) mit deiner echten Adresse. Der Befehl ist wiederholbar und tut bei vorhandenem Konto nichts.
-
-Wichtig: `scripts/seed-admin.ts` lädt zusätzlich `.env` und `.env.local`. Dort steht lokal der Platzhalter für `ADMIN_EMAIL`. Werte aus der Shell haben Vorrang, deshalb alle Werte ausdrücklich setzen:
+Betreiberkonto:
 
 ```bash
 read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
@@ -112,100 +120,91 @@ DATABASE_URL="$DIRECT_URL" ADMIN_EMAIL="$OP_EMAIL" ADMIN_INITIAL_PASSWORD="$OP_P
 unset DIRECT_URL OP_EMAIL OP_PW
 ```
 
-(zsh-Syntax von `read`; die Werte erscheinen weder auf dem Bildschirm noch im Verlauf.) Die Adresse muss dieselbe sein wie `ADMIN_EMAIL` bei Vercel.
+`scripts/seed-admin.ts` lädt zusätzlich `.env` und `.env.local`. Dort steht lokal ein Platzhalter für `ADMIN_EMAIL`. Werte aus der Shell haben Vorrang, deshalb setzt der Befehl alle drei Werte ausdrücklich. Die Adresse muss mit `ADMIN_EMAIL` bei Vercel übereinstimmen.
 
-Kosten: keine.
+## Better Auth
 
-### Schritt 7: Direkt bereitstellen, ohne Git
+### Erlaubte Herkunft
 
-Was angelegt wird: die erste Produktionsbereitstellung. Der Quellcode wird per CLI hochgeladen und bei Vercel gebaut (`npx vercel@<Version> deploy --prod`). Es entsteht keine Verbindung zu GitHub. Ein Push durch den Erbauer findet nicht statt.
+Better Auth nimmt `BETTER_AUTH_URL` als Basisadresse und lässt Anfragen nur von dieser Herkunft zu. Für die Produktionsadresse reicht diese eine Variable. Preview-Adressen würden bei Anmeldung und Registrierung abgelehnt. Für sie gibt es `BETTER_AUTH_TRUSTED_ORIGINS`, eine kommagetrennte Liste mit Platzhaltern. Ein Muster wie `*.vercel.app` erlaubt jede Vercel-Adresse und ist deshalb zu breit. Ein passendes Muster aus Projektname und Team-Kürzel lässt sich erst anhand einer echten Preview-Adresse festlegen.
 
-Was hochgeladen wird, regelt `.vercelignore` im Projektverzeichnis. Sie schließt aus: `.data` (lokale Datenbank mit Testkonten), `.env*` außer `.env.example`, `.superpowers`, `.next-docs`, `.idea`, `docs/superpowers`, dazu `.next` und `node_modules`. Vor dem Deploy prüfen wir, dass die Datei vorhanden ist; in der Upload-Anzeige der CLI darf keiner dieser Ordner auftauchen.
+### Rate-Limit
 
-Zum Bau bei Vercel:
+Better Auth begrenzt die Registrierung auf 5 Versuche je Stunde und die Anmeldung auf 10 Versuche je Minute. Die Zähler liegen je Client-IP in der Datenbank. Die IP liest Better Auth aus `x-forwarded-for`. In der installierten Version zählt der Header nur, wenn er genau einen Eintrag enthält. Sonst gilt die IP als nicht vertrauenswürdig, das Limit greift nicht, und im Log steht eine Warnung.
 
-- `@electric-sql/pglite` steht in `serverExternalPackages` und ist eine normale Abhängigkeit, damit lokal PGlite läuft. In Produktion wird es nie geöffnet (`DATABASE_URL` ist gesetzt), liegt aber im Funktionspaket: Der lokale Build hat gezeigt, dass die Dateien von PGlite (rund 20 MB von rund 23 MB je Funktion) mit eingepackt werden. Das ist weit unter dem Vercel-Limit von 250 MB je Funktion und beeinflusst den Bau nicht, kostet aber etwas Paketgröße und minimal den Kaltstart. Wir ändern daran vor dem ersten Deploy nichts.
-- Nach dem ersten Deploy prüfen: Der Build ist grün, die Funktionsgröße in den Bereitstellungsdetails liegt deutlich unter 250 MB, und in den Laufzeit-Logs steht kein PGlite-Fehler. Falls die Größe doch stört, ist `outputFileTracingExcludes` für PGlite die Stellschraube, das wäre eine eigene, kleine Änderung nach Absprache.
-- `next build` läuft auf Vercel ohne `DATABASE_URL`-Zugriff auf die Datenbank. Die Seiten rufen beim Bau keine Datenbank ab. Öffentliche Seiten sind statisch, die übrigen dynamisch.
+Laut Vercel-Dokumentation setzt Vercel `x-forwarded-for` auf die IP des Clients und übernimmt keinen mitgeschickten Wert. Der Code allein belegt das nicht. Deshalb gibt es eine Prüfung, siehe "Prüfungen nach der Einrichtung". Greift das Limit nicht, ist `advanced.ipAddress.ipAddressHeaders` mit `x-real-ip` oder `x-vercel-forwarded-for` die Abhilfe.
 
-Kosten: keine. Hobby enthält die Bereitstellungen, die Funktionen und die Bandbreite in den Grenzen des Tarifs.
+## Funktionsgröße
 
-### Schritt 7a: Web Analytics und Speed Insights einschalten
+`@electric-sql/pglite` ist eine normale Abhängigkeit und steht in `serverExternalPackages`, damit lokal PGlite läuft. In Produktion öffnet die App PGlite nie, weil `DATABASE_URL` gesetzt ist. Die Dateien liegen trotzdem im Funktionspaket. Ein lokaler Build am 2026-11-11 ergab rund 20 MB PGlite von rund 23 MB je Funktion. Das liegt unter dem Vercel-Limit für Funktionen. Soll das Paket kleiner werden, schließt `outputFileTracingExcludes` PGlite aus.
 
-Die App bindet `@vercel/analytics` und `@vercel/speed-insights` im Root-Layout ein. Daten fließen erst, wenn beide Funktionen im Vercel-Projekt eingeschaltet sind:
+`next build` fragt keine Datenbank ab. Öffentliche Seiten sind statisch, die übrigen dynamisch.
 
-1. Im Vercel-Projekt unter **Analytics** auf „Enable" und unter **Speed Insights** auf „Enable".
-2. Danach einmal neu bereitstellen, damit die Messpfade aktiv sind.
+## Web Analytics und Speed Insights
 
-Was dabei angelegt wird: nichts außerhalb des Projekts. Beide Funktionen sind im Hobby-Tarif mit einem monatlichen Freikontingent enthalten. Ist es aufgebraucht, wird im Hobby-Tarif nicht weiter erfasst, es entstehen keine Kosten. Das aktuelle Kontingent bitte vor dem Einschalten im Dashboard ablesen (aus dem Gedächtnis, nicht geprüft).
+Das Root-Layout bindet `@vercel/analytics` und `@vercel/speed-insights` ein. Daten kommen erst an, wenn beide Funktionen im Vercel-Projekt eingeschaltet sind. Dazu unter Analytics und unter Speed Insights jeweils "Enable" wählen und danach einmal neu bereitstellen.
 
-Für den Datenschutztext: Web Analytics arbeitet ohne Cookies und zählt Seitenaufrufe anonymisiert (Seite, Herkunft, Land, Gerät, Browser). Speed Insights misst Ladezeiten im Browser der Besucher. Beides wird von Vercel verarbeitet und gehört in die Datenschutzerklärung.
+Beide Funktionen haben im Tarif Hobby ein monatliches Freikontingent. Ist es aufgebraucht, erfasst Vercel nichts mehr, es entstehen keine Kosten. Die Größe des Kontingents steht im Dashboard.
 
-### Schritt 8: Prüfung unter `*.vercel.app`
+Web Analytics setzt keine Cookies. Es zählt Seitenaufrufe anonymisiert mit Seite, Herkunft, Land, Gerät und Browser. Speed Insights misst Ladezeiten im Browser der Besucher. Vercel verarbeitet beide Daten, deshalb gehören sie in die Datenschutzerklärung.
 
-Wir prüfen gemeinsam, ohne Daten von echten Nutzern anzulegen:
+## Prüfungen nach der Einrichtung
 
-1. Startseite, `/anmelden`, `/registrieren`, `/impressum`, `/datenschutz` laden.
-2. Mit der Betreiberadresse anmelden, `/verwaltung` öffnet. Passwort ändern.
-3. Ein Testkonto registrieren: landet unter `/warten`, erscheint in `/verwaltung`, wird freigeschaltet, `/heute` und `/lernen` laufen, eine Karte lässt sich bewerten.
-4. **Gleichzeitigkeit prüfen** (siehe nächster Abschnitt).
-5. **Rate-Limit prüfen** (siehe unten).
-6. Testkonto wieder entfernen (siehe Abschnitt Gleichzeitigkeit, Punkt 4).
-7. Vercel, Logs: keine Fehler.
-8. **Regionen prüfen:** In den Bereitstellungsdetails (Functions) steht als Region `fra1`; im Neon-Dashboard steht beim Projekt die Region `aws-eu-central-1` (Frankfurt). `/heute` lädt nach dem ersten (Kaltstart-)Aufruf ohne spürbare Verzögerung.
-9. **Geltungsbereiche prüfen:** Unter Settings, Environment Variables gelten `DATABASE_URL` und die übrigen Datenbankvariablen nur für Production.
+Diese Prüfungen gehören zu einer neuen Einrichtung oder zu einer Änderung an Datenbank, Region oder Better Auth. Sie legen keine Daten echter Nutzer an.
 
-## Zu den einzelnen technischen Punkten
+1. Startseite, `/de/sign-in`, `/de/sign-up`, `/de/imprint` und `/de/privacy` laden.
+2. Mit der Betreiberadresse anmelden. `/de/admin` öffnet sich.
+3. Ein Testkonto registrieren. Es landet unter `/de/pending` und erscheint in `/de/admin`. Nach dem Freischalten öffnen sich `/de/today` und `/de/study`, und eine Karte lässt sich bewerten.
+4. Gleichzeitigkeit prüfen, siehe unten.
+5. Rate-Limit prüfen: Mit einer falschen Testadresse elfmal in einer Minute anmelden. Der elfte Versuch muss mit Fehler 429 abgewiesen werden.
+6. Das Testkonto löschen. Das Löschen der Zeile in `user` entfernt über `ON DELETE CASCADE` alle zugehörigen Daten.
+7. In den Vercel-Logs stehen keine Fehler.
+8. Regionen: In den Bereitstellungsdetails unter Functions steht `fra1`, im Neon-Dashboard steht `aws-eu-central-1`.
+9. Geltungsbereiche: Unter Settings, Environment Variables gelten `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` und `ADMIN_EMAIL` nur für Production. Für die Datenbankvariablen gilt der Abschnitt "Keine Previews".
 
-### Gleichzeitigkeit (Doppelabsendung)
+### Gleichzeitigkeit
 
-Der Schutz gegen doppelt abgeschickte Bewertungen sperrt in `applyReview` die Nutzerzeile mit `SELECT … FOR UPDATE`. Getestet wurde das bisher nur auf PGlite mit einer einzigen Verbindung. Auf Neon mit mehreren Verbindungen ist es erstmals echt gleichzeitig. Konkrete Prüfung nach dem Deploy:
+`applyReview` sperrt die Nutzerzeile mit `SELECT … FOR UPDATE`. So zählt eine doppelt abgeschickte Bewertung nur einmal, und das Tageslimit für neue Karten hält. Lokal auf PGlite gibt es nur eine Verbindung. Echt gleichzeitig wird es erst auf Neon mit mehreren Verbindungen.
 
-1. Schritt 5 (Schema) ist gelaufen; mehr braucht die Prüfung nicht.
-2. Von diesem Rechner mit der **direkten** Adresse zwei identische Bewertungen gleichzeitig ausführen. Die Bewertung wird in der App über eine Server Action gesendet und lässt sich nicht einfach per `curl` doppeln. Deshalb ruft das Skript `scripts/check-concurrency.ts` dieselbe Funktion `applyReview` zweimal parallel auf, über denselben Pg-Treiber wie in Produktion (der Pool öffnet dafür zwei echte Verbindungen). Es legt dafür selbst einen Wegwerf-Nutzer an und löscht ihn am Ende wieder, ein Testkonto aus Schritt 8.3 wird dafür nicht gebraucht:
+Die Bewertung läuft in der App über eine Server Action und lässt sich nicht einfach per `curl` doppeln. Deshalb ruft `scripts/check-concurrency.ts` die Funktion `applyReview` zweimal gleichzeitig auf. Es nutzt denselben `pg`-Treiber wie die Produktion, der Pool öffnet dafür zwei Verbindungen. Das Skript legt selbst einen Wegwerf-Nutzer an und löscht ihn am Ende:
 
-   ```bash
-   read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
-   DATABASE_URL="$DIRECT_URL" npx tsx scripts/check-concurrency.ts
-   unset DIRECT_URL
-   ```
+```bash
+read -rs "DIRECT_URL?Direkte Neon-Adresse: "; echo
+DATABASE_URL="$DIRECT_URL" npx tsx scripts/check-concurrency.ts
+unset DIRECT_URL
+```
 
-   Lokal (ohne `DATABASE_URL`, gegen `.data/pglite`, Entwicklungsserver gestoppt) ist es einmal gelaufen und meldete `[{"ok":true},{"ok":false,"reason":"stale"}]`, eine Zeile in `review_log` und `card_state`, danach war der Wegwerf-Nutzer entfernt.
+Erwartet:
 
-3. Erwartet: ein Ergebnis `{"ok":true}`, ein Ergebnis `{"ok":false,"reason":"stale"}`, **genau eine** Zeile in `review_log` und eine in `card_state`, am Ende `OK: genau eine Bewertung gilt.` (Exit-Code 0). Zwei Zeilen oder zwei `ok:true` bedeuten, dass der Schutz auf Neon nicht greift; das Skript meldet dann `FEHLER` (Exit-Code 1). Dann wird nichts weiter freigegeben, wir klären zuerst die Ursache.
-4. Testkonto aus Schritt 8.3 löschen: Das Löschen der Zeile in `user` entfernt per `ON DELETE CASCADE` alle zugehörigen Daten.
+- `OK: genau eine Bewertung gilt.` Ein Aufruf liefert `{"ok":true}`, der andere `{"ok":false,"reason":"stale"}`. In `review_log` und in `card_state` steht je eine Zeile.
+- `OK: Tageslimit hält.` Von zwei gleichzeitigen neuen Karten bei einem Limit von zwei pro Tag und einer schon eingeführten Karte gilt genau eine.
+- `Wegwerf-Nutzer entfernt.` und Exit-Code 0.
 
-### Rate-Limit und Client-IP
+Meldet das Skript `FEHLER` und endet mit Exit-Code 1, schützt die Sperre auf Neon nicht. Dann wird nichts weiter freigegeben, bis die Ursache geklärt ist.
 
-Das Limit (Registrierung 5 je Stunde, Anmeldung 10 je Minute) legt Better Auth pro Client-IP in der Datenbank ab und liest die IP aus `x-forwarded-for`. In der installierten Version zählt der Header nur, wenn er genau einen Eintrag enthält, sonst gilt die IP als nicht vertrauenswürdig, und das Limit greift nicht (es erscheint eine Warnung im Log). Vercel setzt `x-forwarded-for` auf die IP des Clients und übernimmt keinen mitgeschickten Wert. Daher ist nach unserem Kenntnisstand keine Konfigurationsänderung nötig. Das ist eine Angabe aus der Vercel-Dokumentation, nicht aus dem Code, und wird deshalb praktisch geprüft: Mit einer falschen Testadresse elfmal in einer Minute anmelden, der elfte Versuch muss abgewiesen werden (Fehler 429). Bleibt er aus, steht im Log die Warnung zur IP, und wir stellen `advanced.ipAddress.ipAddressHeaders` auf `x-real-ip` oder `x-vercel-forwarded-for` um. Das wäre dann eine kleine Codeänderung nach Absprache.
+## Vor dem Weitergeben der Adresse
 
-### Kosten im Überblick
+`/de/imprint` und `/de/privacy` zeigen noch den Platzhalter "Dieser Text wird vom Betreiber ergänzt." Der Betreiber füllt beide Seiten mit seinen echten Angaben, bevor er die Adresse öffentlich weitergibt. In den Datenschutztext gehören:
 
-| Schritt | Angelegt | Zahlungsart nötig |
+- Better Auth speichert zu jeder Sitzung die IP-Adresse und den User-Agent des Nutzers.
+- Das Rate-Limit speichert Einträge je IP-Adresse.
+- Beides liegt in der Datenbank bei Neon in Frankfurt.
+- Vercel Web Analytics und Speed Insights, siehe oben.
+
+Vercel Hobby ist nur für nicht kommerzielle Nutzung vorgesehen. Bringt die App Geld ein, braucht sie einen bezahlten Tarif.
+
+## Kosten
+
+| Teil | Tarif | Zahlungsart nötig |
 | --- | --- | --- |
-| 2 | Vercel-Projekt (Hobby) im Team | nein |
-| 3 | Neon-Projekt (Free) über den Marketplace | nein |
-| 4 | Umgebungsvariablen | nein |
-| 5, 6 | Tabellen und Betreiberkonto | nein |
-| 7 | Produktionsbereitstellung | nein |
+| Vercel-Projekt mit Funktionen und Deploys | Hobby | nein |
+| Neon-Datenbank | Free | nein |
+| Web Analytics und Speed Insights | Freikontingent in Hobby | nein |
 
-Es werden keine weiteren Dienste angelegt. Kein E-Mail-Versand, keine Domain, keine Analyse. Wird ein Limit des Free- oder Hobby-Tarifs erreicht, werden Dienste gedrosselt oder pausiert, es wird nichts abgebucht. Schlägt ein Dialog bei Vercel oder Neon eine kostenpflichtige Option vor, brechen wir ab und sprechen darüber.
+Es gibt keine weiteren Dienste, keinen E-Mail-Versand und keine eigene Domain. Erreicht die App ein Limit des Tarifs Free oder Hobby, drosselt oder pausiert der Anbieter den Dienst. Er bucht nichts ab. Schlägt ein Dialog bei Vercel oder Neon eine kostenpflichtige Option vor, wird abgebrochen und mit dem Auftraggeber gesprochen.
 
-### Git
-
-Das Repository liegt privat auf GitHub (`derBinder/checkout-trainer`). Seit November 2026 gilt Git-Flow: Jede Änderung kommt über ein Issue und einen Feature-PR nach `develop`, geprüft von GitHub Actions, und über einen Release-Branch `release/<version>` nach `main`, mit Tag `v<version>` (Ablauf in der CLAUDE.md). Seit dem 2026-11-20 ist das Vercel-Projekt mit dem Repository verbunden (Settings, Git). Jeder Merge nach `main` löst die Produktionsbereitstellung aus, der CLI-Deploy aus Schritt 7 fällt weg (er würde doppelt bereitstellen). Vercel meldet jeden Bau als Commit-Status `Vercel` an GitHub, daran prüft der Release-Ablauf den Deploy.
-
-Previews gibt es bewusst keine. Die Datenbank-Variablen der Neon-Integration (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `PG*`, `POSTGRES_*`) gelten für Production **und Preview**, entgegen Schritt 3. Eine Preview liefe also mit unveröffentlichtem Code gegen die Produktionsdatenbank (sie migriert nicht, `scripts/vercel-build.sh` tut das nur in Production, aber sie liest und schreibt). Zwei Sperren verhindern Previews:
-
-- `vercel.json`: `git.deploymentEnabled` erlaubt nur `main` (`"**": false` statt `"*"`, weil `*` nicht auf Namen mit Schrägstrich wie `feature/…` passt).
-- Dashboard, Settings, Build and Deployment, Ignored Build Step: „Only build production“. Das greift auch für Branches, deren `vercel.json` die Sperre noch nicht enthält; deren Pushes erscheinen als abgebrochene Bereitstellung, mit Commit-Status `Vercel` = `success` und der Beschreibung „Canceled by Ignored Build Step“ (am 2026-11-20 am Merge-Commit von PR #42 gesehen). Der Status ist also nicht rot und hält `gh pr checks` nicht auf.
-
-Wer später Previews will, braucht vorher eine eigene Datenbank-Verzweigung bei Neon nur für Preview, die Datenbank-Variablen auf nur Production und `BETTER_AUTH_TRUSTED_ORIGINS` für die Preview-Adressen.
+Der Free-Tarif von Neon pausiert die Datenbank, wenn sie nicht genutzt wird. Der erste Aufruf danach wartet, bis sie wieder läuft.
 
 ## Rückbau
 
-Alles lässt sich ohne Kosten rückgängig machen: Vercel-Projekt löschen (Settings, Advanced), Neon-Projekt im Neon-Dashboard oder über die Integration löschen. Beides macht der Auftraggeber oder der Erbauer nur nach ausdrücklicher Zustimmung.
-
-## Zustimmung
-
-Bitte antworte mit Zustimmung zu diesem Vorschlag, mit der Betreiberadresse, dem Projektnamen und der Angabe, ob `ADMIN_INITIAL_PASSWORD` wie oben nur lokal bleiben soll. Das Startpasswort selbst tippst du im Terminal ein.
+Das Vercel-Projekt lässt sich unter Settings, Advanced löschen, das Neon-Projekt im Neon-Dashboard oder über die Integration. Beides kostet nichts. Gelöscht wird nur nach ausdrücklicher Zustimmung des Auftraggebers.
