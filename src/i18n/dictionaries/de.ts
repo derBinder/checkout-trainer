@@ -17,7 +17,7 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
-const streakLabel = (n: number) => (n === 1 ? "1 Tag Serie" : `${n} Tage Serie`);
+const streakLabel = (n: number) => (n === 1 ? "1 Tag in Folge" : `${n} Tage in Folge`);
 
 export const de = {
   common: {
@@ -36,7 +36,7 @@ export const de = {
     emailRequired: "Bitte gib deine E-Mail-Adresse ein.",
     emailTooLong: "Die E-Mail-Adresse ist zu lang.",
     emailInvalid:
-      "Das ist keine gültige E-Mail-Adresse, zum Beispiel name@beispiel.de.",
+      "Das ist keine gültige E-Mail-Adresse. Gültig ist zum Beispiel name@beispiel.de.",
     passwordRequired: "Bitte gib ein Passwort ein.",
     currentPasswordRequired: "Bitte gib dein aktuelles Passwort ein.",
     passwordTooShort: `Das Passwort braucht mindestens ${MIN_PASSWORD_LENGTH} Zeichen.`,
@@ -55,7 +55,7 @@ export const de = {
       nameTooLong: `Der Name darf höchstens ${MAX_NAME_LENGTH} Zeichen haben.`,
       nameInvalid: "Der Name enthält unzulässige Zeichen.",
       emailTooLong: "Die E-Mail-Adresse ist zu lang.",
-      imageNotAllowed: "Ein Profilbild wird nicht unterstützt.",
+      imageNotAllowed: "Profilbilder werden nicht unterstützt.",
       passwordRequired: "Bitte gib dein Passwort ein.",
     } satisfies Record<AuthErrorKey, string>,
     // Fehlercodes von Better Auth, das selbst nur Englisch meldet.
@@ -166,23 +166,23 @@ export const de = {
       codes: {
         best: { title: "Bester Weg", note: "genau richtig" },
         alternative: { title: "Alternative", note: "auch richtig" },
-        notRecommended: { title: "Geht, aber nicht empfohlen", note: "Checkout stimmt, der Weg ist schlechter" },
+        notRecommended: { title: "Geht, aber nicht empfohlen", note: "Der Checkout stimmt, der Weg ist schlechter" },
         noCheckout: { title: "Geht nicht auf", note: "Der Weg führt nicht zum Checkout" },
         checkable: { title: "Ist checkbar", note: "Es gibt einen Weg" },
-        bogeyRight: { title: "Richtig", note: "Rest ist nicht checkbar" },
+        bogeyRight: { title: "Richtig", note: "Der Rest ist nicht checkbar" },
         setupRight: { title: "Richtiger Stellwurf", note: "genau richtig" },
         setupOther: { title: "Anderer Stellwurf", note: "Empfohlener Stellwurf unten" },
-        setupBogey: { title: "Lässt Bogey-Zahl", note: "nicht checkbar" },
-        setupBust: { title: "Überworfen", note: "Rest bleibt stehen" },
+        setupBogey: { title: "Lässt eine Bogey-Zahl", note: "nicht checkbar" },
+        setupBust: { title: "Überworfen", note: "Der Rest bleibt stehen" },
       } satisfies Record<VerdictCode, { title: string; note: string }>,
       detail: (d: VerdictDetail): string => {
         switch (d.kind) {
           case "total":
             return `Ergibt ${d.total} statt ${d.rest}`;
           case "notDouble":
-            return "Letzter Dart ist kein Doppel";
+            return "Der letzte Dart ist kein Doppel";
           case "notCheckable":
-            return "Rest ist nicht checkbar";
+            return "Der Rest ist nicht checkbar";
           case "leavesBogey":
             return `Lässt ${d.leaves}, nicht checkbar`;
           case "bust":
@@ -225,10 +225,10 @@ export const de = {
     session: {
       ratings: { 1: "Nochmal", 2: "Schwer", 3: "Gut", 4: "Leicht" },
       progress: "Fortschritt",
-      progressText: (done: number, total: number) => `${done} von ${total} Karten gelernt`,
+      progressText: (done: number, total: number) => `${done} von ${total} ${total === 1 ? "Karte" : "Karten"} gelernt`,
       confirmClose: "Noch nicht alles gespeichert. Trotzdem schließen?",
       saveFailed: "Nicht gespeichert, wird erneut versucht",
-      skipped: (n: number) => (n === 1 ? "Eine Bewertung wurde nicht gezählt." : `${n} Bewertungen wurden nicht gezählt.`),
+      skipped: (n: number) => (n === 1 ? "1 Bewertung wurde nicht gezählt." : `${n} Bewertungen wurden nicht gezählt.`),
       signedOut: "Du wurdest abgemeldet.",
       notSaved: (n: number) => (n === 1 ? "1 Bewertung wurde nicht gespeichert." : `${n} Bewertungen wurden nicht gespeichert.`),
       toSignIn: "Zur Anmeldung",
@@ -236,7 +236,7 @@ export const de = {
       cardsStudied: (n: number) => `${n === 1 ? "1 Karte" : `${n} Karten`} gelernt.`,
       toOverview: "Zur Übersicht",
       retry: "Erneut versuchen",
-      saving: "Speichere …",
+      saving: "Wird gespeichert …",
       loadFailed: "Die Lernsitzung konnte nicht geladen werden.",
     },
   },
@@ -251,11 +251,11 @@ export const de = {
     label: streakLabel,
     pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
-    sample: "00 Tage Serie",
+    sample: "00 Tage in Folge",
   },
   home: {
     intro:
-      "Lerne die Checkout-Wege von 170 abwärts mit Karteikarten, die in wachsenden Abständen wiederkommen. Dazu übst du, wie es weitergeht, wenn statt des Triple nur das Single fällt.",
+      "Lerne die Checkout-Wege von 170 abwärts mit Karteikarten, die in wachsenden Abständen wiederkommen. Dazu übst du, wie es weitergeht, wenn statt des Triples nur das Single fällt.",
     signUp: "Registrieren",
     signIn: "Anmelden",
   },
@@ -390,7 +390,7 @@ export const de = {
     },
     resetProgress: {
       title: "Lernstand zurücksetzen",
-      hint: "Fängt mit allen Karten wieder von vorn an. Dein Konto und deine Einstellungen bleiben.",
+      hint: "Alle Karten beginnen wieder von vorn. Dein Konto und deine Einstellungen bleiben.",
       question: "Lernstand zurücksetzen?",
       description:
         "Alle Karten, dein Verlauf, die Statistik und deine Serie werden gelöscht. Das lässt sich nicht rückgängig machen.",

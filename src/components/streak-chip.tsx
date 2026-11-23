@@ -32,7 +32,7 @@ function chipState({ paused, today }: Streak): keyof typeof CHIP_COLORS {
   return today ? "extended" : "open";
 }
 
-/** Platzhalter in Größe eines typischen Schildchens („00 Tage Serie“, ohne Nutzerdaten). */
+/** Platzhalter in Größe eines typischen Schildchens („00 Tage in Folge“, ohne Nutzerdaten). */
 export function StreakChipSkeleton() {
   const t = useDictionary().streak;
   return (

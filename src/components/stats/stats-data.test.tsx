@@ -223,7 +223,7 @@ describe("StatsStreak", () => {
   it("zeigt die Serie der Lerntage", async () => {
     queries.loadStatsData.mockResolvedValue({ states: [], logs: [again("r-5")] });
     render(await StatsStreak(), { wrapper });
-    expect(screen.getByText("1 Tag Serie")).toBeTruthy();
+    expect(screen.getByText("1 Tag in Folge")).toBeTruthy();
   });
 
   it("zeigt die pausierte Serie", async () => {
@@ -236,6 +236,6 @@ describe("StatsStreak", () => {
       logs: [2, 3].map((d) => ({ cardId: "r-5", rating: 3, reviewedAt: new Date(now - d * day) })),
     });
     render(await StatsStreak(), { wrapper });
-    expect(screen.getByText("2 Tage Serie · pausiert")).toBeTruthy();
+    expect(screen.getByText("2 Tage in Folge · pausiert")).toBeTruthy();
   });
 });

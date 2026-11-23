@@ -109,7 +109,7 @@ describe("StudyCard", () => {
 
     it("bestätigt auf einer Bogey-Karte „Nicht checkbar“ und zeigt den Stellwurf", () => {
       showWith("b-159", { kind: "notCheckable" });
-      expect(screen.getByRole("status").textContent).toBe("RichtigRest ist nicht checkbar");
+      expect(screen.getByRole("status").textContent).toBe("RichtigDer Rest ist nicht checkbar");
       expect(screen.getByText("Rest 159")).toBeTruthy();
       expect(screen.getAllByText("Nicht checkbar")).toHaveLength(2);
       expect(row("Stellwurf")).toEqual(["T20", "T20", "S7"]);

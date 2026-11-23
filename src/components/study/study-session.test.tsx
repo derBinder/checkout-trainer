@@ -172,12 +172,12 @@ describe("StudySession", () => {
     // Der gedrückte Knopf ist weg: Der Fokus liegt auf dem Ergebnis, damit Tastatur und Screenreader folgen.
     expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Geschafft" }));
     expect(screen.getByText("1 Karte gelernt.")).toBeTruthy();
-    expect(screen.getByText("Speichere …")).toBeTruthy();
+    expect(screen.getByText("Wird gespeichert …")).toBeTruthy();
     const waiting = screen.getByRole("button", { name: "Zur Übersicht" });
     expect(waiting.hasAttribute("disabled")).toBe(true);
 
     await act(async () => save.resolve({ ok: true }));
-    expect(screen.queryByText("Speichere …")).toBeNull();
+    expect(screen.queryByText("Wird gespeichert …")).toBeNull();
     expect(screen.getByRole("link", { name: "Zur Übersicht" }).getAttribute("href")).toBe("/de/today");
   });
 
@@ -212,7 +212,7 @@ describe("StudySession", () => {
     await rateCurrent("Gut");
 
     expect(screen.getByText("Nicht gespeichert, wird erneut versucht")).toBeTruthy();
-    expect(screen.queryByText("Speichere …")).toBeNull();
+    expect(screen.queryByText("Wird gespeichert …")).toBeNull();
     expect(screen.getByRole("button", { name: "Zur Übersicht" }).hasAttribute("disabled")).toBe(true);
 
     fireEvent.click(screen.getByRole("button", { name: "Erneut versuchen" }));
@@ -323,7 +323,7 @@ describe("StudySession", () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "limit" });
     render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
-    expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
+    expect(screen.getByText("1 Bewertung wurde nicht gezählt.")).toBeTruthy();
     expect(screen.getByText("2 / 2")).toBeTruthy();
   });
 
@@ -331,7 +331,7 @@ describe("StudySession", () => {
     submitReview.mockResolvedValueOnce({ ok: false, reason: "off" });
     render(<StudySession items={[item("r-5"), item("r-7")]} />, { wrapper });
     await rateCurrent("Gut");
-    expect(screen.getByText("Eine Bewertung wurde nicht gezählt.")).toBeTruthy();
+    expect(screen.getByText("1 Bewertung wurde nicht gezählt.")).toBeTruthy();
     expect(screen.getByText("2 / 2")).toBeTruthy();
   });
 
@@ -461,7 +461,7 @@ describe("StudySession", () => {
       render(<StudySession items={[item("b-159")]} />, { wrapper });
       expect(big("159")).toBeTruthy();
       tap("Nicht checkbar");
-      expect(screen.getByRole("status").textContent).toBe("RichtigRest ist nicht checkbar");
+      expect(screen.getByRole("status").textContent).toBe("RichtigDer Rest ist nicht checkbar");
       expect(row("Stellwurf")).toEqual(["T20", "T20", "S7"]);
     });
 
@@ -513,7 +513,7 @@ describe("StudySession", () => {
       fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
       press("Doppel 8");
       tap("Prüfen");
-      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenCheckout stimmt, der Weg ist schlechter");
+      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenDer Checkout stimmt, der Weg ist schlechter");
       expect(row("Bester Weg")).toEqual(["–verbraucht", "T11", "D14"]);
     });
 
@@ -538,7 +538,7 @@ describe("StudySession auf Englisch", () => {
     render(<StudySession items={[item("r-5")]} />, {
       wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
     });
-    expect(screen.getByRole("link", { name: "End studying" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Stop studying" })).toBeTruthy();
     expect(screen.getByRole("radio", { name: "Treble" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Delete last dart" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Check" })).toBeTruthy();

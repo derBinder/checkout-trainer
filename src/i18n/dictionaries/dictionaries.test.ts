@@ -126,11 +126,27 @@ describe("Lernen", () => {
   });
 
   it("zählt Bewertungen und Karten in Einzahl und Mehrzahl", () => {
-    expect(en.study.session.skipped(1)).toBe("One rating was not counted.");
+    expect(en.study.session.skipped(1)).toBe("1 rating was not counted.");
     expect(en.study.session.skipped(3)).toBe("3 ratings were not counted.");
     expect(en.study.session.notSaved(1)).toBe("1 rating was not saved.");
     expect(en.study.session.cardsStudied(1)).toBe("1 card studied.");
     expect(en.study.session.cardsStudied(4)).toBe("4 cards studied.");
+    expect(de.study.session.progressText(0, 1)).toBe("0 von 1 Karte gelernt");
+    expect(de.study.session.progressText(1, 3)).toBe("1 von 3 Karten gelernt");
+    expect(en.study.session.progressText(0, 1)).toBe("0 of 1 card studied");
+    expect(en.study.session.progressText(1, 3)).toBe("1 of 3 cards studied");
+    expect(de.validation.emailInvalid).toBe("Das ist keine gültige E-Mail-Adresse. Gültig ist zum Beispiel name@beispiel.de.");
+    expect(en.validation.emailInvalid).toBe("That is not a valid email address. A valid one is, for example, name@example.com.");
+    expect(de.auth.errors.imageNotAllowed).toBe("Profilbilder werden nicht unterstützt.");
+    expect(en.auth.errors.imageNotAllowed).toBe("Profile pictures are not supported.");
+    expect(de.study.verdict.codes.setupBust.note).toBe("Der Rest bleibt stehen");
+    expect(en.study.verdict.codes.setupBust.note).toBe("The score stays");
+    expect(de.settings.resetProgress.hint).toBe("Alle Karten beginnen wieder von vorn. Dein Konto und deine Einstellungen bleiben.");
+    expect(en.settings.resetProgress.hint).toBe("All cards start again from the beginning. Your account and settings stay.");
+    expect(en.stats.forecast.none).toBe("New cards per day set to 0");
+    expect(en.today.moreCardsErrors.inactive).toBe("Your account has not been approved yet.");
+    expect(en.home.intro).toContain("at increasing intervals");
+    expect(de.home.intro).toContain("statt des Triples");
     expect(de.study.session.cardsStudied(4)).toBe("4 Karten gelernt.");
   });
 
@@ -143,8 +159,8 @@ describe("Lernen", () => {
 
 describe("Übrige Seiten", () => {
   it("schreibt die Serie und den Fortschritt in beiden Sprachen", () => {
-    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["1 Tag Serie", "12 Tage Serie"]);
-    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["1 Tag Serie · pausiert", "5 Tage Serie · pausiert"]);
+    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["1 Tag in Folge", "12 Tage in Folge"]);
+    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["1 Tag in Folge · pausiert", "5 Tage in Folge · pausiert"]);
     expect(en.streak.pausedLabel(5)).toBe("5-day streak · paused");
     expect([en.streak.label(1), en.streak.label(12)]).toEqual(["1-day streak", "12-day streak"]);
     expect(de.today.progress(2, 169, 1)).toBe("2 von 169 begonnen, 1 sicher");
