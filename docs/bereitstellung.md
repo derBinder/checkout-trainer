@@ -21,10 +21,10 @@ Dieses Dokument beschreibt die Einrichtung, den Ablauf eines Deploys und die Pr�
 3. Das Skript prüft zuerst, dass `DATABASE_URL_UNPOOLED` gesetzt ist. Fehlt die Variable, bricht der Bau sofort ab.
 4. Danach läuft `next build`.
 5. Nur wenn der Bau gelingt, spielt das Skript die Migrationen aus `drizzle/` über `DATABASE_URL_UNPOOLED` ein.
-6. Ist `ADMIN_INITIAL_PASSWORD` gesetzt, legt das Skript danach das Betreiberkonto an. Ein vorhandenes Konto bleibt unverändert.
-7. Vercel meldet das Ergebnis als Commit-Status `Vercel` an GitHub. Bei Erfolg lautet er `success Deployment has completed`.
+6. Ist `ADMIN_INITIAL_PASSWORD` gesetzt, legt das Skript danach das Betreiberkonto an. Ein vorhandenes Betreiberkonto bleibt unverändert. Gehört die Adresse aus `ADMIN_EMAIL` einem Konto ohne Betreiberrolle, bricht das Skript ab.
+7. Vercel meldet das Ergebnis als Commit-Status `Vercel` an GitHub. Bei Erfolg ist der Status `success` mit der Beschreibung "Deployment has completed".
 
-Scheitert der Bau, bleibt die Datenbank unverändert. Die Live-Seite läuft dann mit dem alten Code und dem alten Schema weiter. Den Fehler zeigt der Bau-Log hinter `target_url` im Commit-Status.
+Scheitert `next build`, bleibt die Datenbank unverändert. Die Live-Seite läuft dann mit dem alten Code und dem alten Schema weiter. Scheitert erst das Anlegen des Betreiberkontos, ist die Migration schon gelaufen. Dann läuft der alte Code gegen das neue Schema weiter, bis ein Deploy gelingt. In beiden Fällen zeigt der Bau-Log hinter `target_url` im Commit-Status den Fehler.
 
 Migrationen bleiben additiv. Zuerst wird das Schema erweitert, aufgeräumt wird in einem späteren Release. Der Grund: Zwischen der Migration und der Freischaltung der neuen Version läuft für kurze Zeit noch der alte Code gegen das neue Schema.
 

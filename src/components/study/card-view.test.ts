@@ -187,7 +187,7 @@ describe("restDetailView", () => {
     expect(detail).toEqual({
       slots: ["T20", "T19", "S20"],
       slotTone: "none",
-      notes: [{ title: "Stellwurf", text: "Nicht checkbar. Stellen auf Rest 32." }],
+      notes: [{ title: "Stellwurf", text: "Stellen auf Rest 32." }],
     });
   });
 });
@@ -235,7 +235,7 @@ describe("cardView auf Englisch", () => {
       { kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } },
       en.study,
     );
-    expect(detail.notes).toEqual([{ title: "Setup shot", text: "No checkout. Set up 32." }]);
+    expect(detail.notes).toEqual([{ title: "Setup shot", text: "Set up 32." }]);
   });
 });
 

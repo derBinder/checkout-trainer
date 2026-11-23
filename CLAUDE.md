@@ -193,7 +193,7 @@ Wo CI läuft, wird nur gemergt, wenn `gh pr checks <pr> --watch` mit Exit-Code 0
 Nur für Fehler in der Produktion, die nicht auf den nächsten Release warten sollen.
 
 1. Issue wie bei Features. `hotfix/<version>` aus `origin/main` im Worktree `.claude/worktrees/hotfix-<version>` anlegen. Die Version erhöht die letzte Stelle von `main`. Fix mit Tests, `npm version <version> --no-git-tag-version`, Prüfungen, Commit, Push.
-2. PR nach `main` mit Code-Review gegen `main`, CI und Prüfung der Migration wie in Release Schritt 3. Merge mit `--delete-branch` startet den Prod-Deploy. Danach Worktree und lokalen Branch entfernen. Ist gerade ein Release-Branch offen, ohne `--delete-branch` mergen, weil Schritt 3 den Hotfix-Branch noch braucht.
+2. PR nach `main` mit Code-Review gegen `main`, CI und Prüfung der Migration wie in Release Schritt 3. Der Merge startet den Prod-Deploy. Gemergt wird mit `--delete-branch`, danach Worktree und lokalen Branch entfernen. Ist gerade ein Release-Branch offen, ohne `--delete-branch` mergen, weil Schritt 3 den Hotfix-Branch noch braucht.
 3. Weiter wie Release Schritt 4 bis 6. Ausnahme in Schritt 5: Ist gerade ein Release-Branch offen, entfällt die Rückführung von `main` nach `develop`. Der Hotfix geht stattdessen in diesen Release-Branch:
    - Beide Seiten ändern die Version, deshalb gibt es immer einen Konflikt in `package.json` und `package-lock.json`.
    - `merge/<hotfix-version>-into-release-<version>` aus `origin/release/<version>` im eigenen Worktree anlegen und `origin/hotfix/<hotfix-version>` hineinmergen.

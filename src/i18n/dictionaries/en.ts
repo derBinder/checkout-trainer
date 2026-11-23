@@ -135,7 +135,7 @@ export const en: Dictionary = {
       setUp: (text: string) => `Set up: ${text}`,
       setupShort: (throws: string, leaves: number) => `${throws}, ${leaves} left`,
       afterwards: (leaves: number) => `Then ${leaves} left`,
-      bogeySetup: (leaves: number) => `No checkout. Set up ${leaves}.`,
+      bogeySetup: (leaves: number) => `Set up ${leaves}.`,
       twoDartsLeft: "2 darts left",
       twoDartsOf: (rest: number) => `${rest} with 2 darts`,
       noFinish: "No finish",

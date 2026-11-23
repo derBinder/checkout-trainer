@@ -146,7 +146,7 @@ export const de = {
       setUp: (text: string) => `Stellen: ${text}`,
       setupShort: (throws: string, leaves: number) => `${throws}, Rest ${leaves}`,
       afterwards: (leaves: number) => `Danach Rest ${leaves}`,
-      bogeySetup: (leaves: number) => `Nicht checkbar. Stellen auf Rest ${leaves}.`,
+      bogeySetup: (leaves: number) => `Stellen auf Rest ${leaves}.`,
       twoDartsLeft: "noch 2 Darts",
       twoDartsOf: (rest: number) => `Rest ${rest} mit 2 Darts`,
       noFinish: "Kein Finish",
