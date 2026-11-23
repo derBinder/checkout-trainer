@@ -156,7 +156,7 @@ describe("cardView", () => {
     expect(rest.answer.slots).toEqual(["16/8", "D16/D20", null]);
     expect(rest.answer.notes[0]).toEqual({
       title: "Warum",
-      text: "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
+      text: "Ziele zwischen 16 und 8. Beide Felder lassen ein Doppel.",
     });
     expect(view("r-108").answer.slots).toEqual(["T20", "16/8", "D16/D20"]);
   });
@@ -187,7 +187,7 @@ describe("restDetailView", () => {
     expect(detail).toEqual({
       slots: ["T20", "T19", "S20"],
       slotTone: "none",
-      notes: [{ title: "Stellwurf", text: "Kein Finish möglich. Stellen auf Rest 32." }],
+      notes: [{ title: "Stellwurf", text: "Stellen auf Rest 32." }],
     });
   });
 });
@@ -235,7 +235,7 @@ describe("cardView auf Englisch", () => {
       { kind: "bogey", rest: 169, setup: { throws: ["T20", "T19", "S20"], leaves: 32 } },
       en.study,
     );
-    expect(detail.notes).toEqual([{ title: "Setup shot", text: "No checkout. Set up 32." }]);
+    expect(detail.notes).toEqual([{ title: "Setup shot", text: "Set up 32." }]);
   });
 });
 

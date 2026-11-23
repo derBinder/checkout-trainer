@@ -41,7 +41,7 @@ describe("Warten auf Freischaltung", () => {
     session.user = { status: "pending" };
     render(await WaitingPage(), { wrapper });
     expect(
-      screen.getByRole("heading", { name: "Dein Konto wartet auf Freischaltung durch den Betreiber." }),
+      screen.getByRole("heading", { name: "Dein Konto wartet auf Freischaltung durch den Administrator." }),
     ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Abmelden" })).toBeTruthy();
   });

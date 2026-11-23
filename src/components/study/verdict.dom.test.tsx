@@ -24,11 +24,11 @@ describe("VerdictLine", () => {
   it.each([
     ["best", "Bester Weg", "genau richtig"],
     ["alternative", "Alternative", "auch richtig"],
-    ["notRecommended", "Geht, aber nicht empfohlen", "Finish stimmt, Weg ist schlechter"],
+    ["notRecommended", "Geht, aber nicht empfohlen", "Checkout stimmt, der Weg ist schlechter"],
     ["checkable", "Ist checkbar", "Es gibt einen Weg"],
     ["bogeyRight", "Richtig", "Rest ist nicht checkbar"],
     ["setupRight", "Richtiger Stellwurf", "genau richtig"],
-    ["setupOther", "Anderer Stellwurf", "empfohlen siehe unten"],
+    ["setupOther", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as [VerdictCode, string, string][])("meldet „%s“ als Status mit Titel und Hinweis", (code, title, note) => {
     render(<VerdictLine verdict={{ code }} />, { wrapper });
     const status = screen.getByRole("status");

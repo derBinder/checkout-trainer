@@ -69,7 +69,7 @@ describe("Anmelden", () => {
     render(await LoginPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Anmelden" })).toBeTruthy();
     expect(screen.getByRole("form", { name: "Anmeldung" })).toBeTruthy();
-    expect(screen.getByText(/Wende dich an den Betreiber/)).toBeTruthy();
+    expect(screen.getByText(/Der Administrator setzt dir ein neues/)).toBeTruthy();
     expect(href("Registrieren")).toBe("/de/sign-up");
     expect((await loginMetadata()).title).toBe("Anmelden · Checkout-Trainer");
   });
@@ -90,7 +90,7 @@ describe("Anmelden und Registrieren auf Englisch", () => {
     rootParams.lang = "en";
     render(await LoginPage(), { wrapper });
     expect(screen.getByRole("heading", { level: 1, name: "Sign in" })).toBeTruthy();
-    expect(screen.getByText(/Ask the operator/)).toBeTruthy();
+    expect(screen.getByText(/The administrator will set a new one/)).toBeTruthy();
     expect(href("Sign up")).toBe("/en/sign-up");
     expect((await loginMetadata()).title).toBe("Sign in · Checkout-Trainer");
     cleanup();
@@ -115,7 +115,7 @@ describe("Startseite und Pflichtseiten auf Englisch", () => {
 
     render(await Imprint());
     expect(screen.getByRole("heading", { level: 1, name: "Imprint" })).toBeTruthy();
-    expect(screen.getByText("The operator will add this text.")).toBeTruthy();
+    expect(screen.getByText("The administrator will add this text.")).toBeTruthy();
     expect(href("Back to the home page")).toBe("/en");
     expect((await imprintMetadata()).title).toBe("Imprint · Checkout-Trainer");
     cleanup();
@@ -141,7 +141,7 @@ describe.each([
   it("zeigt Überschrift, Platzhaltertext und den Weg zur Startseite", async () => {
     render(await Page());
     expect(screen.getByRole("heading", { level: 1, name: title })).toBeTruthy();
-    expect(screen.getByText("Dieser Text wird vom Betreiber ergänzt.")).toBeTruthy();
+    expect(screen.getByText("Dieser Text wird vom Administrator ergänzt.")).toBeTruthy();
     expect(href("Zur Startseite")).toBe("/de");
     expect((await pageMetadata()).title).toBe(`${title} · Checkout-Trainer`);
   });

@@ -48,7 +48,7 @@ describe("UserList", () => {
     expect(anna.getByText(/registered on/).textContent).toBe("pending · registered on 4 Nov 2026");
     expect(anna.getByRole("button", { name: "Approve" })).toBeTruthy();
     expect(anna.getByRole("button", { name: "Block" })).toBeTruthy();
-    expect(chef.getByText("Operator account")).toBeTruthy();
+    expect(chef.getByText("Administrator account")).toBeTruthy();
   });
 
   it("listet alle Konten mit Status, Registrierdatum und passenden Aktionen", async () => {
@@ -76,7 +76,7 @@ describe("UserList", () => {
     expect(bernd.getByRole("button", { name: "Entsperren" })).toBeTruthy();
 
     expect(chef.getByText(/registriert am/).textContent).toMatch(/^aktiv/);
-    expect(chef.getByText("Betreiberkonto")).toBeTruthy();
+    expect(chef.getByText("Administratorkonto")).toBeTruthy();
     expect(chef.queryByRole("button")).toBeNull();
 
     expect(dora.getByText(/registriert am/).textContent).toMatch(/^unbekannt/);

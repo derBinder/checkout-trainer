@@ -67,7 +67,7 @@ describe("Wörterbücher", () => {
     expect(r({ kind: "only" })).toBe("Der einzige Weg.");
     expect(r({ kind: "direct" })).toBe("Direkt auf das Doppel.");
     expect(r({ kind: "split", a: 16, b: 8 })).toBe(
-      "Zwischen 16 und 8 gezielt lässt jedes der beiden Felder ein Doppel.",
+      "Ziele zwischen 16 und 8. Beide Felder lassen ein Doppel.",
     );
   });
 
@@ -75,7 +75,7 @@ describe("Wörterbücher", () => {
     const r = en.study.reason;
     expect(r({ kind: "only" })).toBe("The only route.");
     expect(r({ kind: "direct" })).toBe("Straight at the double.");
-    expect(r({ kind: "split", a: 16, b: 8 })).toBe("Aim between 16 and 8: either one leaves a double.");
+    expect(r({ kind: "split", a: 16, b: 8 })).toBe("Aim between 16 and 8. Either field leaves a double.");
   });
 
   it("hat für jede Sprache ein Wörterbuch", () => {
@@ -158,7 +158,7 @@ describe("Übrige Seiten", () => {
     expect(en.stats.levels).toEqual({ known: "known", learning: "learning", new: "new" });
     expect(de.stats.againCount(3)).toBe("3× „Nochmal“");
     expect(en.stats.againCount(3)).toBe("3× “Again”");
-    expect(de.stats.levelOf("neu")).toBe("Lernstand: neu");
+    expect(de.stats.levelOf("neu")).toBe("Stufe: neu");
     expect(en.stats.levelOf("new")).toBe("Level: new");
     expect(de.stats.learnedOn("01.01.2026")).toBe("gelernt am 01.01.2026");
     expect(en.stats.learnedOn("01/01/2026")).toBe("learned on 01/01/2026");

@@ -195,20 +195,20 @@ describe("Prognose", () => {
     queries.loadStatsData.mockResolvedValue({ states: [], logs: [] });
   });
 
-  it("nennt den Tag, an dem alle Karten freigeschaltet sind", async () => {
+  it("nennt den Tag, an dem alle Karten begonnen sind", async () => {
     // 30 ungesehen, heute 0 offen, 5 pro Tag: sechs Tage nach heute.
     queue(30, 0);
     render(await StatsOverview(), { wrapper });
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, new Date("2026-11-13T10:00:00Z"));
-    const line = screen.getByText("Voraussichtlich alle Karten frei am 19. November");
+    const line = screen.getByText("Voraussichtlich alle Karten begonnen am 19. November");
     // Tag und Monat brechen nicht auseinander.
     expect(line.textContent).toContain("19.\u00a0November");
   });
 
-  it("meldet, wenn alle Karten freigeschaltet sind", async () => {
+  it("meldet, wenn alle Karten begonnen sind", async () => {
     queue(0, 5);
     render(await StatsOverview(), { wrapper });
-    expect(screen.getByText("Alle Karten freigeschaltet")).toBeTruthy();
+    expect(screen.getByText("Alle Karten begonnen")).toBeTruthy();
   });
 
   it("nennt kein Datum, wenn keine neuen Karten eingestellt sind", async () => {
