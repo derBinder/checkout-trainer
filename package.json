@@ -1,6 +1,6 @@
 {
   "name": "checkout-trainer",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "private": true,
   "scripts": {
     "dev": "NEXT_EXIT_TIMEOUT_MS=5000 next dev",
