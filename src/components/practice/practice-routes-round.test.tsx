@@ -131,7 +131,7 @@ describe("PracticeRoutesRound", () => {
     fireEvent.click(screen.getByRole("radio", { name: "Triple" }));
     fireEvent.click(screen.getByRole("button", { name: "Triple 11" }));
     tap("Prüfen");
-    expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurfgenau richtig");
+    expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurf");
   });
 
   it("zählt den Fortschritt für Screenreader als „erledigt“", () => {

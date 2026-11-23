@@ -53,7 +53,7 @@ describe("StudySessionData", () => {
     fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
     fireEvent.click(screen.getByRole("button", { name: "Doppel 2" }));
     fireEvent.click(screen.getByRole("button", { name: "Prüfen" }));
-    expect(screen.getByRole("status").textContent).toBe("Bester Weggenau richtig");
+    expect(screen.getByRole("status").textContent).toBe("Bester Weg");
   });
 
   it("leitet zur Übersicht um, wenn heute nichts zu lernen ist", async () => {

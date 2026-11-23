@@ -22,18 +22,24 @@ describe("VerdictLine auf Englisch", () => {
 
 describe("VerdictLine", () => {
   it.each([
-    ["best", "Bester Weg", "genau richtig"],
     ["alternative", "Alternative", "auch richtig"],
     ["notRecommended", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
-    ["checkable", "Ist checkbar", "Es gibt einen Weg"],
     ["bogeyRight", "Richtig", "Der Rest ist nicht checkbar"],
-    ["setupRight", "Richtiger Stellwurf", "genau richtig"],
     ["setupOther", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as [VerdictCode, string, string][])("meldet „%s“ als Status mit Titel und Hinweis", (code, title, note) => {
     render(<VerdictLine verdict={{ code }} />, { wrapper });
     const status = screen.getByRole("status");
     expect(within(status).getByText(title)).toBeTruthy();
     expect(within(status).getByText(note)).toBeTruthy();
+  });
+
+  it.each([
+    ["best", "Bester Weg"],
+    ["checkable", "Ist checkbar"],
+    ["setupRight", "Richtiger Stellwurf"],
+  ] as [VerdictCode, string][])("meldet „%s“ nur mit dem Titel, ohne Hinweis", (code, title) => {
+    render(<VerdictLine verdict={{ code }} />, { wrapper });
+    expect(screen.getByRole("status").textContent).toBe(title);
   });
 
   it("nennt bei einem Weg, der nicht aufgeht, den Grund", () => {
