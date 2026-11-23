@@ -24,9 +24,9 @@ describe("VerdictLine", () => {
   it.each([
     ["best", "Bester Weg", "genau richtig"],
     ["alternative", "Alternative", "auch richtig"],
-    ["notRecommended", "Geht, aber nicht empfohlen", "Checkout stimmt, der Weg ist schlechter"],
+    ["notRecommended", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
     ["checkable", "Ist checkbar", "Es gibt einen Weg"],
-    ["bogeyRight", "Richtig", "Rest ist nicht checkbar"],
+    ["bogeyRight", "Richtig", "Der Rest ist nicht checkbar"],
     ["setupRight", "Richtiger Stellwurf", "genau richtig"],
     ["setupOther", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as [VerdictCode, string, string][])("meldet „%s“ als Status mit Titel und Hinweis", (code, title, note) => {
@@ -40,7 +40,7 @@ describe("VerdictLine", () => {
     render(<VerdictLine verdict={{ code: "noCheckout", detail: { kind: "notDouble" } }} />, { wrapper });
     const status = screen.getByRole("status");
     expect(within(status).getByText("Geht nicht auf")).toBeTruthy();
-    expect(within(status).getByText("Letzter Dart ist kein Doppel")).toBeTruthy();
+    expect(within(status).getByText("Der letzte Dart ist kein Doppel")).toBeTruthy();
   });
 });
 
