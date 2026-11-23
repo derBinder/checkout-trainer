@@ -139,7 +139,7 @@ describe("TodayStreak", () => {
 
 describe("pausierte Serie", () => {
   const HINT =
-    "Deine Serie ist pausiert. Lerne heute, damit sie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.";
+    "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass sie endet.";
 
   function logsAgo(...days: number[]) {
     vi.useFakeTimers({ toFake: ["Date"] });
@@ -182,7 +182,7 @@ describe("pausierte Serie", () => {
       });
       expect(
         screen.getByText(
-          "Your streak is paused. Study today to keep it going. You can skip one day per week without ending the streak.",
+          "Study today to keep your streak going. You can skip one day per week without ending it.",
         ),
       ).toBeTruthy();
     } finally {

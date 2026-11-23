@@ -107,7 +107,7 @@ describe("PracticeSelect", () => {
     expect(onSave).toHaveBeenLastCalledWith({ exercise: "math", ranges: [], kind: "all" });
     expect(screen.queryByRole("group", { name: "Bereich" })).toBeNull();
     expect(screen.queryByRole("radiogroup", { name: "Kartenart" })).toBeNull();
-    expect(screen.getByText(/Zehn kurze Rechnungen/)).toBeTruthy();
+    expect(screen.getByText("Zehn kurze Rechnungen vor dem Checkout. Was bleibt nach drei Darts, und ist es eine Bogey-Zahl?")).toBeTruthy();
     expect(start().hasAttribute("disabled")).toBe(false);
   });
 

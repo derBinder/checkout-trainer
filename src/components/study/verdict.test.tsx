@@ -8,12 +8,12 @@ import { VerdictLine, verdictCopy } from "./verdict";
 
 describe("verdictCopy", () => {
   it.each([
-    ["best", "strong", "Bester Weg", "genau richtig"],
+    ["best", "strong", "Bester Weg", undefined],
     ["alternative", "soft", "Alternative", "auch richtig"],
     ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
-    ["checkable", "bad", "Ist checkbar", "Es gibt einen Weg"],
+    ["checkable", "bad", "Ist checkbar", undefined],
     ["bogeyRight", "strong", "Richtig", "Der Rest ist nicht checkbar"],
-    ["setupRight", "strong", "Richtiger Stellwurf", "genau richtig"],
+    ["setupRight", "strong", "Richtiger Stellwurf", undefined],
     ["setupOther", "soft", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
   ] as const)("%s", (code, tone, title, note) => {
     expect(verdictCopy({ code }, de.study)).toEqual({ tone, title, note });
@@ -46,10 +46,14 @@ describe("verdictCopy in beiden Sprachen", () => {
     for (const code of CODES) expect(verdictCopy({ code }, dictionary.study).title.length).toBeGreaterThan(0);
   });
 
-  it("hat für jede Stufe einen Hinweis", () => {
+  it("hat einen Hinweis, wo der Titel nicht alles sagt", () => {
+    const titleOnly = ["best", "checkable", "setupRight"];
     for (const code of CODES) {
-      expect(verdictCopy({ code }, de.study).note).not.toBe("");
-      expect(verdictCopy({ code }, en.study).note).not.toBe("");
+      for (const t of [de.study, en.study]) {
+        const note = verdictCopy({ code }, t).note;
+        if (titleOnly.includes(code)) expect(note).toBeUndefined();
+        else expect(note?.trim()).toBeTruthy();
+      }
     }
   });
 
@@ -60,7 +64,7 @@ describe("verdictCopy in beiden Sprachen", () => {
   });
 
   it("schreibt die Gründe auf Englisch", () => {
-    expect(verdictCopy({ code: "best" }, en.study)).toEqual({ tone: "strong", title: "Best route", note: "spot on" });
+    expect(verdictCopy({ code: "best" }, en.study)).toEqual({ tone: "strong", title: "Best route" });
     expect(verdictCopy({ code: "noCheckout", detail: { kind: "total", total: 148, rest: 121 } }, en.study).note).toBe(
       "Adds up to 148, not 121",
     );
@@ -115,7 +119,7 @@ describe("VerdictLine", () => {
     );
     expect(html).toContain('role="status"');
     expect(html).toContain("Bester Weg");
-    expect(html).toContain("genau richtig");
+    expect(html).toContain(">Bester Weg</span></p>");
   });
 });
 

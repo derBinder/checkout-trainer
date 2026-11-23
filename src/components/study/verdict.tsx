@@ -18,12 +18,13 @@ const TONES: Record<VerdictCode, VerdictTone> = {
   setupBust: "bad",
 };
 
-/** Ton, Titel und Hinweis eines Ergebnisses; ein Grund (`detail`) ersetzt den Hinweis. */
+/** Ton, Titel und Hinweis eines Ergebnisses; ein Grund (`detail`) ersetzt den Hinweis. Sagt der Titel schon alles, fehlt der Hinweis. */
 export function verdictCopy(
   v: Verdict,
   t: Dictionary["study"],
-): { tone: VerdictTone; title: string; note: string } {
-  const { title, note } = t.verdict.codes[v.code];
+): { tone: VerdictTone; title: string; note?: string } {
+  const codes: Record<VerdictCode, { title: string; note?: string }> = t.verdict.codes;
+  const { title, note } = codes[v.code];
   return { tone: TONES[v.code], title, note: v.detail ? t.verdict.detail(v.detail) : note };
 }
 
@@ -38,15 +39,15 @@ export function VerdictLine({ verdict }: { verdict: Verdict }) {
   return <ResultLine {...verdictCopy(verdict, useDictionary().study)} />;
 }
 
-/** Ergebniszeile in einem der drei Töne: links der Titel, rechts der Hinweis. */
-export function ResultLine({ tone, title, note }: { tone: VerdictTone; title: string; note: string }) {
+/** Ergebniszeile in einem der drei Töne: links der Titel, rechts der Hinweis, falls es einen gibt. */
+export function ResultLine({ tone, title, note }: { tone: VerdictTone; title: string; note?: string }) {
   return (
     <p
       role="status"
       className={cn("flex items-baseline justify-between gap-3 rounded-field px-4 py-2", TONE[tone])}
     >
       <span className="text-base font-bold">{title}</span>
-      <span className="text-right text-sm font-medium">{note}</span>
+      {note ? <span className="text-right text-sm font-medium">{note}</span> : null}
     </p>
   );
 }
