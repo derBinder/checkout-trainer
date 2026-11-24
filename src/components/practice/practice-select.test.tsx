@@ -63,7 +63,7 @@ describe("PracticeSelect", () => {
     expect(chips.map((c) => c.textContent)).toEqual(["2–40", "41–60", "61–80", "81–100", "101–120", "121–140", "141–170"]);
     for (const chip of chips) expect(chip.getAttribute("aria-pressed")).toBe("true");
     expect((kind("Alle") as HTMLInputElement).checked).toBe(true);
-    expect(screen.getByText("402 Karten passen")).toBeTruthy();
+    expect(screen.getByText("20 von 402 Karten")).toBeTruthy();
     expect(start().hasAttribute("disabled")).toBe(false);
   });
 
@@ -87,13 +87,13 @@ describe("PracticeSelect", () => {
     expect(start().hasAttribute("disabled")).toBe(true);
   });
 
-  it("zählt die passenden Karten und startet", async () => {
+  it("zählt die Karten der Auswahl und startet", async () => {
     const user = userEvent.setup();
     const onStart = vi.fn();
     const onSave = vi.fn();
     renderSelect({ initial: { ...DEFAULT_SELECTION, ranges: ["2-40"], kind: "misses" }, onStart, onSave });
     await user.click(range("41–60"));
-    expect(screen.getByText("1 Karte passt")).toBeTruthy();
+    expect(screen.getByText("1 Karte")).toBeTruthy();
     expect(onSave).toHaveBeenLastCalledWith({ exercise: "routes", ranges: ["2-40", "41-60"], kind: "misses" });
     await user.click(start());
     expect(onStart).toHaveBeenCalledTimes(1);
@@ -118,7 +118,7 @@ describe("PracticeSelect", () => {
     expect(chips.at(-1)?.textContent).toBe("171–230");
     await user.click(range("171–230"));
     await user.click(kind("Stellwürfe"));
-    expect(screen.getByText("60 Karten passen")).toBeTruthy();
+    expect(screen.getByText("20 von 60 Karten")).toBeTruthy();
     await user.click(kind("Fehlwürfe"));
     expect(screen.getByText("Zu dieser Auswahl gibt es keine Karten.")).toBeTruthy();
   });
@@ -127,7 +127,7 @@ describe("PracticeSelect", () => {
     renderSelect({}, "en");
     expect(screen.getByRole("radiogroup", { name: "Exercise" })).toBeTruthy();
     expect(screen.getByRole("radio", { name: "Setups" })).toBeTruthy();
-    expect(screen.getByText("402 cards match")).toBeTruthy();
+    expect(screen.getByText("20 of 402 cards")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Start" })).toBeTruthy();
   });
 });

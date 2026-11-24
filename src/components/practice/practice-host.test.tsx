@@ -55,7 +55,7 @@ describe("PracticeHost im Server-Rendering", () => {
       </I18nProvider>,
     );
     expect(html).toContain('aria-busy="true"');
-    expect(html).not.toContain("Karten passen");
+    expect(html).not.toMatch(/\d Karten?\b/);
   });
 });
 
@@ -79,7 +79,7 @@ describe("PracticeHost", () => {
     expect(screen.getByText("1 / 1")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Übung beenden" }));
-    expect(screen.getByText("1 Karte passt")).toBeTruthy();
+    expect(screen.getByText("1 Karte")).toBeTruthy();
     expect(submitReview).not.toHaveBeenCalled();
   });
 
