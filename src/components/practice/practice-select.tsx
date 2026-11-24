@@ -7,6 +7,7 @@ import {
   matchesFilter,
   PRACTICE_KINDS,
   RANGES,
+  ROUND_SIZE,
   type PracticeGroup,
   type RangeId,
 } from "@/lib/practice/filter";
@@ -32,7 +33,7 @@ const FOCUS = "outline-ring transition select-none focus-visible:outline-2";
 
 /**
  * Auswahlseite: Übung, bei „Wege“ Bereiche und Kartenart, darunter wie viele
- * Karten passen und „Los“. Gesteuert von außen (PracticeHost speichert die Wahl).
+ * Karten die Runde hat und „Los“. Gesteuert von außen (PracticeHost speichert die Wahl).
  */
 export function PracticeSelect({
   cards,
@@ -58,7 +59,7 @@ export function PracticeSelect({
       ? t.noRange
       : matching === 0
         ? t.noCards
-        : t.matching(matching);
+        : t.roundSize(Math.min(matching, ROUND_SIZE), matching);
   const canStart = !routes || matching > 0;
 
   function toggleRange(range: RangeId) {
