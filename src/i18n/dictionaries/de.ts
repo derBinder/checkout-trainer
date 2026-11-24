@@ -17,8 +17,6 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
-const streakLabel = (n: number) => (n === 1 ? "Serie: 1 Tag" : `Serie: ${n} Tage`);
-
 export const de = {
   common: {
     appName: "Checkout-Trainer",
@@ -248,10 +246,12 @@ export const de = {
     admin: "Verwaltung",
   },
   streak: {
-    label: streakLabel,
-    pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
+    days: (n: number) => (n === 1 ? "1 Tag" : `${n} Tage`),
+    // Vor- und Nachsatz der Beschriftung für Screenreader, sichtbar ist allein days.
+    spokenPrefix: "Serie: ",
+    spokenPaused: ", pausiert",
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
-    sample: "Serie: 00 Tage",
+    sample: "00 Tage",
   },
   home: {
     intro:

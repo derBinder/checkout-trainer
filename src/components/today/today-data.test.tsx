@@ -127,7 +127,7 @@ describe("TodayStreak", () => {
     const now = Date.now();
     queries.loadReviewDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
     render(await TodayStreak(), { wrapper });
-    expect(screen.getByText("Serie: 2 Tage")).toBeTruthy();
+    expect(screen.getByText("2 Tage")).toBeTruthy();
   });
 
   it("zeigt ohne Serie nichts", async () => {
@@ -152,7 +152,7 @@ describe("pausierte Serie", () => {
     queue(1, 0, 0);
     logsAgo(2, 3);
     render(await TodayStreak(), { wrapper });
-    expect(screen.getByText("Serie: 2 Tage · pausiert")).toBeTruthy();
+    expect(screen.getByRole("img", { name: "Serie: 2 Tage, pausiert" }).textContent).toBe("2 Tage");
     cleanup();
     render(await TodayOverview(), { wrapper });
     expect(screen.getByText(HINT)).toBeTruthy();
