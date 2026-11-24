@@ -17,7 +17,6 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
-const streakLabel = (n: number) => (n === 1 ? "Serie: 1 Tag" : `Serie: ${n} Tage`);
 
 export const de = {
   common: {
@@ -248,10 +247,10 @@ export const de = {
     admin: "Verwaltung",
   },
   streak: {
-    // Sichtbarer Text im Schildchen; label und pausedLabel hören nur Screenreader.
     days: (n: number) => (n === 1 ? "1 Tag" : `${n} Tage`),
-    label: streakLabel,
-    pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
+    // Vor- und Nachsatz hören nur Screenreader, sichtbar ist allein days.
+    spokenPrefix: "Serie: ",
+    spokenPaused: ", pausiert",
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
     sample: "00 Tage",
   },

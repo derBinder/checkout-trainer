@@ -19,8 +19,9 @@ export function StreakChip({ streak }: { streak: Streak }) {
   return (
     <p data-state={state} className={cn(CHIP_BOX, CHIP_COLORS[state])}>
       <Icon aria-hidden className={cn(ICON_BOX, state === "extended" && "fill-current")} />
-      <span aria-hidden>{t.days(streak.days)}</span>
-      <span className="sr-only">{streak.paused ? t.pausedLabel(streak.days) : t.label(streak.days)}</span>
+      <span className="sr-only">{t.spokenPrefix}</span>
+      <span>{t.days(streak.days)}</span>
+      {streak.paused && <span className="sr-only">{t.spokenPaused}</span>}
     </p>
   );
 }

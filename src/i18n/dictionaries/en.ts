@@ -11,7 +11,6 @@ import {
 } from "@/lib/auth/constants";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 
-const streakLabel = (n: number) => `${n}-day streak`;
 
 export const en: Dictionary = {
   common: {
@@ -235,8 +234,8 @@ export const en: Dictionary = {
   },
   streak: {
     days: (n: number) => (n === 1 ? "1 day" : `${n} days`),
-    label: streakLabel,
-    pausedLabel: (n: number) => `${streakLabel(n)} · paused`,
+    spokenPrefix: "Streak: ",
+    spokenPaused: ", paused",
     sample: "00 days",
   },
   home: {

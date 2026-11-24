@@ -2,6 +2,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { I18nProvider } from "@/i18n/client";
+import type { Streak } from "@/lib/stats";
 import { StreakChip, StreakChipSkeleton } from "./streak-chip";
 
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -11,10 +12,10 @@ function wrapperEn({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale="en">{children}</I18nProvider>;
 }
 
-/** Sichtbar ist nur die Tageszahl, der volle Text ist Screenreadern vorbehalten. */
-function expectTexts(visible: string, spoken: string) {
-  expect(screen.getByText(visible).getAttribute("aria-hidden")).toBe("true");
-  expect(screen.getByText(spoken).classList).toContain("sr-only");
+/** Das Schildchen zeigt die Tageszahl; der ganze Text mit Vor- und Nachsatz ist der für Screenreader. */
+function chipWith(streak: Streak, visible: string, wrap = wrapper) {
+  render(<StreakChip streak={streak} />, { wrapper: wrap });
+  return screen.getByText(visible).parentElement!;
 }
 
 describe("StreakChip", () => {
@@ -24,62 +25,52 @@ describe("StreakChip", () => {
   });
 
   it("zeigt einen Tag in der Einzahl", () => {
-    render(<StreakChip streak={{ days: 1, paused: false, today: true }} />, { wrapper });
-    expectTexts("1 Tag", "Serie: 1 Tag");
+    expect(chipWith({ days: 1, paused: false, today: true }, "1 Tag").textContent).toBe("Serie: 1 Tag");
   });
 
   it("zeigt mehrere Tage in der Mehrzahl", () => {
-    render(<StreakChip streak={{ days: 12, paused: false, today: true }} />, { wrapper });
-    expectTexts("12 Tage", "Serie: 12 Tage");
+    expect(chipWith({ days: 12, paused: false, today: true }, "12 Tage").textContent).toBe("Serie: 12 Tage");
   });
 
   it("zeigt eine dreistellige Serie", () => {
-    render(<StreakChip streak={{ days: 365, paused: false, today: true }} />, { wrapper });
-    expectTexts("365 Tage", "Serie: 365 Tage");
+    expect(chipWith({ days: 365, paused: false, today: true }, "365 Tage").textContent).toBe("Serie: 365 Tage");
+  });
+
+  it("nennt die Tageszahl nur einmal", () => {
+    chipWith({ days: 12, paused: false, today: true }, "12 Tage");
+    expect(screen.getAllByText(/12 Tage/)).toHaveLength(1);
   });
 });
 
 describe("StreakChip pausiert", () => {
-  it("nennt die Pause nur Screenreadern", () => {
-    render(<StreakChip streak={{ days: 5, paused: true, today: false }} />, { wrapper });
-    expectTexts("5 Tage", "Serie: 5 Tage · pausiert");
+  it("nennt die Pause im Text für Screenreader", () => {
+    expect(chipWith({ days: 5, paused: true, today: false }, "5 Tage").textContent).toBe("Serie: 5 Tage, pausiert");
   });
 
-  it("nennt die Pause auf Englisch nur Screenreadern", () => {
-    render(<StreakChip streak={{ days: 5, paused: true, today: false }} />, { wrapper: wrapperEn });
-    expectTexts("5 days", "5-day streak · paused");
+  it("nennt die Pause auf Englisch", () => {
+    expect(chipWith({ days: 5, paused: true, today: false }, "5 days", wrapperEn).textContent).toBe("Streak: 5 days, paused");
   });
 });
 
 describe("StreakChip Zustände", () => {
-  const cases = [
-    { state: "extended", streak: { days: 5, paused: false, today: true }, icon: "lucide-flame", colors: "bg-accent text-accent-foreground" },
-    { state: "open", streak: { days: 5, paused: false, today: false }, icon: "lucide-flame", colors: "bg-streak-open text-streak-open-foreground" },
-    { state: "paused", streak: { days: 5, paused: true, today: false }, icon: "lucide-pause", colors: "bg-muted text-muted-foreground" },
+  const cases: { state: string; streak: Streak }[] = [
+    { state: "extended", streak: { days: 5, paused: false, today: true } },
+    { state: "open", streak: { days: 5, paused: false, today: false } },
+    { state: "paused", streak: { days: 5, paused: true, today: false } },
   ];
 
-  it.each(cases)("zeigt $state mit eigenem Icon und eigenen Theme-Farben", ({ state, streak, icon, colors }) => {
-    render(<StreakChip streak={streak} />, { wrapper });
-    const chip = screen.getByText("5 Tage").closest("p")!;
-    expect(chip.getAttribute("data-state")).toBe(state);
-    for (const color of colors.split(" ")) expect(chip.classList).toContain(color);
-    const svg = chip.querySelector("svg")!;
-    expect(svg.getAttribute("aria-hidden")).toBe("true");
-    expect(svg.classList).toContain(icon);
-    // Nur die heute verlängerte Serie brennt gefüllt.
-    expect(svg.classList.contains("fill-current")).toBe(state === "extended");
+  it.each(cases)("kennzeichnet den Zustand $state", ({ state, streak }) => {
+    expect(chipWith(streak, "5 Tage").getAttribute("data-state")).toBe(state);
   });
 });
 
 describe("StreakChip auf Englisch", () => {
   it("zeigt einen Tag in der Einzahl", () => {
-    render(<StreakChip streak={{ days: 1, paused: false, today: true }} />, { wrapper: wrapperEn });
-    expectTexts("1 day", "1-day streak");
+    expect(chipWith({ days: 1, paused: false, today: true }, "1 day", wrapperEn).textContent).toBe("Streak: 1 day");
   });
 
   it("zeigt mehrere Tage in der Mehrzahl", () => {
-    render(<StreakChip streak={{ days: 12, paused: false, today: true }} />, { wrapper: wrapperEn });
-    expectTexts("12 days", "12-day streak");
+    expect(chipWith({ days: 12, paused: false, today: true }, "12 days", wrapperEn).textContent).toBe("Streak: 12 days");
   });
 });
 

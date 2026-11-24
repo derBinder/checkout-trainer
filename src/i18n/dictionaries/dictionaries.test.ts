@@ -165,10 +165,8 @@ describe("Lernen", () => {
 
 describe("Übrige Seiten", () => {
   it("schreibt die Serie und den Fortschritt in beiden Sprachen", () => {
-    expect([de.streak.label(1), de.streak.label(12)]).toEqual(["Serie: 1 Tag", "Serie: 12 Tage"]);
-    expect([de.streak.pausedLabel(1), de.streak.pausedLabel(5)]).toEqual(["Serie: 1 Tag · pausiert", "Serie: 5 Tage · pausiert"]);
-    expect(en.streak.pausedLabel(5)).toBe("5-day streak · paused");
-    expect([en.streak.label(1), en.streak.label(12)]).toEqual(["1-day streak", "12-day streak"]);
+    expect([de.streak.spokenPrefix, de.streak.spokenPaused]).toEqual(["Serie: ", ", pausiert"]);
+    expect([en.streak.spokenPrefix, en.streak.spokenPaused]).toEqual(["Streak: ", ", paused"]);
     expect([de.streak.days(1), de.streak.days(12)]).toEqual(["1 Tag", "12 Tage"]);
     expect([en.streak.days(1), en.streak.days(12)]).toEqual(["1 day", "12 days"]);
     expect([de.streak.sample, en.streak.sample]).toEqual(["00 Tage", "00 days"]);

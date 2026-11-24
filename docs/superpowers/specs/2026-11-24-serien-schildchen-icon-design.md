@@ -40,12 +40,13 @@ Verlängert und offen sind dieselbe Serie und bekommen deshalb dieselbe Flamme. 
 Die Änderung liegt in `src/components/streak-chip.tsx` und den beiden Wörterbüchern.
 
 - Das `<p>` wird zu `inline-flex items-center gap-1`.
-- Es enthält drei Teile:
+- Es enthält in dieser Reihenfolge:
   - das Icon mit `aria-hidden` in `size-3.5`, bei „verlängert“ zusätzlich mit `fill-current`
-  - den sichtbaren Text in einem `<span aria-hidden>`
-  - den vollen Text für Screenreader in einem `<span className="sr-only">`
-- Der sichtbare Text kommt aus dem neuen Schlüssel `streak.days(n)`.
-- Der Text für Screenreader kommt aus den bestehenden Schlüsseln `streak.label` und `streak.pausedLabel`. Sie bleiben unverändert, also „Serie: 5 Tage · pausiert“ und „5-day streak · paused“.
+  - den Vorsatz `streak.spokenPrefix` in einem `<span className="sr-only">`
+  - die sichtbare Tageszahl aus `streak.days(n)`
+  - bei pausierter Serie den Nachsatz `streak.spokenPaused` in einem `<span className="sr-only">`
+- Die Tageszahl steht so nur einmal im Schildchen. Screenreader lesen „Serie: 5 Tage, pausiert“ und „Streak: 5 days, paused“.
+- `streak.label` und `streak.pausedLabel` entfallen.
 - `streak.sample` wird zu „00 Tage“ und „00 days“.
 - Das Skeleton bekommt denselben Aufbau mit einem unsichtbaren Platzhalter in Icon-Größe. So springt das Schildchen nicht, wenn die Daten kommen.
 - Nur Standardklassen der Tailwind-Skala, keine freien Werte.
@@ -56,12 +57,13 @@ Tests zuerst.
 
 - `streak-chip.test.tsx`:
   - Sichtbar ist „1 Tag“, „12 Tage“, „1 day“ und „12 days“.
-  - Der Screenreader-Text ist je Zustand der volle Text.
-  - Je Zustand stimmt das Icon. Geprüft wird über `data-state` und die Füllung.
-  - Die Farben stimmen weiterhin.
+  - Der ganze Text des Schildchens ist je Zustand der Text für Screenreader.
+  - Die Tageszahl steht nur einmal im Schildchen.
+  - `data-state` stimmt je Zustand.
+  - Icon und Farben prüft kein Test, weil Tests nur sichtbares Verhalten prüfen und nicht den Aufbau. Sie werden im Browser angesehen.
   - Das Skeleton zeigt „00 Tage“.
 - `skeletons.test.tsx` erwartet englisch „00 days“.
-- `dictionaries.test.ts` bekommt Fälle für `streak.days` in beiden Sprachen. Die bestehenden Fälle für `label` und `pausedLabel` bleiben.
+- `dictionaries.test.ts` bekommt Fälle für `streak.days`, `streak.spokenPrefix` und `streak.spokenPaused` in beiden Sprachen.
 - Im Browser bei Smartphone-Breite alle drei Zustände auf „Heute“ und „Statistik“ ansehen, hell und dunkel.
 
 ## Entscheidungen von Claude
@@ -69,5 +71,4 @@ Tests zuerst.
 Diese Punkte hat der Auftraggeber nicht ausdrücklich genannt:
 
 - Die Einzahl „1 Tag“ und „1 day“
-- Der Screenreader-Text nutzt die bestehenden Schlüssel, statt neue anzulegen.
 - Die Icon-Größe `size-3.5` passend zu `text-xs`
