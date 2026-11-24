@@ -307,7 +307,8 @@ export const de = {
     range: "Bereich",
     kind: "Kartenart",
     kinds: { all: "Alle", ways: "Wege", misses: "Fehlwürfe", setups: "Stellwürfe" },
-    matching: (n: number) => (n === 1 ? "1 Karte passt" : `${n} Karten passen`),
+    roundSize: (round: number, total: number) =>
+      total > round ? `${round} von ${total} Karten` : total === 1 ? "1 Karte" : `${total} Karten`,
     noRange: "Wähle mindestens einen Bereich.",
     noCards: "Zu dieser Auswahl gibt es keine Karten.",
     mathIntro: "Zehn kurze Rechnungen vor dem Checkout. Was bleibt nach drei Darts, und ist es eine Bogey-Zahl?",

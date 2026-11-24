@@ -292,7 +292,8 @@ export const en: Dictionary = {
     range: "Range",
     kind: "Card type",
     kinds: { all: "All", ways: "Routes", misses: "Misses", setups: "Setups" },
-    matching: (n: number) => (n === 1 ? "1 card matches" : `${n} cards match`),
+    roundSize: (round: number, total: number) =>
+      total > round ? `${round} of ${total} cards` : total === 1 ? "1 card" : `${total} cards`,
     noRange: "Choose at least one range.",
     noCards: "No cards match this selection.",
     mathIntro: "Ten quick sums before the checkout. What is left after three darts, and is it a bogey number?",

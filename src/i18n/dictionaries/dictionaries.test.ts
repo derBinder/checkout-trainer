@@ -192,6 +192,15 @@ describe("Übrige Seiten", () => {
     expect(en.stats.dueToday).toBe("due today");
   });
 
+  it("nennt beim Üben die Runde und den Vorrat nur, wenn der Vorrat größer ist", () => {
+    expect(de.practice.roundSize(20, 21)).toBe("20 von 21 Karten");
+    expect(en.practice.roundSize(20, 21)).toBe("20 of 21 cards");
+    expect(de.practice.roundSize(20, 20)).toBe("20 Karten");
+    expect(en.practice.roundSize(20, 20)).toBe("20 cards");
+    expect(de.practice.roundSize(1, 1)).toBe("1 Karte");
+    expect(en.practice.roundSize(1, 1)).toBe("1 card");
+  });
+
   it("setzt Namen und Datum in die Texte der Verwaltung", () => {
     expect(de.admin.passwordFor("Anna")).toBe("Passwort für Anna setzen");
     expect(en.admin.passwordFor("Anna")).toBe("Set password for Anna");
