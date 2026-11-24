@@ -236,6 +236,6 @@ describe("StatsStreak", () => {
       logs: [2, 3].map((d) => ({ cardId: "r-5", rating: 3, reviewedAt: new Date(now - d * day) })),
     });
     render(await StatsStreak(), { wrapper });
-    expect(screen.getByText("2 Tage").parentElement!.textContent).toBe("Serie: 2 Tage, pausiert");
+    expect(screen.getByRole("img", { name: "Serie: 2 Tage, pausiert" }).textContent).toBe("2 Tage");
   });
 });

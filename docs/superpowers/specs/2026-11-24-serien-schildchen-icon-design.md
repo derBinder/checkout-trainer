@@ -40,12 +40,8 @@ Verlängert und offen sind dieselbe Serie und bekommen deshalb dieselbe Flamme. 
 Die Änderung liegt in `src/components/streak-chip.tsx` und den beiden Wörterbüchern.
 
 - Das `<p>` wird zu `inline-flex items-center gap-1`.
-- Es enthält in dieser Reihenfolge:
-  - das Icon mit `aria-hidden` in `size-3.5`, bei „verlängert“ zusätzlich mit `fill-current`
-  - den Vorsatz `streak.spokenPrefix` in einem `<span className="sr-only">`
-  - die sichtbare Tageszahl aus `streak.days(n)`
-  - bei pausierter Serie den Nachsatz `streak.spokenPaused` in einem `<span className="sr-only">`
-- Die Tageszahl steht so nur einmal im Schildchen. Screenreader lesen „Serie: 5 Tage, pausiert“ und „Streak: 5 days, paused“.
+- Es trägt `role="img"` und als `aria-label` den ganzen Satz aus `streak.spokenPrefix`, `streak.days(n)` und bei pausierter Serie `streak.spokenPaused`. Screenreader lesen so „Serie: 5 Tage, pausiert“ und „Streak: 5 days, paused“ in einem Stück.
+- Es enthält das Icon mit `aria-hidden` in `size-3.5`, bei „verlängert“ zusätzlich mit `fill-current`, und die sichtbare Tageszahl aus `streak.days(n)`. Die Tageszahl steht so nur einmal im Text.
 - `streak.label` und `streak.pausedLabel` entfallen.
 - `streak.sample` wird zu „00 Tage“ und „00 days“.
 - Das Skeleton bekommt denselben Aufbau mit einem unsichtbaren Platzhalter in Icon-Größe. So springt das Schildchen nicht, wenn die Daten kommen.
@@ -56,9 +52,8 @@ Die Änderung liegt in `src/components/streak-chip.tsx` und den beiden Wörterb�
 Tests zuerst.
 
 - `streak-chip.test.tsx`:
-  - Sichtbar ist „1 Tag“, „12 Tage“, „1 day“ und „12 days“.
-  - Der ganze Text des Schildchens ist je Zustand der Text für Screenreader.
-  - Die Tageszahl steht nur einmal im Schildchen.
+  - Das Schildchen wird über seine Rolle und Beschriftung gefunden, etwa „Serie: 5 Tage, pausiert“.
+  - Sein sichtbarer Text ist „1 Tag“, „12 Tage“, „1 day“ und „12 days“.
   - `data-state` stimmt je Zustand.
   - Icon und Farben prüft kein Test, weil Tests nur sichtbares Verhalten prüfen und nicht den Aufbau. Sie werden im Browser angesehen.
   - Das Skeleton zeigt „00 Tage“.

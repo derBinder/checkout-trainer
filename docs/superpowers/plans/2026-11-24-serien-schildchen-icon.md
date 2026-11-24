@@ -2,6 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Stand nach dem Code-Review:** Das Review hat drei Punkte dieses Plans geändert. Aktuell ist der Entwurf.
+> - Screenreader bekommen den ganzen Satz als `aria-label` am Schildchen mit `role="img"`. `streak.label` und `streak.pausedLabel` gibt es nicht mehr, dafür `streak.spokenPrefix` und `streak.spokenPaused`.
+> - Die Tests prüfen Rolle, Beschriftung, Text und `data-state`. Klassen wie `sr-only`, `lucide-flame` und `fill-current` prüft kein Test.
+> - Pausiert heißt für Screenreader „, pausiert“ statt „· pausiert“.
+
 **Ziel:** Das Serien-Schildchen zeigt ein Icon je Zustand und dahinter nur die Zahl der Tage.
 
 **Aufbau:** Die Änderung liegt in `StreakChip` und `StreakChipSkeleton` und in den beiden Wörterbüchern. Sichtbar ist der neue Text `streak.days(n)`. Screenreader bekommen weiter `streak.label` und `streak.pausedLabel`.

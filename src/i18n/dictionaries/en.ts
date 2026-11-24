@@ -11,7 +11,6 @@ import {
 } from "@/lib/auth/constants";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 
-
 export const en: Dictionary = {
   common: {
     appName: "Checkout-Trainer",

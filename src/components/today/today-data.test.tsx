@@ -152,7 +152,7 @@ describe("pausierte Serie", () => {
     queue(1, 0, 0);
     logsAgo(2, 3);
     render(await TodayStreak(), { wrapper });
-    expect(screen.getByText("2 Tage").parentElement!.textContent).toBe("Serie: 2 Tage, pausiert");
+    expect(screen.getByRole("img", { name: "Serie: 2 Tage, pausiert" }).textContent).toBe("2 Tage");
     cleanup();
     render(await TodayOverview(), { wrapper });
     expect(screen.getByText(HINT)).toBeTruthy();

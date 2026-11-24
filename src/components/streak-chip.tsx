@@ -16,12 +16,12 @@ export function StreakChip({ streak }: { streak: Streak }) {
   if (streak.days < 1) return null;
   const state = chipState(streak);
   const Icon = state === "paused" ? Pause : Flame;
+  // Ein Bild mit Beschriftung: Screenreader lesen den ganzen Satz in einem Stück, die Tageszahl steht nur einmal im Text.
+  const spoken = `${t.spokenPrefix}${t.days(streak.days)}${streak.paused ? t.spokenPaused : ""}`;
   return (
-    <p data-state={state} className={cn(CHIP_BOX, CHIP_COLORS[state])}>
+    <p role="img" aria-label={spoken} data-state={state} className={cn(CHIP_BOX, CHIP_COLORS[state])}>
       <Icon aria-hidden className={cn(ICON_BOX, state === "extended" && "fill-current")} />
-      <span className="sr-only">{t.spokenPrefix}</span>
-      <span>{t.days(streak.days)}</span>
-      {streak.paused && <span className="sr-only">{t.spokenPaused}</span>}
+      {t.days(streak.days)}
     </p>
   );
 }

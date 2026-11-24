@@ -17,7 +17,6 @@ import type { ExtraKind } from "@/lib/extra-cards";
 import { MAX_NEW_PER_DAY } from "@/lib/settings";
 import type { ValidationKey } from "@/lib/validation/schemas";
 
-
 export const de = {
   common: {
     appName: "Checkout-Trainer",
@@ -248,7 +247,7 @@ export const de = {
   },
   streak: {
     days: (n: number) => (n === 1 ? "1 Tag" : `${n} Tage`),
-    // Vor- und Nachsatz hören nur Screenreader, sichtbar ist allein days.
+    // Vor- und Nachsatz der Beschriftung für Screenreader, sichtbar ist allein days.
     spokenPrefix: "Serie: ",
     spokenPaused: ", pausiert",
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
