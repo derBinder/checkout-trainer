@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/i18n/client";
 import {
   matchesFilter,
-  ROUND_SIZE,
   PRACTICE_KINDS,
   RANGES,
+  ROUND_SIZE,
   type PracticeGroup,
   type RangeId,
 } from "@/lib/practice/filter";
