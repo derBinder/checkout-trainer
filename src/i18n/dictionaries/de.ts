@@ -248,10 +248,12 @@ export const de = {
     admin: "Verwaltung",
   },
   streak: {
+    // Sichtbarer Text im Schildchen; label und pausedLabel hören nur Screenreader.
+    days: (n: number) => (n === 1 ? "1 Tag" : `${n} Tage`),
     label: streakLabel,
     pausedLabel: (n: number) => `${streakLabel(n)} · pausiert`,
     // Mustertext für den Platzhalter, ohne Nutzerdaten.
-    sample: "Serie: 00 Tage",
+    sample: "00 Tage",
   },
   home: {
     intro:

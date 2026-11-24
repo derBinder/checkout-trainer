@@ -166,6 +166,6 @@ describe("Skeleton-Bausteine", () => {
     expect(english(createElement(UserListSkeleton))).toContain("Set password");
     expect(english(createElement(DeleteAccountSectionSkeleton))).toContain("Delete account");
     expect(english(createElement(ExtraCardsSkeleton))).toContain("Neighbouring fields");
-    expect(english(createElement(StreakChipSkeleton))).toContain("00-day streak");
+    expect(english(createElement(StreakChipSkeleton))).toContain("00 days");
   });
 });

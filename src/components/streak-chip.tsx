@@ -1,5 +1,6 @@
 "use client";
 
+import { Flame, Pause } from "lucide-react";
 import { LoadingRegion } from "@/components/loading-region";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDictionary } from "@/i18n/client";
@@ -7,20 +8,24 @@ import type { Streak } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
 /** Maße des Schildchens; Skeleton und Inhalt teilen sie. */
-const CHIP_BOX = "rounded-pill px-3 py-1.5 text-xs font-bold tabular-nums";
+const CHIP_BOX = "inline-flex items-center gap-1 rounded-pill px-3 py-1.5 text-xs font-bold tabular-nums";
+const ICON_BOX = "size-3.5 shrink-0";
 
 export function StreakChip({ streak }: { streak: Streak }) {
   const t = useDictionary().streak;
   if (streak.days < 1) return null;
   const state = chipState(streak);
+  const Icon = state === "paused" ? Pause : Flame;
   return (
     <p data-state={state} className={cn(CHIP_BOX, CHIP_COLORS[state])}>
-      {streak.paused ? t.pausedLabel(streak.days) : t.label(streak.days)}
+      <Icon aria-hidden className={cn(ICON_BOX, state === "extended" && "fill-current")} />
+      <span aria-hidden>{t.days(streak.days)}</span>
+      <span className="sr-only">{streak.paused ? t.pausedLabel(streak.days) : t.label(streak.days)}</span>
     </p>
   );
 }
 
-/** Pausiert grau, heute verlängert kräftig gelb, heute noch offen hellgelb. */
+/** Pausiert grau mit Pause-Icon, heute verlängert kräftig gelb mit gefüllter Flamme, heute noch offen hellgelb mit Umriss. */
 const CHIP_COLORS = {
   paused: "bg-muted text-muted-foreground",
   extended: "bg-accent text-accent-foreground",
@@ -32,12 +37,15 @@ function chipState({ paused, today }: Streak): keyof typeof CHIP_COLORS {
   return today ? "extended" : "open";
 }
 
-/** Platzhalter in Größe eines typischen Schildchens („Serie: 00 Tage“, ohne Nutzerdaten). */
+/** Platzhalter in Größe eines typischen Schildchens (Icon und „00 Tage“, ohne Nutzerdaten). */
 export function StreakChipSkeleton() {
   const t = useDictionary().streak;
   return (
     <LoadingRegion>
-      <Skeleton className={cn(CHIP_BOX, "text-transparent")}>{t.sample}</Skeleton>
+      <Skeleton className={cn(CHIP_BOX, "text-transparent")}>
+        <span className={ICON_BOX} />
+        {t.sample}
+      </Skeleton>
     </LoadingRegion>
   );
 }

@@ -234,9 +234,10 @@ export const en: Dictionary = {
     admin: "Admin",
   },
   streak: {
+    days: (n: number) => (n === 1 ? "1 day" : `${n} days`),
     label: streakLabel,
     pausedLabel: (n: number) => `${streakLabel(n)} · paused`,
-    sample: "00-day streak",
+    sample: "00 days",
   },
   home: {
     intro:
