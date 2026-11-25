@@ -41,7 +41,7 @@ export function StudyQuestion({
       {question.hint ? (
         // Fehlwurf-Karte: Wurf und was passiert ist; den neuen Rest rechnet der Nutzer im Kopf.
         <div className="flex flex-col gap-3">
-          <p className={EYEBROW}>{question.label}</p>
+          <p className="text-center font-semibold text-muted-foreground">{question.label}</p>
           {dartSlots}
           <p className="text-center font-medium text-muted-foreground">{question.hint}</p>
         </div>

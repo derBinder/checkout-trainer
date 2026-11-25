@@ -231,7 +231,7 @@
 
 /* Kleine Beschriftung in Versalien über oder unter einer Zahl. */
 @utility type-label {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   line-height: 1.2;
