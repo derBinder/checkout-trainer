@@ -214,7 +214,7 @@ export function StudySession({ items, doneToday = 0 }: { items: StudyItem[]; don
               <span className="text-sm font-semibold">{t.session.ratings[rating]}</span>
               <span
                 className={cn(
-                  "text-xs tabular-nums",
+                  "text-sm tabular-nums",
                   rating === GOOD ? "text-accent-muted" : "text-muted-foreground",
                 )}
               >

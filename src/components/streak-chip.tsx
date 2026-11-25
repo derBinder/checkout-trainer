@@ -8,7 +8,7 @@ import type { Streak } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
 /** Maße des Schildchens; Skeleton und Inhalt teilen sie. */
-const CHIP_BOX = "inline-flex items-center gap-1 rounded-pill px-3 py-1.5 text-xs font-bold tabular-nums";
+const CHIP_BOX = "inline-flex items-center gap-1 rounded-pill px-3 py-1.5 text-sm font-bold tabular-nums";
 const ICON_BOX = "size-3.5 shrink-0";
 
 export function StreakChip({ streak }: { streak: Streak }) {
