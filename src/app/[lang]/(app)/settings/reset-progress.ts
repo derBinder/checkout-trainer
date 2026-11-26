@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "@/lib/db";
-import { cardState, reviewLog, user } from "@/lib/db/schema";
+import { cardState, practiceDay, reviewLog, user } from "@/lib/db/schema";
 
 /**
- * Setzt den Lernstand eines Kontos zurück: Kartenstände, Verlauf (damit auch die
- * Statistik und die Serie) und die heute schon geholten Zusatzkarten. Einstellungen
+ * Setzt den Lernstand eines Kontos zurück: Kartenstände, Verlauf und Übungstage (damit auch
+ * die Statistik und die Serie) und die heute schon geholten Zusatzkarten. Einstellungen
  * bleiben. Kern ohne Sitzung: Die Server Action liefert die Nutzer-ID aus der Sitzung.
  */
 export async function resetProgress(
@@ -21,6 +21,7 @@ export async function resetProgress(
     if (updated.length !== 1) return { ok: false as const };
     await tx.delete(cardState).where(eq(cardState.userId, userId));
     await tx.delete(reviewLog).where(eq(reviewLog.userId, userId));
+    await tx.delete(practiceDay).where(eq(practiceDay.userId, userId));
     return { ok: true as const };
   });
 }

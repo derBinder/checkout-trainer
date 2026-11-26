@@ -24,12 +24,12 @@ import { FORECAST_LINE, LevelCounts, STATS_BODY, STATS_COUNTS } from "./stats-pa
 const loadStats = cache(async () => {
   const user = await requireActiveUser();
   const now = new Date();
-  const [{ states, logs }, { unseenCount, newLeftToday }] = await Promise.all([
+  const [{ states, logs, practiceDays }, { unseenCount, newLeftToday }] = await Promise.all([
     loadStatsData(db, user.id),
     loadQueue(db, user, now),
   ]);
   return {
-    ...summarize({ states, logs, now }),
+    ...summarize({ states, logs, practiceDays, now }),
     dates: restDates({ states, logs }),
     forecast: forecast({ unseen: unseenCount, newLeftToday, newPerDay: user.newPerDay, now }),
     now,

@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { createTestDb } from "@/lib/db/test-db";
 import type { Db } from "@/lib/db";
-import { cardState, reviewLog, user } from "@/lib/db/schema";
+import { cardState, practiceDay, reviewLog, user } from "@/lib/db/schema";
+import { recordPracticeDay } from "@/lib/practice/practice-day";
 import { resetProgress } from "./reset-progress";
 
 let db: Db;
@@ -74,6 +75,13 @@ describe("resetProgress", () => {
   it("leaves other accounts alone", async () => {
     await resetProgress(db, "u1");
     expect(await counts("u2")).toEqual({ cards: 1, logs: 1 });
+  });
+
+  it("deletes the practice days of the account only", async () => {
+    await recordPracticeDay(db, "u1", NOW);
+    await recordPracticeDay(db, "u2", NOW);
+    await resetProgress(db, "u1");
+    expect(await db.select().from(practiceDay)).toEqual([{ userId: "u2", day: "2026-11-10" }]);
   });
 
   it("reports a failure for an account that does not exist", async () => {

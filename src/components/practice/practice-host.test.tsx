@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => router }));
 const submitReview = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/review/actions", () => ({ submitReview }));
 
+vi.mock("@/app/[lang]/(app)/practice/actions", () => ({ recordPractice: vi.fn(async () => {}) }));
 const { PracticeHost } = await import("./practice-host");
 const { savePracticeSelection } = await import("./selection-store");
 

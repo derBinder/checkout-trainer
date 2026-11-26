@@ -1,6 +1,6 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import type { Db } from "@/lib/db";
-import { cardState, reviewLog, user } from "@/lib/db/schema";
+import { cardState, practiceDay, reviewLog, user } from "@/lib/db/schema";
 import { cardById, cardOrderFor } from "@/lib/cards";
 import { EXTRA_SELECT, extraCardsOf } from "@/lib/extra-cards-db";
 import { isCardOn, NO_EXTRA_CARDS, type ExtraCards } from "@/lib/extra-cards";
@@ -172,19 +172,29 @@ export async function applyReview(
   });
 }
 
-/**
- * Berliner Tage (`YYYY-MM-DD`) mit mindestens einer Bewertung, ohne Reihenfolge: genug für die Serie,
- * ohne den ganzen Verlauf zu laden. reviewed_at ist UTC ohne Zeitzone gespeichert.
- */
-export async function loadReviewDays(db: Db, userId: string): Promise<string[]> {
-  const day = sql<string>`to_char((${reviewLog.reviewedAt} at time zone 'UTC') at time zone 'Europe/Berlin', 'YYYY-MM-DD')`;
-  const rows = await db.selectDistinct({ day }).from(reviewLog).where(eq(reviewLog.userId, userId));
+/** Berliner Tage (`YYYY-MM-DD`), an denen der Nutzer geübt hat. */
+async function loadPracticeDays(db: Db, userId: string): Promise<string[]> {
+  const rows = await db.select({ day: practiceDay.day }).from(practiceDay).where(eq(practiceDay.userId, userId));
   return rows.map((r) => r.day);
 }
 
-/** Rohdaten für die Statistik: alle Lernstände und Bewertungen eines Nutzers. */
+/**
+ * Berliner Tage (`YYYY-MM-DD`) mit mindestens einer Bewertung oder Übung, ohne Reihenfolge: genug für
+ * die Serie, ohne den ganzen Verlauf zu laden. Ein Tag mit beidem steht doppelt darin, die Serie bildet
+ * daraus eine Menge. reviewed_at ist UTC ohne Zeitzone gespeichert.
+ */
+export async function loadStreakDays(db: Db, userId: string): Promise<string[]> {
+  const day = sql<string>`to_char((${reviewLog.reviewedAt} at time zone 'UTC') at time zone 'Europe/Berlin', 'YYYY-MM-DD')`;
+  const [rows, practiced] = await Promise.all([
+    db.selectDistinct({ day }).from(reviewLog).where(eq(reviewLog.userId, userId)),
+    loadPracticeDays(db, userId),
+  ]);
+  return [...rows.map((r) => r.day), ...practiced];
+}
+
+/** Rohdaten für die Statistik: alle Lernstände und Bewertungen eines Nutzers, dazu seine Übungstage für die Serie. */
 export async function loadStatsData(db: Db, userId: string) {
-  const [states, logs] = await Promise.all([
+  const [states, logs, practiceDays] = await Promise.all([
     db
       .select({
         cardId: cardState.cardId,
@@ -201,6 +211,7 @@ export async function loadStatsData(db: Db, userId: string) {
       .where(eq(reviewLog.userId, userId))
       // Die id entscheidet bei gleicher Zeit: restDates spielt die Bewertungen in dieser Reihenfolge ab.
       .orderBy(reviewLog.reviewedAt, reviewLog.id),
+    loadPracticeDays(db, userId),
   ]);
-  return { states, logs };
+  return { states, logs, practiceDays };
 }

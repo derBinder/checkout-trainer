@@ -14,6 +14,7 @@ import type { MathSolution, MathTask } from "@/lib/practice/math";
 import { initMath, mathReducer } from "./math-state";
 import { MathPad } from "./math-pad";
 import { PracticeEnd } from "./practice-end";
+import { usePracticeDay } from "./use-practice-day";
 
 const MAX_DIGITS = 3;
 
@@ -37,6 +38,7 @@ export function MathRound({
   const tm = t.practice.math;
   const [state, dispatch] = useReducer(mathReducer, tasks, initMath);
   const task = tasks[state.index];
+  const markPracticed = usePracticeDay();
 
   // Wie beim Lernen: Der Bildschirm bleibt an, solange Aufgaben offen sind.
   useWakeLock(task !== undefined);
@@ -128,7 +130,10 @@ export function MathRound({
             checkDisabled={state.input === ""}
             onDigit={(d) => dispatch({ type: "digit", d })}
             onDelete={() => dispatch({ type: "delete" })}
-            onCheck={() => dispatch({ type: "check", at: performance.now() })}
+            onCheck={() => {
+              markPracticed();
+              dispatch({ type: "check", at: performance.now() });
+            }}
           />
         )}
       </footer>

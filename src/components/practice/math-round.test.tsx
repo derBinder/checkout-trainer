@@ -13,6 +13,10 @@ function wrapperEn({ children }: { children: React.ReactNode }) {
   return <I18nProvider locale="en">{children}</I18nProvider>;
 }
 
+// Die erste geübte Karte meldet den Übungstag; die Server Action selbst läuft hier nicht.
+const recordPractice = vi.hoisted(() => vi.fn(async () => {}));
+vi.mock("@/app/[lang]/(app)/practice/actions", () => ({ recordPractice }));
+
 const SOLUTIONS = mathSolutions(CARDS);
 const T89: MathTask = { start: 211, throws: ["T20", "T19", "S5"], rest: 89 };
 const T159: MathTask = { start: 219, throws: ["S20", "S20", "S20"], rest: 159 };
@@ -43,6 +47,8 @@ beforeEach(() => {
   vi.spyOn(performance, "now").mockImplementation(() => clock);
   onClose.mockReset();
   onRestart.mockReset();
+  recordPractice.mockReset();
+  recordPractice.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -50,6 +56,29 @@ afterEach(() => {
 });
 
 describe("MathRound", () => {
+  it("meldet den Übungstag mit dem ersten „Prüfen“, einmal je Runde", () => {
+    renderRound([T89, T159]);
+    type(8, 9);
+    expect(recordPractice).not.toHaveBeenCalled();
+    tap("Prüfen");
+    expect(recordPractice).toHaveBeenCalledTimes(1);
+    tap("Weiter");
+    type(1, 5, 9);
+    tap("Prüfen");
+    expect(recordPractice).toHaveBeenCalledTimes(1);
+  });
+
+  it("läuft ohne Meldung weiter, wenn das Speichern des Übungstags scheitert", async () => {
+    recordPractice.mockRejectedValueOnce(new Error("offline"));
+    renderRound([T89, T159]);
+    type(8, 9);
+    tap("Prüfen");
+    await act(async () => {});
+    tap("Weiter");
+    expect(screen.getByText("219")).toBeTruthy();
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
   it("zeigt Rest, Würfe, die Frage und das Zahlenfeld", () => {
     renderRound([T89, T159]);
     expect(screen.getByText("1 / 2")).toBeTruthy();

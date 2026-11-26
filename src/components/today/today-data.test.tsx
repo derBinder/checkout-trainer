@@ -19,7 +19,7 @@ const user = vi.hoisted(() => ({
   role: "user",
   newPerDay: 5,
 }));
-const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadReviewDays: vi.fn() }));
+const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStreakDays: vi.fn() }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
 vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards: vi.fn() }));
@@ -46,7 +46,7 @@ afterEach(() => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  queries.loadReviewDays.mockResolvedValue([]);
+  queries.loadStreakDays.mockResolvedValue([]);
 });
 
 describe("TodayOverview", () => {
@@ -55,7 +55,7 @@ describe("TodayOverview", () => {
     render(await TodayOverview(), { wrapper });
 
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
-    expect(queries.loadReviewDays).toHaveBeenCalledWith(db, "u1");
+    expect(queries.loadStreakDays).toHaveBeenCalledWith(db, "u1");
     expect(screen.getByText("fällig").nextElementSibling?.textContent).toBe("3");
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("2");
     expect(screen.getByText("2 von 169 begonnen, 1 sicher").nextElementSibling?.textContent).toBe("1\u00a0%");
@@ -125,7 +125,7 @@ describe("TodayStreak", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadReviewDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
+    queries.loadStreakDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
     render(await TodayStreak(), { wrapper });
     expect(screen.getByText("2 Tage")).toBeTruthy();
   });
@@ -138,14 +138,13 @@ describe("TodayStreak", () => {
 });
 
 describe("pausierte Serie", () => {
-  const HINT =
-    "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.";
+  const HINT = "Lerne oder übe heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen.";
 
   function logsAgo(...days: number[]) {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadReviewDays.mockResolvedValue(days.map((d) => dayKey(new Date(now - d * DAY_MS))));
+    queries.loadStreakDays.mockResolvedValue(days.map((d) => dayKey(new Date(now - d * DAY_MS))));
   }
 
   it("zeigt das Schildchen und den Hinweis", async () => {
@@ -165,11 +164,11 @@ describe("pausierte Serie", () => {
     expect(screen.queryByText(HINT)).toBeNull();
   });
 
-  it("verspricht nichts, wenn es nichts zu lernen gibt", async () => {
+  it("zeigt den Hinweis auch, wenn es nichts zu lernen gibt: Üben zählt", async () => {
     queue(0, 0, 0);
     logsAgo(2, 3);
     render(await TodayOverview(), { wrapper });
-    expect(screen.queryByText(HINT)).toBeNull();
+    expect(screen.getByText(HINT)).toBeTruthy();
   });
 
   it("zeigt den Hinweis auf Englisch", async () => {
@@ -181,9 +180,7 @@ describe("pausierte Serie", () => {
         wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
       });
       expect(
-        screen.getByText(
-          "Study today to keep your streak going. You can skip one day per week without ending the streak.",
-        ),
+        screen.getByText("Study or practice today to keep your streak going. You can skip one day per week."),
       ).toBeTruthy();
     } finally {
       rootParams.lang = "de";

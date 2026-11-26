@@ -12,7 +12,7 @@ export type Stats = {
   /** Ein Eintrag für jeden Rest von 2 bis 170. */
   levels: Record<number, Level>;
   /**
-   * Berliner Tage mit Bewertung, endend heute oder gestern. Ein Fehltag wird überbrückt, wenn der Tag davor
+   * Berliner Tage mit Bewertung oder Übung, endend heute oder gestern. Ein Fehltag wird überbrückt, wenn der Tag davor
    * bewertet ist und die letzte Überbrückung mindestens 7 Tage zurückliegt. `paused`: heute und gestern
    * ohne Bewertung, gestern wird überbrückt. `today`: heute (Berliner Tag) mindestens eine Bewertung, die Serie
    * ist also heute schon verlängert.
@@ -25,6 +25,8 @@ export type Stats = {
 export type StatsInput = {
   states: { cardId: string; state: number; scheduledDays: number }[];
   logs: { cardId: string; rating: number; reviewedAt: Date }[];
+  /** Berliner Tage mit Übung; sie zählen nur für die Serie. */
+  practiceDays?: string[];
   now: Date;
 };
 
@@ -37,7 +39,7 @@ export function levelOf(state: number, scheduledDays: number): Level {
   return state === State.Review && scheduledDays >= KNOWN_MIN_DAYS ? "known" : "learning";
 }
 
-/** Serie aus den Berliner Tagen (`YYYY-MM-DD`) mit mindestens einer Bewertung. */
+/** Serie aus den Berliner Tagen (`YYYY-MM-DD`) mit mindestens einer Bewertung oder Übung. */
 export function streakOf(days: ReadonlySet<string>, now: Date): Streak {
   const previousDay = (d: Date) => new Date(dayStart(d).getTime() - 1);
   const today = days.has(dayKey(now));
@@ -60,7 +62,7 @@ export function streakOf(days: ReadonlySet<string>, now: Date): Streak {
   return { days: count, paused, today };
 }
 
-export function summarize({ states, logs, now }: StatsInput): Stats {
+export function summarize({ states, logs, practiceDays = [], now }: StatsInput): Stats {
   const levels: Record<number, Level> = {};
   for (let rest = MIN_REST; rest <= MAX_REST; rest++) levels[rest] = "new";
   for (const s of states) {
@@ -84,7 +86,7 @@ export function summarize({ states, logs, now }: StatsInput): Stats {
     .sort((a, b) => b.again - a.again || a.rest - b.rest)
     .slice(0, HARDEST_LIMIT);
 
-  // Die Serie zählt jeden Tag mit Bewertung, auch einer inzwischen unbekannten Karte, wie loadReviewDays.
-  const days = new Set(logs.map((l) => dayKey(l.reviewedAt)));
+  // Die Serie zählt jeden Tag mit Bewertung, auch einer inzwischen unbekannten Karte, und jeden Übungstag, wie loadStreakDays.
+  const days = new Set([...logs.map((l) => dayKey(l.reviewedAt)), ...practiceDays]);
   return { counts, levels, streak: streakOf(days, now), hardest };
 }
