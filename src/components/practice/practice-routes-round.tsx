@@ -8,6 +8,7 @@ import { initStudy, studyReducer } from "@/components/study/study-state";
 import { useDictionary } from "@/i18n/client";
 import type { Answer } from "@/lib/darts/judge";
 import { PracticeEnd } from "./practice-end";
+import { usePracticeDay } from "./use-practice-day";
 
 /**
  * Übungsrunde „Wege“: der Lernbildschirm ohne Speichern. Statt der Bewertungen
@@ -31,6 +32,7 @@ export function PracticeRoutesRound({
       { save: false },
     ),
   );
+  const markPracticed = usePracticeDay();
   const { session } = state;
   const current = session.queue[0] ? byId.get(session.queue[0]) : undefined;
 
@@ -40,7 +42,10 @@ export function PracticeRoutesRound({
     );
   }
 
-  const rate = (rating: 1 | 3) => dispatch({ type: "rate", rating, at: performance.now() });
+  const rate = (rating: 1 | 3) => {
+    markPracticed();
+    dispatch({ type: "rate", rating, at: performance.now() });
+  };
   return (
     <SessionScreen
       current={current}
