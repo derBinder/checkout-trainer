@@ -124,6 +124,8 @@ it("keeps practice out of counts and hardest rests", () => {
 });
 ```
 
+Den bestehenden Test „computes the same streak from the Berlin days alone“ um einen Übungstag erweitern: `streakOf` über Lerntage plus Übungstag ergibt dieselbe Serie wie `summarize` mit `practiceDays`. So fällt auf, wenn eine der beiden Seiten die Übungstage vergisst.
+
 Die bestehenden Tests zu `loadReviewDays` auf `loadStreakDays` umstellen und ergänzen: Ein Nutzer mit einer Bewertung am 10.11. und einem Übungstag am 11.11. bekommt beide Tage. Der Übungstag eines zweiten Nutzers fehlt. `loadStatsData` liefert für denselben Nutzer `practiceDays: ["2026-11-11"]`.
 
 - [ ] **Step 2: Tests laufen lassen.** `npx vitest run src/lib/stats.test.ts`. Erwartet: FAIL.
@@ -153,7 +155,7 @@ Die bestehenden Tests zu `loadReviewDays` auf `loadStreakDays` umstellen und erg
 - Produces: `recordPractice(): Promise<void>`, Server Action ohne Argumente
 - Produces: `usePracticeDay(): () => void`. Die Rückgabe ruft `recordPractice` beim ersten Aufruf je eingehängter Runde, danach nichts mehr. Fehler werden verschluckt.
 
-- [ ] **Step 1: Fehlschlagende Tests für die Action schreiben.** `getSessionUser` und `@/lib/db` mocken wie in `src/app/[lang]/(app)/settings/server-actions.test.ts`:
+- [ ] **Step 1: Fehlschlagende Tests für die Action schreiben.** `@/lib/db` mit `vi.hoisted` und `createTestDb()` mocken wie in `src/app/[lang]/(app)/settings/server-actions.test.ts`, `getSessionUser` aus `@/lib/auth/guard` wie in `src/lib/review/review.test.ts`. Die Action danach mit `await import("./actions")` laden:
   - aktiver Nutzer: Danach steht in `practice_day` eine Zeile mit seinem Nutzer und dem heutigen Berliner Tag.
   - keine Sitzung: keine Zeile, der Aufruf löst mit `undefined` auf.
   - Nutzer mit `status: "pending"`: keine Zeile.
@@ -161,9 +163,11 @@ Die bestehenden Tests zu `loadReviewDays` auf `loadStreakDays` umstellen und erg
 - [ ] **Step 2: Fehlschlagende Tests für die Runden schreiben.** In beiden Testdateien die Action mocken:
 
 ```ts
-const recordPractice = vi.fn(async () => {});
+const recordPractice = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock("@/app/[lang]/(app)/practice/actions", () => ({ recordPractice }));
 ```
+
+  `math-round.test.tsx` importiert `MathRound` heute statisch. Mit `vi.hoisted` bleibt das möglich.
 
   - „Wege“: Vor der ersten Bewertung ist `recordPractice` nicht aufgerufen. Nach „Weiter“ auf der ersten Karte genau einmal. Nach der zweiten Karte weiter genau einmal. Dasselbe mit „Nochmal“ als erster Bewertung.
   - „Rechnen“: Nach Zifferneingabe nicht aufgerufen, nach „Prüfen“ der ersten Aufgabe genau einmal, nach der zweiten Aufgabe weiter genau einmal.
@@ -212,13 +216,14 @@ vi.mock("@/app/[lang]/(app)/practice/actions", () => ({ recordPractice }));
 
 - [ ] **Step 1: Prüfungen.** `npm run test:coverage`, `npm run typecheck`, `npm run lint`. Erwartet: alle drei ohne Fehler, Coverage über 80 % in Backend und Frontend.
 
-- [ ] **Step 2: Lokale Datenbank im Worktree.** Der Worktree hat eine eigene, leere `.data/pglite`. `npm run db:migrate` ausführen und das Testkonto mit `seedAdmin` neu anlegen, wie in `CLAUDE.md` unter „Testkonto für den Browser“ beschrieben. Das Passwort in `.data/test-user.json` des Worktrees ablegen.
+- [ ] **Step 2: Lokale Dateien und Datenbank im Worktree.** `.env.local` aus dem Hauptverzeichnis in den Worktree kopieren, sie ist gitignored. `.claude/launch.json` ist eingecheckt. Der Worktree hat eine eigene, leere `.data/pglite`. `npm run db:migrate` ausführen und das Testkonto mit `seedAdmin` neu anlegen, wie in `CLAUDE.md` unter „Testkonto für den Browser“ beschrieben. Das Passwort in `.data/test-user.json` des Worktrees ablegen.
 
 - [ ] **Step 3: Im Browser prüfen**, am Smartphone-Viewport, mit dem Launch-Eintrag aus `.claude/launch.json`:
   - Frisches Konto ohne Serie: eine Karte in „Wege“ bewerten, die Runde abbrechen, zur Heute-Seite wechseln. Das Schildchen zeigt „1 Tag“ kräftig gelb.
-  - Dasselbe mit einer Aufgabe in „Rechnen“ an einem Konto ohne Übungstag heute.
+  - „Rechnen“: Das Konto hat jetzt schon einen Übungstag, das Schildchen zeigt die Wirkung nicht mehr. Stattdessen in den Netzwerkanfragen prüfen, dass das erste „Prüfen“ genau eine Anfrage der Action auslöst und das zweite keine.
   - Die Statistik zeigt dasselbe Schildchen, die Zähler sind unverändert.
   - Während der Übung erscheint keine Meldung, die Runde stockt nicht.
-  - Zeigt die Heute-Seite nach dem Wechsel noch den alten Stand, in `recordPractice` nach dem Schreiben `revalidatePath("/[lang]/(app)", "layout")` ergänzen, dazu einen Test, und erneut prüfen. Die laufende Runde muss das Neurendern überstehen.
+  - Abgelaufene Sitzung: Mitten in einer Runde das Sitzungs-Cookie löschen und eine Karte bewerten. `proxy.ts` beantwortet die Anfrage dann mit 307. Die Runde zeigt keinen Fehler und läuft weiter.
+  - Vergleich mit dem Lernen: Nach einer Bewertung in der Lernsitzung und nach einer geübten Karte jeweils über die Navigation und über „Zurück“ zur Heute-Seite wechseln. Nur wenn die Heute-Seite nach dem Üben älter ist als nach dem Lernen, in `recordPractice` nach dem Schreiben `revalidatePath("/[lang]/(app)/today", "page")` und `revalidatePath("/[lang]/(app)/stats", "page")` ergänzen, dazu einen Test, und erneut prüfen. Die laufende Runde muss das Neurendern überstehen.
 
 - [ ] **Step 4: Abschluss.** Push und PR nach `develop` laut `CLAUDE.md`, Abschnitt „Feature“. Der PR-Text nennt die additive Migration.
