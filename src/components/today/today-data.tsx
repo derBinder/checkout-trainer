@@ -8,7 +8,7 @@ import { getDictionary, getLocale } from "@/i18n/server";
 import { requireActiveUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { progressView } from "@/lib/progress";
-import { loadQueue, loadReviewDays } from "@/lib/review/queries";
+import { loadQueue, loadStreakDays } from "@/lib/review/queries";
 import { streakOf, summarize } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { Count, Counts, LEARN_ACTIONS, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_BODY } from "./today-parts";
@@ -17,14 +17,14 @@ import { Count, Counts, LEARN_ACTIONS, LEARN_BUTTON_LAYOUT, ProgressLine, TODAY_
  * Prüft zuerst den Zugriff, dann lädt sie die Daten der Heute-Seite. cache():
  * Beide Datenbausteine der Seite teilen sich innerhalb einer Anfrage eine Abfrage.
  * Die Tagesgrenze (new Date()) entsteht erst hier, zur Anfragezeit. Für die Serie
- * reichen die Lerntage; den ganzen Verlauf lädt nur die Statistik.
+ * reichen die Lern- und Übungstage; den ganzen Verlauf lädt nur die Statistik.
  */
 const loadToday = cache(async () => {
   const user = await requireActiveUser();
   const now = new Date();
   const [{ dueCount, freshCount, unseenCount, states }, days] = await Promise.all([
     loadQueue(db, user, now),
-    loadReviewDays(db, user.id),
+    loadStreakDays(db, user.id),
   ]);
   const { counts } = summarize({ states: Object.values(states), logs: [], now });
   return { dueCount, freshCount, unseenCount, streak: streakOf(new Set(days), now), progress: progressView(counts) };
@@ -42,7 +42,7 @@ export async function TodayOverview() {
 
   return (
     <div className={TODAY_BODY}>
-      {streak.paused && !(nothingToDo && unseenCount === 0) ? <p className="text-sm text-muted-foreground">{t.today.streakPaused}</p> : null}
+      {streak.paused ? <p className="text-sm text-muted-foreground">{t.today.streakPaused}</p> : null}
       {nothingToDo ? (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">

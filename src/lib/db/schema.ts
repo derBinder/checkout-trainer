@@ -173,3 +173,15 @@ export const reviewLog = pgTable(
     index("review_log_user_reviewed_idx").on(table.userId, table.reviewedAt),
   ],
 );
+
+/** Berliner Tage (`YYYY-MM-DD`), an denen der Nutzer geübt hat. Sie zählen nur für die Serie. */
+export const practiceDay = pgTable(
+  "practice_day",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    day: text("day").notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.day] })],
+);

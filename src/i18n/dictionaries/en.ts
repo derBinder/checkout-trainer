@@ -264,8 +264,7 @@ export const en: Dictionary = {
   today: {
     due: "due",
     new: "new",
-    streakPaused:
-      "Study today to keep your streak going. You can skip one day per week without ending the streak.",
+    streakPaused: "Study or practice today to keep your streak going. You can skip one day per week.",
     done: "You are done for today.",
     allStarted: "You have started every card.",
     learn: "Study",

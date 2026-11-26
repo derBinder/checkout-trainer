@@ -33,6 +33,7 @@ npm run typecheck
 npm run lint
 npm run build
 npm run generate:cards # src/data/cards.generated.json neu erzeugen
+npm run generate:icons # Favicon und App-Icons aus src/app/icon.svg neu erzeugen
 npm run db:generate    # Drizzle-Migration aus dem Schema erzeugen
 npm run db:migrate
 npm run db:seed-admin  # Administratorkonto aus ADMIN_EMAIL / ADMIN_INITIAL_PASSWORD anlegen

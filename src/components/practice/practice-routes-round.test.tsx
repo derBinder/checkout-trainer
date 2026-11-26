@@ -15,6 +15,10 @@ function wrapper({ children }: { children: React.ReactNode }) {
 const submitReview = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/review/actions", () => ({ submitReview }));
 
+// Die erste geübte Karte meldet den Übungstag; die Server Action selbst läuft hier nicht.
+const recordPractice = vi.hoisted(() => vi.fn(async () => {}));
+vi.mock("@/app/[lang]/(app)/practice/actions", () => ({ recordPractice }));
+
 const { PracticeRoutesRound } = await import("./practice-routes-round");
 
 function item(id: string) {
@@ -45,6 +49,8 @@ beforeEach(() => {
   onClose.mockReset();
   onRestart.mockReset();
   submitReview.mockReset();
+  recordPractice.mockReset();
+  recordPractice.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -52,6 +58,66 @@ afterEach(() => {
 });
 
 describe("PracticeRoutesRound", () => {
+  it("meldet den Übungstag mit der ersten Bewertung, einmal je Runde", () => {
+    renderRound("r-5", "r-7");
+    tap("Ohne Eingabe aufdecken");
+    expect(recordPractice).not.toHaveBeenCalled();
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(1);
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(1);
+  });
+
+  it("meldet den Übungstag auch bei „Nochmal“ als erster Bewertung", () => {
+    renderRound("r-5", "r-7");
+    tap("Ohne Eingabe aufdecken");
+    tap("Nochmal");
+    expect(recordPractice).toHaveBeenCalledTimes(1);
+  });
+
+  it("versucht es mit der nächsten Karte erneut, wenn das Speichern scheiterte", async () => {
+    recordPractice.mockRejectedValueOnce(new Error("offline"));
+    renderRound("r-5", "r-7", "r-9");
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    await flush();
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(2);
+    await flush();
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(2);
+  });
+
+  it("meldet den neuen Tag, wenn die Runde über Mitternacht in Berlin läuft", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date("2026-11-11T22:58:00Z")); // Berlin: 23:58
+      renderRound("r-5", "r-7");
+      tap("Ohne Eingabe aufdecken");
+      tap("Weiter");
+      expect(recordPractice).toHaveBeenCalledTimes(1);
+      vi.setSystemTime(new Date("2026-11-11T23:05:00Z")); // Berlin: 00:05 am 12.11.
+      tap("Ohne Eingabe aufdecken");
+      tap("Weiter");
+      expect(recordPractice).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("läuft ohne Meldung weiter, wenn das Speichern des Übungstags scheitert", async () => {
+    recordPractice.mockRejectedValueOnce(new Error("offline"));
+    renderRound("r-5", "r-7");
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    await flush();
+    expect(big("7")).toBeTruthy();
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
   it("fragt wie beim Lernen und zeigt nach dem Aufdecken „Nochmal“ und „Weiter“ statt der Bewertungen", () => {
     renderRound("r-5", "r-7");
     expect(screen.getByText("1 / 2")).toBeTruthy();
