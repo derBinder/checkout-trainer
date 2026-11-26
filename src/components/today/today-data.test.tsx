@@ -19,7 +19,7 @@ const user = vi.hoisted(() => ({
   role: "user",
   newPerDay: 5,
 }));
-const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadReviewDays: vi.fn() }));
+const queries = vi.hoisted(() => ({ loadQueue: vi.fn(), loadStreakDays: vi.fn() }));
 vi.mock("@/lib/auth/guard", () => ({ requireActiveUser: async () => user }));
 vi.mock("@/lib/review/queries", () => queries);
 vi.mock("@/app/[lang]/(app)/today/actions", () => ({ learnMoreCards: vi.fn() }));
@@ -46,7 +46,7 @@ afterEach(() => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  queries.loadReviewDays.mockResolvedValue([]);
+  queries.loadStreakDays.mockResolvedValue([]);
 });
 
 describe("TodayOverview", () => {
@@ -55,7 +55,7 @@ describe("TodayOverview", () => {
     render(await TodayOverview(), { wrapper });
 
     expect(queries.loadQueue).toHaveBeenCalledWith(db, user, expect.any(Date));
-    expect(queries.loadReviewDays).toHaveBeenCalledWith(db, "u1");
+    expect(queries.loadStreakDays).toHaveBeenCalledWith(db, "u1");
     expect(screen.getByText("fällig").nextElementSibling?.textContent).toBe("3");
     expect(screen.getByText("neu").nextElementSibling?.textContent).toBe("2");
     expect(screen.getByText("2 von 169 begonnen, 1 sicher").nextElementSibling?.textContent).toBe("1\u00a0%");
@@ -125,7 +125,7 @@ describe("TodayStreak", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadReviewDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
+    queries.loadStreakDays.mockResolvedValue([dayKey(new Date(now)), dayKey(new Date(now - DAY_MS))]);
     render(await TodayStreak(), { wrapper });
     expect(screen.getByText("2 Tage")).toBeTruthy();
   });
@@ -145,7 +145,7 @@ describe("pausierte Serie", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
     const now = Date.now();
-    queries.loadReviewDays.mockResolvedValue(days.map((d) => dayKey(new Date(now - d * DAY_MS))));
+    queries.loadStreakDays.mockResolvedValue(days.map((d) => dayKey(new Date(now - d * DAY_MS))));
   }
 
   it("zeigt das Schildchen und den Hinweis", async () => {

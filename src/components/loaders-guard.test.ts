@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const queries = vi.hoisted(() => ({
   loadQueue: vi.fn(),
   loadStatsData: vi.fn(),
-  loadReviewDays: vi.fn(),
+  loadStreakDays: vi.fn(),
   listUsers: vi.fn(),
   cardView: vi.fn(),
   loadExtraCards: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock("@/lib/auth/guard", () => ({
 vi.mock("@/lib/review/queries", () => ({
   loadQueue: queries.loadQueue,
   loadStatsData: queries.loadStatsData,
-  loadReviewDays: queries.loadReviewDays,
+  loadStreakDays: queries.loadStreakDays,
 }));
 vi.mock("@/app/[lang]/(app)/admin/admin-users", () => ({ listUsers: queries.listUsers }));
 vi.mock("@/lib/extra-cards-db", () => ({ loadExtraCards: queries.loadExtraCards }));
@@ -42,7 +42,7 @@ async function expectRedirectWithoutQueries(load: () => Promise<unknown>) {
   expect(error).toHaveProperty("digest", expect.stringMatching(/^NEXT_REDIRECT;/));
   expect(queries.loadQueue).not.toHaveBeenCalled();
   expect(queries.loadStatsData).not.toHaveBeenCalled();
-  expect(queries.loadReviewDays).not.toHaveBeenCalled();
+  expect(queries.loadStreakDays).not.toHaveBeenCalled();
   expect(queries.listUsers).not.toHaveBeenCalled();
   expect(queries.cardView).not.toHaveBeenCalled();
   expect(queries.loadExtraCards).not.toHaveBeenCalled();

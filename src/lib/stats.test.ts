@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { State } from "ts-fsrs";
 import { createTestDb } from "@/lib/db/test-db";
-import { cardState, reviewLog, user } from "@/lib/db/schema";
-import { loadReviewDays, loadStatsData } from "@/lib/review/queries";
+import { cardState, practiceDay, reviewLog, user } from "@/lib/db/schema";
+import { loadStreakDays, loadStatsData } from "@/lib/review/queries";
 import { streakOf, summarize } from "./stats";
 import { dayKey } from "./time";
 
@@ -98,6 +98,31 @@ describe("summarize", () => {
     expect(streakOf(new Set(logs.map((l) => dayKey(l.reviewedAt))), now)).toEqual(
       summarize({ states: [], logs, now }).streak,
     );
+  });
+
+  it("computes the same streak from study and practice days alone", () => {
+    const logs = logsOn(1, 2, 4);
+    const practiceDays = [dayKey(now), dayKey(daysAgo(5))];
+    const days = new Set([...logs.map((l) => dayKey(l.reviewedAt)), ...practiceDays]);
+    const { streak } = summarize({ states: [], logs, practiceDays, now });
+    expect(streak).toEqual({ days: 5, paused: false, today: true });
+    expect(streakOf(days, now)).toEqual(streak);
+  });
+
+  it("extends the streak on a day with practice only", () => {
+    const s = summarize({ states: [], logs: logsOn(1, 2), practiceDays: [dayKey(now)], now });
+    expect(s.streak).toEqual({ days: 3, paused: false, today: true });
+  });
+
+  it("counts a day with study and practice once", () => {
+    const s = summarize({ states: [], logs: logsOn(0), practiceDays: [dayKey(now)], now });
+    expect(s.streak.days).toBe(1);
+  });
+
+  it("keeps practice out of counts and hardest rests", () => {
+    const s = summarize({ states: [], logs: [], practiceDays: [dayKey(now)], now });
+    expect(s.counts).toEqual({ new: 169, learning: 0, known: 0 });
+    expect(s.hardest).toEqual([]);
   });
 
   it("counts consecutive Berlin days ending yesterday", () => {
@@ -205,7 +230,7 @@ describe("summarize", () => {
   });
 });
 
-describe("loadReviewDays", () => {
+describe("loadStreakDays", () => {
   it("returns each Berlin day with a review once, only for the given user", async () => {
     const db = await createTestDb();
     await db.insert(user).values([
@@ -224,7 +249,23 @@ describe("loadReviewDays", () => {
       log("u2", "2026-03-03T12:00:00Z"),
     ]);
 
-    expect((await loadReviewDays(db, "u1")).sort()).toEqual(["2026-01-15", "2026-07-02"]);
+    expect((await loadStreakDays(db, "u1")).sort()).toEqual(["2026-01-15", "2026-07-02"]);
+  });
+
+  it("adds the user's practice days to the review days", async () => {
+    const db = await createTestDb();
+    await db.insert(user).values([
+      { id: "u1", name: "u1", email: "u1@x.test", status: "active" },
+      { id: "u2", name: "u2", email: "u2@x.test", status: "active" },
+    ]);
+    await db.insert(reviewLog).values({ userId: "u1", cardId: "r-2", rating: 3, reviewedAt: new Date("2026-11-10T10:00:00Z") });
+    await db.insert(practiceDay).values([
+      { userId: "u1", day: "2026-11-11" },
+      { userId: "u2", day: "2026-11-09" },
+    ]);
+
+    expect((await loadStreakDays(db, "u1")).sort()).toEqual(["2026-11-10", "2026-11-11"]);
+    expect((await loadStatsData(db, "u1")).practiceDays).toEqual(["2026-11-11"]);
   });
 });
 

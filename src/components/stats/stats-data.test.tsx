@@ -226,6 +226,14 @@ describe("StatsStreak", () => {
     expect(screen.getByText("1 Tag")).toBeTruthy();
   });
 
+  it("zählt einen Tag, an dem nur geübt wurde", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
+    queries.loadStatsData.mockResolvedValue({ states: [], logs: [], practiceDays: ["2026-11-12"] });
+    render(await StatsStreak(), { wrapper });
+    expect(screen.getByText("1 Tag")).toBeTruthy();
+  });
+
   it("zeigt die pausierte Serie", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-11-12T11:00:00Z"));
