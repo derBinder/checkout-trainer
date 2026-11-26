@@ -138,8 +138,7 @@ describe("TodayStreak", () => {
 });
 
 describe("pausierte Serie", () => {
-  const HINT =
-    "Lerne heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen, ohne dass die Serie endet.";
+  const HINT = "Lerne oder übe heute, damit deine Serie weiterläuft. Pro Woche darfst du einen Tag auslassen.";
 
   function logsAgo(...days: number[]) {
     vi.useFakeTimers({ toFake: ["Date"] });
@@ -165,11 +164,11 @@ describe("pausierte Serie", () => {
     expect(screen.queryByText(HINT)).toBeNull();
   });
 
-  it("verspricht nichts, wenn es nichts zu lernen gibt", async () => {
+  it("zeigt den Hinweis auch, wenn es nichts zu lernen gibt: Üben zählt", async () => {
     queue(0, 0, 0);
     logsAgo(2, 3);
     render(await TodayOverview(), { wrapper });
-    expect(screen.queryByText(HINT)).toBeNull();
+    expect(screen.getByText(HINT)).toBeTruthy();
   });
 
   it("zeigt den Hinweis auf Englisch", async () => {
@@ -181,9 +180,7 @@ describe("pausierte Serie", () => {
         wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider>,
       });
       expect(
-        screen.getByText(
-          "Study today to keep your streak going. You can skip one day per week without ending the streak.",
-        ),
+        screen.getByText("Study or practice today to keep your streak going. You can skip one day per week."),
       ).toBeTruthy();
     } finally {
       rootParams.lang = "de";
