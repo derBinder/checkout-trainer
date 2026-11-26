@@ -29,8 +29,8 @@ Vom Auftraggeber entschieden:
 
 Festlegungen von Claude:
 
-- Scheitert das Speichern, läuft die Übung normal weiter. Der Tag zählt dann nicht.
-- Je Runde wird höchstens einmal gespeichert. Mehrere Runden am selben Tag ergeben eine Zeile.
+- Scheitert das Speichern, läuft die Übung normal weiter. Die nächste Karte derselben Runde versucht es erneut.
+- Je Runde und Berliner Tag wird nach einem Erfolg nicht noch einmal gespeichert. Läuft eine Runde über Mitternacht, meldet die nächste Karte den neuen Tag. Mehrere Runden am selben Tag ergeben eine Zeile.
 - „Fortschritt zurücksetzen“ löscht auch die Übungstage. Es setzt schon heute die Serie zurück.
 - Das Löschen des Kontos entfernt die Übungstage über den Fremdschlüssel.
 

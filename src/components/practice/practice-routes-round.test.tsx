@@ -76,6 +76,38 @@ describe("PracticeRoutesRound", () => {
     expect(recordPractice).toHaveBeenCalledTimes(1);
   });
 
+  it("versucht es mit der nächsten Karte erneut, wenn das Speichern scheiterte", async () => {
+    recordPractice.mockRejectedValueOnce(new Error("offline"));
+    renderRound("r-5", "r-7", "r-9");
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    await flush();
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(2);
+    await flush();
+    tap("Ohne Eingabe aufdecken");
+    tap("Weiter");
+    expect(recordPractice).toHaveBeenCalledTimes(2);
+  });
+
+  it("meldet den neuen Tag, wenn die Runde über Mitternacht in Berlin läuft", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date("2026-11-11T22:58:00Z")); // Berlin: 23:58
+      renderRound("r-5", "r-7");
+      tap("Ohne Eingabe aufdecken");
+      tap("Weiter");
+      expect(recordPractice).toHaveBeenCalledTimes(1);
+      vi.setSystemTime(new Date("2026-11-11T23:05:00Z")); // Berlin: 00:05 am 12.11.
+      tap("Ohne Eingabe aufdecken");
+      tap("Weiter");
+      expect(recordPractice).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("läuft ohne Meldung weiter, wenn das Speichern des Übungstags scheitert", async () => {
     recordPractice.mockRejectedValueOnce(new Error("offline"));
     renderRound("r-5", "r-7");
