@@ -1,6 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-// shortcut: sharp kommt nur als Abhängigkeit von Next.js mit, bei Bedarf als devDependency eintragen.
 import sharp from 'sharp'
 
 const path = (relative: string) => fileURLToPath(new URL(`../${relative}`, import.meta.url))
