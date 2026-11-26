@@ -13,7 +13,8 @@
     "generate:cards": "tsx scripts/generate-cards.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed-admin": "tsx --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/seed-admin.ts"
+    "db:seed-admin": "tsx --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/seed-admin.ts",
+    "generate:icons": "tsx scripts/generate-icons.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
