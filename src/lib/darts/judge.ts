@@ -1,6 +1,7 @@
 import type { Card } from '@/lib/darts/cards'
 import { isBogey } from '@/lib/darts/checkouts'
-import { dartValue, expandSteps, formatDart, parseDart, parseSteps } from '@/lib/darts/model'
+import { dartValue, expandSteps, formatDart, parseDart, parseSteps, routeTotal, type Dart } from '@/lib/darts/model'
+import { compareRoutesBy, compareSetups, halvings, leaveTier, type Setup } from '@/lib/darts/scoring'
 
 /**
  * Wogegen eine eingegebene Antwort geprüft wird. Wege stehen ausgeschrieben in
@@ -36,6 +37,38 @@ export type VerdictDetail =
   | { kind: 'notCheckable' }
   | { kind: 'leavesBogey'; leaves: number }
   | { kind: 'bust'; total: number; rest: number }
+  /** Geht, aber nicht empfohlen: der Grund, die Dartzahl des besten Wegs und die Doppel beider Wege. */
+  | { kind: 'notRecommended'; reason: RouteReason; darts: number; double: string; bestDouble: string }
+  /** Anderer Stellwurf: beide Reste, ihr Doppel ("D16", "Bull"; null ohne Ein-Dart-Finish) und der Grund. */
+  | {
+      kind: 'setupOther'
+      leaves: number
+      bestLeaves: number
+      double: string | null
+      bestDouble: string | null
+      reason: SetupReason
+    }
+
+/**
+ * Warum der beste Weg vor dem eingegebenen steht. `bull`: der eingegebene Weg endet auf dem Bull. `order`: dieselben Darts, nur die Reihenfolge der
+ * Felder entscheidet. `reference`: die Rangfolge sieht keinen Nachteil, der beste Weg stammt aus der Referenztabelle.
+ */
+export type RouteReason = 'darts' | 'halvings' | 'bull' | 'finisher' | 'unsaved' | 'triples' | 'order' | 'reference'
+
+/** Warum der empfohlene Stellwurf vor dem eingegebenen steht. */
+export type SetupReason =
+  | 'fewerDarts'
+  | 'noTwoDartFinish'
+  | 'preferred'
+  | 'halvings'
+  | 'preferredOrder'
+  | 'doubleOverBull'
+  | 'lowerLeave'
+  | 'triples'
+  | 'onTwenty'
+  | 'moreDarts'
+  | 'equal'
+  | 'bigFields'
 
 export type Verdict = { code: VerdictCode; detail?: VerdictDetail }
 
@@ -96,20 +129,99 @@ function judgeRoute(rest: number, best: string[][], good: string[][], darts: str
   const total = parsed.reduce((sum, d) => sum + dartValue(d), 0)
   if (total !== rest) return { code: 'noCheckout', detail: { kind: 'total', total, rest } }
   if (parsed.at(-1)?.ring !== 'D') return { code: 'noCheckout', detail: { kind: 'notDouble' } }
-  return { code: 'notRecommended' }
+  // Bei geteiltem Ziel gibt es zwei beste Wege: verglichen wird mit dem auf dasselbe Doppel.
+  const last = formatDart(parsed[parsed.length - 1])
+  const top = (best.find((r) => formatDart(parseDart(r[r.length - 1])) === last) ?? best[0]).map(parseDart)
+  return {
+    code: 'notRecommended',
+    detail: {
+      kind: 'notRecommended',
+      reason: routeReason(parsed, top),
+      darts: top.length,
+      double: last,
+      bestDouble: formatDart(top[top.length - 1]),
+    },
+  }
+}
+
+/** Übersetzt das entscheidende Kriterium der Rangfolge in den Grund für die Anzeige. */
+function routeReason(entered: Dart[], best: Dart[]): RouteReason {
+  const { order, by } = compareRoutesBy(entered, best)
+  // Ab Rest 41 nennt die Referenztabelle den besten Weg; die Rangfolge kann die Eingabe gleich oder besser einordnen.
+  if (order <= 0 || by === null) return 'reference'
+  // Das Bull lässt sich gar nicht halbieren, das sagt der Text dann auch so.
+  if (by === 'halvings' && entered[entered.length - 1].n === 25) return 'bull'
+  if (by !== 'fields') return by
+  const sorted = (route: Dart[]) => route.map(formatDart).sort().join(' ')
+  return sorted(entered) === sorted(best) ? 'order' : 'reference'
+}
+
+/** Das Doppel, mit dem ein Rest in einem Dart fällt, sonst null. */
+function finisher(leave: number): Dart | null {
+  if (leave === 50) return { ring: 'D', n: 25 }
+  return leaveTier(leave) <= 1 ? { ring: 'D', n: leave / 2 } : null
+}
+
+/** Übersetzt das entscheidende Kriterium der Rangfolge in den Grund für die Anzeige. */
+function setupReason(entered: Setup, best: Setup): SetupReason {
+  const { order, by } = compareSetups(entered, best)
+  // Die Empfehlung kennt nur Single und Triple: über Doppel, Bull oder 25 kann die Eingabe gleich gut oder besser sein.
+  if (order <= 0 || by === 'fields' || by === null) {
+    return entered.throws.some((d) => d.ring === 'D' || d.n === 25) ? 'bigFields' : 'equal'
+  }
+  switch (by) {
+    case 'tier': {
+      const tier = leaveTier(entered.leaves)
+      return tier === 3 ? 'noTwoDartFinish' : tier === 2 ? 'fewerDarts' : 'preferred'
+    }
+    case 'preferred':
+      return halvings(finisher(best.leaves)!) > halvings(finisher(entered.leaves)!) ? 'halvings' : 'preferredOrder'
+    case 'halvings':
+      return 'halvings'
+    case 'bull':
+      return 'doubleOverBull'
+    case 'leave':
+      // Unter den übrigen Ein-Dart-Resten steht das höhere Doppel vorn, sonst der niedrigere Rest.
+      return leaveTier(entered.leaves) === 1 ? 'preferredOrder' : 'lowerLeave'
+    case 'darts':
+      return 'moreDarts'
+    case 'triples':
+      return 'triples'
+    case 'onTwenty':
+      return 'onTwenty'
+  }
 }
 
 /**
- * Stellwurf: der der Karte, sonst überworfen (Rest unter 2; ein Finish gibt es auf
- * Stellwurf-Karten nicht), sonst einer, der eine Bogey-Zahl lässt, sonst ein anderer.
+ * Stellwurf: der der Karte (die Reihenfolge der Darts zählt nicht), sonst überworfen
+ * (Rest unter 2; ein Finish gibt es auf Stellwurf-Karten nicht), sonst einer, der eine
+ * Bogey-Zahl lässt, sonst ein anderer mit dem Grund, warum der der Karte davor steht.
  */
 function judgeSetup(rest: number, throws: string[], darts: string[]): Verdict {
-  if (key(darts) === key(throws)) return { code: 'setupRight' }
-  const total = darts.reduce((sum, d) => sum + dartValue(parseDart(d)), 0)
+  const sorted = (route: string[]) => route.map((d) => formatDart(parseDart(d))).sort().join(' ')
+  if (sorted(darts) === sorted(throws)) return { code: 'setupRight' }
+  const entered = darts.map(parseDart)
+  const total = routeTotal(entered)
   const leaves = rest - total
   if (leaves < 2) return { code: 'setupBust', detail: { kind: 'bust', total, rest } }
   if (isBogey(leaves)) return { code: 'setupBogey', detail: { kind: 'leavesBogey', leaves } }
-  return { code: 'setupOther' }
+  const best = throws.map(parseDart)
+  const bestLeaves = rest - routeTotal(best)
+  const double = (leave: number) => {
+    const d = finisher(leave)
+    return d ? formatDart(d) : null
+  }
+  return {
+    code: 'setupOther',
+    detail: {
+      kind: 'setupOther',
+      leaves,
+      bestLeaves,
+      double: double(leaves),
+      bestDouble: double(bestLeaves),
+      reason: setupReason({ throws: entered, leaves }, { throws: best, leaves: bestLeaves }),
+    },
+  }
 }
 
 export function judge(check: Check, answer: Answer): Verdict {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { BOGEYS, isBogey } from '@/lib/darts/checkouts'
 import { formatRoute, parseDart, parseRoute, routeTotal } from '@/lib/darts/model'
-import { bestSetup, compareRoutes, halvings, rankCheckouts } from '@/lib/darts/scoring'
+import { bestSetup, compareRoutes, compareSetups, halvings, leaveTier, rankCheckouts, type Setup } from '@/lib/darts/scoring'
 
 describe('halvings', () => {
   it('zählt die Halbierungen des Doppels', () => {
@@ -93,5 +93,36 @@ describe('bestSetup', () => {
       expect(isBogey(s.leaves)).toBe(false)
       expect(s.leaves).toBeGreaterThanOrEqual(2)
     }
+  })
+})
+
+describe('compareSetups', () => {
+  const s = (route: string, rest: number): Setup => {
+    const throws = parseRoute(route)
+    return { throws, leaves: rest - routeTotal(throws) }
+  }
+
+  it.each([
+    ['T20 S7', 'S1', 99, 'tier'], // 32 gegen 98
+    ['T20 S7', 'S1 T16', 99, 'tier'], // 32 gegen 50
+    ['T20 S7', 'S2 T19', 99, 'preferred'], // 32 gegen 40
+    ['T20 T19', 'T15 T20', 155, 'bull'], // 38 gegen 50
+    ['T20 T20', 'S1 T16', 159, 'leave'], // 39 gegen 110
+    ['T20 S15', 'T5 T20', 115, 'triples'], // beide 40
+    ['T20 S7', 'S10 T19', 99, 'onTwenty'], // beide 32
+    ['T20 S11', 'S20 T17', 103, 'fields'], // beide 32
+  ])('%s schlägt %s bei Rest %i über %s', (a, b, rest, by) => {
+    const result = compareSetups(s(a, rest), s(b, rest))
+    expect(result.by).toBe(by)
+    expect(result.order).toBeLessThan(0)
+    expect(compareSetups(s(b, rest), s(a, rest)).order).toBeGreaterThan(0)
+  })
+
+  it('meldet Gleichstand ohne Kriterium', () => {
+    expect(compareSetups(s('T20 S7', 99), s('T20 S7', 99))).toEqual({ order: 0, by: null })
+  })
+
+  it('ordnet Reste in Stufen', () => {
+    expect([32, 50, 98, 99].map(leaveTier)).toEqual([0, 1, 2, 3])
   })
 })

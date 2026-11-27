@@ -147,17 +147,18 @@ export const en: Dictionary = {
       bestRoute: "Best route",
       setupShot: "Setup shot",
       notCheckable: "No checkout",
+      leaves: (leaves: number, double: string | null) => (double ? `${leaves} left (${double})` : `${leaves} left`),
     },
     verdict: {
       codes: {
         best: { title: "Best route" },
         alternative: { title: "Alternative", note: "also correct" },
-        notRecommended: { title: "Works, but not recommended", note: "The checkout is right, the route is worse" },
+        notRecommended: { title: "Works, but not recommended" },
         noCheckout: { title: "Does not check out", note: "The route does not lead to a checkout" },
         checkable: { title: "Checkout possible" },
         bogeyRight: { title: "Correct", note: "No checkout from this score" },
         setupRight: { title: "Correct setup shot" },
-        setupOther: { title: "Different setup shot", note: "Recommended setup shot below" },
+        setupOther: { title: "Different setup shot" },
         setupBogey: { title: "Leaves a bogey number", note: "no checkout" },
         setupBust: { title: "Bust", note: "The score stays" },
       },
@@ -173,6 +174,52 @@ export const en: Dictionary = {
             return `Leaves ${d.leaves}, no checkout`;
           case "bust":
             return `Scores ${d.total} with ${d.rest} left`;
+          case "notRecommended":
+            switch (d.reason) {
+              case "darts":
+                return `Also works with ${d.darts} ${d.darts === 1 ? "dart" : "darts"}`;
+              case "halvings":
+                return `${d.bestDouble} can be halved more often than ${d.double}`;
+              case "bull":
+                return `The bull cannot be halved, ${d.bestDouble} can`;
+              case "finisher":
+                return `${d.bestDouble} ranks above ${d.double}`;
+              case "unsaved":
+                return "A single instead of the treble leaves no finish";
+              case "triples":
+                return "Needs more trebles";
+              case "order":
+                return "Same darts, higher segment first";
+              case "reference":
+                return "The checkout is right, another route is recommended";
+            }
+          case "setupOther":
+            switch (d.reason) {
+              case "fewerDarts":
+                return `${d.leaves} still needs two darts, ${d.bestLeaves} only one`;
+              case "noTwoDartFinish":
+                return `${d.leaves} cannot be checked out with two darts`;
+              case "preferred":
+                return `${d.bestDouble} is a preferred double, ${d.double} is not`;
+              case "halvings":
+                return `${d.bestDouble} can be halved more often than ${d.double}`;
+              case "preferredOrder":
+                return `${d.bestDouble} ranks above ${d.double}`;
+              case "doubleOverBull":
+                return "A double is better than the bull";
+              case "lowerLeave":
+                return `Both need more than one dart, ${d.bestLeaves} is the lower score`;
+              case "triples":
+                return "Same score left, but more trebles needed";
+              case "onTwenty":
+                return "Same score left, but fewer darts at the 20";
+              case "moreDarts":
+                return "Same score left, but more darts needed";
+              case "equal":
+                return "Both setup shots are equally good";
+              case "bigFields":
+                return "Setup shots go at singles and trebles, not doubles or bull";
+            }
         }
       },
     },

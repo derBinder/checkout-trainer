@@ -3,18 +3,108 @@ import { describe, expect, it } from "vitest";
 import { I18nProvider } from "@/i18n/client";
 import { de } from "@/i18n/dictionaries/de";
 import { en } from "@/i18n/dictionaries/en";
-import type { VerdictCode } from "@/lib/darts/judge";
+import type { RouteReason, SetupReason, VerdictCode, VerdictDetail } from "@/lib/darts/judge";
 import { VerdictLine, verdictCopy } from "./verdict";
+
+const REASONS: SetupReason[] = [
+  "fewerDarts",
+  "noTwoDartFinish",
+  "preferred",
+  "halvings",
+  "preferredOrder",
+  "doubleOverBull",
+  "lowerLeave",
+  "triples",
+  "onTwenty",
+  "moreDarts",
+  "equal",
+  "bigFields",
+];
+const other = (reason: SetupReason): VerdictDetail => ({
+  kind: "setupOther",
+  leaves: 40,
+  bestLeaves: 32,
+  double: "D20",
+  bestDouble: "D16",
+  reason,
+});
+
+describe("Grund für einen anderen Stellwurf", () => {
+  it.each([
+    ["de", de],
+    ["en", en],
+  ] as const)("hat in %s für jeden Grund einen eigenen Text", (_, dictionary) => {
+    const texts = REASONS.map((reason) => dictionary.study.verdict.detail(other(reason)));
+    expect(texts.every((text) => text.length > 0)).toBe(true);
+    expect(new Set(texts).size).toBe(REASONS.length);
+  });
+
+  it("nennt die Doppel, wo sie den Unterschied machen", () => {
+    expect(de.study.verdict.detail(other("halvings"))).toBe("D16 lässt sich öfter halbieren als D20");
+    expect(en.study.verdict.detail(other("halvings"))).toBe("D16 can be halved more often than D20");
+  });
+
+  it("behauptet beim niedrigeren Rest nicht, dass zwei Darts reichen", () => {
+    expect(de.study.verdict.detail(other("lowerLeave"))).toBe("Beide brauchen mehr als einen Dart, 32 ist der niedrigere Rest");
+    expect(en.study.verdict.detail(other("lowerLeave"))).toBe("Both need more than one dart, 32 is the lower score");
+  });
+
+  it("steht nicht in der Ergebniszeile", () => {
+    expect(verdictCopy({ code: "setupOther", detail: other("halvings") }, de.study)).toEqual({
+      tone: "soft",
+      title: "Anderer Stellwurf",
+      note: undefined,
+    });
+    expect(verdictCopy({ code: "setupBogey", detail: { kind: "leavesBogey", leaves: 159 } }, de.study).note).toBe(
+      "Lässt 159, nicht checkbar",
+    );
+  });
+});
+
+describe("Grund für einen nicht empfohlenen Weg", () => {
+  const ROUTE_REASONS: RouteReason[] = ["darts", "halvings", "bull", "finisher", "unsaved", "triples", "order", "reference"];
+  const route = (reason: RouteReason): Extract<VerdictDetail, { kind: "notRecommended" }> => ({
+    kind: "notRecommended",
+    reason,
+    darts: 2,
+    double: "D20",
+    bestDouble: "D16",
+  });
+
+  it.each([
+    ["de", de],
+    ["en", en],
+  ] as const)("hat in %s für jeden Grund einen eigenen Text", (_, dictionary) => {
+    const texts = ROUTE_REASONS.map((reason) => dictionary.study.verdict.detail(route(reason)));
+    expect(texts.every((text) => text.length > 0)).toBe(true);
+    expect(new Set(texts).size).toBe(ROUTE_REASONS.length);
+  });
+
+  it("steht als Hinweis in der Ergebniszeile", () => {
+    expect(verdictCopy({ code: "notRecommended", detail: route("darts") }, de.study)).toEqual({
+      tone: "soft",
+      title: "Geht, aber nicht empfohlen",
+      note: "Geht auch mit 2 Darts",
+    });
+    expect(verdictCopy({ code: "notRecommended", detail: { ...route("darts"), darts: 1 } }, en.study).note).toBe(
+      "Also works with 1 dart",
+    );
+  });
+
+  it("nennt den Weg ohne Nachteil nicht schlechter", () => {
+    expect(de.study.verdict.detail(route("reference"))).toBe("Der Checkout stimmt, empfohlen ist ein anderer Weg");
+  });
+});
 
 describe("verdictCopy", () => {
   it.each([
     ["best", "strong", "Bester Weg", undefined],
     ["alternative", "soft", "Alternative", "auch richtig"],
-    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
+    ["notRecommended", "soft", "Geht, aber nicht empfohlen", undefined],
     ["checkable", "bad", "Ist checkbar", undefined],
     ["bogeyRight", "strong", "Richtig", "Der Rest ist nicht checkbar"],
     ["setupRight", "strong", "Richtiger Stellwurf", undefined],
-    ["setupOther", "soft", "Anderer Stellwurf", "Empfohlener Stellwurf unten"],
+    ["setupOther", "soft", "Anderer Stellwurf", undefined],
   ] as const)("%s", (code, tone, title, note) => {
     expect(verdictCopy({ code }, de.study)).toEqual({ tone, title, note });
   });
@@ -47,7 +137,8 @@ describe("verdictCopy in beiden Sprachen", () => {
   });
 
   it("hat einen Hinweis, wo der Titel nicht alles sagt", () => {
-    const titleOnly = ["best", "checkable", "setupRight"];
+    // Ein anderer Stellwurf trägt seinen Grund im detail, als Notiz unter dem Vergleich.
+    const titleOnly = ["best", "checkable", "setupRight", "setupOther", "notRecommended"];
     for (const code of CODES) {
       for (const t of [de.study, en.study]) {
         const note = verdictCopy({ code }, t).note;
