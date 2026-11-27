@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { cardById } from "@/lib/cards";
+import { CARDS, cardById } from "@/lib/cards";
 import { checkFor, judge, type Answer } from "@/lib/darts/judge";
 import { de } from "@/i18n/dictionaries/de";
 import { en } from "@/i18n/dictionaries/en";
@@ -38,6 +38,17 @@ const row = (name: string) =>
     .map((li) => li.textContent);
 
 const darts = () => row("Darts");
+
+describe("Karten mit Stellwurf-Prüfung", () => {
+  // StudyCard ersetzt bei einem anderen Stellwurf die Notizen der Karte durch den Grund.
+  it("tragen genau eine Notiz, den empfohlenen Stellwurf", () => {
+    for (const card of CARDS) {
+      if (checkFor(card).kind !== "setup") continue;
+      const { notes } = cardView(card, de.study).answer;
+      expect(notes.map((n) => n.title), card.id).toEqual(["Stellwurf"]);
+    }
+  });
+});
 
 describe("StudyCard", () => {
   it("löst einen Rest mit Weg und Erklärungen auf", () => {

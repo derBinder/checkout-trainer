@@ -58,6 +58,7 @@ export type SetupReason =
   | 'lowerLeave'
   | 'triples'
   | 'onTwenty'
+  | 'moreDarts'
   | 'equal'
   | 'bigFields'
 
@@ -133,7 +134,7 @@ function finisher(leave: number): Dart | null {
 function setupReason(entered: Setup, best: Setup): SetupReason {
   const { order, by } = compareSetups(entered, best)
   // Die Empfehlung kennt nur Single und Triple: über Doppel, Bull oder 25 kann die Eingabe gleich gut oder besser sein.
-  if (order <= 0 || by === 'fields' || by === 'darts') {
+  if (order <= 0 || by === 'fields' || by === null) {
     return entered.throws.some((d) => d.ring === 'D' || d.n === 25) ? 'bigFields' : 'equal'
   }
   switch (by) {
@@ -148,10 +149,13 @@ function setupReason(entered: Setup, best: Setup): SetupReason {
     case 'bull':
       return 'doubleOverBull'
     case 'leave':
-      return 'lowerLeave'
+      // Unter den übrigen Ein-Dart-Resten steht das höhere Doppel vorn, sonst der niedrigere Rest.
+      return leaveTier(entered.leaves) === 1 ? 'preferredOrder' : 'lowerLeave'
+    case 'darts':
+      return 'moreDarts'
     case 'triples':
       return 'triples'
-    default:
+    case 'onTwenty':
       return 'onTwenty'
   }
 }
@@ -162,7 +166,7 @@ function setupReason(entered: Setup, best: Setup): SetupReason {
  * Bogey-Zahl lässt, sonst ein anderer mit dem Grund, warum der der Karte davor steht.
  */
 function judgeSetup(rest: number, throws: string[], darts: string[]): Verdict {
-  const sorted = (route: string[]) => key([...route].sort())
+  const sorted = (route: string[]) => route.map((d) => formatDart(parseDart(d))).sort().join(' ')
   if (sorted(darts) === sorted(throws)) return { code: 'setupRight' }
   const entered = darts.map(parseDart)
   const total = routeTotal(entered)

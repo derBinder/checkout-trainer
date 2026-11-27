@@ -16,6 +16,7 @@ const REASONS: SetupReason[] = [
   "lowerLeave",
   "triples",
   "onTwenty",
+  "moreDarts",
   "equal",
   "bigFields",
 ];
@@ -41,6 +42,11 @@ describe("Grund für einen anderen Stellwurf", () => {
   it("nennt die Doppel, wo sie den Unterschied machen", () => {
     expect(de.study.verdict.detail(other("halvings"))).toBe("D16 lässt sich öfter halbieren als D20");
     expect(en.study.verdict.detail(other("halvings"))).toBe("D16 can be halved more often than D20");
+  });
+
+  it("behauptet beim niedrigeren Rest nicht, dass zwei Darts reichen", () => {
+    expect(de.study.verdict.detail(other("lowerLeave"))).toBe("Beide brauchen mehr als einen Dart, 32 ist der niedrigere Rest");
+    expect(en.study.verdict.detail(other("lowerLeave"))).toBe("Both need more than one dart, 32 is the lower score");
   });
 
   it("steht nicht in der Ergebniszeile", () => {

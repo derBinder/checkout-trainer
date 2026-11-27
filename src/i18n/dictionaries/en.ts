@@ -189,11 +189,13 @@ export const en: Dictionary = {
               case "doubleOverBull":
                 return "A double is better than the bull";
               case "lowerLeave":
-                return `Both need two darts, ${d.bestLeaves} is the lower score`;
+                return `Both need more than one dart, ${d.bestLeaves} is the lower score`;
               case "triples":
                 return "Same score left, but more trebles needed";
               case "onTwenty":
                 return "Same score left, but fewer darts at the 20";
+              case "moreDarts":
+                return "Same score left, but more darts needed";
               case "equal":
                 return "Both setup shots are equally good";
               case "bigFields":

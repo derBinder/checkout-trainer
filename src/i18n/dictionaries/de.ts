@@ -202,11 +202,13 @@ export const de = {
               case "doubleOverBull":
                 return "Ein Doppel ist besser als das Bull";
               case "lowerLeave":
-                return `Beide brauchen zwei Darts, ${d.bestLeaves} ist der niedrigere Rest`;
+                return `Beide brauchen mehr als einen Dart, ${d.bestLeaves} ist der niedrigere Rest`;
               case "triples":
                 return "Gleicher Rest, aber mehr Triples nötig";
               case "onTwenty":
                 return "Gleicher Rest, aber weniger Darts auf die 20";
+              case "moreDarts":
+                return "Gleicher Rest, aber mehr Darts nötig";
               case "equal":
                 return "Beide Stellwürfe sind gleich gut";
               case "bigFields":

@@ -242,6 +242,19 @@ describe('another setup shot', () => {
     expect(why(setup(rest, 2, ...best), ...entered)).toMatchObject({ reason })
   })
 
+  it('names more darts for the same leave instead of calling the shots equal', () => {
+    expect(why(setup(92, 3, 'T20'), 'S20', 'S20', 'S20')).toMatchObject({ leaves: 32, bestLeaves: 32, reason: 'moreDarts' })
+  })
+
+  it('ranks two one-dart leaves outside the preferred doubles by the higher double', () => {
+    // 38 (D19) gegen 22 (D11): beide ohne Halbierung, das höhere Doppel steht vorn
+    expect(why(setup(98, 2, 'T20'), 'T20', 'S16')).toMatchObject({ leaves: 22, bestLeaves: 38, reason: 'preferredOrder' })
+  })
+
+  it('compares the darts after normalising their notation', () => {
+    expect(judge(setup(99, 2, ' T20', 'S7'), darts('S7', 'T20'))).toEqual({ code: 'setupRight' })
+  })
+
   it('gives every other setup shot of every card a reason that agrees with the ranking', { timeout: 30_000 }, () => {
     const fields: Dart[] = [
       ...(['S', 'D', 'T'] as const).flatMap((ring) => Array.from({ length: 20 }, (_, i): Dart => ({ ring, n: i + 1 }))),
