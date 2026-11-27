@@ -193,6 +193,8 @@ export const de = {
                 return `Geht auch mit ${d.darts} ${d.darts === 1 ? "Dart" : "Darts"}`;
               case "halvings":
                 return `${d.bestDouble} lässt sich öfter halbieren als ${d.double}`;
+              case "bull":
+                return `Bull lässt sich nicht halbieren, ${d.bestDouble} schon`;
               case "finisher":
                 return `${d.bestDouble} geht vor ${d.double}`;
               case "unsaved":

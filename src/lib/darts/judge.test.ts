@@ -323,7 +323,10 @@ describe('a route that is not recommended', () => {
     // r-99: bester Weg T19 · S10 · D16, hier in anderer Reihenfolge
     ['r-99', ['S10', 'T19', 'D16'], { reason: 'unsaved' }],
     // r-82: bester Weg Bull · D16
-    ['r-82', ['D16', 'Bull'], { reason: 'halvings', double: 'Bull', bestDouble: 'D16' }],
+    ['r-82', ['D16', 'Bull'], { reason: 'bull', bestDouble: 'D16' }],
+    // r-42: geteiltes Ziel S10 · D16 oder S6 · D18, verglichen wird mit dem Weg auf dasselbe Doppel
+    ['r-42', ['D3', 'D18'], { reason: 'reference', bestDouble: 'D18' }],
+    ['r-42', ['S2', 'D20'], { reason: 'halvings', bestDouble: 'D16' }],
     // r-56: die Tabelle nennt T16 · D4, die Rangfolge sieht S16 · D20 vorn
     ['r-56', ['S16', 'D20'], { reason: 'reference' }],
     // r-42: nur die Felder unterscheiden sich
@@ -349,7 +352,6 @@ describe('a route that is not recommended', () => {
 
   it.each(routeChecks)('gives every other checkout of %s a reason that agrees with the ranking', (id, c) => {
     if (c.kind !== 'rest' && c.kind !== 'follow') throw new Error('kein Weg')
-    const best = c.best[0].map(parseDart)
     const violations: string[] = []
     for (const route of allCheckouts(c.rest, maxDarts(c))) {
       const verdict = judge(c, darts(...route.map(formatDart)))
@@ -360,9 +362,14 @@ describe('a route that is not recommended', () => {
         fail('no detail')
         continue
       }
+      // Bei geteiltem Ziel zählt der beste Weg auf dasselbe Doppel.
+      const last = formatDart(route[route.length - 1])
+      const best = (c.best.find((b) => b[b.length - 1] === last) ?? c.best[0]).map(parseDart)
       const r = compareRoutesBy(route, best)
       if (r.order <= 0 && detail.reason !== 'reference') fail(`ranks ${r.order} but ${detail.reason}`)
-      if (r.order > 0 && r.by !== 'fields' && detail.reason !== r.by) fail(`worse by ${r.by} but ${detail.reason}`)
+      const expected = r.by === 'halvings' && last === 'Bull' ? 'bull' : r.by
+      if (r.order > 0 && r.by !== 'fields' && detail.reason !== expected) fail(`worse by ${r.by} but ${detail.reason}`)
+      if (detail.bestDouble !== formatDart(best[best.length - 1])) fail('wrong best double')
       if (r.by === 'fields' && !['order', 'reference'].includes(detail.reason)) fail(`fields but ${detail.reason}`)
       if (c.rest <= 40 && detail.reason === 'reference') fail('no reason below 41')
       if (['halvings', 'finisher'].includes(detail.reason) && detail.double === detail.bestDouble) fail('same double')

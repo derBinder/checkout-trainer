@@ -28,12 +28,13 @@ Geht, aber nicht empfohlen        Geht auch mit 2 Darts
 
 ## Gründe
 
-Verglichen wird mit dem ersten besten Weg der Karte. Eine Zählung über alle 338 Karten mit Weg und alle 83.082 gültigen Wege, die weder bester Weg noch Alternative sind:
+Verglichen wird mit dem besten Weg der Karte. Bei geteiltem Ziel gibt es zwei beste Wege, dann zählt der auf dasselbe Doppel wie die Eingabe, sonst der erste. Eine Zählung über alle 338 Karten mit Weg und alle 83.082 gültigen Wege, die weder bester Weg noch Alternative sind:
 
 | Entscheidend | Anteil | Text |
 |---|---|---|
 | Der beste Weg braucht weniger Darts | 73.294 | „Geht auch mit 2 Darts“ |
 | Das Doppel des besten Wegs lässt sich öfter halbieren | 7.144 | „D16 lässt sich öfter halbieren als D20“ |
+| Der eingegebene Weg endet auf dem Bull | rund 1.300 | „Bull lässt sich nicht halbieren, D16 schon“ |
 | Gleich viele Halbierungen, höheres Doppel | 215 | „D20 geht vor D12“ |
 | Ein Triple, nach dessen Single kein Finish bleibt | 324 | „Single statt Triple lässt kein Finish“ |
 | Mehr Triples | 20 | „Braucht mehr Triples“ |

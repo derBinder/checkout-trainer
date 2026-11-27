@@ -180,6 +180,8 @@ export const en: Dictionary = {
                 return `Also works with ${d.darts} ${d.darts === 1 ? "dart" : "darts"}`;
               case "halvings":
                 return `${d.bestDouble} can be halved more often than ${d.double}`;
+              case "bull":
+                return `The bull cannot be halved, ${d.bestDouble} can`;
               case "finisher":
                 return `${d.bestDouble} ranks above ${d.double}`;
               case "unsaved":

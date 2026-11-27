@@ -62,7 +62,7 @@ describe("Grund für einen anderen Stellwurf", () => {
 });
 
 describe("Grund für einen nicht empfohlenen Weg", () => {
-  const ROUTE_REASONS: RouteReason[] = ["darts", "halvings", "finisher", "unsaved", "triples", "order", "reference"];
+  const ROUTE_REASONS: RouteReason[] = ["darts", "halvings", "bull", "finisher", "unsaved", "triples", "order", "reference"];
   const route = (reason: RouteReason): Extract<VerdictDetail, { kind: "notRecommended" }> => ({
     kind: "notRecommended",
     reason,
