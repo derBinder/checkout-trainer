@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { I18nProvider } from "@/i18n/client";
 import { de } from "@/i18n/dictionaries/de";
 import { en } from "@/i18n/dictionaries/en";
-import type { SetupReason, VerdictCode, VerdictDetail } from "@/lib/darts/judge";
+import type { RouteReason, SetupReason, VerdictCode, VerdictDetail } from "@/lib/darts/judge";
 import { VerdictLine, verdictCopy } from "./verdict";
 
 const REASONS: SetupReason[] = [
@@ -61,11 +61,46 @@ describe("Grund für einen anderen Stellwurf", () => {
   });
 });
 
+describe("Grund für einen nicht empfohlenen Weg", () => {
+  const ROUTE_REASONS: RouteReason[] = ["darts", "halvings", "finisher", "unsaved", "triples", "order", "reference"];
+  const route = (reason: RouteReason): Extract<VerdictDetail, { kind: "notRecommended" }> => ({
+    kind: "notRecommended",
+    reason,
+    darts: 2,
+    double: "D20",
+    bestDouble: "D16",
+  });
+
+  it.each([
+    ["de", de],
+    ["en", en],
+  ] as const)("hat in %s für jeden Grund einen eigenen Text", (_, dictionary) => {
+    const texts = ROUTE_REASONS.map((reason) => dictionary.study.verdict.detail(route(reason)));
+    expect(texts.every((text) => text.length > 0)).toBe(true);
+    expect(new Set(texts).size).toBe(ROUTE_REASONS.length);
+  });
+
+  it("steht als Hinweis in der Ergebniszeile", () => {
+    expect(verdictCopy({ code: "notRecommended", detail: route("darts") }, de.study)).toEqual({
+      tone: "soft",
+      title: "Geht, aber nicht empfohlen",
+      note: "Geht auch mit 2 Darts",
+    });
+    expect(verdictCopy({ code: "notRecommended", detail: { ...route("darts"), darts: 1 } }, en.study).note).toBe(
+      "Also works with 1 dart",
+    );
+  });
+
+  it("nennt den Weg ohne Nachteil nicht schlechter", () => {
+    expect(de.study.verdict.detail(route("reference"))).toBe("Der Checkout stimmt, empfohlen ist ein anderer Weg");
+  });
+});
+
 describe("verdictCopy", () => {
   it.each([
     ["best", "strong", "Bester Weg", undefined],
     ["alternative", "soft", "Alternative", "auch richtig"],
-    ["notRecommended", "soft", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
+    ["notRecommended", "soft", "Geht, aber nicht empfohlen", undefined],
     ["checkable", "bad", "Ist checkbar", undefined],
     ["bogeyRight", "strong", "Richtig", "Der Rest ist nicht checkbar"],
     ["setupRight", "strong", "Richtiger Stellwurf", undefined],
@@ -103,7 +138,7 @@ describe("verdictCopy in beiden Sprachen", () => {
 
   it("hat einen Hinweis, wo der Titel nicht alles sagt", () => {
     // Ein anderer Stellwurf trägt seinen Grund im detail, als Notiz unter dem Vergleich.
-    const titleOnly = ["best", "checkable", "setupRight", "setupOther"];
+    const titleOnly = ["best", "checkable", "setupRight", "setupOther", "notRecommended"];
     for (const code of CODES) {
       for (const t of [de.study, en.study]) {
         const note = verdictCopy({ code }, t).note;

@@ -166,7 +166,7 @@ export const de = {
       codes: {
         best: { title: "Bester Weg" },
         alternative: { title: "Alternative", note: "auch richtig" },
-        notRecommended: { title: "Geht, aber nicht empfohlen", note: "Der Checkout stimmt, der Weg ist schlechter" },
+        notRecommended: { title: "Geht, aber nicht empfohlen" },
         noCheckout: { title: "Geht nicht auf", note: "Der Weg führt nicht zum Checkout" },
         checkable: { title: "Ist checkbar" },
         bogeyRight: { title: "Richtig", note: "Der Rest ist nicht checkbar" },
@@ -187,6 +187,23 @@ export const de = {
             return `Lässt ${d.leaves}, nicht checkbar`;
           case "bust":
             return `Ergibt ${d.total} bei Rest ${d.rest}`;
+          case "notRecommended":
+            switch (d.reason) {
+              case "darts":
+                return `Geht auch mit ${d.darts} ${d.darts === 1 ? "Dart" : "Darts"}`;
+              case "halvings":
+                return `${d.bestDouble} lässt sich öfter halbieren als ${d.double}`;
+              case "finisher":
+                return `${d.bestDouble} geht vor ${d.double}`;
+              case "unsaved":
+                return "Single statt Triple lässt kein Finish";
+              case "triples":
+                return "Braucht mehr Triples";
+              case "order":
+                return "Gleiche Darts, das höhere Feld zuerst";
+              case "reference":
+                return "Der Checkout stimmt, empfohlen ist ein anderer Weg";
+            }
           case "setupOther":
             switch (d.reason) {
               case "fewerDarts":

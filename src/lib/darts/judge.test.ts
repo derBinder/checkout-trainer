@@ -3,7 +3,7 @@ import { CARDS, cardById } from '@/lib/cards'
 import { allCheckouts, BOGEYS } from './checkouts'
 import { checkFor, judge, maxDarts, offersNotCheckable, type Answer, type Check } from './judge'
 import { dartValue, formatDart, parseDart, type Dart } from './model'
-import { compareSetups, leaveTier } from './scoring'
+import { compareRoutesBy, compareSetups, leaveTier } from './scoring'
 
 const check = (id: string) => checkFor(cardById(id)!)
 const darts = (...d: string[]): Answer => ({ kind: 'darts', darts: d })
@@ -122,7 +122,7 @@ describe('two-dart cards', () => {
   it('checks a way card like a follow-up with two darts', () => {
     expect(check('t-61')).toEqual({ kind: 'follow', rest: 61, maxDarts: 2, best: [['T11', 'D14']] })
     expect(judge(check('t-61'), darts('T11', 'D14'))).toEqual({ code: 'best' })
-    expect(judge(check('t-61'), darts('T15', 'D8'))).toEqual({ code: 'notRecommended' })
+    expect(judge(check('t-61'), darts('T15', 'D8')).code).toBe('notRecommended')
     expect(judge(check('t-61'), darts('T20', 'S1')).code).toBe('noCheckout')
   })
 
@@ -305,6 +305,68 @@ describe('another setup shot', () => {
       }
     }
     walk([], 0, c.rest)
+    expect(violations.slice(0, 10)).toEqual([])
+  })
+})
+
+describe('a route that is not recommended', () => {
+  const why = (id: string, ...d: string[]) => judge(check(id), darts(...d))
+
+  it.each([
+    // r-41: bester Weg S9 · D16
+    ['r-41', ['S1', 'S2', 'D19'], { reason: 'darts', darts: 2 }],
+    ['r-41', ['S1', 'D20'], { reason: 'halvings', double: 'D20', bestDouble: 'D16' }],
+    ['r-41', ['T3', 'D16'], { reason: 'triples' }],
+    // r-43: bester Weg S3 · D20
+    ['r-43', ['S19', 'D12'], { reason: 'finisher', double: 'D12', bestDouble: 'D20' }],
+    ['r-43', ['T1', 'D20'], { reason: 'unsaved' }],
+    // r-99: bester Weg T19 · S10 · D16, hier in anderer Reihenfolge
+    ['r-99', ['S10', 'T19', 'D16'], { reason: 'unsaved' }],
+    // r-82: bester Weg Bull · D16
+    ['r-82', ['D16', 'Bull'], { reason: 'halvings', double: 'Bull', bestDouble: 'D16' }],
+    // r-56: die Tabelle nennt T16 · D4, die Rangfolge sieht S16 · D20 vorn
+    ['r-56', ['S16', 'D20'], { reason: 'reference' }],
+    // r-42: nur die Felder unterscheiden sich
+    ['r-42', ['D5', 'D16'], { reason: 'reference' }],
+  ] as const)('%s entered as %j: %j', (id, entered, detail) => {
+    const verdict = why(id, ...entered)
+    expect(verdict.code).toBe('notRecommended')
+    expect(verdict.detail).toMatchObject({ kind: 'notRecommended', ...detail })
+  })
+
+  it('names the order when the same darts only differ in it', () => {
+    const c: Check = { kind: 'rest', rest: 26, best: [['S10', 'S8', 'D4']], good: [] }
+    expect(judge(c, darts('S8', 'S10', 'D4')).detail).toMatchObject({ reason: 'order' })
+  })
+
+  it('gives a reason on follow-up cards too', () => {
+    expect(why('t-61', 'T15', 'D8').detail).toMatchObject({ kind: 'notRecommended' })
+  })
+
+  const routeChecks = CARDS.map((card) => [card.id, checkFor(card)] as const).filter(
+    ([, c]) => c.kind === 'rest' || c.kind === 'follow',
+  )
+
+  it.each(routeChecks)('gives every other checkout of %s a reason that agrees with the ranking', (id, c) => {
+    if (c.kind !== 'rest' && c.kind !== 'follow') throw new Error('kein Weg')
+    const best = c.best[0].map(parseDart)
+    const violations: string[] = []
+    for (const route of allCheckouts(c.rest, maxDarts(c))) {
+      const verdict = judge(c, darts(...route.map(formatDart)))
+      if (verdict.code !== 'notRecommended') continue
+      const fail = (what: string) => violations.push(`${id} ${route.map(formatDart).join(' ')}: ${what}`)
+      const detail = verdict.detail
+      if (detail?.kind !== 'notRecommended') {
+        fail('no detail')
+        continue
+      }
+      const r = compareRoutesBy(route, best)
+      if (r.order <= 0 && detail.reason !== 'reference') fail(`ranks ${r.order} but ${detail.reason}`)
+      if (r.order > 0 && r.by !== 'fields' && detail.reason !== r.by) fail(`worse by ${r.by} but ${detail.reason}`)
+      if (r.by === 'fields' && !['order', 'reference'].includes(detail.reason)) fail(`fields but ${detail.reason}`)
+      if (c.rest <= 40 && detail.reason === 'reference') fail('no reason below 41')
+      if (['halvings', 'finisher'].includes(detail.reason) && detail.double === detail.bestDouble) fail('same double')
+    }
     expect(violations.slice(0, 10)).toEqual([])
   })
 })

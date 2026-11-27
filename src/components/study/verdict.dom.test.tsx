@@ -23,7 +23,6 @@ describe("VerdictLine auf Englisch", () => {
 describe("VerdictLine", () => {
   it.each([
     ["alternative", "Alternative", "auch richtig"],
-    ["notRecommended", "Geht, aber nicht empfohlen", "Der Checkout stimmt, der Weg ist schlechter"],
     ["bogeyRight", "Richtig", "Der Rest ist nicht checkbar"],
   ] as [VerdictCode, string, string][])("meldet „%s“ als Status mit Titel und Hinweis", (code, title, note) => {
     render(<VerdictLine verdict={{ code }} />, { wrapper });
@@ -37,6 +36,7 @@ describe("VerdictLine", () => {
     ["checkable", "Ist checkbar"],
     ["setupRight", "Richtiger Stellwurf"],
     ["setupOther", "Anderer Stellwurf"],
+    ["notRecommended", "Geht, aber nicht empfohlen"],
   ] as [VerdictCode, string][])("meldet „%s“ nur mit dem Titel, ohne Hinweis", (code, title) => {
     render(<VerdictLine verdict={{ code }} />, { wrapper });
     expect(screen.getByRole("status").textContent).toBe(title);

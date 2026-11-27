@@ -1,7 +1,7 @@
 import type { Card } from '@/lib/darts/cards'
 import { isBogey } from '@/lib/darts/checkouts'
 import { dartValue, expandSteps, formatDart, parseDart, parseSteps, routeTotal, type Dart } from '@/lib/darts/model'
-import { compareSetups, halvings, leaveTier, type Setup } from '@/lib/darts/scoring'
+import { compareRoutesBy, compareSetups, halvings, leaveTier, type Setup } from '@/lib/darts/scoring'
 
 /**
  * Wogegen eine eingegebene Antwort geprüft wird. Wege stehen ausgeschrieben in
@@ -37,6 +37,8 @@ export type VerdictDetail =
   | { kind: 'notCheckable' }
   | { kind: 'leavesBogey'; leaves: number }
   | { kind: 'bust'; total: number; rest: number }
+  /** Geht, aber nicht empfohlen: der Grund, die Dartzahl des besten Wegs und die Doppel beider Wege. */
+  | { kind: 'notRecommended'; reason: RouteReason; darts: number; double: string; bestDouble: string }
   /** Anderer Stellwurf: beide Reste, ihr Doppel ("D16", "Bull"; null ohne Ein-Dart-Finish) und der Grund. */
   | {
       kind: 'setupOther'
@@ -46,6 +48,12 @@ export type VerdictDetail =
       bestDouble: string | null
       reason: SetupReason
     }
+
+/**
+ * Warum der beste Weg vor dem eingegebenen steht. `order`: dieselben Darts, nur die Reihenfolge der
+ * Felder entscheidet. `reference`: die Rangfolge sieht keinen Nachteil, der beste Weg stammt aus der Referenztabelle.
+ */
+export type RouteReason = 'darts' | 'halvings' | 'finisher' | 'unsaved' | 'triples' | 'order' | 'reference'
 
 /** Warum der empfohlene Stellwurf vor dem eingegebenen steht. */
 export type SetupReason =
@@ -121,7 +129,27 @@ function judgeRoute(rest: number, best: string[][], good: string[][], darts: str
   const total = parsed.reduce((sum, d) => sum + dartValue(d), 0)
   if (total !== rest) return { code: 'noCheckout', detail: { kind: 'total', total, rest } }
   if (parsed.at(-1)?.ring !== 'D') return { code: 'noCheckout', detail: { kind: 'notDouble' } }
-  return { code: 'notRecommended' }
+  const top = best[0].map(parseDart)
+  return {
+    code: 'notRecommended',
+    detail: {
+      kind: 'notRecommended',
+      reason: routeReason(parsed, top),
+      darts: top.length,
+      double: formatDart(parsed[parsed.length - 1]),
+      bestDouble: formatDart(top[top.length - 1]),
+    },
+  }
+}
+
+/** Übersetzt das entscheidende Kriterium der Rangfolge in den Grund für die Anzeige. */
+function routeReason(entered: Dart[], best: Dart[]): RouteReason {
+  const { order, by } = compareRoutesBy(entered, best)
+  // Ab Rest 41 nennt die Referenztabelle den besten Weg; die Rangfolge kann die Eingabe gleich oder besser einordnen.
+  if (order <= 0 || by === null) return 'reference'
+  if (by !== 'fields') return by
+  const sorted = (route: Dart[]) => route.map(formatDart).sort().join(' ')
+  return sorted(entered) === sorted(best) ? 'order' : 'reference'
 }
 
 /** Das Doppel, mit dem ein Rest in einem Dart fällt, sonst null. */

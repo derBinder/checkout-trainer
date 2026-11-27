@@ -81,20 +81,42 @@ function score(route: Route): Scored {
   }
 }
 
+/** Woran ein Vergleich zweier Wege entschieden wurde. */
+export type RouteCriterion = 'darts' | 'halvings' | 'finisher' | 'unsaved' | 'triples' | 'fields'
+
+/** Die Regeln in der Reihenfolge der Spezifikation; je Regel negativ = a ist besser. */
+const ROUTE_CRITERIA: [RouteCriterion, (a: Scored, b: Scored) => number][] = [
+  ['darts', (a, b) => a.route.length - b.route.length],
+  ['halvings', (a, b) => b.halvings - a.halvings],
+  ['finisher', (a, b) => b.finisher - a.finisher],
+  ['unsaved', (a, b) => a.unsaved - b.unsaved],
+  ['triples', (a, b) => a.triples - b.triples],
+  ['fields', (a, b) => compareHigherFirst(a.route, b.route)],
+]
+
+// Ohne Zwischenlisten: rankCheckouts sortiert damit tausende Wege.
 function compareScored(a: Scored, b: Scored): number {
-  return (
-    a.route.length - b.route.length ||
-    b.halvings - a.halvings ||
-    b.finisher - a.finisher ||
-    a.unsaved - b.unsaved ||
-    a.triples - b.triples ||
-    compareHigherFirst(a.route, b.route)
-  )
+  for (const [, diff] of ROUTE_CRITERIA) {
+    const order = diff(a, b)
+    if (order !== 0) return order
+  }
+  return 0
 }
 
 /** Negativ = a ist besser. Regeln in der Reihenfolge der Spezifikation. */
 export function compareRoutes(a: Route, b: Route): number {
   return compareScored(score(a), score(b))
+}
+
+/** Wie compareRoutes, dazu das erste Kriterium mit Unterschied (null bei Gleichstand in allem). */
+export function compareRoutesBy(a: Route, b: Route): { order: number; by: RouteCriterion | null } {
+  const sa = score(a)
+  const sb = score(b)
+  for (const [by, diff] of ROUTE_CRITERIA) {
+    const order = diff(sa, sb)
+    if (order !== 0) return { order, by }
+  }
+  return { order: 0, by: null }
 }
 
 /** Alle Checkouts mit höchstens maxDarts Darts, bester zuerst. */

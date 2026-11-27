@@ -513,7 +513,7 @@ describe("StudySession", () => {
       fireEvent.click(screen.getByRole("radio", { name: "Doppel" }));
       press("Doppel 8");
       tap("Prüfen");
-      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenDer Checkout stimmt, der Weg ist schlechter");
+      expect(screen.getByRole("status").textContent).toBe("Geht, aber nicht empfohlenDer Checkout stimmt, empfohlen ist ein anderer Weg");
       expect(row("Bester Weg")).toEqual(["–verbraucht", "T11", "D14"]);
     });
 
