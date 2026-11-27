@@ -53,7 +53,7 @@ Eine Zählung über alle 165 Stellwurf-Aufgaben und alle eingebbaren Würfe zeig
 | Beide bevorzugt, das Halbieren erklärt es nicht | 16 statt 40 | „40 ist das bevorzugte Doppel vor 16“ |
 | Doppel vor Bull | 50 statt 38 | „Ein Doppel ist besser als das Bull“ |
 | Beide brauchen zwei Darts | 110 statt 39 | „Beide brauchen zwei Darts, 39 ist der niedrigere Rest“ |
-| Gleicher Rest, mehr Triples | T5 T20 statt T20 S15 | „Gleicher Rest, aber ein Triple mehr nötig“ |
+| Gleicher Rest, mehr Triples | T5 T20 statt T20 S15 | „Gleicher Rest, aber mehr Triples nötig“ |
 | Gleicher Rest, weniger Darts auf der 20 | S10 T19 statt T20 S7 | „Gleicher Rest, aber der empfohlene Wurf bleibt länger auf der 20“ |
 
 Das Kriterium „weniger Würfe“ entscheidet in der Zählung nie und bekommt keinen Text.
