@@ -153,7 +153,7 @@ export const en: Dictionary = {
       codes: {
         best: { title: "Best route" },
         alternative: { title: "Alternative", note: "also correct" },
-        notRecommended: { title: "Works, but not recommended", note: "The checkout is right, the route is worse" },
+        notRecommended: { title: "Works, but not recommended" },
         noCheckout: { title: "Does not check out", note: "The route does not lead to a checkout" },
         checkable: { title: "Checkout possible" },
         bogeyRight: { title: "Correct", note: "No checkout from this score" },
@@ -174,6 +174,25 @@ export const en: Dictionary = {
             return `Leaves ${d.leaves}, no checkout`;
           case "bust":
             return `Scores ${d.total} with ${d.rest} left`;
+          case "notRecommended":
+            switch (d.reason) {
+              case "darts":
+                return `Also works with ${d.darts} ${d.darts === 1 ? "dart" : "darts"}`;
+              case "halvings":
+                return `${d.bestDouble} can be halved more often than ${d.double}`;
+              case "bull":
+                return `The bull cannot be halved, ${d.bestDouble} can`;
+              case "finisher":
+                return `${d.bestDouble} ranks above ${d.double}`;
+              case "unsaved":
+                return "A single instead of the treble leaves no finish";
+              case "triples":
+                return "Needs more trebles";
+              case "order":
+                return "Same darts, higher segment first";
+              case "reference":
+                return "The checkout is right, another route is recommended";
+            }
           case "setupOther":
             switch (d.reason) {
               case "fewerDarts":
