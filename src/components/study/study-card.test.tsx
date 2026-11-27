@@ -125,7 +125,7 @@ describe("StudyCard", () => {
 
     it("nennt bei einem Fehlwurf ohne Finish einen anderen Stellwurf", () => {
       showWith("m-125-1", { kind: "darts", darts: ["S12"] });
-      expect(screen.getByRole("status").textContent).toBe("Anderer StellwurfEmpfohlener Stellwurf unten");
+      expect(screen.getByRole("status").textContent).toBe("Anderer Stellwurf");
       expect(row("Dein Weg")).toEqual(["T18", "S19 (Fehlwurf)", "S12"]);
       expect(row("Stellwurf")).toEqual(["T18", "S19 (Fehlwurf)", "S20"]);
     });
