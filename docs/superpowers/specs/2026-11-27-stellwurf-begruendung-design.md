@@ -22,15 +22,15 @@ Der Grund: Heute steht dort nur „Anderer Stellwurf – Empfohlener Stellwurf u
 
 Vom Auftraggeber entschieden: Vergleich plus Grund, nicht nur eine Zeile.
 
-Festlegung von Claude: Es gibt keine neue Tabelle. Die beiden vorhandenen Reihen bekommen den Rest in die Beschriftung, der Grund kommt als Notiz „Warum“ dazu. Die Notiz „Stellwurf: Danach Rest 32“ entfällt in diesem Fall, weil der Rest schon in der Beschriftung steht.
+Festlegung von Claude: Es gibt keine neue Tabelle. Über den beiden vorhandenen Reihen steht rechts neben der Beschriftung der Rest, sodass die beiden Reste untereinander stehen, der Grund kommt als Notiz „Warum“ dazu. Die Notiz „Stellwurf: Danach Rest 32“ entfällt in diesem Fall, weil der Rest schon in der Beschriftung steht.
 
 ```
 Anderer Stellwurf
 
-DEIN WEG · REST 40 (D20)
+DEIN WEG                 Rest 40 (D20)
 [T20] [T19] [S14]
 
-STELLWURF · REST 32 (D16)
+STELLWURF                Rest 32 (D16)
 [T20] [T20] [S19]
 
 WARUM   D16 lässt sich öfter halbieren als D20
@@ -48,13 +48,13 @@ Eine Zählung über alle 165 Stellwurf-Aufgaben und alle eingebbaren Würfe zeig
 |---|---|---|
 | Empfohlener Rest braucht weniger Darts | 98 statt 32 | „98 braucht noch zwei Darts, 32 nur einen“ |
 | Eingegebener Rest ist mit zwei Darts nicht zu checken | 99 statt 32 | „99 ist mit zwei Darts nicht zu checken“ |
-| Empfohlen ist ein bevorzugtes Doppel, eingegeben nicht | 50 statt 32 | „32 ist ein bevorzugtes Doppel, 50 nicht“ |
+| Empfohlen ist ein bevorzugtes Doppel, eingegeben nicht | 50 statt 32 | „D16 ist ein bevorzugtes Doppel, Bull nicht“ |
 | Beide bevorzugt, das empfohlene Doppel lässt sich öfter halbieren | 40 statt 32 | „D16 lässt sich öfter halbieren als D20“ |
-| Beide bevorzugt, das Halbieren erklärt es nicht | 16 statt 40 | „40 ist das bevorzugte Doppel vor 16“ |
+| Beide bevorzugt, das Halbieren erklärt es nicht | 16 statt 40 | „D20 geht vor D8“ |
 | Doppel vor Bull | 50 statt 38 | „Ein Doppel ist besser als das Bull“ |
 | Beide brauchen zwei Darts | 110 statt 39 | „Beide brauchen zwei Darts, 39 ist der niedrigere Rest“ |
 | Gleicher Rest, mehr Triples | T5 T20 statt T20 S15 | „Gleicher Rest, aber mehr Triples nötig“ |
-| Gleicher Rest, weniger Darts auf der 20 | S10 T19 statt T20 S7 | „Gleicher Rest, aber der empfohlene Wurf bleibt länger auf der 20“ |
+| Gleicher Rest, weniger Darts auf der 20 | S10 T19 statt T20 S7 | „Gleicher Rest, aber weniger Darts auf die 20“ |
 
 Das Kriterium „weniger Würfe“ entscheidet in der Zählung nie und bekommt keinen Text.
 
@@ -63,8 +63,8 @@ Das Kriterium „weniger Würfe“ entscheidet in der Zählung nie und bekommt k
 Festlegungen von Claude, bitte prüfen:
 
 - **Gleiche Darts in anderer Reihenfolge.** 148 Fälle, etwa S7 T20 statt T20 S7. Sie gelten künftig als „Richtiger Stellwurf“. Das Ergebnis fließt nicht in die Bewertung der Karte ein, die gibt der Nutzer selbst.
-- **Stellwurf über Doppel oder Bull.** Die Empfehlung kennt nur Single und Triple. Mit Doppel oder Bull kann die Eingabe nach der Rangfolge gleich gut oder besser sein als die Empfehlung, in 1461 Fällen, etwa D11 T20 mit Rest 32 statt T20 S14 mit Rest 40. Dann lautet der Grund: „Gestellt wird über Single und Triple, nicht über Doppel oder Bull“. Ist die Eingabe trotz Doppel oder Bull schlechter, gilt der normale Grund aus der Tabelle.
-- **Gleichwertig bis auf die Felder.** 56 Fälle, etwa S20 T17 statt T20 S11, beide mit Rest 32 und einem Triple. Hier entscheidet nur „höhere Felder zuerst“. Das ist kein Grund, den ein Spieler annimmt. Der Titel bleibt „Anderer Stellwurf“, der Text lautet: „Gleich gut. Die App zeigt den Wurf über die höheren Felder“.
+- **Stellwurf über Doppel oder Bull.** Die Empfehlung kennt nur Single und Triple. Mit Doppel oder Bull kann die Eingabe nach der Rangfolge gleich gut oder besser sein als die Empfehlung, in 1461 Fällen, etwa D11 T20 mit Rest 32 statt T20 S14 mit Rest 40. Dann lautet der Grund: „Stellwürfe gehen über Single und Triple, nicht über Doppel oder Bull“. Das gilt auch, wenn sich ein solcher Wurf sonst nur in den Feldern unterscheidet. Eine einzelne 25 zählt wie das Bull. Ist die Eingabe trotz Doppel oder Bull schlechter, gilt der normale Grund aus der Tabelle.
+- **Gleichwertig bis auf die Felder.** 56 Fälle, etwa S20 T17 statt T20 S11, beide mit Rest 32 und einem Triple. Hier entscheidet nur „höhere Felder zuerst“. Das ist kein Grund, den ein Spieler annimmt. Der Titel bleibt „Anderer Stellwurf“, der Text lautet: „Beide Stellwürfe sind gleich gut“.
 
 ## Technik
 
@@ -82,4 +82,3 @@ Festlegungen von Claude, bitte prüfen:
 ## Offen für den Bau
 
 - Die genaue Form des `detail` und der Name des Vergleichs.
-- Ob die Beschriftung mit Rest in beiden Sprachen in eine Zeile passt. Sonst das Doppel in Klammern weglassen.

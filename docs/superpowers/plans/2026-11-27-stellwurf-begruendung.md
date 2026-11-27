@@ -126,15 +126,15 @@
   |---|---|---|
   | `fewerDarts` | `${l} braucht noch zwei Darts, ${b} nur einen` | `${l} still needs two darts, ${b} only one` |
   | `noTwoDartFinish` | `${l} ist mit zwei Darts nicht zu checken` | `${l} cannot be checked out with two darts` |
-  | `preferred` | `${b} ist ein bevorzugtes Doppel, ${l} nicht` | `${b} is a preferred double, ${l} is not` |
+  | `preferred` | `${bd} ist ein bevorzugtes Doppel, ${d} nicht` | `${bd} is a preferred double, ${d} is not` |
   | `halvings` | `${bd} lässt sich öfter halbieren als ${d}` | `${bd} can be halved more often than ${d}` |
-  | `preferredOrder` | `${b} ist das bevorzugte Doppel vor ${l}` | `${b} is preferred over ${l}` |
+  | `preferredOrder` | `${bd} geht vor ${d}` | `${bd} ranks above ${d}` |
   | `doubleOverBull` | `Ein Doppel ist besser als das Bull` | `A double is better than the bull` |
   | `lowerLeave` | `Beide brauchen zwei Darts, ${b} ist der niedrigere Rest` | `Both need two darts, ${b} is the lower score` |
   | `triples` | `Gleicher Rest, aber mehr Triples nötig` | `Same score left, but more trebles needed` |
-  | `onTwenty` | `Gleicher Rest, aber der empfohlene Wurf bleibt länger auf der 20` | `Same score left, but the recommended shot stays on the 20 longer` |
-  | `equal` | `Gleich gut. Die App zeigt den Wurf über die höheren Felder` | `Just as good. The app shows the shot using the higher segments` |
-  | `bigFields` | `Gestellt wird über Single und Triple, nicht über Doppel oder Bull` | `Set up with singles and trebles, not doubles or bull` |
+  | `onTwenty` | `Gleicher Rest, aber weniger Darts auf die 20` | `Same score left, but fewer darts at the 20` |
+  | `equal` | `Beide Stellwürfe sind gleich gut` | `Both setup shots are equally good` |
+  | `bigFields` | `Stellwürfe gehen über Single und Triple, nicht über Doppel oder Bull` | `Setup shots go at singles and trebles, not doubles or bull` |
 
   `en.ts` schreibt „Treble“ und „left“, die Texte oben folgen dem.
 
@@ -183,7 +183,7 @@
   expect(r.by).not.toBe('darts')                          // entscheidet nie, deshalb ohne eigenen Text
   if (r.order > 0 && r.by !== 'fields') expect(['equal', 'bigFields']).not.toContain(detail.reason)
   if (r.by === 'leave') expect(leaveTier(detail.leaves)).toBe(2)
-  if (detail.reason === 'halvings') expect(detail.double && detail.bestDouble).toBeTruthy()
+  if (['halvings', 'preferred', 'preferredOrder'].includes(detail.reason)) expect(detail.double && detail.bestDouble).toBeTruthy()
   ```
 
   In `verdict.test.tsx`: Für jeden der elf Gründe liefern `de` und `en` aus `DICTIONARIES` über `study.verdict.detail` einen nicht leeren Text, und alle elf Texte einer Sprache sind verschieden. `verdictCopy` gibt für ein `setupOther` mit `detail` den Titel „Anderer Stellwurf“ und keinen `note`. Für `leavesBogey` bleibt der `note` „Lässt 159, nicht checkbar“.
@@ -207,22 +207,22 @@
 
 **Interfaces:**
 - Consumes: `VerdictDetail` der Art `setupOther` und `study.verdict.detail` aus Task 2.
-- Produces: `study.result.withLeaves: (label: string, leaves: number, double: string | null) => string`
-  - de: `Dein Weg · Rest 40 (D20)`, ohne Doppel `Dein Weg · Rest 98`
-  - en: `Your route · 40 left (D20)`, ohne Doppel `Your route · 98 left`
+- Produces: `study.result.leaves: (leaves: number, double: string | null) => string`
+  - de: `Rest 40 (D20)`, ohne Doppel `Rest 98`
+  - en: `40 left (D20)`, ohne Doppel `98 left`
 - Verhalten nur bei `result.verdict.detail?.kind === 'setupOther'`:
-  - Die sichtbare Beschriftung über „Dein Weg“ nennt `leaves` und `double`, die über „Stellwurf“ nennt `bestLeaves` und `bestDouble`.
+  - Die Zeile über jeder Reihe trägt links wie heute die Beschriftung und rechts den Rest: über „Dein Weg“ `leaves` und `double`, über „Stellwurf“ `bestLeaves` und `bestDouble`. Links und rechts stehen wie in `ResultLine` mit `flex items-baseline justify-between`, damit die beiden Reste untereinander stehen. Der Rest hat dieselbe Schrift wie die Beschriftung, keine Großbuchstaben erzwingen, kein Trennpunkt.
   - Statt `answer.notes` steht eine Notiz mit Titel `t.card.why` und dem Text aus `t.verdict.detail(detail)`. Karten mit Stellwurf-Prüfung tragen genau eine Notiz, die den empfohlenen Rest nennt. Der steht jetzt in der Beschriftung. Das als Kommentar an die Stelle schreiben.
 - In allen anderen Fällen bleibt die Ausgabe unverändert.
 
 - [ ] **Step 1: Failing Tests** in `study-card.test.tsx`, im Block „mit eingegebener Antwort“, mit der Karte `o-171` (empfohlen T20 T20 S19, Rest 32):
-  - Eingabe T20 T19 S14: sichtbar sind „Anderer Stellwurf“, „Dein Weg · Rest 40 (D20)“, „Stellwurf · Rest 32 (D16)“, „Warum“ und „D16 lässt sich öfter halbieren als D20“. „Danach Rest 32“ ist nicht im Dokument.
-  - Eingabe S20 S20 S20: „Dein Weg · Rest 111“ ohne Klammer.
-  - Eingabe T20 T20 S19: „Richtiger Stellwurf“, Beschriftung „Dein Weg“ ohne Rest, „Danach Rest 32“ sichtbar, kein „Warum“.
-  - Eingabe T20 T20 T17 (überworfen) und eine Eingabe mit Bogey-Rest: kein „Warum“, Beschriftung ohne Rest.
-  - Mit dem englischen Wörterbuch und Eingabe T20 T19 S14: „Your route · 40 left (D20)“ ist sichtbar. Die genaue Beschriftung aus `en.ts` übernehmen.
+  - Eingabe T20 T19 S14: sichtbar sind „Anderer Stellwurf“, „Rest 40 (D20)“, „Rest 32 (D16)“, „Warum“ und „D16 lässt sich öfter halbieren als D20“. „Danach Rest 32“ ist nicht im Dokument.
+  - Eingabe S20 S20 S20: „Rest 111“ ohne Klammer.
+  - Eingabe T20 T20 S19: „Richtiger Stellwurf“, kein Text „Rest 32 (D16)“, „Danach Rest 32“ sichtbar, kein „Warum“.
+  - Eingabe T20 T20 T17 (überworfen) und eine Eingabe mit Bogey-Rest: kein „Warum“, kein Text, der mit „Rest “ beginnt.
+  - Mit dem englischen Wörterbuch und Eingabe T20 T19 S14: „40 left (D20)“ und „32 left (D16)“ sind sichtbar.
 - [ ] **Step 2:** `npx vitest run src/components/study/study-card.test.tsx`. Erwartet: FAIL.
-- [ ] **Step 3:** `withLeaves` in beide Wörterbücher, `StudyCard` und `YourRoute` anpassen. Die `label`-Eigenschaft von `DartSlots` bleibt die kurze Beschriftung ohne Rest.
+- [ ] **Step 3:** `leaves` in beide Wörterbücher, `StudyCard` und `YourRoute` anpassen. Die `label`-Eigenschaft von `DartSlots` bleibt die kurze Beschriftung ohne Rest.
 - [ ] **Step 4:** `npm test`. Erwartet: PASS.
-- [ ] **Step 5:** Im Browser prüfen, Launch-Eintrag und Testkonto laut `CLAUDE.md`: Übung „Wege“ mit der Auswahl „Stellwürfe“, eine abweichende Eingabe machen. Am Smartphone-Format in Deutsch und Englisch passt die Auflösung ohne Scrollen, jede Beschriftung bleibt einzeilig. Bricht sie um, das Doppel in Klammern in `withLeaves` weglassen und die Tests anpassen.
+- [ ] **Step 5:** Im Browser prüfen, Launch-Eintrag und Testkonto laut `CLAUDE.md`: Übung „Wege“ mit der Auswahl „Stellwürfe“, eine abweichende Eingabe machen. Am Smartphone-Format in Deutsch und Englisch passt die Auflösung ohne Scrollen, jede Zeile über einer Reihe bleibt einzeilig, und die Notiz „Warum“ hat höchstens zwei Zeilen.
 - [ ] **Step 6:** Die drei Prüfungen, dann Commit `feat: show both leaves and the reason for another setup shot` mit `Refs #87`.
