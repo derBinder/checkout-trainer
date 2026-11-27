@@ -96,7 +96,7 @@
   ```ts
   export type SetupReason =
     | 'fewerDarts' | 'noTwoDartFinish' | 'preferred' | 'halvings' | 'preferredOrder'
-    | 'doubleOverBull' | 'lowerLeave' | 'triples' | 'onTwenty' | 'equal' | 'bigFields'
+    | 'doubleOverBull' | 'lowerLeave' | 'triples' | 'onTwenty' | 'moreDarts' | 'equal' | 'bigFields'
   // neue Art in VerdictDetail; double und bestDouble sind "D16", "Bull" oder null, wenn der Rest kein Ein-Dart-Finish ist
   | { kind: 'setupOther'; leaves: number; bestLeaves: number; double: string | null; bestDouble: string | null; reason: SetupReason }
   ```
@@ -106,7 +106,7 @@
   | Bedingung | Grund |
   |---|---|
   | `r.order <= 0` oder `r.by === 'fields'`, Eingabe enthält Doppel, Bull oder 25 | `bigFields` |
-  | `r.order <= 0` oder `r.by === 'fields'` oder `r.by === 'darts'`, sonst | `equal` |
+  | `r.order <= 0` oder `r.by === 'fields'`, sonst | `equal` |
   | `tier`, Stufe der Eingabe 3 | `noTwoDartFinish` |
   | `tier`, Stufe der Eingabe 2 | `fewerDarts` |
   | `tier`, Stufe der Eingabe 1 | `preferred` |
@@ -114,7 +114,9 @@
   | `preferred`, sonst | `preferredOrder` |
   | `halvings` | `halvings` |
   | `bull` | `doubleOverBull` |
-  | `leave` | `lowerLeave` |
+  | `leave`, Stufe der Eingabe 1 | `preferredOrder` |
+  | `leave`, sonst | `lowerLeave` |
+  | `darts` | `moreDarts` |
   | `triples` | `triples` |
   | `onTwenty` | `onTwenty` |
 
@@ -130,7 +132,8 @@
   | `halvings` | `${bd} lässt sich öfter halbieren als ${d}` | `${bd} can be halved more often than ${d}` |
   | `preferredOrder` | `${bd} geht vor ${d}` | `${bd} ranks above ${d}` |
   | `doubleOverBull` | `Ein Doppel ist besser als das Bull` | `A double is better than the bull` |
-  | `lowerLeave` | `Beide brauchen zwei Darts, ${b} ist der niedrigere Rest` | `Both need two darts, ${b} is the lower score` |
+  | `lowerLeave` | `Beide brauchen mehr als einen Dart, ${b} ist der niedrigere Rest` | `Both need more than one dart, ${b} is the lower score` |
+  | `moreDarts` | `Gleicher Rest, aber mehr Darts nötig` | `Same score left, but more darts needed` |
   | `triples` | `Gleicher Rest, aber mehr Triples nötig` | `Same score left, but more trebles needed` |
   | `onTwenty` | `Gleicher Rest, aber weniger Darts auf die 20` | `Same score left, but fewer darts at the 20` |
   | `equal` | `Beide Stellwürfe sind gleich gut` | `Both setup shots are equally good` |
@@ -180,13 +183,13 @@
   const usesBig = enteredDarts.some((d) => d.ring === 'D' || d.n === 25)
   if (r.order <= 0) expect(detail.reason).toBe(usesBig ? 'bigFields' : 'equal')
   if (!usesBig) expect(r.order).toBeGreaterThan(0)       // ohne Doppel und Bull schlägt nichts die Empfehlung
-  expect(r.by).not.toBe('darts')                          // entscheidet nie, deshalb ohne eigenen Text
+  expect(r.by).not.toBe('darts')                          // entscheidet bei den heutigen Karten nie
   if (r.order > 0 && r.by !== 'fields') expect(['equal', 'bigFields']).not.toContain(detail.reason)
   if (r.by === 'leave') expect(leaveTier(detail.leaves)).toBe(2)
   if (['halvings', 'preferred', 'preferredOrder'].includes(detail.reason)) expect(detail.double && detail.bestDouble).toBeTruthy()
   ```
 
-  In `verdict.test.tsx`: Für jeden der elf Gründe liefern `de` und `en` aus `DICTIONARIES` über `study.verdict.detail` einen nicht leeren Text, und alle elf Texte einer Sprache sind verschieden. `verdictCopy` gibt für ein `setupOther` mit `detail` den Titel „Anderer Stellwurf“ und keinen `note`. Für `leavesBogey` bleibt der `note` „Lässt 159, nicht checkbar“.
+  In `verdict.test.tsx`: Für jeden der zwölf Gründe liefern `de` und `en` aus `DICTIONARIES` über `study.verdict.detail` einen nicht leeren Text, und alle zwölf Texte einer Sprache sind verschieden. `verdictCopy` gibt für ein `setupOther` mit `detail` den Titel „Anderer Stellwurf“ und keinen `note`. Für `leavesBogey` bleibt der `note` „Lässt 159, nicht checkbar“.
 
   Drei vorhandene Tests erwarten den Hinweis „Empfohlener Stellwurf unten“ und werden angepasst: `study-card.test.tsx:128` (der Status lautet nur noch „Anderer Stellwurf“), `verdict.test.tsx:17` und `verdict.dom.test.tsx:28` (`setupOther` ohne Hinweis).
 
