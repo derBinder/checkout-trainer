@@ -255,52 +255,56 @@ describe('another setup shot', () => {
     expect(judge(setup(99, 2, ' T20', 'S7'), darts('S7', 'T20'))).toEqual({ code: 'setupRight' })
   })
 
-  it('gives every other setup shot of every card a reason that agrees with the ranking', { timeout: 30_000 }, () => {
-    const fields: Dart[] = [
-      ...(['S', 'D', 'T'] as const).flatMap((ring) => Array.from({ length: 20 }, (_, i): Dart => ({ ring, n: i + 1 }))),
-      parseDart('25'),
-      parseDart('Bull'),
-    ]
+  // Je Aufgabe ein Test: zusammen rund 2,6 Millionen Eingaben, einzeln bleibt jeder weit unter dem Zeitlimit.
+  const setupChecks = [
+    ...new Map(
+      CARDS.map(checkFor)
+        .filter((c) => c.kind === 'setup')
+        .map((c) => [`${c.rest}/${c.maxDarts}`, c] as const),
+    ),
+  ]
+  const fields: Dart[] = [
+    ...(['S', 'D', 'T'] as const).flatMap((ring) => Array.from({ length: 20 }, (_, i): Dart => ({ ring, n: i + 1 }))),
+    parseDart('25'),
+    parseDart('Bull'),
+  ]
+
+  it('covers every setup task of the cards', () => {
+    expect(setupChecks.length).toBeGreaterThan(100)
+  })
+
+  it.each(setupChecks)('gives every other setup shot for %s a reason that agrees with the ranking', (id, c) => {
     const violations: string[] = []
-    const seen = new Set<string>()
-    for (const card of CARDS) {
-      const c = checkFor(card)
-      if (c.kind !== 'setup') continue
-      const id = `${c.rest}/${c.maxDarts}`
-      if (seen.has(id)) continue
-      seen.add(id)
-      const bestThrows = c.throws.map(parseDart)
-      const best = { throws: bestThrows, leaves: c.rest - bestThrows.reduce((sum, d) => sum + dartValue(d), 0) }
-      const walk = (entered: Dart[], from: number, remaining: number) => {
-        if (entered.length > 0) {
-          const verdict = judge(c, darts(...entered.map(formatDart)))
-          if (verdict.code === 'setupOther') {
-            const detail = verdict.detail
-            const fail = (what: string) => violations.push(`${id} ${entered.map(formatDart).join(' ')}: ${what}`)
-            if (detail?.kind !== 'setupOther') fail('no detail')
-            else {
-              const r = compareSetups({ throws: entered, leaves: remaining }, best)
-              const usesBig = entered.some((d) => d.ring === 'D' || d.n === 25)
-              const soft = detail.reason === 'equal' || detail.reason === 'bigFields'
-              if (r.order <= 0 && detail.reason !== (usesBig ? 'bigFields' : 'equal')) fail(`ranks ${r.order} but ${detail.reason}`)
-              if (!usesBig && r.order <= 0) fail('beats the recommendation without double or bull')
-              if (r.by === 'darts') fail('decided by the number of darts')
-              if (r.order > 0 && r.by !== 'fields' && soft) fail(`worse by ${r.by} but ${detail.reason}`)
-              if (r.by === 'leave' && leaveTier(detail.leaves) !== 2) fail('lower leave outside two-dart leaves')
-              if (['halvings', 'preferred', 'preferredOrder'].includes(detail.reason) && !(detail.double && detail.bestDouble))
-                fail(`${detail.reason} without doubles`)
-            }
+    const bestThrows = c.throws.map(parseDart)
+    const best = { throws: bestThrows, leaves: c.rest - bestThrows.reduce((sum, d) => sum + dartValue(d), 0) }
+    const walk = (entered: Dart[], from: number, remaining: number) => {
+      if (entered.length > 0) {
+        const verdict = judge(c, darts(...entered.map(formatDart)))
+        if (verdict.code === 'setupOther') {
+          const detail = verdict.detail
+          const fail = (what: string) => violations.push(`${id} ${entered.map(formatDart).join(' ')}: ${what}`)
+          if (detail?.kind !== 'setupOther') fail('no detail')
+          else {
+            const r = compareSetups({ throws: entered, leaves: remaining }, best)
+            const usesBig = entered.some((d) => d.ring === 'D' || d.n === 25)
+            const soft = detail.reason === 'equal' || detail.reason === 'bigFields'
+            if (r.order <= 0 && detail.reason !== (usesBig ? 'bigFields' : 'equal')) fail(`ranks ${r.order} but ${detail.reason}`)
+            if (!usesBig && r.order <= 0) fail('beats the recommendation without double or bull')
+            if (r.by === 'darts') fail('decided by the number of darts')
+            if (r.order > 0 && r.by !== 'fields' && soft) fail(`worse by ${r.by} but ${detail.reason}`)
+            if (r.by === 'leave' && leaveTier(detail.leaves) !== 2) fail('lower leave outside two-dart leaves')
+            if (['halvings', 'preferred', 'preferredOrder'].includes(detail.reason) && !(detail.double && detail.bestDouble))
+              fail(`${detail.reason} without doubles`)
           }
         }
-        if (entered.length === c.maxDarts) return
-        for (let i = from; i < fields.length; i++) {
-          const next = remaining - dartValue(fields[i])
-          if (next >= 2) walk([...entered, fields[i]], i, next)
-        }
       }
-      walk([], 0, c.rest)
+      if (entered.length === c.maxDarts) return
+      for (let i = from; i < fields.length; i++) {
+        const next = remaining - dartValue(fields[i])
+        if (next >= 2) walk([...entered, fields[i]], i, next)
+      }
     }
-    expect(seen.size).toBeGreaterThan(100)
+    walk([], 0, c.rest)
     expect(violations.slice(0, 10)).toEqual([])
   })
 })

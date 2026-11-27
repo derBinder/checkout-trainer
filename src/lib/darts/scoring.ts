@@ -148,7 +148,20 @@ const isOneDartFinish = (leave: number) => leave === 50 || (leave % 2 === 0 && l
  * 3. sonst mit zwei Darts zu beenden: niedrigerer Rest zuerst,
  * 4. sonst niedrigster Rest.
  */
-function leaveRank(leave: number): [0 | 1 | 2 | 3, number, number, number] {
+type LeaveRank = [0 | 1 | 2 | 3, number, number, number]
+
+const leaveRankCache = new Map<number, LeaveRank>()
+
+function leaveRank(leave: number): LeaveRank {
+  let rank = leaveRankCache.get(leave)
+  if (!rank) {
+    rank = computeLeaveRank(leave)
+    leaveRankCache.set(leave, rank)
+  }
+  return rank
+}
+
+function computeLeaveRank(leave: number): LeaveRank {
   const preferred = PREFERRED_LEAVES.indexOf(leave)
   if (preferred !== -1) return [0, preferred, 0, 0]
   if (isOneDartFinish(leave)) {
@@ -193,15 +206,19 @@ export function compareSetups(a: Setup, b: Setup): { order: number; by: SetupCri
   const ra = leaveRank(a.leaves)
   const rb = leaveRank(b.leaves)
   if (ra[0] !== rb[0]) return { order: ra[0] - rb[0], by: 'tier' }
-  const steps: [number, SetupCriterion][] = [
-    ...LEAVE_CRITERIA[ra[0]].map((by, i): [number, SetupCriterion] => [ra[i + 1] - rb[i + 1], by]),
-    [a.throws.length - b.throws.length, 'darts'],
-    [triples(a.throws) - triples(b.throws), 'triples'],
-    [countOnTwenty(b.throws) - countOnTwenty(a.throws), 'onTwenty'],
-    [compareHigherFirst(a.throws, b.throws), 'fields'],
-  ]
-  const decided = steps.find(([order]) => order !== 0)
-  return decided ? { order: decided[0], by: decided[1] } : { order: 0, by: null }
+  const criteria = LEAVE_CRITERIA[ra[0]]
+  for (let i = 0; i < criteria.length; i++) {
+    if (ra[i + 1] !== rb[i + 1]) return { order: ra[i + 1] - rb[i + 1], by: criteria[i] }
+  }
+  // Ohne Zwischenlisten: der Vergleich läuft je Karte über tausende Stellwürfe.
+  let order = a.throws.length - b.throws.length
+  if (order !== 0) return { order, by: 'darts' }
+  order = triples(a.throws) - triples(b.throws)
+  if (order !== 0) return { order, by: 'triples' }
+  order = countOnTwenty(b.throws) - countOnTwenty(a.throws)
+  if (order !== 0) return { order, by: 'onTwenty' }
+  order = compareHigherFirst(a.throws, b.throws)
+  return order !== 0 ? { order, by: 'fields' } : { order: 0, by: null }
 }
 
 /**
@@ -210,8 +227,7 @@ export function compareSetups(a: Setup, b: Setup): { order: number; by: SetupCri
  */
 export function bestSetup(rest: number, darts: 1 | 2 | 3): Setup {
   const candidates = setupCandidates(rest, darts)
-  candidates.sort((a, b) => compareSetups(a, b).order)
-  const best = candidates[0]
-  if (!best) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
-  return best
+  if (candidates.length === 0) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
+  // Nur der beste zählt: ein Durchlauf statt einer Sortierung.
+  return candidates.reduce((best, c) => (compareSetups(c, best).order < 0 ? c : best))
 }
