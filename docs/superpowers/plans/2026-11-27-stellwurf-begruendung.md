@@ -88,7 +88,7 @@
 - Modify: `src/lib/darts/judge.ts` (`VerdictDetail`, `judgeSetup`)
 - Modify: `src/i18n/dictionaries/de.ts`, `src/i18n/dictionaries/en.ts` (`study.verdict`)
 - Modify: `src/components/study/verdict.tsx` (`verdictCopy`)
-- Test: `src/lib/darts/judge.test.ts`, `src/components/study/verdict.test.tsx`, `src/components/study/study-card.test.tsx`
+- Test: `src/lib/darts/judge.test.ts`, `src/components/study/verdict.test.tsx`, `src/components/study/verdict.dom.test.tsx`, `src/components/study/study-card.test.tsx`
 
 **Interfaces:**
 - Consumes: `compareSetups`, `leaveTier`, `halvings`, `Setup` aus `scoring.ts`.
@@ -100,7 +100,7 @@
   // neue Art in VerdictDetail; double und bestDouble sind "D16", "Bull" oder null, wenn der Rest kein Ein-Dart-Finish ist
   | { kind: 'setupOther'; leaves: number; bestLeaves: number; double: string | null; bestDouble: string | null; reason: SetupReason }
   ```
-- `judgeSetup` in dieser Reihenfolge: überworfen, Bogey-Zahl, gleiche Darts ohne Rücksicht auf die Reihenfolge ergibt `setupRight`, sonst `setupOther` mit `detail`. Die Karten-Empfehlung selbst bleibt immer `setupRight`, auch wenn sie eine Bogey-Zahl ließe (vorhandener Test).
+- `judgeSetup` in dieser Reihenfolge: gleiche Darts ohne Rücksicht auf die Reihenfolge ergibt `setupRight`, dann überworfen, dann Bogey-Zahl, sonst `setupOther` mit `detail`. So bleibt die Karten-Empfehlung `setupRight`, auch wenn sie eine Bogey-Zahl ließe (vorhandener Test).
 - Zuordnung Kriterium zu Grund, mit `r = compareSetups(eingabe, empfohlen)`:
 
   | Bedingung | Grund |
@@ -119,6 +119,7 @@
   | `onTwenty` | `onTwenty` |
 
 - `study.verdict.detail` bekommt die Art `setupOther` und liefert den Grund als Text. `verdictCopy` gibt für diese Art keinen `note` zurück, der Grund steht ab Task 3 als Notiz. In beiden Wörterbüchern verliert `codes.setupOther` seinen `note`.
+- Eine einzelne 25 zählt wie das Bull als Feld, über das nicht gestellt wird.
 - Texte, `l` und `b` sind eingegebener und empfohlener Rest, `d` und `bd` die Doppel:
 
   | Grund | de | en |
@@ -130,12 +131,12 @@
   | `preferredOrder` | `${b} ist das bevorzugte Doppel vor ${l}` | `${b} is preferred over ${l}` |
   | `doubleOverBull` | `Ein Doppel ist besser als das Bull` | `A double is better than the bull` |
   | `lowerLeave` | `Beide brauchen zwei Darts, ${b} ist der niedrigere Rest` | `Both need two darts, ${b} is the lower score` |
-  | `triples` | `Gleicher Rest, aber mehr Triples nötig` | `Same score left, but more triples needed` |
+  | `triples` | `Gleicher Rest, aber mehr Triples nötig` | `Same score left, but more trebles needed` |
   | `onTwenty` | `Gleicher Rest, aber der empfohlene Wurf bleibt länger auf der 20` | `Same score left, but the recommended shot stays on the 20 longer` |
   | `equal` | `Gleich gut. Die App zeigt den Wurf über die höheren Felder` | `Just as good. The app shows the shot using the higher segments` |
-  | `bigFields` | `Gestellt wird über Single und Triple, nicht über Doppel oder Bull` | `Set up with singles and triples, not doubles or bull` |
+  | `bigFields` | `Gestellt wird über Single und Triple, nicht über Doppel oder Bull` | `Set up with singles and trebles, not doubles or bull` |
 
-  Die englischen Wörter für Triple und Rest an die vorhandenen Texte in `en.ts` angleichen.
+  `en.ts` schreibt „Treble“ und „left“, die Texte oben folgen dem.
 
 - [ ] **Step 1: Failing Tests** in `judge.test.ts`. Die zwei vorhandenen Erwartungen `{ code: 'setupOther' }` für `m-125-1` und `t-125` auf `.code` umstellen. Neu:
 
@@ -171,7 +172,7 @@
   })
   ```
 
-  Dazu die Durchzählung, ein Test über alle Karten aus `CARDS` mit `checkFor(card).kind === 'setup'`, je Rest und Dartzahl einmal. Eingaben sind alle Mengen aus 1 bis `maxDarts` Feldern aus S1–S20, D1–D20, T1–T20, 25 und Bull, ohne Rücksicht auf die Reihenfolge. Für jede Eingabe mit `code === 'setupOther'` gilt:
+  Dazu die Durchzählung, ein Test über alle Karten aus `CARDS` mit `checkFor(card).kind === 'setup'`, je Rest und Dartzahl einmal. Eingaben sind alle Mengen aus 1 bis `maxDarts` Feldern aus S1–S20, D1–D20, T1–T20, 25 und Bull, ohne Rücksicht auf die Reihenfolge. Das sind rund 2,6 Millionen Eingaben. Der Test sammelt Verstöße in einer Liste, prüft am Ende einmal `expect(violations).toEqual([])` und bekommt ein eigenes Zeitlimit von 30 Sekunden. Für jede Eingabe mit `code === 'setupOther'` gilt, hier als `expect` geschrieben:
 
   ```ts
   expect(detail.kind).toBe('setupOther')
@@ -180,18 +181,19 @@
   if (r.order <= 0) expect(detail.reason).toBe(usesBig ? 'bigFields' : 'equal')
   if (!usesBig) expect(r.order).toBeGreaterThan(0)       // ohne Doppel und Bull schlägt nichts die Empfehlung
   expect(r.by).not.toBe('darts')                          // entscheidet nie, deshalb ohne eigenen Text
+  if (r.order > 0 && r.by !== 'fields') expect(['equal', 'bigFields']).not.toContain(detail.reason)
   if (r.by === 'leave') expect(leaveTier(detail.leaves)).toBe(2)
   if (detail.reason === 'halvings') expect(detail.double && detail.bestDouble).toBeTruthy()
   ```
 
   In `verdict.test.tsx`: Für jeden der elf Gründe liefern `de` und `en` aus `DICTIONARIES` über `study.verdict.detail` einen nicht leeren Text, und alle elf Texte einer Sprache sind verschieden. `verdictCopy` gibt für ein `setupOther` mit `detail` den Titel „Anderer Stellwurf“ und keinen `note`. Für `leavesBogey` bleibt der `note` „Lässt 159, nicht checkbar“.
 
-  In `study-card.test.tsx` den Test „nennt bei einem Fehlwurf ohne Finish einen anderen Stellwurf“ anpassen, falls er den Hinweis „Empfohlener Stellwurf unten“ erwartet.
+  Drei vorhandene Tests erwarten den Hinweis „Empfohlener Stellwurf unten“ und werden angepasst: `study-card.test.tsx:128` (der Status lautet nur noch „Anderer Stellwurf“), `verdict.test.tsx:17` und `verdict.dom.test.tsx:28` (`setupOther` ohne Hinweis).
 
 - [ ] **Step 2:** `npx vitest run src/lib/darts/judge.test.ts src/components/study/verdict.test.tsx`. Erwartet: FAIL.
 - [ ] **Step 3:** `SetupReason`, die neue `VerdictDetail`-Art und `judgeSetup` nach der Tabelle umsetzen. Das Doppel zu einem Rest kommt aus `formatDart`, bei 50 ist es das Bull.
 - [ ] **Step 4:** Texte in `de.ts` und `en.ts` nach der Tabelle, `note` bei `codes.setupOther` entfernen, `verdictCopy` anpassen.
-- [ ] **Step 5:** `npm test`. Erwartet: PASS, auch `no-hardcoded-text.test.ts`. Läuft die Durchzählung länger als fünf Sekunden, die Eingaben als sortierte Mengen erzeugen statt als Folgen.
+- [ ] **Step 5:** `npm test`. Erwartet: PASS, auch `no-hardcoded-text.test.ts`.
 - [ ] **Step 6:** Die drei Prüfungen, dann Commit `feat: explain why another setup shot ranks lower` mit `Refs #87`.
 
 ---
