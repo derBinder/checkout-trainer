@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { cardById } from "@/lib/cards";
 import { checkFor, judge, type Answer } from "@/lib/darts/judge";
 import { de } from "@/i18n/dictionaries/de";
+import { en } from "@/i18n/dictionaries/en";
 import { cardView } from "./card-view";
 import { StudyCard } from "./study-card";
 import { fixedDarts } from "./study-question";
@@ -121,6 +122,59 @@ describe("StudyCard", () => {
       expect(screen.getByRole("status").textContent).toBe("Bester Weg");
       expect(row("Dein Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
       expect(row("Bester Weg")).toEqual(["S16 (Fehlwurf)", "D20"]);
+    });
+
+    describe("mit einem anderen Stellwurf", () => {
+      const over = (...d: string[]): Answer => ({ kind: "darts", darts: d });
+
+      it("stellt beide Reste gegenüber und nennt den Grund", () => {
+        // o-171: empfohlen T20 · T20 · S19, Rest 32
+        showWith("o-171", over("T20", "T19", "S14"));
+        expect(screen.getByRole("status").textContent).toBe("Anderer Stellwurf");
+        expect(screen.getByText("Rest 40 (D20)")).toBeTruthy();
+        expect(screen.getByText("Rest 32 (D16)")).toBeTruthy();
+        expect(screen.getByText("Warum")).toBeTruthy();
+        expect(screen.getByText("D16 lässt sich öfter halbieren als D20")).toBeTruthy();
+        expect(screen.queryByText("Danach Rest 32")).toBeNull();
+        expect(row("Dein Weg")).toEqual(["T20", "T19", "S14"]);
+        expect(row("Stellwurf")).toEqual(["T20", "T20", "S19"]);
+      });
+
+      it("nennt einen Rest ohne Ein-Dart-Finish ohne Doppel", () => {
+        showWith("o-171", over("S20", "S20", "S20"));
+        expect(screen.getByText("Rest 111")).toBeTruthy();
+      });
+
+      it("lässt den richtigen Stellwurf wie bisher", () => {
+        showWith("o-171", over("T20", "T20", "S19"));
+        expect(screen.getByRole("status").textContent).toBe("Richtiger Stellwurf");
+        expect(screen.getByText("Danach Rest 32")).toBeTruthy();
+        expect(screen.queryByText("Rest 32 (D16)")).toBeNull();
+        expect(screen.queryByText("Warum")).toBeNull();
+      });
+
+      it.each([
+        ["überworfen", ["T20", "T20", "T17"]],
+        ["mit Bogey-Zahl", ["S12"]],
+      ])("zeigt %s weder Reste noch Grund", (_, entered) => {
+        showWith("o-171", over(...entered));
+        expect(screen.queryByText("Warum")).toBeNull();
+        expect(screen.queryByText(/^Rest \d/)).toBeNull();
+        expect(screen.getByText("Danach Rest 32")).toBeTruthy();
+      });
+
+      it("nennt die Reste auch auf Englisch", () => {
+        const card = cardById("o-171")!;
+        const answer = over("T20", "T19", "S14");
+        const view = cardView(card, en.study);
+        render(
+          <StudyCard view={view} result={{ verdict: judge(checkFor(card), answer), answer, fixed: fixedDarts(view) }} />,
+          { wrapper: ({ children }) => <I18nProvider locale="en">{children}</I18nProvider> },
+        );
+        expect(screen.getByText("40 left (D20)")).toBeTruthy();
+        expect(screen.getByText("32 left (D16)")).toBeTruthy();
+        expect(screen.getByText("D16 can be halved more often than D20")).toBeTruthy();
+      });
     });
 
     it("nennt bei einem Fehlwurf ohne Finish einen anderen Stellwurf", () => {

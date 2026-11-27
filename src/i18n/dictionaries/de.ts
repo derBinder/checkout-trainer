@@ -159,6 +159,8 @@ export const de = {
       bestRoute: "Bester Weg",
       setupShot: "Stellwurf",
       notCheckable: "Nicht checkbar",
+      // Rest nach einem Stellwurf, mit dem Doppel, wenn er in einem Dart fällt.
+      leaves: (leaves: number, double: string | null) => (double ? `Rest ${leaves} (${double})` : `Rest ${leaves}`),
     },
     verdict: {
       codes: {

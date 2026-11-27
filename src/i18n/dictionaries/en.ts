@@ -147,6 +147,7 @@ export const en: Dictionary = {
       bestRoute: "Best route",
       setupShot: "Setup shot",
       notCheckable: "No checkout",
+      leaves: (leaves: number, double: string | null) => (double ? `${leaves} left (${double})` : `${leaves} left`),
     },
     verdict: {
       codes: {
