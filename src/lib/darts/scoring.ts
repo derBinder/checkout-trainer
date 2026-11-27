@@ -148,7 +148,20 @@ const isOneDartFinish = (leave: number) => leave === 50 || (leave % 2 === 0 && l
  * 3. sonst mit zwei Darts zu beenden: niedrigerer Rest zuerst,
  * 4. sonst niedrigster Rest.
  */
-function leaveRank(leave: number): [number, number, number, number] {
+type LeaveRank = [0 | 1 | 2 | 3, number, number, number]
+
+const leaveRankCache = new Map<number, LeaveRank>()
+
+function leaveRank(leave: number): LeaveRank {
+  let rank = leaveRankCache.get(leave)
+  if (!rank) {
+    rank = computeLeaveRank(leave)
+    leaveRankCache.set(leave, rank)
+  }
+  return rank
+}
+
+function computeLeaveRank(leave: number): LeaveRank {
   const preferred = PREFERRED_LEAVES.indexOf(leave)
   if (preferred !== -1) return [0, preferred, 0, 0]
   if (isOneDartFinish(leave)) {
@@ -159,29 +172,62 @@ function leaveRank(leave: number): [number, number, number, number] {
   return [3, leave, 0, 0]
 }
 
-function compareLeaves(a: number, b: number): number {
-  const ra = leaveRank(a)
-  const rb = leaveRank(b)
-  for (let i = 0; i < ra.length; i++) if (ra[i] !== rb[i]) return ra[i] - rb[i]
-  return 0
+/** 0 bevorzugtes Doppel, 1 anderes Ein-Dart-Finish, 2 mit zwei Darts zu beenden, 3 sonst. */
+export function leaveTier(leave: number): 0 | 1 | 2 | 3 {
+  return leaveRank(leave)[0]
+}
+
+/** Woran ein Vergleich zweier Stellwürfe entschieden wurde. */
+export type SetupCriterion =
+  | 'tier'
+  | 'preferred'
+  | 'halvings'
+  | 'bull'
+  | 'leave'
+  | 'darts'
+  | 'triples'
+  | 'onTwenty'
+  | 'fields'
+
+/** Bedeutung der Stellen 1 bis 3 von leaveRank, je Stufe. */
+const LEAVE_CRITERIA: Record<0 | 1 | 2 | 3, SetupCriterion[]> = {
+  0: ['preferred'],
+  1: ['halvings', 'bull', 'leave'],
+  2: ['leave'],
+  3: ['leave'],
 }
 
 /**
- * Bester Stellwurf mit bis zu `darts` Würfen. Erst der Rest (siehe leaveRank),
- * bei gleichem Rest weniger Würfe, weniger Triples, mehr Würfe auf die 20, höhere Felder.
+ * Vergleich zweier Stellwürfe: erst der Rest (siehe leaveRank), bei gleichem Rest weniger
+ * Würfe, weniger Triples, mehr Würfe auf die 20, höhere Felder. `order` negativ = a ist
+ * besser; `by` ist das erste Kriterium mit Unterschied, null bei Gleichstand in allem.
+ */
+export function compareSetups(a: Setup, b: Setup): { order: number; by: SetupCriterion | null } {
+  const ra = leaveRank(a.leaves)
+  const rb = leaveRank(b.leaves)
+  if (ra[0] !== rb[0]) return { order: ra[0] - rb[0], by: 'tier' }
+  const criteria = LEAVE_CRITERIA[ra[0]]
+  for (let i = 0; i < criteria.length; i++) {
+    if (ra[i + 1] !== rb[i + 1]) return { order: ra[i + 1] - rb[i + 1], by: criteria[i] }
+  }
+  // Ohne Zwischenlisten: der Vergleich läuft je Karte über tausende Stellwürfe.
+  let order = a.throws.length - b.throws.length
+  if (order !== 0) return { order, by: 'darts' }
+  order = triples(a.throws) - triples(b.throws)
+  if (order !== 0) return { order, by: 'triples' }
+  order = countOnTwenty(b.throws) - countOnTwenty(a.throws)
+  if (order !== 0) return { order, by: 'onTwenty' }
+  order = compareHigherFirst(a.throws, b.throws)
+  return order !== 0 ? { order, by: 'fields' } : { order: 0, by: null }
+}
+
+/**
+ * Bester Stellwurf mit bis zu `darts` Würfen, nach compareSetups.
  * Wirft, wenn kein gültiger Rest erreichbar ist.
  */
 export function bestSetup(rest: number, darts: 1 | 2 | 3): Setup {
   const candidates = setupCandidates(rest, darts)
-  candidates.sort(
-    (a, b) =>
-      compareLeaves(a.leaves, b.leaves) ||
-      a.throws.length - b.throws.length ||
-      triples(a.throws) - triples(b.throws) ||
-      countOnTwenty(b.throws) - countOnTwenty(a.throws) ||
-      compareHigherFirst(a.throws, b.throws),
-  )
-  const best = candidates[0]
-  if (!best) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
-  return best
+  if (candidates.length === 0) throw new Error(`Kein Stellwurf für Rest ${rest} mit ${darts} Darts`)
+  // Nur der beste zählt: ein Durchlauf statt einer Sortierung.
+  return candidates.reduce((best, c) => (compareSetups(c, best).order < 0 ? c : best))
 }

@@ -25,6 +25,8 @@ export function verdictCopy(
 ): { tone: VerdictTone; title: string; note?: string } {
   const codes: Record<VerdictCode, { title: string; note?: string }> = t.verdict.codes;
   const { title, note } = codes[v.code];
+  // Der Grund für einen anderen Stellwurf steht als eigene Notiz unter dem Vergleich, nicht in der Zeile.
+  if (v.detail?.kind === "setupOther") return { tone: TONES[v.code], title, note };
   return { tone: TONES[v.code], title, note: v.detail ? t.verdict.detail(v.detail) : note };
 }
 

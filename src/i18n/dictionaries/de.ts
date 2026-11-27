@@ -159,6 +159,8 @@ export const de = {
       bestRoute: "Bester Weg",
       setupShot: "Stellwurf",
       notCheckable: "Nicht checkbar",
+      // Rest nach einem Stellwurf, mit dem Doppel, wenn er in einem Dart fällt.
+      leaves: (leaves: number, double: string | null) => (double ? `Rest ${leaves} (${double})` : `Rest ${leaves}`),
     },
     verdict: {
       codes: {
@@ -169,7 +171,7 @@ export const de = {
         checkable: { title: "Ist checkbar" },
         bogeyRight: { title: "Richtig", note: "Der Rest ist nicht checkbar" },
         setupRight: { title: "Richtiger Stellwurf" },
-        setupOther: { title: "Anderer Stellwurf", note: "Empfohlener Stellwurf unten" },
+        setupOther: { title: "Anderer Stellwurf" },
         setupBogey: { title: "Lässt eine Bogey-Zahl", note: "nicht checkbar" },
         setupBust: { title: "Überworfen", note: "Der Rest bleibt stehen" },
       } satisfies Record<VerdictCode, { title: string; note?: string }>,
@@ -185,6 +187,33 @@ export const de = {
             return `Lässt ${d.leaves}, nicht checkbar`;
           case "bust":
             return `Ergibt ${d.total} bei Rest ${d.rest}`;
+          case "setupOther":
+            switch (d.reason) {
+              case "fewerDarts":
+                return `${d.leaves} braucht noch zwei Darts, ${d.bestLeaves} nur einen`;
+              case "noTwoDartFinish":
+                return `${d.leaves} ist mit zwei Darts nicht zu checken`;
+              case "preferred":
+                return `${d.bestDouble} ist ein bevorzugtes Doppel, ${d.double} nicht`;
+              case "halvings":
+                return `${d.bestDouble} lässt sich öfter halbieren als ${d.double}`;
+              case "preferredOrder":
+                return `${d.bestDouble} geht vor ${d.double}`;
+              case "doubleOverBull":
+                return "Ein Doppel ist besser als das Bull";
+              case "lowerLeave":
+                return `Beide brauchen mehr als einen Dart, ${d.bestLeaves} ist der niedrigere Rest`;
+              case "triples":
+                return "Gleicher Rest, aber mehr Triples nötig";
+              case "onTwenty":
+                return "Gleicher Rest, aber weniger Darts auf die 20";
+              case "moreDarts":
+                return "Gleicher Rest, aber mehr Darts nötig";
+              case "equal":
+                return "Beide Stellwürfe sind gleich gut";
+              case "bigFields":
+                return "Stellwürfe gehen über Single und Triple, nicht über Doppel oder Bull";
+            }
         }
       },
     },

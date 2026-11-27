@@ -96,7 +96,7 @@ Ort der Schalter: am Konto (Datenbank) statt je Gerät, weil der Lernplan am Kon
 - Eine Karte je Rest von 171 bis 230, zusammen 60.
 - Frage: „Rest 199“ mit drei offenen Feldern, Eingabe von bis zu drei Darts. Keine Taste „Nicht checkbar“ (über 170 ist nichts checkbar, die Zahl verrät es ohnehin).
 - Antwort: `bestSetup(rest, 3)` mit dem gelassenen Rest. Beispiele nach heutigem Regelwerk: 171 → T20 · T20 · S19, lässt 32. 199 → T20 · T20 · T13, lässt 40. 221 → T20 · T20 · T17, lässt 50. 230 → T20 · T20 · T20, lässt 50.
-- Prüfung mit den Stellwurf-Stufen (siehe unten), höchstens drei Darts. Die Reihenfolge der Darts zählt wie überall in der App: T20 · T20 · S19 ist richtig, S19 · T20 · T20 ist „Anderer Stellwurf“, weil man den Plan nach jedem Dart anpasst und mit dem schweren Wurf beginnt. (Entscheidung des Erbauers.) Der vorhandene Prüftyp `setup` erlaubt heute höchstens zwei Darts und muss auf drei erweitert werden.
+- Prüfung mit den Stellwurf-Stufen (siehe unten), höchstens drei Darts. Die Reihenfolge der Darts zählt wie überall in der App: T20 · T20 · S19 ist richtig, S19 · T20 · T20 ist „Anderer Stellwurf“, weil man den Plan nach jedem Dart anpasst und mit dem schweren Wurf beginnt. (Entscheidung des Erbauers.) Seit `2026-11-27-stellwurf-begruendung-design.md` zählt die Reihenfolge bei Stellwürfen nicht mehr. Der vorhandene Prüftyp `setup` erlaubt heute höchstens zwei Darts und muss auf drei erweitert werden.
 - Auflösung: „Stellwurf“ mit Würfen und gelassenem Rest, Zerlegung entfällt.
 - Stabile Kennung je Rest (Vorschlag: `o-<rest>`).
 
